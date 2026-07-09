@@ -1,0 +1,37 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches: [main]
+    # Site statique : un push qui ne touche QUE de la doc/config CI ne sert pas
+    # le site déployé → pas de deploy (économie budget Netlify). Un push qui
+    # touche index.html / netlify.toml / assets déploie normalement.
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '.gitignore'
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Aucun build : le site est un index.html autonome (vanilla, pas de bundler).
+      - name: Deploy to Netlify (production)
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          MSG=$(git log -1 --pretty=%s)
+          npx --yes netlify-cli@latest deploy --prod --dir=. --message="${MSG} (${COMMIT_SHA:0:7})"
