@@ -61,12 +61,12 @@ python3 -m http.server 8791
 Tout est balisé visuellement dans la page. Rien à retoucher dans l'architecture — juste
 remplacer du texte / une image / trois URLs.
 
-### 1. Les 3 URLs de l'écosystème — **en tête du `<script>`, objet `LINKS`**
+### 1. Les 3 URLs de l'écosystème — ✅ REMPLIES (objet `LINKS` en tête du `<script>`)
 ```js
 const LINKS = {
-  diagnostic: '[URL_DIAGNOSTIC]',          // ← à remplir
-  timer:      'https://mobilitytimer.com', // ← pré-rempli, à CONFIRMER
-  club:       '[URL_CLUB]'                  // ← à remplir
+  diagnostic: 'https://mobility-diagnostic.netlify.app/',   // ✓ vérifié 200
+  timer:      'https://mobilitytimer.com',                  // ✓ vérifié 200
+  club:       'https://www.skool.com/mobility-club/about'   // ✓ vérifié 200 (Skool bloque curl → tester en navigateur)
 };
 ```
 
