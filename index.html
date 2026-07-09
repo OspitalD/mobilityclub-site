@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mobility Club — Le club de mouvement de demain</title>
+<meta name="description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta name="theme-color" content="#0D0F0E" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Mobility Club — Le club de mouvement de demain" />
+<meta property="og:description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:locale:alternate" content="en_US" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   MOBILITY CLUB — SITE VITRINE V1 (manifeste)
+   Single-file · vanilla · bilingue FR/EN
+   Palette héritée du design system Dashboard — aucune variation hors palette.
+   ============================================================ */
+
+:root{
+  --bg-primary:     #0D0F0E;
+  --bg-surface:     #111412;
+  --bg-elevated:    #14181600;
+  --border-subtle:  rgba(255, 255, 255, 0.04);
+  --border-active:  #1A1E1C;
+  --hair:           rgba(255, 255, 255, 0.07);
+
+  --accent-green:   #3ECFA0;
+  --accent-green-dim: rgba(62, 207, 160, 0.14);
+  --accent-gold:    #E8A020;
+  --accent-purple:  #B990E0;
+  --accent-red:     #E05A4A;
+
+  --text-primary:   #F5F5F3;
+  --text-secondary: #7A7C7A;
+  --text-tertiary:  #4A4D4B;
+
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --maxw: 1160px;
+  --gutter: clamp(20px, 5vw, 64px);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+  font-family:var(--font-sans);
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  line-height:1.5;
+  font-weight:400;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---------- Atmosphère de fond (jamais plat) ---------- */
+.bg-atmos{
+  position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 78% -8%, rgba(62,207,160,0.10) 0%, rgba(62,207,160,0) 42%),
+    radial-gradient(90% 60% at 12% 6%, rgba(62,207,160,0.05) 0%, rgba(62,207,160,0) 46%),
+    radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 55%),
+    var(--bg-primary);
+}
+.bg-grain{
+  position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap{ width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--gutter); }
+section{ position:relative; }
+.pad{ padding-block:clamp(96px, 15vh, 168px); }
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:11px; font-weight:600; letter-spacing:1.6px;
+  text-transform:uppercase; color:var(--accent-green);
+  display:inline-flex; align-items:center; gap:10px;
+}
+.eyebrow .idx{ color:var(--text-tertiary); }
+.eyebrow.muted{ color:var(--text-secondary); }
+.eyebrow.muted .idx{ color:var(--text-tertiary); }
+
+.hl{ color:var(--accent-green); }
+.dim{ color:var(--text-secondary); }
+.tert{ color:var(--text-tertiary); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header.site{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  transition:background .4s var(--ease), border-color .4s var(--ease), backdrop-filter .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+header.site.scrolled{
+  background:rgba(13,15,14,0.72);
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  border-bottom:1px solid var(--border-subtle);
+}
+.header-inner{
+  display:flex; align-items:center; justify-content:space-between;
+  height:66px;
+}
+.wordmark{
+  display:inline-flex; align-items:center; gap:9px;
+  font-weight:800; font-size:15px; letter-spacing:-0.01em; color:var(--text-primary);
+  text-decoration:none;
+}
+.wordmark .dot{
+  width:8px; height:8px; border-radius:50%; background:var(--accent-green);
+  box-shadow:0 0 0 0 rgba(62,207,160,0.5);
+  animation:pulse 3.2s var(--ease) infinite;
+}
+@keyframes pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(62,207,160,0.45); }
+  50%{ box-shadow:0 0 0 5px rgba(62,207,160,0); }
+}
+.wordmark .mono{ font-family:var(--font-mono); font-weight:600; font-size:12px; letter-spacing:1px; color:var(--text-secondary); }
+
+/* Language toggle */
+.lang{
+  display:inline-flex; align-items:center;
+  border:1px solid var(--border-active); border-radius:100px;
+  padding:3px; background:rgba(17,20,18,0.6); position:relative;
+  font-family:var(--font-mono);
+}
+.lang button{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.5px;
+  color:var(--text-secondary); padding:6px 12px; border-radius:100px;
+  transition:color .3s var(--ease); position:relative; z-index:2; min-width:38px;
+}
+.lang button[aria-pressed="true"]{ color:var(--bg-primary); }
+.lang .thumb{
+  position:absolute; top:3px; bottom:3px; width:calc(50% - 3px);
+  background:var(--accent-green); border-radius:100px; z-index:1;
+  transition:transform .34s var(--ease); left:3px;
+}
+html[lang="en"] .lang .thumb{ transform:translateX(100%); }
+
+/* ============================================================
+   HERO — SECTION 00
+   ============================================================ */
+.hero{
+  min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  padding-top:120px; padding-bottom:88px; position:relative;
+}
+.hero .eyebrow{ margin-bottom:clamp(28px,5vh,52px); }
+.hero-lead{
+  font-size:clamp(20px, 3vw, 30px); font-weight:600; line-height:1.32;
+  letter-spacing:-0.015em; max-width:20ch; color:var(--text-primary);
+}
+.hero-lead .soft{ color:var(--text-secondary); font-weight:500; }
+.hero-sub{
+  margin-top:26px; font-size:clamp(14px, 1.6vw, 17px); line-height:1.62;
+  color:var(--text-secondary); max-width:46ch; font-weight:400;
+}
+.hero-sub strong{ color:var(--text-primary); font-weight:600; }
+.hero-title{
+  margin-top:clamp(40px, 8vh, 72px);
+  font-size:clamp(44px, 9.5vw, 128px);
+  font-weight:800; line-height:0.94; letter-spacing:-0.035em;
+  color:var(--text-primary);
+}
+.hero-title .em{ color:var(--accent-green); }
+.hero-cta-row{ margin-top:clamp(34px, 5vh, 52px); display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--font-sans); font-weight:700; font-size:15px;
+  height:52px; padding-inline:26px; border-radius:8px; cursor:pointer;
+  text-decoration:none; border:1px solid transparent; white-space:nowrap;
+  transition:transform .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease), color .25s var(--ease);
+}
+.btn-primary{
+  background:var(--accent-green); color:var(--bg-primary);
+  box-shadow:0 0 0 0 rgba(62,207,160,0);
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -12px rgba(62,207,160,0.55); }
+.btn-primary .arrow{ transition:transform .25s var(--ease); }
+.btn-primary:hover .arrow{ transform:translateX(4px); }
+.btn-secondary{
+  background:transparent; color:var(--accent-green); border-color:rgba(62,207,160,0.35);
+}
+.btn-secondary:hover{ background:var(--accent-green-dim); transform:translateY(-2px); }
+
+.scroll-hint{
+  position:absolute; bottom:28px; left:var(--gutter);
+  display:flex; align-items:center; gap:12px;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--text-tertiary);
+}
+.scroll-hint .line{ width:34px; height:1px; background:var(--text-tertiary); position:relative; overflow:hidden; }
+.scroll-hint .line::after{
+  content:""; position:absolute; inset:0; background:var(--accent-green);
+  transform:translateX(-100%); animation:sweep 2.6s var(--ease) infinite;
+}
+@keyframes sweep{ 0%{transform:translateX(-100%);} 55%{transform:translateX(100%);} 100%{transform:translateX(100%);} }
+
+/* ============================================================
+   Section rhythm
+   ============================================================ */
+.divider{ border:0; height:1px; background:var(--hair); max-width:var(--maxw); margin-inline:auto; }
+
+.section-head{ margin-bottom:clamp(40px, 6vh, 68px); }
+.section-head .eyebrow{ margin-bottom:22px; }
+
+/* SECTION 01 — Problem */
+.problem-stmt{
+  font-size:clamp(26px, 4.4vw, 54px); font-weight:700; line-height:1.14;
+  letter-spacing:-0.025em; max-width:18ch;
+}
+.problem-stmt .soft{ color:var(--text-secondary); font-weight:600; }
+.problem-stmt .warn{ color:var(--accent-red); }
+
+/* SECTION 02 — Reversal */
+.reversal{ display:grid; grid-template-columns:1.1fr 1fr; gap:clamp(32px,6vw,88px); align-items:end; }
+.reversal-headline{
+  font-size:clamp(40px, 7.2vw, 92px); font-weight:800; line-height:0.98;
+  letter-spacing:-0.035em;
+}
+.reversal-headline .stop{ color:var(--accent-green); }
+.reversal-text{
+  font-size:clamp(15px,1.7vw,19px); line-height:1.62; color:var(--text-secondary);
+  max-width:40ch;
+}
+.reversal-text strong{ color:var(--text-primary); font-weight:600; }
+.reversal-steps{ margin-top:26px; display:flex; flex-direction:column; gap:2px; }
+.rstep{ display:flex; align-items:center; gap:14px; padding:11px 0; border-top:1px solid var(--hair); font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; color:var(--text-secondary); }
+.rstep b{ color:var(--text-primary); font-weight:600; }
+.rstep .n{ color:var(--accent-green); }
+
+/* SECTION 03 — Method + Damien */
+.method{ display:grid; grid-template-columns:1fr 0.82fr; gap:clamp(32px,5vw,72px); align-items:center; }
+.method-quote{
+  font-size:clamp(22px,3vw,38px); font-weight:700; line-height:1.22; letter-spacing:-0.02em;
+}
+.method-quote .hl{ color:var(--accent-green); }
+.method-sign{ margin-top:30px; display:flex; align-items:center; gap:14px; }
+.method-sign .name{ font-weight:700; font-size:15px; }
+.method-sign .role{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; color:var(--text-secondary); text-transform:uppercase; }
+.cert-label{ margin-top:34px; font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px; }
+.certs{ display:flex; gap:10px; flex-wrap:wrap; }
+.pill{
+  font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.5px;
+  padding:7px 14px; border-radius:100px; border:1px solid var(--border-active);
+  color:var(--text-secondary); background:var(--bg-surface);
+}
+/* Photo placeholder — premium, balisé, jamais de stock photo */
+.photo-slot{
+  aspect-ratio:4/5; border-radius:14px; border:1px solid var(--border-subtle);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25)),
+    var(--bg-surface);
+  position:relative; overflow:hidden; display:flex; align-items:flex-end;
+}
+.photo-slot::before{
+  content:""; position:absolute; inset:0;
+  background:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 2px, transparent 2px 22px),
+    radial-gradient(80% 60% at 50% 18%, rgba(62,207,160,0.07), transparent 60%);
+}
+.photo-slot .frame-corner{ position:absolute; width:20px; height:20px; border:1.5px solid rgba(62,207,160,0.4); }
+.photo-slot .tl{ top:14px; left:14px; border-right:0; border-bottom:0; }
+.photo-slot .tr{ top:14px; right:14px; border-left:0; border-bottom:0; }
+.photo-slot .bl{ bottom:14px; left:14px; border-right:0; border-top:0; }
+.photo-slot .br{ bottom:14px; right:14px; border-left:0; border-top:0; }
+.photo-slot .tag{
+  position:relative; z-index:2; margin:18px; font-family:var(--font-mono);
+  font-size:10.5px; letter-spacing:1px; color:var(--text-secondary);
+  border:1px dashed var(--border-active); border-radius:6px; padding:8px 12px;
+  background:rgba(13,15,14,0.55);
+}
+
+/* SECTION 04 — 1 membre = 1 club */
+.s4-intro{ font-size:clamp(17px,2vw,22px); line-height:1.5; color:var(--text-primary); font-weight:500; max-width:34ch; letter-spacing:-0.01em; }
+.s4-intro .dim{ color:var(--text-secondary); }
+.profiles{ margin-top:clamp(40px,6vh,64px); display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+
+.card{
+  background:var(--bg-surface); border:1px solid var(--border-subtle);
+  border-radius:14px; padding:0; overflow:hidden;
+  transition:transform .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.card:hover{ transform:translateY(-4px); border-color:var(--border-active); box-shadow:0 22px 50px -30px rgba(0,0,0,0.9); }
+
+/* mock "app preview" inside profile card */
+.mock{ padding:18px 18px 20px; }
+.mock-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.mock-sport{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:13.5px; letter-spacing:-0.01em; }
+.mock-live{ width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 0 3px var(--accent-green-dim); }
+.mock-day{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; color:var(--text-tertiary); text-transform:uppercase; }
+.mock-focus-label{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:7px; }
+.mock-focus{ font-size:15px; font-weight:700; letter-spacing:-0.01em; margin-bottom:16px; }
+.bars{ display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
+.bar-row{ display:flex; align-items:center; gap:10px; }
+.bar-name{ font-size:10.5px; color:var(--text-secondary); width:74px; flex-shrink:0; }
+.bar-track{ flex:1; height:3px; border-radius:100px; background:var(--border-active); overflow:hidden; }
+.bar-fill{ height:100%; border-radius:100px; background:var(--accent-green); width:0; transition:width 1.1s var(--ease); }
+.bar-pct{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-tertiary); width:26px; text-align:right; }
+.mock-meta{ display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--hair); margin-bottom:16px; }
+.mock-meta .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); }
+.mock-meta .v{ font-size:12px; font-weight:600; color:var(--text-primary); margin-top:3px; }
+.mock-cta{
+  height:38px; border-radius:8px; background:var(--accent-green); color:var(--bg-primary);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-weight:700; font-size:12.5px;
+}
+.mock-cta .ic{ font-size:11px; }
+.card-caption{
+  padding:14px 18px; border-top:1px solid var(--border-subtle);
+  font-family:var(--font-mono); font-size:10px; letter-spacing:0.6px; text-transform:uppercase;
+  color:var(--text-secondary); display:flex; align-items:center; justify-content:space-between;
+}
+.card-caption .tag{ color:var(--accent-green); }
+
+.s4-close{ margin-top:clamp(40px,6vh,60px); text-align:center; }
+.s4-close .big{ font-size:clamp(24px,3.6vw,44px); font-weight:800; letter-spacing:-0.03em; line-height:1.1; }
+.s4-close .big .hl{ color:var(--accent-green); }
+
+/* SECTION 05 — Results */
+.s5-title{ font-size:clamp(26px,4vw,50px); font-weight:700; letter-spacing:-0.025em; line-height:1.1; max-width:16ch; }
+.stories{ margin-top:clamp(40px,6vh,60px); display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.story{
+  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px;
+  padding:24px 22px; display:flex; flex-direction:column; min-height:260px;
+  transition:transform .35s var(--ease), border-color .35s var(--ease);
+}
+.story:hover{ transform:translateY(-4px); border-color:var(--border-active); }
+.story .quote-mark{ font-family:var(--font-mono); color:var(--accent-green); font-size:26px; line-height:1; margin-bottom:14px; }
+.story .body{ font-size:14.5px; line-height:1.6; color:var(--text-primary); flex:1; }
+.story .placeholder-txt{ color:var(--text-secondary); font-style:normal; }
+.story-foot{ margin-top:22px; padding-top:16px; border-top:1px solid var(--hair); display:flex; align-items:center; justify-content:space-between; }
+.story-foot .who{ font-weight:700; font-size:13px; }
+.story-foot .sport{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.6px; text-transform:uppercase; color:var(--accent-green); }
+.story-foot .dur{ font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary); }
+.ph-badge{
+  display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:1px;
+  text-transform:uppercase; color:var(--accent-gold); border:1px dashed rgba(232,160,32,0.4);
+  border-radius:5px; padding:3px 7px; margin-bottom:12px;
+}
+
+/* SECTION 06 — 3 portes */
+.doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.door{
+  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px;
+  padding:26px 24px; display:flex; flex-direction:column; text-decoration:none; color:inherit;
+  position:relative; overflow:hidden; min-height:230px;
+  transition:transform .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.door::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent-green);
+  transform:scaleX(0); transform-origin:left; transition:transform .4s var(--ease);
+}
+.door:hover{ transform:translateY(-5px); border-color:var(--border-active); box-shadow:0 26px 60px -34px rgba(0,0,0,0.9); }
+.door:hover::after{ transform:scaleX(1); }
+.door-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:auto; }
+.door-num{ font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); }
+.door-tag{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:1px; text-transform:uppercase; padding:4px 9px; border-radius:100px; }
+.door-tag.free{ color:var(--accent-green); background:var(--accent-green-dim); }
+.door-tag.product{ color:var(--bg-primary); background:var(--accent-green); }
+.door-name{ font-size:20px; font-weight:700; letter-spacing:-0.02em; margin-top:26px; }
+.door-desc{ font-size:13px; color:var(--text-secondary); line-height:1.55; margin-top:10px; }
+.door-go{ margin-top:20px; display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.8px; text-transform:uppercase; color:var(--accent-green); }
+.door-go .arrow{ transition:transform .25s var(--ease); }
+.door:hover .door-go .arrow{ transform:translateX(4px); }
+
+.pricing{
+  margin-top:clamp(36px,5vh,52px); padding:22px 26px; border:1px solid var(--border-active);
+  border-radius:12px; background:rgba(17,20,18,0.5);
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:center; text-align:center;
+}
+.pricing .k{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-gold); }
+.pricing .v{ font-size:14.5px; color:var(--text-primary); font-weight:500; }
+.pricing .v b{ font-weight:700; }
+.pricing .sep{ color:var(--text-tertiary); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px,9vh,88px); }
+.footer-mission{ font-size:clamp(20px,2.8vw,34px); font-weight:700; letter-spacing:-0.02em; line-height:1.2; max-width:22ch; }
+.footer-mission .hl{ color:var(--accent-green); }
+.footer-bottom{
+  margin-top:clamp(40px,6vh,64px); display:flex; align-items:center; justify-content:space-between;
+  gap:20px; flex-wrap:wrap; padding-top:26px; border-top:1px solid var(--hair);
+}
+.footer-links{ display:flex; gap:22px; flex-wrap:wrap; }
+.footer-links a{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.5px; color:var(--text-secondary); text-decoration:none; transition:color .25s var(--ease); }
+.footer-links a:hover{ color:var(--text-primary); }
+.footer-copy{ font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); }
+
+/* ============================================================
+   Scroll reveal
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity .8s var(--ease), transform .8s var(--ease); will-change:opacity, transform; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width:900px){
+  .reversal{ grid-template-columns:1fr; gap:36px; align-items:start; }
+  .method{ grid-template-columns:1fr; gap:40px; }
+  .method-media{ order:-1; }
+  .photo-slot{ aspect-ratio:16/12; max-height:380px; }
+  .profiles{ grid-template-columns:1fr; max-width:420px; }
+  .stories{ grid-template-columns:1fr; }
+  .doors{ grid-template-columns:1fr; }
+}
+@media (max-width:560px){
+  .header-inner{ height:58px; }
+  .wordmark .mono{ display:none; }
+  .hero-cta-row{ gap:14px; }
+  .btn{ width:100%; }
+  .pricing{ flex-direction:column; gap:8px; }
+  .pricing .sep{ display:none; }
+  .footer-bottom{ flex-direction:column; align-items:flex-start; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; scroll-behavior:auto !important; }
+  .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  .bar-fill{ transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-atmos"></div>
+<div class="bg-grain"></div>
+
+<!-- ============================ HEADER ============================ -->
+<header class="site" id="header">
+  <div class="wrap header-inner">
+    <a href="#top" class="wordmark" aria-label="Mobility Club">
+      <span class="dot"></span>
+      MOBILITY&nbsp;CLUB
+      <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language / Langue">
+      <span class="thumb" aria-hidden="true"></span>
+      <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============================ 00 · HERO ============================ -->
+<section class="hero wrap" aria-label="Hero">
+  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mouvement de demain</span></span>
+
+  <p class="hero-lead reveal" data-i18n="hero_lead">
+    On ne vend pas la mobilité.<br><span class="soft">On retire les frictions du mouvement.</span>
+  </p>
+
+  <p class="hero-sub reveal" data-i18n="hero_sub">
+    On ne donne pas de programme — <strong>on prend les décisions.</strong><br>
+    On ne personnalise pas l'exercice — <strong>on personnalise l'expérience.</strong><br>
+    Tu n'as pas à réfléchir. On pense pour toi.
+  </p>
+
+  <h1 class="hero-title reveal" data-i18n="hero_title">Chacun son <span class="em">Mobility Club.</span></h1>
+
+  <div class="hero-cta-row reveal">
+    <a href="#doors" class="btn btn-primary" data-cta="hero">
+      <span data-i18n="hero_cta">Découvre le tien</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <div class="scroll-hint reveal" aria-hidden="true">
+    <span class="line"></span>
+    <span data-i18n="scroll_hint">Défile</span>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 01 · PROBLÈME ============================ -->
+<section class="pad" aria-label="Le problème">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow muted"><span class="idx">01</span><span data-i18n="s1_eyebrow">Le problème</span></span>
+    </div>
+    <p class="problem-stmt reveal" data-i18n="s1_text">
+      Tu sais que la mobilité compte. <span class="soft">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class="warn">trois semaines.</span>
+    </p>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 02 · RENVERSEMENT ============================ -->
+<section class="pad" aria-label="Le renversement">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">02</span><span data-i18n="s2_eyebrow">Le renversement</span></span>
+    </div>
+    <div class="reversal">
+      <h2 class="reversal-headline reveal">We plan.<br><span class="stop">You move.</span></h2>
+      <div>
+        <p class="reversal-text reveal" data-i18n="s2_text">
+          Tu ouvres. <strong>Tout est prêt.</strong> Tu ne réfléchis pas. Tu bouges. Le club travaille pendant que tu vis.
+        </p>
+        <div class="reversal-steps reveal" data-stagger>
+          <div class="rstep"><span class="n">01</span><span data-i18n="s2_step1">Tu ouvres l'app.</span></div>
+          <div class="rstep"><span class="n">02</span><span data-i18n="s2_step2"><b>La séance du jour est déjà là.</b></span></div>
+          <div class="rstep"><span class="n">03</span><span data-i18n="s2_step3">Tu lances. Tu bouges. C'est tout.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 03 · MÉTHODE + DAMIEN ============================ -->
+<section class="pad" aria-label="La méthode">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow muted"><span class="idx">03</span><span data-i18n="s3_eyebrow">La méthode</span></span>
+    </div>
+    <div class="method">
+      <div>
+        <blockquote class="method-quote reveal" data-i18n="s3_quote">
+          Ce n'est pas une IA générique. <span class="hl">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.
+        </blockquote>
+        <div class="method-sign reveal">
+          <div>
+            <div class="name">Damien Ospital</div>
+            <div class="role" data-i18n="s3_role">Fondateur · Mobility Club</div>
+          </div>
+        </div>
+        <div class="cert-label reveal" data-i18n="s3_cert_label">Preuve d'autorité méthodologique</div>
+        <div class="certs reveal" data-stagger>
+          <span class="pill">BPJEPS</span>
+          <span class="pill">DEUST</span>
+          <span class="pill">UEFA&nbsp;B</span>
+        </div>
+      </div>
+      <div class="method-media reveal">
+        <div class="photo-slot" role="img" aria-label="Emplacement photo Damien Ospital">
+          <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+          <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+          <span class="tag" data-i18n="s3_photo_tag">[ PLACEHOLDER · PHOTO DAMIEN ]</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 04 · 1 MEMBRE = 1 CLUB ============================ -->
+<section class="pad" aria-label="Un membre, un Mobility Club">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">04</span><span data-i18n="s4_eyebrow">1 membre = 1 Mobility Club</span></span>
+    </div>
+    <p class="s4-intro reveal" data-i18n="s4_intro">
+      Le même moteur. <span class="dim">Un produit différent pour chaque membre — façonné par son sport, son corps, sa semaine.</span>
+    </p>
+
+    <div class="profiles">
+      <!-- Runner -->
+      <article class="card reveal profile-card">
+        <div class="mock">
+          <div class="mock-top">
+            <div class="mock-sport"><span class="mock-live"></span><span data-i18n="p1_sport">Coureur</span></div>
+            <div class="mock-day" data-i18n="p1_day">Jour 14</div>
+          </div>
+          <div class="mock-focus-label" data-i18n="focus_label">Priorité du jour</div>
+          <div class="mock-focus" data-i18n="p1_focus">Mobilité de cheville</div>
+          <div class="bars">
+            <div class="bar-row"><span class="bar-name" data-i18n="p1_b1">Cheville</span><span class="bar-track"><span class="bar-fill" data-w="82%"></span></span><span class="bar-pct">82</span></div>
+            <div class="bar-row"><span class="bar-name" data-i18n="p1_b2">Hanche</span><span class="bar-track"><span class="bar-fill" data-w="64%"></span></span><span class="bar-pct">64</span></div>
+          </div>
+          <div class="mock-meta">
+            <div><div class="k" data-i18n="p1_mk">Prochaine course</div><div class="v" data-i18n="p1_mv">Dimanche · 12 km</div></div>
+          </div>
+          <div class="mock-cta"><span class="ic">▶</span><span data-i18n="mock_cta">Lancer la séance</span></div>
+        </div>
+        <div class="card-caption"><span data-i18n="p1_cap">Volume hebdo · cheville · course</span></div>
+      </article>
+
+      <!-- CrossFitter -->
+      <article class="card reveal profile-card">
+        <div class="mock">
+          <div class="mock-top">
+            <div class="mock-sport"><span class="mock-live"></span><span data-i18n="p2_sport">CrossFitter</span></div>
+            <div class="mock-day" data-i18n="p2_day">Jour 09</div>
+          </div>
+          <div class="mock-focus-label" data-i18n="focus_label">Priorité du jour</div>
+          <div class="mock-focus" data-i18n="p2_focus">Rotation thoracique</div>
+          <div class="bars">
+            <div class="bar-row"><span class="bar-name" data-i18n="p2_b1">Thoracique</span><span class="bar-track"><span class="bar-fill" data-w="58%"></span></span><span class="bar-pct">58</span></div>
+            <div class="bar-row"><span class="bar-name" data-i18n="p2_b2">Épaule</span><span class="bar-track"><span class="bar-fill" data-w="71%"></span></span><span class="bar-pct">71</span></div>
+          </div>
+          <div class="mock-meta">
+            <div><div class="k" data-i18n="p2_mk">WOD du jour</div><div class="v" data-i18n="p2_mv">Overhead squat · PR</div></div>
+          </div>
+          <div class="mock-cta"><span class="ic">▶</span><span data-i18n="mock_cta">Lancer la séance</span></div>
+        </div>
+        <div class="card-caption"><span data-i18n="p2_cap">WOD · rotation thoracique · PR</span></div>
+      </article>
+
+      <!-- Footballeur -->
+      <article class="card reveal profile-card">
+        <div class="mock">
+          <div class="mock-top">
+            <div class="mock-sport"><span class="mock-live"></span><span data-i18n="p3_sport">Footballeur</span></div>
+            <div class="mock-day" data-i18n="p3_day">Jour 21</div>
+          </div>
+          <div class="mock-focus-label" data-i18n="focus_label">Priorité du jour</div>
+          <div class="mock-focus" data-i18n="p3_focus">Adducteurs</div>
+          <div class="bars">
+            <div class="bar-row"><span class="bar-name" data-i18n="p3_b1">Adducteurs</span><span class="bar-track"><span class="bar-fill" data-w="49%"></span></span><span class="bar-pct">49</span></div>
+            <div class="bar-row"><span class="bar-name" data-i18n="p3_b2">Hanche</span><span class="bar-track"><span class="bar-fill" data-w="68%"></span></span><span class="bar-pct">68</span></div>
+          </div>
+          <div class="mock-meta">
+            <div><div class="k" data-i18n="p3_mk">Match</div><div class="v" data-i18n="p3_mv">Samedi · récupération</div></div>
+          </div>
+          <div class="mock-cta"><span class="ic">▶</span><span data-i18n="mock_cta">Lancer la séance</span></div>
+        </div>
+        <div class="card-caption"><span data-i18n="p3_cap">Match week-end · adducteurs · récup</span></div>
+      </article>
+    </div>
+
+    <div class="s4-close reveal">
+      <p class="big" data-i18n="s4_close">Même logiciel. <span class="hl">Un produit par membre.</span></p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 05 · RÉSULTATS ============================ -->
+<section class="pad" aria-label="Résultats membres">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow muted"><span class="idx">05</span><span data-i18n="s5_eyebrow">Résultats membres</span></span>
+    </div>
+    <h2 class="s5-title reveal" data-i18n="s5_title">Ce qui change, une fois dedans.</h2>
+
+    <div class="stories">
+      <article class="story reveal">
+        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
+        <div class="quote-mark">“</div>
+        <p class="body placeholder-txt" data-i18n="story1">[STORY À REMPLIR — FR] Témoignage membre : le déclic, ce qui a changé, en une ou deux phrases fortes.</p>
+        <div class="story-foot">
+          <div>
+            <div class="who" data-i18n="story1_who">[Prénom]</div>
+            <div class="sport" data-i18n="story1_sport">[Sport]</div>
+          </div>
+          <div class="dur" data-i18n="story1_dur">[Durée]</div>
+        </div>
+      </article>
+
+      <article class="story reveal">
+        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
+        <div class="quote-mark">“</div>
+        <p class="body placeholder-txt" data-i18n="story2">[STORY À REMPLIR — FR] Témoignage membre : transformation concrète, chiffre ou ressenti, en une ou deux phrases.</p>
+        <div class="story-foot">
+          <div>
+            <div class="who" data-i18n="story2_who">[Prénom]</div>
+            <div class="sport" data-i18n="story2_sport">[Sport]</div>
+          </div>
+          <div class="dur" data-i18n="story2_dur">[Durée]</div>
+        </div>
+      </article>
+
+      <article class="story reveal">
+        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
+        <div class="quote-mark">“</div>
+        <p class="body placeholder-txt" data-i18n="story3">[STORY À REMPLIR — FR] Témoignage membre : ce qu'il croyait impossible, désormais acquis.</p>
+        <div class="story-foot">
+          <div>
+            <div class="who" data-i18n="story3_who">[Prénom]</div>
+            <div class="sport" data-i18n="story3_sport">[Sport]</div>
+          </div>
+          <div class="dur" data-i18n="story3_dur">[Durée]</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ 06 · LES 3 PORTES ============================ -->
+<section class="pad" id="doors" aria-label="Les 3 portes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">06</span><span data-i18n="s6_eyebrow">Les 3 portes</span></span>
+    </div>
+
+    <div class="doors">
+      <a class="door reveal" data-door="diagnostic" href="#" target="_blank" rel="noopener">
+        <div class="door-top">
+          <span class="door-num">/01</span>
+          <span class="door-tag free" data-i18n="tag_free">Gratuit</span>
+        </div>
+        <div class="door-name">Mobility Diagnostic</div>
+        <p class="door-desc" data-i18n="door1_desc">Mesure où tu en es. Ton point de départ, articulation par articulation.</p>
+        <span class="door-go"><span data-i18n="door_go">Commencer</span><span class="arrow">→</span></span>
+      </a>
+
+      <a class="door reveal" data-door="timer" href="#" target="_blank" rel="noopener">
+        <div class="door-top">
+          <span class="door-num">/02</span>
+          <span class="door-tag free" data-i18n="tag_free">Gratuit</span>
+        </div>
+        <div class="door-name">Mobility Timer</div>
+        <p class="door-desc" data-i18n="door2_desc">L'outil de séance. Guidé, minuté, sans friction. Tu suis, tu bouges.</p>
+        <span class="door-go"><span data-i18n="door_go">Commencer</span><span class="arrow">→</span></span>
+      </a>
+
+      <a class="door reveal" data-door="club" href="#" target="_blank" rel="noopener">
+        <div class="door-top">
+          <span class="door-num">/03</span>
+          <span class="door-tag product" data-i18n="tag_product">Le produit</span>
+        </div>
+        <div class="door-name">Mobility Club</div>
+        <p class="door-desc" data-i18n="door3_desc">Le club qui décide pour toi. Ton programme, chaque jour, sans y penser.</p>
+        <span class="door-go"><span data-i18n="door_go">Rejoindre</span><span class="arrow">→</span></span>
+      </a>
+    </div>
+
+    <div class="pricing reveal">
+      <span class="k" data-i18n="pricing_k">Offre de lancement</span>
+      <span class="v" data-i18n="pricing_v"><b>20€/mois</b> ou <b>175€/an</b> jusqu'au 30 septembre</span>
+      <span class="sep">·</span>
+      <span class="v dim" data-i18n="pricing_then">puis 29€/mois ou 229€/an</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site" aria-label="Pied de page">
+  <div class="wrap">
+    <p class="footer-mission reveal" data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
+    <div class="footer-bottom">
+      <div class="footer-links">
+        <a href="#top" data-i18n="fl_top">Haut de page</a>
+        <a href="#" data-i18n="fl_legal">Mentions légales</a>
+        <a href="#" data-i18n="fl_privacy">Confidentialité · RGPD</a>
+        <a href="#" data-i18n="fl_contact">Contact</a>
+      </div>
+      <div class="footer-copy">© 2026 Mobility Club</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   PLACEHOLDERS — URLs de l'écosystème.
+   Damien : remplace les 3 valeurs ci-dessous après validation.
+   ============================================================ */
+const LINKS = {
+  diagnostic: '[URL_DIAGNOSTIC]',                 // ex: https://diagnostic.mobilityclub.com
+  timer:      'https://mobilitytimer.com',        // Mobility Timer (pré-rempli — à confirmer)
+  club:       '[URL_CLUB]'                         // ex: https://app.mobilityclub.com
+};
+
+/* ============================================================
+   i18n — dictionnaire FR / EN. FR par défaut.
+   Le toggle bascule sans rechargement. Valeurs = HTML autorisé
+   (contenu statique et de confiance).
+   ============================================================ */
+const I18N = {
+  fr: {
+    wm_tag: '/ MANIFESTE',
+    hero_eyebrow: 'Le club de mouvement de demain',
+    hero_lead: "On ne vend pas la mobilité.<br><span class=\"soft\">On retire les frictions du mouvement.</span>",
+    hero_sub: "On ne donne pas de programme — <strong>on prend les décisions.</strong><br>On ne personnalise pas l'exercice — <strong>on personnalise l'expérience.</strong><br>Tu n'as pas à réfléchir. On pense pour toi.",
+    hero_title: "Chacun son <span class=\"em\">Mobility Club.</span>",
+    hero_cta: 'Découvre le tien',
+    scroll_hint: 'Défile',
+
+    s1_eyebrow: 'Le problème',
+    s1_text: "Tu sais que la mobilité compte. <span class=\"soft\">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class=\"warn\">trois semaines.</span>",
+
+    s2_eyebrow: 'Le renversement',
+    s2_text: "Tu ouvres. <strong>Tout est prêt.</strong> Tu ne réfléchis pas. Tu bouges. Le club travaille pendant que tu vis.",
+    s2_step1: "Tu ouvres l'app.",
+    s2_step2: "<b>La séance du jour est déjà là.</b>",
+    s2_step3: "Tu lances. Tu bouges. C'est tout.",
+
+    s3_eyebrow: 'La méthode',
+    s3_quote: "Ce n'est pas une IA générique. <span class=\"hl\">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.",
+    s3_role: 'Fondateur · Mobility Club',
+    s3_cert_label: "Preuve d'autorité méthodologique",
+    s3_photo_tag: '[ PLACEHOLDER · PHOTO DAMIEN ]',
+
+    s4_eyebrow: '1 membre = 1 Mobility Club',
+    s4_intro: "Le même moteur. <span class=\"dim\">Un produit différent pour chaque membre — façonné par son sport, son corps, sa semaine.</span>",
+    focus_label: 'Priorité du jour',
+    mock_cta: 'Lancer la séance',
+    p1_sport: 'Coureur', p1_day: 'Jour 14', p1_focus: 'Mobilité de cheville',
+    p1_b1: 'Cheville', p1_b2: 'Hanche', p1_mk: 'Prochaine course', p1_mv: 'Dimanche · 12 km',
+    p1_cap: 'Volume hebdo · cheville · course',
+    p2_sport: 'CrossFitter', p2_day: 'Jour 09', p2_focus: 'Rotation thoracique',
+    p2_b1: 'Thoracique', p2_b2: 'Épaule', p2_mk: 'WOD du jour', p2_mv: 'Overhead squat · PR',
+    p2_cap: 'WOD · rotation thoracique · PR',
+    p3_sport: 'Footballeur', p3_day: 'Jour 21', p3_focus: 'Adducteurs',
+    p3_b1: 'Adducteurs', p3_b2: 'Hanche', p3_mk: 'Match', p3_mv: 'Samedi · récupération',
+    p3_cap: 'Match week-end · adducteurs · récup',
+    s4_close: "Même logiciel. <span class=\"hl\">Un produit par membre.</span>",
+
+    s5_eyebrow: 'Résultats membres',
+    s5_title: 'Ce qui change, une fois dedans.',
+    ph_badge: 'À remplir',
+    story1: "[STORY À REMPLIR — FR] Témoignage membre : le déclic, ce qui a changé, en une ou deux phrases fortes.",
+    story1_who: '[Prénom]', story1_sport: '[Sport]', story1_dur: '[Durée]',
+    story2: "[STORY À REMPLIR — FR] Témoignage membre : transformation concrète, chiffre ou ressenti, en une ou deux phrases.",
+    story2_who: '[Prénom]', story2_sport: '[Sport]', story2_dur: '[Durée]',
+    story3: "[STORY À REMPLIR — FR] Témoignage membre : ce qu'il croyait impossible, désormais acquis.",
+    story3_who: '[Prénom]', story3_sport: '[Sport]', story3_dur: '[Durée]',
+
+    s6_eyebrow: 'Les 3 portes',
+    tag_free: 'Gratuit', tag_product: 'Le produit',
+    door1_desc: "Mesure où tu en es. Ton point de départ, articulation par articulation.",
+    door2_desc: "L'outil de séance. Guidé, minuté, sans friction. Tu suis, tu bouges.",
+    door3_desc: "Le club qui décide pour toi. Ton programme, chaque jour, sans y penser.",
+    door_go: 'Commencer',
+    door_go_club: 'Rejoindre',
+    pricing_k: 'Offre de lancement',
+    pricing_v: "<b>20€/mois</b> ou <b>175€/an</b> jusqu'au 30 septembre",
+    pricing_then: 'puis 29€/mois ou 229€/an',
+
+    footer_mission: "La mobilité — <span class=\"hl\">le moment qui permet la vie.</span>",
+    fl_top: 'Haut de page', fl_legal: 'Mentions légales', fl_privacy: 'Confidentialité · RGPD', fl_contact: 'Contact'
+  },
+
+  en: {
+    wm_tag: '/ MANIFESTO',
+    hero_eyebrow: 'The movement club of tomorrow',
+    hero_lead: "We don't sell mobility.<br><span class=\"soft\">We remove the friction of movement.</span>",
+    hero_sub: "We don't hand you a program — <strong>we make the decisions.</strong><br>We don't personalize the exercise — <strong>we personalize the whole experience.</strong><br>You don't have to think. We think for you.",
+    hero_title: "Your <span class=\"em\">Mobility Club.</span>",
+    hero_cta: 'Find yours',
+    scroll_hint: 'Scroll',
+
+    s1_eyebrow: 'The problem',
+    s1_text: "You know mobility matters. <span class=\"soft\">But the apps prescribe you the same routine as everyone else.</span> So you quit within <span class=\"warn\">three weeks.</span>",
+
+    s2_eyebrow: 'The reversal',
+    s2_text: "You open the app. <strong>Everything's ready.</strong> You don't think. You move. The club works while you live.",
+    s2_step1: 'You open the app.',
+    s2_step2: "<b>Today's session is already there.</b>",
+    s2_step3: "You start. You move. That's it.",
+
+    s3_eyebrow: 'The method',
+    s3_quote: "This isn't a generic AI. <span class=\"hl\">It's my method</span> — a decade of movement expertise, encoded into an engine that decides for you.",
+    s3_role: 'Founder · Mobility Club',
+    s3_cert_label: 'Proof of methodological authority',
+    s3_photo_tag: '[ PLACEHOLDER · DAMIEN PHOTO ]',
+
+    s4_eyebrow: '1 member = 1 Mobility Club',
+    s4_intro: "The same engine. <span class=\"dim\">A different product for every member — shaped by their sport, their body, their week.</span>",
+    focus_label: "Today's priority",
+    mock_cta: 'Start session',
+    p1_sport: 'Runner', p1_day: 'Day 14', p1_focus: 'Ankle mobility',
+    p1_b1: 'Ankle', p1_b2: 'Hip', p1_mk: 'Next race', p1_mv: 'Sunday · 12 km',
+    p1_cap: 'Weekly volume · ankle · running',
+    p2_sport: 'CrossFitter', p2_day: 'Day 09', p2_focus: 'Thoracic rotation',
+    p2_b1: 'Thoracic', p2_b2: 'Shoulder', p2_mk: "Today's WOD", p2_mv: 'Overhead squat · PR',
+    p2_cap: 'WOD · thoracic rotation · PR',
+    p3_sport: 'Football player', p3_day: 'Day 21', p3_focus: 'Adductors',
+    p3_b1: 'Adductors', p3_b2: 'Hip', p3_mk: 'Match', p3_mv: 'Saturday · recovery',
+    p3_cap: 'Weekend match · adductors · recovery',
+    s4_close: "Same software. <span class=\"hl\">One product per member.</span>",
+
+    s5_eyebrow: 'Member results',
+    s5_title: "What changes, once you're in.",
+    ph_badge: 'To fill',
+    story1: "[STORY TO FILL — EN] Member testimonial: the turning point, what changed, in one or two strong sentences.",
+    story1_who: '[Name]', story1_sport: '[Sport]', story1_dur: '[Duration]',
+    story2: "[STORY TO FILL — EN] Member testimonial: concrete transformation, a number or a feeling, in one or two sentences.",
+    story2_who: '[Name]', story2_sport: '[Sport]', story2_dur: '[Duration]',
+    story3: "[STORY TO FILL — EN] Member testimonial: what they thought impossible, now achieved.",
+    story3_who: '[Name]', story3_sport: '[Sport]', story3_dur: '[Duration]',
+
+    s6_eyebrow: 'The 3 doors',
+    tag_free: 'Free', tag_product: 'The product',
+    door1_desc: 'Measure where you stand. Your starting point, joint by joint.',
+    door2_desc: 'The session tool. Guided, timed, frictionless. You follow, you move.',
+    door3_desc: 'The club that decides for you. Your program, every day, without thinking.',
+    door_go: 'Start',
+    door_go_club: 'Join',
+    pricing_k: 'Launch pricing',
+    pricing_v: '<b>€20/mo</b> or <b>€175/yr</b> through September 30',
+    pricing_then: 'then €29/mo or €229/yr',
+
+    footer_mission: "Mobility — <span class=\"hl\">the moment that makes life possible.</span>",
+    fl_top: 'Back to top', fl_legal: 'Legal notice', fl_privacy: 'Privacy · GDPR', fl_contact: 'Contact'
+  }
+};
+
+/* ---- Apply language ---- */
+function setLang(lang){
+  const dict = I18N[lang] || I18N.fr;
+  document.documentElement.setAttribute('lang', lang);
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] != null) el.innerHTML = dict[key];
+  });
+
+  // "Rejoindre / Join" differs from the other two doors' verb
+  const clubGo = document.querySelector('[data-door="club"] .door-go span:first-child');
+  if (clubGo) clubGo.innerHTML = dict.door_go_club;
+
+  // toggle UI state
+  document.querySelectorAll('.lang button').forEach(b => {
+    b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+  });
+
+  try { localStorage.setItem('mc_lang', lang); } catch(e){}
+}
+
+document.querySelectorAll('.lang button').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+/* Initial language: saved pref → browser hint → FR default */
+(function initLang(){
+  let saved = null;
+  try { saved = localStorage.getItem('mc_lang'); } catch(e){}
+  const browser = (navigator.language || 'fr').slice(0,2).toLowerCase();
+  const lang = saved || (browser === 'en' ? 'en' : 'fr');
+  setLang(lang);
+})();
+
+/* ---- Wire ecosystem links ---- */
+(function wireLinks(){
+  const map = { diagnostic: LINKS.diagnostic, timer: LINKS.timer, club: LINKS.club };
+  document.querySelectorAll('.door').forEach(d => {
+    const k = d.getAttribute('data-door');
+    if (map[k]) d.setAttribute('href', map[k]);
+  });
+})();
+
+/* ---- Header scrolled state ---- */
+const header = document.getElementById('header');
+const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
+onScroll();
+window.addEventListener('scroll', onScroll, { passive:true });
+
+/* ---- Scroll reveal + staggered children + bar fills ---- */
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (prefersReduced) {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.w || '0'; });
+} else {
+  // stagger delays
+  document.querySelectorAll('[data-stagger]').forEach(group => {
+    [...group.children].forEach((child, i) => {
+      child.style.transitionDelay = (i * 90) + 'ms';
+    });
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in');
+      // animate mock bars when their card reveals
+      entry.target.querySelectorAll?.('.bar-fill').forEach((bar, i) => {
+        setTimeout(() => { bar.style.width = bar.dataset.w || '0'; }, 220 + i * 130);
+      });
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+</script>
+</body>
+</html>

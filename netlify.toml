@@ -1,0 +1,13 @@
+# Mobility Club — site vitrine (statique, aucun build)
+[build]
+  publish = "."
+  command = ""
+
+# En-têtes de sécurité de base (site statique, aucune donnée sensible)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
