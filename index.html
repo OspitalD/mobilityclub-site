@@ -358,6 +358,85 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   .diag-preview .shot-wrap{ order:-1; }
 }
 
+/* ============================================================
+   Démo interactive — le loop complet (Diagnostic → Planning → Aujourd'hui → J+30)
+   ============================================================ */
+.demo-title{ font-size:clamp(30px,5vw,58px); font-weight:800; letter-spacing:-0.03em; line-height:1.02; }
+.demo-sub{ margin-top:18px; font-size:clamp(15px,1.7vw,19px); color:var(--text-secondary); max-width:48ch; line-height:1.55; }
+.demo{ margin-top:clamp(36px,5vh,56px); display:grid; grid-template-columns:minmax(300px,380px) 1fr; gap:clamp(28px,5vw,64px); align-items:center; }
+
+.demo-stage{ position:relative; }
+.demo-stage::after{ content:""; position:absolute; z-index:-1; inset:4% 8% 0; background:radial-gradient(60% 46% at 50% 24%, rgba(62,207,160,0.18), transparent 72%); filter:blur(52px); }
+.demo-screen{
+  background:var(--bg-surface); border:1px solid var(--border-active); border-radius:22px;
+  padding:22px 20px 20px; min-height:508px; overflow:hidden;
+  box-shadow:0 54px 110px -58px rgba(0,0,0,0.95);
+  transition:opacity .28s var(--ease), transform .28s var(--ease);
+}
+.demo-screen.swapping{ opacity:0; transform:translateY(10px); }
+
+.ds-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.ds-eyebrow{ font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green); display:inline-flex; align-items:center; gap:7px; }
+.ds-eyebrow.gold{ color:var(--accent-gold); }
+.ds-eyebrow .d{ width:6px; height:6px; border-radius:50%; background:currentColor; box-shadow:0 0 0 3px rgba(62,207,160,0.15); }
+.ds-date{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.6px; text-transform:uppercase; color:var(--text-tertiary); }
+
+.ds-radar{ display:flex; justify-content:center; margin:4px 0 2px; }
+.ds-radar svg{ width:100%; max-width:300px; height:auto; }
+.ds-radar .grid{ fill:none; stroke:var(--border-active); }
+.ds-radar .axis{ stroke:var(--border-active); }
+.ds-radar .zlabel{ fill:var(--text-secondary); font-family:var(--font-mono); font-size:9px; letter-spacing:0.4px; }
+.ds-radar .zval{ fill:var(--text-tertiary); font-family:var(--font-mono); font-size:8px; }
+.ds-radar .base{ fill:none; stroke:var(--text-tertiary); stroke-width:1.4; stroke-dasharray:3 3; }
+.ds-radar .now{ fill:rgba(62,207,160,0.14); stroke:var(--accent-green); stroke-width:2; }
+.ds-radar .cscore{ fill:var(--text-primary); font-family:var(--font-display); font-weight:800; font-size:38px; text-anchor:middle; }
+.ds-radar .cslash{ fill:var(--text-tertiary); font-family:var(--font-mono); font-size:11px; text-anchor:middle; }
+
+.ds-callout{ margin-top:12px; display:flex; align-items:center; gap:10px; padding:12px 14px; border:1px solid var(--border-active); border-radius:12px; background:rgba(13,15,14,0.5); font-size:13px; }
+.ds-callout b{ color:var(--text-primary); }
+.ds-callout .tag{ margin-left:auto; font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.4); border-radius:100px; padding:4px 9px; }
+
+.ds-week{ display:grid; grid-template-columns:repeat(7,1fr); gap:7px; margin:14px 0 6px; }
+.ds-day{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+.ds-dayname{ font-family:var(--font-mono); font-size:9px; letter-spacing:0.4px; text-transform:uppercase; color:var(--text-tertiary); }
+.ds-daychip{ width:100%; aspect-ratio:1/1.5; border-radius:8px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:8.5px; font-weight:600; line-height:1.1; padding:4px 2px; border:1px solid var(--border-active); }
+.ds-daychip.work{ background:var(--accent-green-dim); border-color:rgba(62,207,160,0.4); color:var(--accent-green); }
+.ds-daychip.rest{ color:var(--text-tertiary); }
+.ds-week-note{ margin-top:16px; font-size:13px; color:var(--text-secondary); line-height:1.5; }
+.ds-week-note b{ color:var(--text-primary); }
+
+.ds-today-focus-label{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin:6px 0 6px; }
+.ds-today-focus{ font-family:var(--font-display); font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:18px; }
+.ds-exos{ list-style:none; display:flex; flex-direction:column; gap:2px; margin-bottom:18px; }
+.ds-exo{ display:flex; align-items:center; gap:12px; padding:13px 0; border-top:1px solid var(--hair); font-size:13.5px; }
+.ds-exo .n{ font-family:var(--font-mono); font-size:11px; color:var(--accent-green); }
+.ds-exo .t{ color:var(--text-primary); }
+.ds-exo .m{ margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary); }
+.ds-cta{ height:46px; border-radius:10px; background:var(--accent-green); color:var(--bg-primary); display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; font-size:13.5px; }
+
+.ds-delta{ margin-top:12px; display:flex; align-items:baseline; gap:10px; justify-content:center; }
+.ds-delta b{ font-family:var(--font-display); font-size:30px; font-weight:800; color:var(--accent-green); }
+.ds-delta span{ font-size:13px; color:var(--text-secondary); }
+
+/* Side : steps + button */
+.demo-steps{ list-style:none; counter-reset:st; display:flex; flex-direction:column; gap:2px; margin-bottom:24px; }
+.demo-step{ counter-increment:st; display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid var(--hair); transition:color .3s var(--ease); color:var(--text-tertiary); }
+.demo-step::before{ content:counter(st,decimal-leading-zero); font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); transition:color .3s var(--ease); }
+.demo-step .sl{ font-size:15px; font-weight:600; letter-spacing:-0.01em; }
+.demo-step.done{ color:var(--text-secondary); }
+.demo-step.done::before{ content:"✓"; color:var(--accent-green); }
+.demo-step.active{ color:var(--text-primary); }
+.demo-step.active::before{ color:var(--accent-green); }
+.demo-step.active .sl{ color:var(--text-primary); }
+.demo-next{ width:100%; }
+.demo-hint{ margin-top:16px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.3px; color:var(--text-tertiary); line-height:1.5; }
+
+@media (max-width:860px){
+  .demo{ grid-template-columns:1fr; }
+  .demo-stage{ max-width:400px; margin-inline:auto; width:100%; }
+  .demo-side{ max-width:400px; margin-inline:auto; width:100%; }
+}
+
 @media (max-width:900px){
   .reversal-media{ align-items:stretch; margin-top:8px; }
   .reversal-media .shot{ max-width:400px; margin-inline:auto; }
@@ -703,6 +782,30 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 
 <hr class="divider" />
 
+<!-- ============================ ▸ DÉMO INTERACTIVE ============================ -->
+<section class="pad" aria-label="Démo interactive">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo</span></span>
+    </div>
+    <h2 class="demo-title reveal" data-i18n="demo_title">Vois le moteur tourner.</h2>
+    <p class="demo-sub reveal" data-i18n="demo_sub">Diagnostic → planning de la semaine → séance du jour → retest à J+30. La boucle complète, en direct.</p>
+
+    <div class="demo reveal">
+      <div class="demo-stage">
+        <div class="demo-screen" id="demoScreen" aria-live="polite"></div>
+      </div>
+      <div class="demo-side">
+        <ol class="demo-steps" id="demoSteps"></ol>
+        <button class="btn btn-primary demo-next" id="demoNext" type="button">…</button>
+        <p class="demo-hint" id="demoHint" data-i18n="demo_hint">Données simulées — c'est bien ton moteur, avec un profil au hasard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <!-- ============================ 03 · MÉTHODE + DAMIEN ============================ -->
 <section class="pad" aria-label="La méthode">
   <div class="wrap">
@@ -844,7 +947,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
         <p class="body" data-i18n="story2">Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.</p>
         <div class="story-foot">
           <div>
-            <div class="who" data-i18n="story2_who">Éloïse</div>
+            <div class="who" data-i18n="story2_who">Eloïse</div>
             <div class="sport" data-i18n="story2_sport">Mobilité</div>
           </div>
           <div class="dur" data-i18n="story2_dur">quelques mois</div>
@@ -1007,6 +1110,10 @@ const I18N = {
     s2_step1: "Tu ouvres l'app.",
     s2_step2: "<b>La séance du jour est déjà là.</b>",
     s2_step3: "Tu lances. Tu bouges. C'est tout.",
+    demo_eyebrow: 'La démo',
+    demo_title: 'Vois le moteur tourner.',
+    demo_sub: "Diagnostic → planning de la semaine → séance du jour → retest à J+30. La boucle complète, en direct.",
+    demo_hint: "Données simulées — c'est bien ton moteur, avec un profil au hasard.",
 
     s3_eyebrow: 'La méthode',
     s3_quote: "Ce n'est pas une IA générique. <span class=\"hl\">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.",
@@ -1035,7 +1142,7 @@ const I18N = {
     story1: "Arrivé avec une fasciite plantaire — courir était devenu impossible. Trois mois de routines, et la douleur a disparu. 5 km, 10 km, semi… puis le Marathon de Paris. Sans douleur, même après la course.",
     story1_who: 'Ghislain', story1_sport: 'Course à pied', story1_dur: '18 mois',
     story2: "Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.",
-    story2_who: 'Éloïse', story2_sport: 'Mobilité', story2_dur: 'quelques mois',
+    story2_who: 'Eloïse', story2_sport: 'Mobilité', story2_dur: 'quelques mois',
     story3: "Un an au club : mes charges en squat et en fentes ont grimpé en flèche. J'ai repris le développé couché malgré les douleurs — et passé 100 kg pour la première fois.",
     story3_who: 'Thibault', story3_sport: 'Force', story3_dur: '1 an',
 
@@ -1088,6 +1195,10 @@ const I18N = {
     s2_step1: 'You open the app.',
     s2_step2: "<b>Today's session is already there.</b>",
     s2_step3: "You start. You move. That's it.",
+    demo_eyebrow: 'The demo',
+    demo_title: 'Watch the engine run.',
+    demo_sub: "Diagnostic → weekly plan → today's session → retest at day 30. The full loop, live.",
+    demo_hint: "Simulated data — it's your real engine, with a random profile.",
 
     s3_eyebrow: 'The method',
     s3_quote: "This isn't a generic AI. <span class=\"hl\">It's my method</span> — a decade of movement expertise, encoded into an engine that decides for you.",
@@ -1116,7 +1227,7 @@ const I18N = {
     story1: "Arrived with plantar fasciitis — running had become impossible. Three months of routines, and the pain was gone. 5K, 10K, half… then the Paris Marathon. Pain-free, even after the race.",
     story1_who: 'Ghislain', story1_sport: 'Running', story1_dur: '18 months',
     story2: "Huge progress on ankle mobility: I can finally do a full squat, which felt impossible before. The timer keeps me focused on movement quality, not the clock.",
-    story2_who: 'Éloïse', story2_sport: 'Mobility', story2_dur: 'a few months',
+    story2_who: 'Eloïse', story2_sport: 'Mobility', story2_dur: 'a few months',
     story3: "One year in: my squat and lunge loads shot up. I got back to bench press despite the pain — and hit 100 kg for the first time.",
     story3_who: 'Thibault', story3_sport: 'Strength', story3_dur: '1 year',
 
@@ -1352,6 +1463,141 @@ if (prefersReduced) {
 
   paintLabels();
   render(cur);
+})();
+
+/* ============================================================
+   Démo interactive — le loop produit en direct.
+   Diagnostic aléatoire → planning hebdo → séance du jour → retest J+30.
+   Vanilla + SVG, bilingue, données simulées (le vrai moteur, profil au hasard).
+   ============================================================ */
+(function demoEngine(){
+  const screen = document.getElementById('demoScreen');
+  const stepsEl = document.getElementById('demoSteps');
+  const nextBtn = document.getElementById('demoNext');
+  if (!screen || !stepsEl || !nextBtn) return;
+
+  const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
+  const tr = (fr, en) => (L() === 'en' ? en : fr);
+
+  const ZONES = [
+    { fr:'Épaules', en:'Shoulders', sh:{fr:'Épaul.',en:'Shld'} },
+    { fr:'Hanches', en:'Hips',      sh:{fr:'Hanch.',en:'Hips'} },
+    { fr:'Chevilles', en:'Ankles',  sh:{fr:'Chev.',en:'Ankl'} },
+    { fr:'Colonne', en:'Spine',     sh:{fr:'Colon.',en:'Spine'} },
+    { fr:'Ch. post.', en:'P. chain', sh:{fr:'Ch.p.',en:'P.ch'} }
+  ];
+  const EXOS = [
+    [{fr:"CARS d'épaule",en:'Shoulder CARS'},{fr:'PAILs/RAILs scapula',en:'Scapular PAILs/RAILs'}],
+    [{fr:'90/90 hanche',en:'90/90 hip'},{fr:'CARS de hanche',en:'Hip CARS'}],
+    [{fr:'Dorsiflexion lestée',en:'Loaded dorsiflexion'},{fr:'CARS cheville',en:'Ankle CARS'}],
+    [{fr:'Rotation thoracique',en:'Thoracic rotation'},{fr:'Segmentation colonne',en:'Spinal segmentation'}],
+    [{fr:'Jefferson curl',en:'Jefferson curl'},{fr:'Good morning lesté',en:'Loaded good morning'}]
+  ];
+  const DAYS = [{fr:'Lun',en:'Mon'},{fr:'Mar',en:'Tue'},{fr:'Mer',en:'Wed'},{fr:'Jeu',en:'Thu'},{fr:'Ven',en:'Fri'},{fr:'Sam',en:'Sat'},{fr:'Dim',en:'Sun'}];
+  const STEP_LABELS = [
+    {fr:'Diagnostic',en:'Diagnostic'},
+    {fr:'Planning de la semaine',en:'Weekly plan'},
+    {fr:'Ta séance du jour',en:"Today's session"},
+    {fr:'Retest à J+30',en:'Retest at day 30'}
+  ];
+  const BTN = [
+    {fr:'Créer mon planning →',en:'Build my plan →'},
+    {fr:"Voir aujourd'hui →",en:'See today →'},
+    {fr:'Retester à J+30 →',en:'Retest at day 30 →'},
+    {fr:'↻ Relancer un diagnostic',en:'↻ Run a new diagnostic'}
+  ];
+
+  let baseline = [], retest = [], plan = [], step = 0;
+  const avg = a => Math.round(a.reduce((s,v)=>s+v,0)/a.length);
+  const ri = (min,max) => min + Math.floor(Math.random()*(max-min+1));
+
+  function generate(){
+    baseline = ZONES.map(()=>ri(28,64));
+    retest = baseline.map(v => Math.min(97, v + ri(9,20)));
+    const order = baseline.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
+    const p1 = order[0].i, p2 = order[1].i;
+    const pat = [p1,p2,p1,-1,p2,p1,-1];
+    plan = pat.map(z => ({ work:z>=0, zone:z }));
+    step = 0;
+  }
+  function weakest(){ return baseline.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v)[0].i; }
+
+  function radar(vals, base){
+    const S=280, c=S/2, R=92;
+    const pt=(v,i)=>{ const a=(-90+i*72)*Math.PI/180, r=(v/100)*R; return [c+r*Math.cos(a), c+r*Math.sin(a)]; };
+    const poly=a=>a.map((v,i)=>{ const p=pt(v,i); return p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+    let g='';
+    [0.34,0.67,1].forEach(k=>{
+      const ring=ZONES.map((_,i)=>{ const a=(-90+i*72)*Math.PI/180, r=R*k; return (c+r*Math.cos(a)).toFixed(1)+','+(c+r*Math.sin(a)).toFixed(1); }).join(' ');
+      g+='<polygon class="grid" points="'+ring+'"/>';
+    });
+    let ax='', lab='';
+    ZONES.forEach((z,i)=>{
+      const a=(-90+i*72)*Math.PI/180;
+      ax+='<line class="axis" x1="'+c+'" y1="'+c+'" x2="'+(c+R*Math.cos(a)).toFixed(1)+'" y2="'+(c+R*Math.sin(a)).toFixed(1)+'"/>';
+      const lx=c+(R+15)*Math.cos(a), ly=c+(R+15)*Math.sin(a);
+      const anchor=Math.abs(Math.cos(a))<0.35?'middle':(Math.cos(a)>0?'start':'end');
+      lab+='<text class="zlabel" x="'+lx.toFixed(1)+'" y="'+(ly+3).toFixed(1)+'" text-anchor="'+anchor+'">'+z[L()].toUpperCase()+'</text>';
+    });
+    const baseP = base ? '<polygon class="base" points="'+poly(base)+'"/>' : '';
+    return '<svg viewBox="0 0 '+S+' '+S+'" role="img" aria-label="radar">'+g+ax+lab+baseP+
+      '<polygon class="now" points="'+poly(vals)+'"/>'+
+      '<text class="cscore" x="'+c+'" y="'+(c+4)+'">'+avg(vals)+'</text>'+
+      '<text class="cslash" x="'+c+'" y="'+(c+22)+'">/100</text></svg>';
+  }
+
+  function renderScreen(){
+    let h='';
+    if (step===0){
+      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>Diagnostic</span><span class="ds-date">'+tr('Jour 0','Day 0')+'</span></div>'+
+        '<div class="ds-radar">'+radar(baseline)+'</div>'+
+        '<div class="ds-callout">'+tr('Priorité','Priority')+' · <b>'+ZONES[weakest()][L()]+'</b><span class="tag">'+tr('à travailler','to work')+'</span></div>';
+    } else if (step===1){
+      const week=DAYS.map((d,i)=>{ const p=plan[i];
+        const chip = p.work ? '<span class="ds-daychip work">'+ZONES[p.zone].sh[L()]+'</span>' : '<span class="ds-daychip rest">'+tr('Repos','Rest')+'</span>';
+        return '<div class="ds-day"><span class="ds-dayname">'+d[L()]+'</span>'+chip+'</div>';
+      }).join('');
+      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>'+tr('Planning · Semaine 1','Plan · Week 1')+'</span></div>'+
+        '<div class="ds-week">'+week+'</div>'+
+        '<div class="ds-week-note">'+tr('5 séances, 2 repos.','5 sessions, 2 rest days.')+' <b>'+tr('Calé sur tes 2 zones les plus faibles.','Built around your 2 weakest zones.')+'</b></div>';
+    } else if (step===2){
+      const tz=plan[0].zone;
+      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>'+tr('Ta séance du jour · 8 min',"Today's session · 8 min")+'</span></div>'+
+        '<div class="ds-today-focus-label">'+tr('Priorité du jour',"Today's priority")+'</div>'+
+        '<div class="ds-today-focus">'+ZONES[tz][L()]+'</div>'+
+        '<ul class="ds-exos">'+
+          '<li class="ds-exo"><span class="n">01</span><span class="t">'+EXOS[tz][0][L()]+'</span><span class="m">4 min</span></li>'+
+          '<li class="ds-exo"><span class="n">02</span><span class="t">'+EXOS[tz][1][L()]+'</span><span class="m">4 min</span></li>'+
+        '</ul>'+
+        '<div class="ds-cta">▶ '+tr('Lancer la séance','Start session')+'</div>';
+    } else {
+      h='<div class="ds-head"><span class="ds-eyebrow gold"><span class="d"></span>'+tr('Retest · Jour 30','Retest · Day 30')+'</span></div>'+
+        '<div class="ds-radar">'+radar(retest, baseline)+'</div>'+
+        '<div class="ds-delta"><b>+'+(avg(retest)-avg(baseline))+' pts</b><span>'+tr('en 30 jours — mesuré, pas ressenti','in 30 days — measured, not felt')+'</span></div>';
+    }
+    screen.innerHTML=h;
+  }
+  function renderSteps(){
+    stepsEl.innerHTML = STEP_LABELS.map((s,i)=>{
+      const cls = i<step ? 'done' : (i===step ? 'active' : '');
+      return '<li class="demo-step '+cls+'"><span class="sl">'+s[L()]+'</span></li>';
+    }).join('');
+  }
+  function refreshBtn(){ nextBtn.textContent = BTN[step][L()]; }
+  function paint(){ renderScreen(); renderSteps(); refreshBtn(); }
+
+  nextBtn.addEventListener('click', ()=>{
+    screen.classList.add('swapping');
+    setTimeout(()=>{
+      if (step>=3) generate(); else step++;
+      paint();
+      screen.classList.remove('swapping');
+    }, 200);
+  });
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click', ()=>{ paint(); }));
+
+  generate();
+  paint();
 })();
 
 (function heroFlow(){
