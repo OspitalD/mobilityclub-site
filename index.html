@@ -166,6 +166,48 @@ header.site.scrolled{
 }
 html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 
+/* Header right group + CTA */
+.header-right{ display:flex; align-items:center; gap:14px; }
+.header-cta{
+  font-family:var(--font-sans); font-weight:700; font-size:13px; text-decoration:none;
+  color:var(--accent-green); border:1px solid rgba(62,207,160,0.35); border-radius:100px;
+  padding:8px 16px; transition:background .25s var(--ease), transform .2s var(--ease);
+}
+.header-cta:hover{ background:var(--accent-green-dim); transform:translateY(-1px); }
+
+/* Barre de progression scroll */
+.scroll-progress{
+  position:fixed; top:0; left:0; height:2px; width:100%; z-index:60;
+  background:var(--accent-green); transform:scaleX(0); transform-origin:left;
+  transition:transform .1s linear; box-shadow:0 0 12px rgba(62,207,160,0.5);
+}
+
+/* Ligne de confiance / risk-reversal (preuve honnête) */
+.trust-row{ margin-top:22px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.trust-item{
+  padding:16px 18px; border:1px solid var(--border-subtle); border-radius:12px; background:var(--bg-surface);
+  display:flex; flex-direction:column; gap:5px;
+}
+.trust-item .trust-k{ font-weight:700; font-size:13.5px; letter-spacing:-0.01em; }
+.trust-item .trust-v{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.4px; color:var(--text-secondary); }
+
+/* Sticky CTA */
+.sticky-cta{
+  position:fixed; left:0; right:0; bottom:0; z-index:55; padding:0 var(--gutter) 18px;
+  transform:translateY(140%); transition:transform .5s var(--ease); pointer-events:none;
+}
+.sticky-cta.show{ transform:none; pointer-events:auto; }
+.sticky-inner{
+  max-width:var(--maxw); margin-inline:auto;
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  background:rgba(17,20,18,0.86); backdrop-filter:saturate(150%) blur(16px); -webkit-backdrop-filter:saturate(150%) blur(16px);
+  border:1px solid var(--border-active); border-radius:100px; padding:12px 12px 12px 26px;
+  box-shadow:0 24px 60px -30px rgba(0,0,0,0.9);
+}
+.sticky-txt{ font-size:14px; color:var(--text-secondary); }
+.sticky-txt b{ color:var(--text-primary); font-weight:700; }
+.sticky-btn{ height:46px; padding-inline:22px; flex-shrink:0; }
+
 /* ============================================================
    HERO — SECTION 00
    ============================================================ */
@@ -519,14 +561,22 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
   .stories{ grid-template-columns:1fr; }
   .doors{ grid-template-columns:1fr; }
 }
+@media (max-width:760px){
+  .trust-row{ grid-template-columns:1fr; }
+}
 @media (max-width:560px){
   .header-inner{ height:58px; }
   .wordmark .mono{ display:none; }
+  .header-cta{ display:none; }
   .hero-cta-row{ gap:14px; }
   .btn{ width:100%; }
   .pricing{ flex-direction:column; gap:8px; }
   .pricing .sep{ display:none; }
   .footer-bottom{ flex-direction:column; align-items:flex-start; }
+  .sticky-cta{ padding:0 12px 12px; }
+  .sticky-inner{ border-radius:16px; padding:12px 12px 12px 18px; gap:12px; }
+  .sticky-txt{ font-size:12.5px; }
+  .sticky-btn{ width:auto; height:44px; padding-inline:16px; }
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -540,6 +590,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 
 <div class="bg-atmos"></div>
 <div class="bg-grain"></div>
+<div class="scroll-progress" aria-hidden="true"></div>
 
 <!-- ============================ HEADER ============================ -->
 <header class="site" id="header">
@@ -549,10 +600,13 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
       MOBILITY&nbsp;CLUB
       <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
     </a>
-    <div class="lang" role="group" aria-label="Language / Langue">
-      <span class="thumb" aria-hidden="true"></span>
-      <button type="button" data-lang="fr" aria-pressed="true">FR</button>
-      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    <div class="header-right">
+      <a class="header-cta" href="#doors" data-i18n="nav_cta">Commencer</a>
+      <div class="lang" role="group" aria-label="Language / Langue">
+        <span class="thumb" aria-hidden="true"></span>
+        <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
     </div>
   </div>
 </header>
@@ -851,10 +905,24 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
       <span class="sep">·</span>
       <span class="v dim" data-i18n="pricing_then">puis 29€/mois ou 229€/an</span>
     </div>
+
+    <div class="trust-row reveal" data-stagger>
+      <div class="trust-item"><span class="trust-k" data-i18n="trust_1k">Gratuit pour commencer</span><span class="trust-v" data-i18n="trust_1v">Diagnostic + Timer · 0€</span></div>
+      <div class="trust-item"><span class="trust-k" data-i18n="trust_2k">Sans engagement</span><span class="trust-v" data-i18n="trust_2v">Tu annules quand tu veux</span></div>
+      <div class="trust-item"><span class="trust-k" data-i18n="trust_3k">Méthode terrain</span><span class="trust-v" data-i18n="trust_3v">BPJEPS · DEUST · UEFA B</span></div>
+    </div>
   </div>
 </section>
 
 </main>
+
+<!-- Sticky CTA — apparaît après le hero, disparaît près des portes -->
+<div class="sticky-cta" id="stickyCta" aria-hidden="true">
+  <div class="sticky-inner">
+    <span class="sticky-txt" data-i18n="sticky_txt"><b>Commence gratuitement.</b> Diagnostic + Timer offerts.</span>
+    <a class="btn btn-primary sticky-btn" href="#doors"><span data-i18n="sticky_btn">Découvre le tien</span><span class="arrow">→</span></a>
+  </div>
+</div>
 
 <!-- ============================ FOOTER ============================ -->
 <footer class="site" aria-label="Pied de page">
@@ -957,6 +1025,12 @@ const I18N = {
     pricing_k: 'Offre de lancement',
     pricing_v: "<b>20€/mois</b> ou <b>175€/an</b> jusqu'au 30 septembre",
     pricing_then: 'puis 29€/mois ou 229€/an',
+    nav_cta: 'Commencer',
+    sticky_txt: "<b>Commence gratuitement.</b> Diagnostic + Timer offerts.",
+    sticky_btn: 'Découvre le tien',
+    trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
+    trust_2k: 'Sans engagement', trust_2v: 'Tu annules quand tu veux',
+    trust_3k: 'Méthode terrain', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "La mobilité — <span class=\"hl\">le moment qui permet la vie.</span>",
     fl_top: 'Haut de page', fl_legal: 'Mentions légales', fl_privacy: 'Confidentialité · RGPD', fl_contact: 'Contact'
@@ -1030,6 +1104,12 @@ const I18N = {
     pricing_k: 'Launch pricing',
     pricing_v: '<b>€20/mo</b> or <b>€175/yr</b> through September 30',
     pricing_then: 'then €29/mo or €229/yr',
+    nav_cta: 'Start',
+    sticky_txt: "<b>Start free.</b> Diagnostic + Timer included.",
+    sticky_btn: 'Find yours',
+    trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
+    trust_2k: 'No commitment', trust_2v: 'Cancel whenever you want',
+    trust_3k: 'Field-tested method', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "Mobility — <span class=\"hl\">the moment that makes life possible.</span>",
     fl_top: 'Back to top', fl_legal: 'Legal notice', fl_privacy: 'Privacy · GDPR', fl_contact: 'Contact'
@@ -1080,11 +1160,49 @@ document.querySelectorAll('.lang button').forEach(b => {
   });
 })();
 
-/* ---- Header scrolled state ---- */
+/* ---- Header state + barre de progression + sticky CTA + parallax ---- */
 const header = document.getElementById('header');
-const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
-onScroll();
+const progressEl = document.querySelector('.scroll-progress');
+const stickyEl = document.getElementById('stickyCta');
+const doorsEl = document.getElementById('doors');
+const heroEl = document.querySelector('.hero');
+const parallaxEls = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? [] : [...document.querySelectorAll('.shot img')];
+
+let ticking = false;
+function frame(){
+  const y = window.scrollY;
+  header.classList.toggle('scrolled', y > 24);
+
+  // progression (0→1)
+  if (progressEl){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progressEl.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+  }
+
+  // sticky CTA : visible après le hero, caché quand les portes approchent
+  if (stickyEl && heroEl){
+    const pastHero = y > heroEl.offsetHeight * 0.85;
+    const doorsTop = doorsEl ? doorsEl.getBoundingClientRect().top : Infinity;
+    const nearDoors = doorsTop < window.innerHeight * 0.9;
+    const show = pastHero && !nearDoors;
+    stickyEl.classList.toggle('show', show);
+    stickyEl.setAttribute('aria-hidden', String(!show));
+  }
+
+  // parallax léger sur les captures (transform only)
+  for (let i = 0; i < parallaxEls.length; i++){
+    const el = parallaxEls[i];
+    const r = el.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > window.innerHeight + 100) continue;
+    const p = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
+    el.style.transform = 'translate3d(0,' + (p * -20).toFixed(1) + 'px,0) scale(1.09)';
+  }
+  ticking = false;
+}
+function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(frame); } }
+frame();
 window.addEventListener('scroll', onScroll, { passive:true });
+window.addEventListener('resize', onScroll, { passive:true });
 
 /* ---- Scroll reveal + staggered children + bar fills ---- */
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
