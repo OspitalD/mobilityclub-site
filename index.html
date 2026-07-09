@@ -231,7 +231,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .problem-stmt .warn{ color:var(--accent-red); }
 
 /* SECTION 02 — Reversal */
-.reversal{ display:grid; grid-template-columns:1.1fr 1fr; gap:clamp(32px,6vw,88px); align-items:end; }
+.reversal{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:clamp(32px,6vw,80px); align-items:center; }
 .reversal-headline{
   font-size:clamp(40px, 7.2vw, 92px); font-weight:800; line-height:0.98;
   letter-spacing:-0.035em;
@@ -246,6 +246,58 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .rstep{ display:flex; align-items:center; gap:14px; padding:11px 0; border-top:1px solid var(--hair); font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; color:var(--text-secondary); }
 .rstep b{ color:var(--text-primary); font-weight:600; }
 .rstep .n{ color:var(--accent-green); }
+
+/* Real in-app screenshots — cadre sobre + glow mint (l'app existe et est live) */
+.shot-wrap{ position:relative; }
+.shot-wrap::after{
+  content:""; position:absolute; z-index:-1; inset:6% 10% 2%;
+  background:radial-gradient(58% 46% at 50% 22%, rgba(62,207,160,0.20), transparent 72%);
+  filter:blur(52px);
+}
+.shot{
+  position:relative; border-radius:20px; overflow:hidden;
+  border:1px solid var(--border-active); background:var(--bg-surface);
+  box-shadow:0 54px 110px -58px rgba(0,0,0,0.95);
+}
+.shot img{ display:block; width:100%; height:auto; }
+.shot::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%);
+}
+.shot-cap{
+  margin-top:16px; display:inline-flex; align-items:center; gap:9px;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; text-transform:uppercase;
+  color:var(--text-secondary);
+}
+.shot-cap .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 0 3px var(--accent-green-dim); }
+
+.reversal-media{ display:flex; flex-direction:column; align-items:flex-start; }
+.reversal-media .shot{ max-width:340px; }
+.reversal-copy .reversal-text{ margin-top:24px; }
+
+.s4-showcase{ display:grid; grid-template-columns:0.82fr 1fr; gap:clamp(28px,5vw,64px); align-items:center; margin-top:clamp(34px,5vh,54px); }
+.s4-showcase .shot{ max-width:340px; }
+.s4-lead{ font-size:clamp(18px,2vw,24px); font-weight:600; line-height:1.42; letter-spacing:-0.01em; }
+.s4-lead .dim{ color:var(--text-secondary); font-weight:500; }
+.profiles-label{ margin-top:clamp(44px,6vh,66px); margin-bottom:18px; font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
+
+.s5-proof{ display:grid; grid-template-columns:0.78fr 1fr; gap:clamp(28px,5vw,64px); align-items:center; margin-top:clamp(36px,5vh,56px); margin-bottom:clamp(44px,6vh,64px); }
+.s5-proof .shot{ max-width:320px; }
+.s5-proof-h{ font-size:clamp(22px,3vw,34px); font-weight:700; letter-spacing:-0.02em; line-height:1.15; }
+.s5-proof-h .hl{ color:var(--accent-green); }
+.s5-proof-p{ margin-top:16px; font-size:clamp(14px,1.6vw,17px); line-height:1.62; color:var(--text-secondary); max-width:42ch; }
+.s5-proof-p strong{ color:var(--text-primary); font-weight:600; }
+
+@media (max-width:900px){
+  .reversal-media{ align-items:stretch; margin-top:8px; }
+  .reversal-media .shot{ max-width:400px; margin-inline:auto; }
+  .s4-showcase{ grid-template-columns:1fr; }
+  .s4-showcase .shot{ max-width:340px; margin-inline:auto; }
+  .s4-showcase .shot-wrap{ order:-1; }
+  .s5-proof{ grid-template-columns:1fr; }
+  .s5-proof .shot{ max-width:320px; margin-inline:auto; }
+  .s5-proof .shot-wrap{ order:-1; }
+}
 
 /* SECTION 03 — Method + Damien */
 .method{ display:grid; grid-template-columns:1fr 0.82fr; gap:clamp(32px,5vw,72px); align-items:center; }
@@ -517,8 +569,8 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
       <span class="eyebrow"><span class="idx">02</span><span data-i18n="s2_eyebrow">Le renversement</span></span>
     </div>
     <div class="reversal">
-      <h2 class="reversal-headline reveal">We plan.<br><span class="stop">You move.</span></h2>
-      <div>
+      <div class="reversal-copy">
+        <h2 class="reversal-headline reveal">We plan.<br><span class="stop">You move.</span></h2>
         <p class="reversal-text reveal" data-i18n="s2_text">
           Tu ouvres. <strong>Tout est prêt.</strong> Tu ne réfléchis pas. Tu bouges. Le club travaille pendant que tu vis.
         </p>
@@ -527,6 +579,15 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
           <div class="rstep"><span class="n">02</span><span data-i18n="s2_step2"><b>La séance du jour est déjà là.</b></span></div>
           <div class="rstep"><span class="n">03</span><span data-i18n="s2_step3">Tu lances. Tu bouges. C'est tout.</span></div>
         </div>
+      </div>
+      <div class="reversal-media reveal">
+        <div class="shot-wrap">
+          <figure class="shot">
+            <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
+                 alt="Écran Aujourd'hui du Mobility Club : la séance du jour, déjà prête, avec bouton Lancer la séance" />
+          </figure>
+        </div>
+        <span class="shot-cap"><span class="dot"></span><span data-i18n="shot_today">Ta séance du jour — déjà là</span></span>
       </div>
     </div>
   </div>
@@ -580,6 +641,23 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <p class="s4-intro reveal" data-i18n="s4_intro">
       Le même moteur. <span class="dim">Un produit différent pour chaque membre — façonné par son sport, son corps, sa semaine.</span>
     </p>
+
+    <div class="s4-showcase">
+      <div class="shot-wrap reveal">
+        <figure class="shot">
+          <img src="assets/app/onboarding.png" width="1080" height="1350" loading="lazy"
+               alt="Onboarding du Mobility Club : choix du sport principal, dominante d'entraînement et fréquence hebdomadaire" />
+        </figure>
+      </div>
+      <div class="reveal">
+        <p class="s4-lead" data-i18n="s4_lead">
+          Tu nous dis ton sport, ta semaine, ton corps. <span class="dim">Le moteur encode le reste — et te livre un produit qui n'existe pour personne d'autre.</span>
+        </p>
+        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="shot_onboarding">Ton profil — dans l'app</span></span>
+      </div>
+    </div>
+
+    <div class="profiles-label reveal" data-i18n="s4_profiles_label">3 membres · 3 produits · même moteur</div>
 
     <div class="profiles">
       <!-- Runner -->
@@ -661,6 +739,22 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
       <span class="eyebrow muted"><span class="idx">05</span><span data-i18n="s5_eyebrow">Résultats membres</span></span>
     </div>
     <h2 class="s5-title reveal" data-i18n="s5_title">Ce qui change, une fois dedans.</h2>
+
+    <div class="s5-proof">
+      <div class="shot-wrap reveal">
+        <figure class="shot">
+          <img src="assets/app/progression.png" width="1080" height="1350" loading="lazy"
+               alt="Écran Progression du Mobility Club : score global, évolution +14 points et radar mobilité baseline vs aujourd'hui" />
+        </figure>
+      </div>
+      <div class="reveal">
+        <p class="s5-proof-h" data-i18n="s5_proof_h">Preuve, <span class="hl">pas promesse.</span></p>
+        <p class="s5-proof-p" data-i18n="s5_proof_p">
+          Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.
+        </p>
+        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="shot_progress">Ta progression — dans l'app</span></span>
+      </div>
+    </div>
 
     <div class="stories">
       <article class="story reveal">
@@ -798,6 +892,13 @@ const I18N = {
     hero_title: "Chacun son <span class=\"em\">Mobility Club.</span>",
     hero_cta: 'Découvre le tien',
     scroll_hint: 'Défile',
+    shot_today: 'Ta séance du jour — déjà là',
+    shot_onboarding: "Ton profil — dans l'app",
+    shot_progress: "Ta progression — dans l'app",
+    s4_lead: "Tu nous dis ton sport, ta semaine, ton corps. <span class=\"dim\">Le moteur encode le reste — et te livre un produit qui n'existe pour personne d'autre.</span>",
+    s4_profiles_label: '3 membres · 3 produits · même moteur',
+    s5_proof_h: "Preuve, <span class=\"hl\">pas promesse.</span>",
+    s5_proof_p: "Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.",
 
     s1_eyebrow: 'Le problème',
     s1_text: "Tu sais que la mobilité compte. <span class=\"soft\">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class=\"warn\">trois semaines.</span>",
@@ -862,6 +963,13 @@ const I18N = {
     hero_title: "Your <span class=\"em\">Mobility Club.</span>",
     hero_cta: 'Find yours',
     scroll_hint: 'Scroll',
+    shot_today: "Today's session — already there",
+    shot_onboarding: 'Your profile — in the app',
+    shot_progress: 'Your progress — in the app',
+    s4_lead: "You tell us your sport, your week, your body. <span class=\"dim\">The engine encodes the rest — and hands you a product that exists for no one else.</span>",
+    s4_profiles_label: '3 members · 3 products · one engine',
+    s5_proof_h: "Proof, <span class=\"hl\">not promises.</span>",
+    s5_proof_p: "Every member re-tests their mobility. <strong>+14 points in 90 days</strong> — measured, not felt. Your radar, before / after.",
 
     s1_eyebrow: 'The problem',
     s1_text: "You know mobility matters. <span class=\"soft\">But the apps prescribe you the same routine as everyone else.</span> So you quit within <span class=\"warn\">three weeks.</span>",
