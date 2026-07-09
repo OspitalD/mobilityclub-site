@@ -160,8 +160,16 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
    ============================================================ */
 .hero{
   min-height:100svh; display:flex; flex-direction:column; justify-content:center;
-  padding-top:120px; padding-bottom:88px; position:relative;
+  padding-top:120px; padding-bottom:88px; position:relative; isolation:isolate;
 }
+/* Champ de mouvement — signature (Canvas pur, mint sur near-black, réagit au curseur) */
+.hero-flow{
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:100vw; height:100%; z-index:0; pointer-events:none;
+  opacity:0; transition:opacity 1.4s var(--ease);
+}
+.hero-flow.on{ opacity:1; }
+.hero > :not(.hero-flow){ position:relative; z-index:1; }
 .hero .eyebrow{ margin-bottom:clamp(28px,5vh,52px); }
 .hero-lead{
   font-size:clamp(20px, 3vw, 30px); font-weight:600; line-height:1.32;
@@ -519,6 +527,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 
 <!-- ============================ 00 · HERO ============================ -->
 <section class="hero wrap" aria-label="Hero">
+  <canvas class="hero-flow" aria-hidden="true"></canvas>
   <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mouvement de demain</span></span>
 
   <p class="hero-lead reveal" data-i18n="hero_lead">
@@ -1105,6 +1114,103 @@ if (prefersReduced) {
 
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 }
+
+/* ============================================================
+   Signature — champ de mouvement du hero.
+   Flow field mint sur near-black, Canvas 2D pur (aucune lib),
+   réagit au curseur (« you move »). Additif + fondu transparent
+   pour se poser sur l'atmosphère existante. Coupé si reduced-motion.
+   ============================================================ */
+(function heroFlow(){
+  const cv = document.querySelector('.hero-flow');
+  const hero = document.querySelector('.hero');
+  if (!cv || !hero || prefersReduced) return;
+  const ctx = cv.getContext('2d', { alpha:true });
+  if (!ctx) return;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let w = 0, h = 0, running = false, raf = 0, frames = 0;
+  const isMobile = window.matchMedia('(max-width:600px)').matches;
+  const COUNT = isMobile ? 70 : 190;
+  const parts = [];
+  // Curseur (avec inertie) — au repos, centré haut-droit (là où l'atmosphère vit)
+  const m = { x: 0.7, y: 0.32, tx: 0.7, ty: 0.32, active:false };
+
+  function resize(){
+    w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function seed(p){
+    p.x = Math.random() * w; p.y = Math.random() * h;
+    p.px = p.x; p.py = p.y; p.life = 26 + Math.random() * 90;
+  }
+  for (let i = 0; i < COUNT; i++){ const p = {}; seed(p); parts.push(p); }
+
+  const TAU = Math.PI * 2;
+  function step(){
+    frames++;
+    const t = frames * 0.0016;
+    // inertie curseur
+    m.x += (m.tx - m.x) * 0.06; m.y += (m.ty - m.y) * 0.06;
+    const cx = m.x * w, cy = m.y * h;
+
+    // fondu transparent (efface ~7%/frame → traînées qui s'estompent)
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillRect(0, 0, w, h);
+
+    // mint additif
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < parts.length; i++){
+      const p = parts[i];
+      // champ de flux organique
+      const a = (Math.sin(p.x * 0.0039 + t) + Math.cos(p.y * 0.0039 - t * 0.7)) * Math.PI;
+      let vx = Math.cos(a), vy = Math.sin(a);
+      // attraction/tourbillon vers le curseur (« you move »)
+      const dx = cx - p.x, dy = cy - p.y, d2 = dx*dx + dy*dy;
+      const R = 240;
+      if (d2 < R*R){
+        const d = Math.sqrt(d2) || 1, f = (1 - d / R) * 0.9;
+        vx += (dx / d) * f - (dy / d) * f * 0.6;  // pull + swirl tangent
+        vy += (dy / d) * f + (dx / d) * f * 0.6;
+      }
+      const sp = 0.85;
+      p.px = p.x; p.py = p.y;
+      p.x += vx * sp; p.y += vy * sp;
+      // wrap
+      if (p.x < 0) p.x = w; else if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; else if (p.y > h) p.y = 0;
+      if (--p.life < 0){ seed(p); continue; }
+      // segment mint — plus lumineux et épais près du curseur
+      const prox = d2 < R*R ? (1 - Math.sqrt(d2) / R) : 0;
+      ctx.lineWidth = 1.0 + prox * 1.5;
+      ctx.strokeStyle = 'rgba(62,207,160,' + (0.15 + prox * 0.28) + ')';
+      ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(p.x, p.y); ctx.stroke();
+    }
+    if (frames === 8) cv.classList.add('on');
+    raf = requestAnimationFrame(step);
+  }
+  function start(){ if (running) return; running = true; raf = requestAnimationFrame(step); }
+  function stop(){ running = false; cancelAnimationFrame(raf); }
+
+  resize();
+  window.addEventListener('resize', () => { resize(); }, { passive:true });
+  // curseur relatif au hero
+  window.addEventListener('pointermove', (e) => {
+    const r = hero.getBoundingClientRect();
+    if (e.clientY < r.bottom){
+      m.tx = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      m.ty = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+      m.active = true;
+    }
+  }, { passive:true });
+  // pause quand le hero sort de l'écran (batterie)
+  const vis = new IntersectionObserver((es) => {
+    es.forEach(en => en.isIntersecting ? start() : stop());
+  }, { threshold: 0.02 });
+  vis.observe(hero);
+})();
 </script>
 </body>
 </html>
