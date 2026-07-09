@@ -349,6 +349,15 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .s5-proof-p{ margin-top:16px; font-size:clamp(14px,1.6vw,17px); line-height:1.62; color:var(--text-secondary); max-width:42ch; }
 .s5-proof-p strong{ color:var(--text-primary); font-weight:600; }
 
+/* Aperçu Diagnostic (écran réel) avant les 3 portes */
+.diag-preview{ display:grid; grid-template-columns:300px 1fr; gap:clamp(28px,5vw,64px); align-items:center; margin-bottom:clamp(48px,7vh,80px); }
+.diag-preview .shot{ max-width:300px; }
+@media (max-width:820px){
+  .diag-preview{ grid-template-columns:1fr; }
+  .diag-preview .shot{ max-width:270px; margin-inline:auto; }
+  .diag-preview .shot-wrap{ order:-1; }
+}
+
 @media (max-width:900px){
   .reversal-media{ align-items:stretch; margin-top:8px; }
   .reversal-media .shot{ max-width:400px; margin-inline:auto; }
@@ -532,6 +541,8 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
    FOOTER
    ============================================================ */
 footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px,9vh,88px); }
+.footer-brand{ display:flex; align-items:center; gap:clamp(24px,4vw,52px); flex-wrap:wrap; }
+.footer-logo{ width:clamp(116px,15vw,164px); height:auto; display:block; flex-shrink:0; border-radius:18px; }
 .footer-mission{ font-size:clamp(20px,2.8vw,34px); font-weight:700; letter-spacing:-0.02em; line-height:1.2; max-width:22ch; }
 .footer-mission .hl{ color:var(--accent-green); }
 .footer-bottom{
@@ -817,41 +828,38 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 
     <div class="stories">
       <article class="story reveal">
-        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
         <div class="quote-mark">“</div>
-        <p class="body placeholder-txt" data-i18n="story1">[STORY À REMPLIR — FR] Témoignage membre : le déclic, ce qui a changé, en une ou deux phrases fortes.</p>
+        <p class="body" data-i18n="story1">Arrivé avec une fasciite plantaire — courir était devenu impossible. Trois mois de routines, et la douleur a disparu. 5 km, 10 km, semi… puis le Marathon de Paris. Sans douleur, même après la course.</p>
         <div class="story-foot">
           <div>
-            <div class="who" data-i18n="story1_who">[Prénom]</div>
-            <div class="sport" data-i18n="story1_sport">[Sport]</div>
+            <div class="who" data-i18n="story1_who">Membre du club</div>
+            <div class="sport" data-i18n="story1_sport">Course à pied</div>
           </div>
-          <div class="dur" data-i18n="story1_dur">[Durée]</div>
+          <div class="dur" data-i18n="story1_dur">18 mois</div>
         </div>
       </article>
 
       <article class="story reveal">
-        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
         <div class="quote-mark">“</div>
-        <p class="body placeholder-txt" data-i18n="story2">[STORY À REMPLIR — FR] Témoignage membre : transformation concrète, chiffre ou ressenti, en une ou deux phrases.</p>
+        <p class="body" data-i18n="story2">Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.</p>
         <div class="story-foot">
           <div>
-            <div class="who" data-i18n="story2_who">[Prénom]</div>
-            <div class="sport" data-i18n="story2_sport">[Sport]</div>
+            <div class="who" data-i18n="story2_who">Membre du club</div>
+            <div class="sport" data-i18n="story2_sport">Mobilité</div>
           </div>
-          <div class="dur" data-i18n="story2_dur">[Durée]</div>
+          <div class="dur" data-i18n="story2_dur">quelques mois</div>
         </div>
       </article>
 
       <article class="story reveal">
-        <span class="ph-badge" data-i18n="ph_badge">À remplir</span>
         <div class="quote-mark">“</div>
-        <p class="body placeholder-txt" data-i18n="story3">[STORY À REMPLIR — FR] Témoignage membre : ce qu'il croyait impossible, désormais acquis.</p>
+        <p class="body" data-i18n="story3">Un an au club : mes charges en squat et en fentes ont grimpé en flèche. J'ai repris le développé couché malgré les douleurs — et passé 100 kg pour la première fois.</p>
         <div class="story-foot">
           <div>
-            <div class="who" data-i18n="story3_who">[Prénom]</div>
-            <div class="sport" data-i18n="story3_sport">[Sport]</div>
+            <div class="who" data-i18n="story3_who">Membre du club</div>
+            <div class="sport" data-i18n="story3_sport">Force</div>
           </div>
-          <div class="dur" data-i18n="story3_dur">[Durée]</div>
+          <div class="dur" data-i18n="story3_dur">1 an</div>
         </div>
       </article>
     </div>
@@ -865,6 +873,19 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx">06</span><span data-i18n="s6_eyebrow">Les 3 portes</span></span>
+    </div>
+
+    <div class="diag-preview reveal">
+      <div class="shot-wrap">
+        <figure class="shot">
+          <img src="assets/app/diagnostic-result.png" width="1290" height="2796" loading="lazy"
+               alt="Écran de résultat du Mobility Diagnostic : radar 5 zones, score 86/100, « Base solide »" />
+        </figure>
+      </div>
+      <div>
+        <p class="s4-lead" data-i18n="diag_lead"><span class="dim">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.</p>
+        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="diag_cap">Un vrai bilan de membre — score 86</span></span>
+      </div>
     </div>
 
     <div class="doors">
@@ -927,7 +948,10 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 <!-- ============================ FOOTER ============================ -->
 <footer class="site" aria-label="Pied de page">
   <div class="wrap">
-    <p class="footer-mission reveal" data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
+    <div class="footer-brand reveal">
+      <img src="assets/brand/logo-otb.png" width="700" height="700" loading="lazy" class="footer-logo" alt="Mobility Club — Out of the box" />
+      <p class="footer-mission" data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
+    </div>
     <div class="footer-bottom">
       <div class="footer-links">
         <a href="#top" data-i18n="fl_top">Haut de page</a>
@@ -1008,14 +1032,16 @@ const I18N = {
     s5_eyebrow: 'Résultats membres',
     s5_title: 'Ce qui change, une fois dedans.',
     ph_badge: 'À remplir',
-    story1: "[STORY À REMPLIR — FR] Témoignage membre : le déclic, ce qui a changé, en une ou deux phrases fortes.",
-    story1_who: '[Prénom]', story1_sport: '[Sport]', story1_dur: '[Durée]',
-    story2: "[STORY À REMPLIR — FR] Témoignage membre : transformation concrète, chiffre ou ressenti, en une ou deux phrases.",
-    story2_who: '[Prénom]', story2_sport: '[Sport]', story2_dur: '[Durée]',
-    story3: "[STORY À REMPLIR — FR] Témoignage membre : ce qu'il croyait impossible, désormais acquis.",
-    story3_who: '[Prénom]', story3_sport: '[Sport]', story3_dur: '[Durée]',
+    story1: "Arrivé avec une fasciite plantaire — courir était devenu impossible. Trois mois de routines, et la douleur a disparu. 5 km, 10 km, semi… puis le Marathon de Paris. Sans douleur, même après la course.",
+    story1_who: 'Membre du club', story1_sport: 'Course à pied', story1_dur: '18 mois',
+    story2: "Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.",
+    story2_who: 'Membre du club', story2_sport: 'Mobilité', story2_dur: 'quelques mois',
+    story3: "Un an au club : mes charges en squat et en fentes ont grimpé en flèche. J'ai repris le développé couché malgré les douleurs — et passé 100 kg pour la première fois.",
+    story3_who: 'Membre du club', story3_sport: 'Force', story3_dur: '1 an',
 
     s6_eyebrow: 'Les 3 portes',
+    diag_lead: "<span class=\"dim\">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.",
+    diag_cap: 'Un vrai bilan de membre — score 86',
     tag_free: 'Gratuit', tag_product: 'Le produit',
     door1_desc: "Mesure où tu en es. Ton point de départ, articulation par articulation.",
     door2_desc: "L'outil de séance. Guidé, minuté, sans friction. Tu suis, tu bouges.",
@@ -1087,14 +1113,16 @@ const I18N = {
     s5_eyebrow: 'Member results',
     s5_title: "What changes, once you're in.",
     ph_badge: 'To fill',
-    story1: "[STORY TO FILL — EN] Member testimonial: the turning point, what changed, in one or two strong sentences.",
-    story1_who: '[Name]', story1_sport: '[Sport]', story1_dur: '[Duration]',
-    story2: "[STORY TO FILL — EN] Member testimonial: concrete transformation, a number or a feeling, in one or two sentences.",
-    story2_who: '[Name]', story2_sport: '[Sport]', story2_dur: '[Duration]',
-    story3: "[STORY TO FILL — EN] Member testimonial: what they thought impossible, now achieved.",
-    story3_who: '[Name]', story3_sport: '[Sport]', story3_dur: '[Duration]',
+    story1: "Arrived with plantar fasciitis — running had become impossible. Three months of routines, and the pain was gone. 5K, 10K, half… then the Paris Marathon. Pain-free, even after the race.",
+    story1_who: 'Club member', story1_sport: 'Running', story1_dur: '18 months',
+    story2: "Huge progress on ankle mobility: I can finally do a full squat, which felt impossible before. The timer keeps me focused on movement quality, not the clock.",
+    story2_who: 'Club member', story2_sport: 'Mobility', story2_dur: 'a few months',
+    story3: "One year in: my squat and lunge loads shot up. I got back to bench press despite the pain — and hit 100 kg for the first time.",
+    story3_who: 'Club member', story3_sport: 'Strength', story3_dur: '1 year',
 
     s6_eyebrow: 'The 3 doors',
+    diag_lead: "<span class=\"dim\">Before you move,</span> measure exactly where you stand. The Mobility Diagnostic scans your 5 zones and gives you a score — free, in 10 minutes.",
+    diag_cap: 'A real member report — score 86',
     tag_free: 'Free', tag_product: 'The product',
     door1_desc: 'Measure where you stand. Your starting point, joint by joint.',
     door2_desc: 'The session tool. Guided, timed, frictionless. You follow, you move.',
