@@ -646,33 +646,56 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .profiles{ margin-top:clamp(40px,6vh,64px); display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 
 .card{
-  background:var(--bg-surface); border:1px solid var(--border-subtle);
-  border-radius:14px; padding:0; overflow:hidden;
+  position:relative;
+  background:
+    radial-gradient(130% 75% at 50% -12%, rgba(62,207,160,0.055), rgba(62,207,160,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 26%),
+    var(--bg-surface);
+  border:1px solid var(--border-active); border-radius:16px; padding:0; overflow:hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 2px 6px -3px rgba(0,0,0,0.7),
+    0 32px 60px -34px rgba(0,0,0,0.95),
+    0 24px 70px -42px rgba(62,207,160,0.18);
   transition:transform .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
 }
-.card:hover{ transform:translateY(-4px); border-color:var(--border-active); box-shadow:0 22px 50px -30px rgba(0,0,0,0.9); }
+.card:hover{
+  transform:translateY(-4px); border-color:#2a322d;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 4px 10px -4px rgba(0,0,0,0.7),
+    0 40px 70px -32px rgba(0,0,0,0.95),
+    0 30px 80px -40px rgba(62,207,160,0.26);
+}
 
 /* mock "app preview" inside profile card */
 .mock{ padding:18px 18px 20px; }
 .mock-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .mock-sport{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:13.5px; letter-spacing:-0.01em; }
-.mock-live{ width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 0 3px var(--accent-green-dim); }
+.mock-live{ width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 0 3px var(--accent-green-dim); animation:mock-pulse 2.6s var(--ease) infinite; }
+@keyframes mock-pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(62,207,160,0.22); } 55%{ box-shadow:0 0 0 5px rgba(62,207,160,0); } }
 .mock-day{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; color:var(--text-tertiary); text-transform:uppercase; }
 .mock-focus-label{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:7px; }
 .mock-focus{ font-size:15px; font-weight:700; letter-spacing:-0.01em; margin-bottom:16px; }
 .bars{ display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
 .bar-row{ display:flex; align-items:center; gap:10px; }
 .bar-name{ font-size:10.5px; color:var(--text-secondary); width:74px; flex-shrink:0; }
-.bar-track{ flex:1; height:3px; border-radius:100px; background:var(--border-active); overflow:hidden; }
-.bar-fill{ height:100%; border-radius:100px; background:var(--accent-green); width:0; transition:width 1.1s var(--ease); }
-.bar-pct{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-tertiary); width:26px; text-align:right; }
+.bar-track{ flex:1; height:4px; border-radius:100px; background:rgba(255,255,255,0.05); box-shadow:inset 0 1px 1.5px rgba(0,0,0,0.45); overflow:visible; position:relative; }
+.bar-fill{ display:block; height:100%; border-radius:100px; width:0; position:relative; transition:width 1.1s var(--ease);
+  background:linear-gradient(90deg, rgba(62,207,160,0.55), var(--accent-green));
+  box-shadow:0 0 9px -1px rgba(62,207,160,0.55); }
+.bar-fill::after{ content:""; position:absolute; right:0; top:50%; width:6px; height:6px; border-radius:50%;
+  background:var(--accent-green); transform:translate(45%,-50%); box-shadow:0 0 7px rgba(62,207,160,0.85); }
+.bar-pct{ font-family:var(--font-mono); font-size:9.5px; color:var(--text-secondary); width:26px; text-align:right; font-variant-numeric:tabular-nums; }
 .mock-meta{ display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--hair); margin-bottom:16px; }
 .mock-meta .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); }
 .mock-meta .v{ font-size:12px; font-weight:600; color:var(--text-primary); margin-top:3px; }
 .mock-cta{
-  height:38px; border-radius:8px; background:var(--accent-green); color:var(--bg-primary);
+  height:38px; border-radius:9px; color:var(--bg-primary);
+  background:linear-gradient(180deg, #4fd9ac, var(--accent-green));
   display:flex; align-items:center; justify-content:center; gap:8px;
   font-weight:700; font-size:12.5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.3), 0 8px 20px -9px rgba(62,207,160,0.65);
 }
 .mock-cta .ic{ font-size:11px; }
 .card-caption{
@@ -694,7 +717,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   transition:color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), transform .2s var(--ease);
 }
 .switch-tab:hover{ color:var(--text-primary); border-color:#2a2f2c; transform:translateY(-1px); }
-.switch-tab.is-active{ background:var(--accent-green); color:var(--bg-primary); border-color:var(--accent-green); }
+.switch-tab.is-active{ background:var(--accent-green); color:var(--bg-primary); border-color:var(--accent-green); box-shadow:0 6px 16px -8px rgba(62,207,160,0.7); }
 .switch-tab .tdot{ width:5px; height:5px; border-radius:50%; background:currentColor; opacity:.55; }
 .switch-grid{ display:grid; grid-template-columns:400px 1fr; gap:clamp(28px,5vw,64px); align-items:center; }
 .switch-card{ transition:opacity .3s var(--ease), transform .3s var(--ease); }
@@ -1819,8 +1842,9 @@ if (prefersReduced) {
     q('.sw-mk').textContent = s.mk[L]; q('.sw-mv').textContent = s.mv[L];
     q('.sw-cta').textContent = dict.mock_cta;
     q('.sw-cap').textContent = s.cap[L];
-    q('.sw-b1f').style.width = s.b1.p + '%';
-    q('.sw-b2f').style.width = s.b2.p + '%';
+    // width ET data-w cohérents : le reveal (bar-fill → data-w) ne remet plus à 0
+    q('.sw-b1f').dataset.w = s.b1.p + '%'; q('.sw-b1f').style.width = s.b1.p + '%';
+    q('.sw-b2f').dataset.w = s.b2.p + '%'; q('.sw-b2f').style.width = s.b2.p + '%';
     tabsEl.querySelectorAll('.switch-tab').forEach(b => {
       const on = b.dataset.sport === key;
       b.classList.toggle('is-active', on);
