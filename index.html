@@ -505,6 +505,27 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .demo-guide .dg-live .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
 .demo-guide .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
 .demo-guide .dg-live .v b{ color:var(--accent-green); }
+/* diagnostic chip + recherche */
+.scal-diag{ display:flex; align-items:center; gap:9px; margin-top:12px; padding:9px 12px; border:1px solid rgba(232,160,32,0.32); border-radius:12px; background:rgba(232,160,32,0.06); }
+.scal-diag .di{ width:22px; height:22px; border-radius:6px; background:rgba(232,160,32,0.12); border:1px solid rgba(232,160,32,0.32); color:#E8A020; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.scal-diag .dt{ font-size:12px; color:var(--text-secondary); }
+.scal-diag .dt b{ color:#E8A020; font-weight:700; }
+.scal-diag .dre{ margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--accent-green); cursor:pointer; border:1px solid var(--border-active); border-radius:100px; padding:4px 9px; user-select:none; }
+.scal-diag .dre:hover{ border-color:var(--accent-green-line); }
+.scal-search{ position:relative; }
+.scal-search input{ width:100%; height:42px; border-radius:11px; background:var(--scal-s2); border:1px solid var(--border-strong); color:var(--text-primary); font-family:var(--font-sans); font-size:13.5px; padding:0 12px 0 34px; outline:none; }
+.scal-search input:focus{ border-color:var(--accent-green-line); }
+.scal-search input::placeholder{ color:var(--text-tertiary); }
+.scal-search .si{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:14px; }
+.scal-searchres{ margin-top:6px; border:1px solid var(--border-active); border-radius:11px; overflow:hidden; }
+.scal-sres{ display:flex; align-items:center; gap:10px; padding:10px 11px; border-top:1px solid var(--border-subtle); cursor:pointer; }
+.scal-sres:first-child{ border-top:none; }
+.scal-sres:hover{ background:var(--scal-s2); }
+.scal-sres .sdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.scal-sres .srn{ font-size:13.5px; font-weight:600; color:var(--text-primary); }
+.scal-sres .scat{ margin-left:auto; font-family:var(--font-mono); font-size:9px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-tertiary); }
+.scal-sres.added .srn{ color:var(--text-tertiary); }
+.scal-sres-none{ padding:12px; font-size:12.5px; color:var(--text-tertiary); }
 
 @media (max-width:860px){
   .demo{ grid-template-columns:1fr; }
@@ -1534,8 +1555,9 @@ if (prefersReduced) {
 })();
 
 /* ============================================================
-   Démo — le vrai calendrier drag & drop de l'app (porté vanilla).
-   Prends un sport, glisse-le sur un créneau → le club cale la mobilité.
+   Démo — vrai calendrier onboarding (recherche + drag & drop).
+   Diagnostic → priorité zone. Pose un sport → le club auto-cale la
+   mobilité (zone du diagnostic). Mobilité aussi plaçable à la main.
    ============================================================ */
 (function demoCalendar(){
   const root = document.getElementById('scal');
@@ -1548,18 +1570,44 @@ if (prefersReduced) {
   const DAYS   = { fr:['LUN','MAR','MER','JEU','VEN','SAM','DIM'], en:['MON','TUE','WED','THU','FRI','SAT','SUN'] };
   const DAYLBL = { fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'], en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] };
   const SLOTLBL= { fr:['MATIN','MIDI','SOIR'], en:['MORN','NOON','EVE'] };
-  const SPORTS = [
-    { id:'crossfit', name:{fr:'CrossFit',en:'CrossFit'}, color:'#8FD9A8', zone:{fr:'thoracique',en:'thoracic'} },
-    { id:'course',   name:{fr:'Course',en:'Running'},    color:'#7FB2E8', zone:{fr:'cheville',en:'ankle'} },
-    { id:'padel',    name:{fr:'Padel',en:'Padel'},       color:'#E0B36B', zone:{fr:'épaule',en:'shoulder'} },
-    { id:'muscu',    name:{fr:'Muscu',en:'Strength'},    color:'#C9C7C0', zone:{fr:'hanche',en:'hip'} }
+  const ZONES  = [{fr:'Épaules',en:'Shoulders'},{fr:'Hanches',en:'Hips'},{fr:'Chevilles',en:'Ankles'},{fr:'Colonne',en:'Spine'},{fr:'Thoracique',en:'Thoracic'}];
+  const FAM = { force:'#C9C7C0', course:'#7FB2E8', velo:'#9FD0E8', combat:'#C99BE0', raquette:'#E0B36B', collectif:'#8FD9A8', eau:'#7FCBD9', souplesse:'#E0A8C8', autre:'#E89B7F' };
+  const FAMLBL = { force:{fr:'Force',en:'Strength'}, course:{fr:'Course',en:'Running'}, velo:{fr:'Cyclisme',en:'Cycling'}, combat:{fr:'Combat',en:'Combat'}, raquette:{fr:'Raquette',en:'Racket'}, collectif:{fr:'Collectif',en:'Team'}, eau:{fr:'Eau',en:'Water'}, souplesse:{fr:'Souplesse',en:'Flexibility'}, autre:{fr:'Autre',en:'Other'} };
+  const CATALOG = [
+    {id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},
+    {id:'course',fr:'Course à pied',en:'Running',fam:'course'},
+    {id:'trail',fr:'Trail',en:'Trail',fam:'course'},
+    {id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},
+    {id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},
+    {id:'haltero',fr:'Haltérophilie',en:'Weightlifting',fam:'force'},
+    {id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},
+    {id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},
+    {id:'foot',fr:'Football',en:'Football',fam:'collectif'},
+    {id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},
+    {id:'basket',fr:'Basket',en:'Basketball',fam:'collectif'},
+    {id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},
+    {id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},
+    {id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},
+    {id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},
+    {id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},
+    {id:'pilates',fr:'Pilates',en:'Pilates',fam:'souplesse'},
+    {id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},
+    {id:'golf',fr:'Golf',en:'Golf',fam:'autre'},
+    {id:'danse',fr:'Danse',en:'Dance',fam:'souplesse'}
   ];
-  const sportById = id => SPORTS.find(s=>s.id===id);
+  const cat = id => CATALOG.find(c=>c.id===id);
 
-  let sessions=[], mob=[];
+  let palette = ['crossfit','course'];
+  let sessions=[], mob=[], query='', diag=3; // diag = index zone (Colonne par défaut)
   const keyAt = (arr,di,si)=>arr.find(x=>x.di===di&&x.si===si);
   const nSport = ()=>sessions.length, nMob=()=>mob.length;
-  function autoZone(){ if (sessions.length){ return sportById(sessions[sessions.length-1].sportId).zone[L()]; } return tr('colonne','spine'); }
+  const diagZone = ()=>ZONES[diag][L()];
+  const ri = (a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  function firstFree(preferDi){
+    for (let si=0; si<3; si++){ if (!keyAt(sessions,preferDi,si) && !keyAt(mob,preferDi,si)) return {di:preferDi,si}; }
+    for (let di=0; di<7; di++){ for (let si=0; si<3; si++){ if (!keyAt(sessions,di,si)&&!keyAt(mob,di,si)) return {di,si}; } }
+    return null;
+  }
 
   function renderScal(){
     const dd=DAYS[L()], sl=SLOTLBL[L()];
@@ -1569,38 +1617,50 @@ if (prefersReduced) {
       for (let si=0; si<3; si++){
         const ses=keyAt(sessions,di,si), m=keyAt(mob,di,si);
         let inner='';
-        if (ses){ inner='<div class="scal-blk sport"><span class="scal-bt">'+sportById(ses.sportId).name[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>'; }
-        else if (m){ inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>'; }
+        if (ses){ inner='<div class="scal-blk sport"><span class="scal-bt">'+cat(ses.sportId)[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>'; }
+        else if (m){ inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+(m.auto?' <span style="font-weight:600;opacity:.7">· auto</span>':'')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>'; }
         cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>';
       }
       grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>';
     }
-    const tokens=SPORTS.map((s,i)=>'<div class="scal-ptoken'+(i===0&&!nSport()?' pulse':'')+'" data-sport="'+s.id+'"><span class="pdot" style="background:'+s.color+'"></span><span class="pn">'+s.name[L()]+'</span><span class="pg">⠿</span></div>').join('');
+    const tokens=palette.map((id,i)=>{const c=cat(id);return '<div class="scal-ptoken'+(i===0&&!nSport()?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
     root.innerHTML =
       '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('TON CALENDRIER SPORT','YOUR SPORT CALENDAR')+'</div>'+
       '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
-      '<p class="scal-lede">'+tr('Glisse un <b>sport</b> sur un créneau, puis la <b class="mint">mobilité</b> — zone choisie auto.','Drag a <b>sport</b> onto a slot, then <b class="mint">mobility</b> — zone auto-picked.')+'</p>'+
+      '<p class="scal-lede">'+tr('Cherche ton sport, glisse-le. Le club <b class="mint">cale la mobilité</b> selon ton diagnostic.','Find your sport, drag it. The club <b class="mint">adds mobility</b> from your diagnostic.')+'</p>'+
+      '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻ relancer','↻ new')+'</span></div>'+
       '<div class="scal-gridwrap"><div class="scal-ghead"><span></span><span>'+sl[0]+'</span><span>'+sl[1]+'</span><span>'+sl[2]+'</span></div>'+grid+'</div>'+
       '<div class="scal-tray">'+
-        '<div class="scal-tray-head"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse sur la grille','drag onto the grid')+'</span></span><span class="thb">'+nSport()+' '+tr('placé','placed')+(nSport()>1?'s':'')+'</span></div>'+
+        '<div class="scal-search"><span class="si">⌕</span><input id="scalq" placeholder="'+tr('Ajoute un sport…','Add a sport…')+'" autocomplete="off" value="'+query.replace(/"/g,'&quot;')+'"></div>'+
+        '<div class="scal-searchres" id="scalres"></div>'+
+        '<div class="scal-tray-head" style="margin-top:11px"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse sur la grille','drag onto grid')+'</span></span><span class="thb">'+nSport()+' '+tr('placé','placed')+(nSport()>1?'s':'')+'</span></div>'+
         '<div class="scal-palette">'+tokens+'</div>'+
-        '<div class="scal-token'+(nSport()&&!nMob()?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · ZONE AUTO','DRAG ME · AUTO ZONE')+'</div></div><span class="tk-grab">⠿</span></div>'+
+        '<div class="scal-token'+(nSport()&&!nMob()?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · MANUEL','DRAG ME · MANUAL')+'</div></div><span class="tk-grab">⠿</span></div>'+
       '</div>';
     attach();
+    renderResults();
+  }
+
+  function renderResults(){
+    const box=root.querySelector('#scalres'); if (!box) return;
+    const q=query.trim().toLowerCase();
+    if (!q){ box.innerHTML=''; box.style.display='none'; return; }
+    box.style.display='';
+    const m=CATALOG.filter(c=>c.fr.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)).slice(0,6);
+    box.innerHTML = m.length ? m.map(c=>{const added=palette.indexOf(c.id)>=0;return '<div class="scal-sres'+(added?' added':'')+'" data-add="'+c.id+'"><span class="sdot" style="background:'+FAM[c.fam]+'"></span><span class="srn">'+c[L()]+'</span><span class="scat">'+(added?tr('ajouté','added'):FAMLBL[c.fam][L()])+'</span></div>';}).join('')
+      : '<div class="scal-sres-none">'+tr('Aucun sport pour « ','No sport for “')+query+' ».</div>';
   }
 
   function renderGuide(){
-    const step = nMob() ? 2 : (nSport() ? 1 : 0);
+    const step = nSport() ? (nMob()?2:1) : 0;
     const steps=[
-      tr('Prends un sport, glisse-le sur un créneau.','Grab a sport, drop it on a slot.'),
-      tr('Ajoute la mobilité — le club choisit la zone.','Add mobility — the club picks the zone.'),
-      tr('Ta semaine se construit. Le club décide le reste.','Your week takes shape. The club does the rest.')
+      tr('Cherche et glisse ton sport.','Search and drag your sport.'),
+      tr('Le club auto-cale la mobilité (diagnostic).','The club auto-adds mobility (diagnostic).'),
+      tr('Ajoute-en à la main si tu veux. C\'est ta semaine.','Add more by hand if you like. It\'s your week.')
     ];
     let live;
-    if (!nSport()) live=tr('Glisse un sport pour voir le club décider.','Drop a sport to watch the club decide.');
-    else if (nMob()) live=tr('<b>'+nSport()+' séance'+(nSport()>1?'s':'')+'</b> calée'+(nSport()>1?'s':'')+' · le club prépare la mobilité avant chacune.','<b>'+nSport()+' session'+(nSport()>1?'s':'')+'</b> set · the club preps mobility before each.');
-    else { const last=sportById(sessions[sessions.length-1].sportId); const dl=DAYLBL[L()][sessions[sessions.length-1].di];
-      live=tr('Avant ton '+last.name.fr+' du '+dl+' → le club prépare <b>'+last.zone.fr+'</b>.','Before your '+last.name.en+' on '+dl+' → the club preps <b>'+last.zone.en+'</b>.'); }
+    if (!nSport()) live=tr('Ton diagnostic pointe <b>'+diagZone()+'</b>. Pose un sport → le club cale la mobilité autour.','Your diagnostic flags <b>'+diagZone()+'</b>. Drop a sport → the club sets mobility around it.');
+    else live=tr('<b>'+nMob()+'</b> bloc'+(nMob()>1?'s':'')+' de mobilité <b>'+diagZone()+'</b> calé'+(nMob()>1?'s':'')+' auto · '+nSport()+' séance'+(nSport()>1?'s':'')+'.','<b>'+nMob()+'</b> <b>'+diagZone()+'</b> mobility block'+(nMob()>1?'s':'')+' auto-set · '+nSport()+' session'+(nSport()>1?'s':'')+'.');
     guide.innerHTML =
       '<div class="dg-eyebrow">'+tr('Ce que le club décide','What the club decides')+'</div>'+
       steps.map((t,i)=>'<div class="dg-step '+(i<step?'done':(i===step?'on':''))+'"><span class="n">0'+(i+1)+'</span><span class="t">'+t+'</span></div>').join('')+
@@ -1613,7 +1673,7 @@ if (prefersReduced) {
   function toast(msg){
     if (!toastEl){ toastEl=document.createElement('div'); toastEl.className='scal-toast'; document.body.appendChild(toastEl); }
     toastEl.textContent=msg; toastEl.classList.add('show');
-    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove('show'),1700);
+    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove('show'),1900);
   }
 
   let drag=null;
@@ -1622,8 +1682,8 @@ if (prefersReduced) {
   function highlight(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
   function startGhost(){
     let label,sub,mint;
-    if (drag.kind==='mob'){ label=tr('Mobilité','Mobility'); sub=tr('ZONE AUTO · 8′','AUTO ZONE · 8′'); mint=true; }
-    else { const s=sportById(drag.sportId); label=s.name[L()]; sub=tr('NOUVELLE SÉANCE','NEW SESSION'); mint=false; }
+    if (drag.kind==='mob'){ label=tr('Mobilité','Mobility'); sub=diagZone()+' · 8′'; mint=true; }
+    else { const c=cat(drag.sportId); label=c[L()]; sub=tr('NOUVELLE SÉANCE','NEW SESSION'); mint=false; }
     const g=document.createElement('div'); g.className='scal-ghost';
     g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';
     document.body.appendChild(g); drag.ghost=g; drag.started=true; if (drag.src) drag.src.classList.add('dragging');
@@ -1649,12 +1709,18 @@ if (prefersReduced) {
   function drop(cell){
     const p=cell.getAttribute('data-cell').split('|'), di=+p[0], si=+p[1];
     if (keyAt(sessions,di,si)||keyAt(mob,di,si)){ toast(tr('Créneau occupé','Slot taken')); return; }
-    if (drag.kind==='mob'){ const z=autoZone(); mob.push({di,si,zone:z}); toast(tr('Mobilité ','Mobility ')+z+' · '+DAYLBL[L()][di]); }
-    else { const s=sportById(drag.sportId); sessions.push({di,si,sportId:s.id}); toast(s.name[L()]+' · '+DAYLBL[L()][di]); }
+    if (drag.kind==='mob'){ mob.push({di,si,zone:diagZone(),auto:false}); toast(tr('Mobilité ','Mobility ')+diagZone()+' · '+DAYLBL[L()][di]); return; }
+    const c=cat(drag.sportId); sessions.push({di,si,sportId:c.id});
+    const f=firstFree(di);
+    if (f){ mob.push({di:f.di,si:f.si,zone:diagZone(),auto:true}); toast(c[L()]+' + '+tr('mobilité ','mobility ')+diagZone()+' '+tr('(auto)','(auto)')); }
+    else toast(c[L()]+' · '+DAYLBL[L()][di]);
   }
   function attach(){
     root.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown', e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
     const mt=root.querySelector('[data-mob]'); if (mt) mt.addEventListener('pointerdown', e=>begin(e,{kind:'mob'},mt));
+    const inp=root.querySelector('#scalq'); if (inp) inp.addEventListener('input', e=>{ query=e.target.value; renderResults(); });
+    const res=root.querySelector('#scalres'); if (res) res.addEventListener('click', e=>{ const r=e.target.closest('[data-add]'); if (!r) return; const id=r.getAttribute('data-add'); if (palette.indexOf(id)<0){ palette.push(id); toast(cat(id)[L()]+tr(' ajouté','' + ' added')); } query=''; paintAll(); });
+    const dz=root.querySelector('[data-diag]'); if (dz) dz.addEventListener('click', ()=>{ diag=ri(0,ZONES.length-1); sessions=[]; mob=[]; query=''; toast(tr('Nouveau diagnostic · ','New diagnostic · ')+diagZone()); paintAll(); });
   }
 
   document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click', ()=>paintAll()));
