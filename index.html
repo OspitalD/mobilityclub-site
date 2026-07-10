@@ -1728,7 +1728,7 @@ if (prefersReduced) {
   function toast(msg){ if(!toastEl){toastEl=document.createElement('div');toastEl.className='scal-toast';document.body.appendChild(toastEl);} toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
   /* ---------- étapes 3-6 · vraies captures ---------- */
-  function renderImg(src,alt){ stage.classList.add('is-shot'); stage.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" loading="lazy">'; }
+  function renderImg(src,alt){ stage.classList.add('is-shot'); stage.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" decoding="async">'; }
 
   function renderStage(){
     stage.classList.remove('is-shot');
@@ -1752,6 +1752,8 @@ if (prefersReduced) {
   }
   function refreshBtn(){ nextBtn.textContent = step>=5 ? tr('↻ Recommencer','↻ Restart') : (step<=1 ? tr('Continuer →','Continue →') : tr('Suivant →','Next →')); }
   function paint(){ renderStage(); renderSteps(); tourNote(); refreshBtn(); }
+  /* précharge les captures du tour → pas de flash blanc entre les étapes (surtout mobile data) */
+  ['programme','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
   nextBtn.addEventListener('click',()=>{ step = step>=5 ? 0 : step+1; paint(); });
   document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>paint()));
   paint();
