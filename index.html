@@ -242,6 +242,8 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 .hero-title .em{ color:var(--accent-green); }
 .hero-cta-row{ margin-top:clamp(34px, 5vh, 52px); display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.hero-proof{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.3px; color:var(--text-secondary); }
+.hero-proof b{ color:var(--text-primary); font-weight:600; }
 
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:10px;
@@ -706,25 +708,20 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 <!-- ============================ 00 · HERO ============================ -->
 <section class="hero wrap" aria-label="Hero">
   <canvas class="hero-flow" aria-hidden="true"></canvas>
-  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mouvement de demain</span></span>
+  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mobilité quotidienne</span></span>
 
-  <p class="hero-lead reveal" data-i18n="hero_lead">
-    On ne vend pas la mobilité.<br><span class="soft">On retire les frictions du mouvement.</span>
-  </p>
+  <h1 class="hero-title reveal" data-i18n="hero_title">Bouge mieux.<br>Chaque jour.<br><span class="em">Sans y penser.</span></h1>
 
   <p class="hero-sub reveal" data-i18n="hero_sub">
-    On ne donne pas de programme — <strong>on prend les décisions.</strong><br>
-    On ne personnalise pas l'exercice — <strong>on personnalise l'expérience.</strong><br>
-    Tu n'as pas à réfléchir. On pense pour toi.
+    La mobilité qui tient dans ton quotidien — <strong>8 minutes par jour, décidées pour toi.</strong> Le club lit ton sport et ton corps, et te sert la bonne séance. Tu ouvres, tu bouges.
   </p>
-
-  <h1 class="hero-title reveal" data-i18n="hero_title">Chacun <span class="it">son</span> <span class="em">Mobility Club.</span></h1>
 
   <div class="hero-cta-row reveal">
     <a href="#doors" class="btn btn-primary" data-cta="hero">
-      <span data-i18n="hero_cta">Découvre le tien</span>
+      <span data-i18n="hero_cta">Commence gratuitement</span>
       <span class="arrow">→</span>
     </a>
+    <span class="hero-proof" data-i18n="hero_proof"><b>309 membres</b> · Diagnostic + Timer gratuits</span>
   </div>
 
   <div class="scroll-hint reveal" aria-hidden="true">
@@ -1086,11 +1083,11 @@ const LINKS = {
 const I18N = {
   fr: {
     wm_tag: '/ MANIFESTE',
-    hero_eyebrow: 'Le club de mouvement de demain',
-    hero_lead: "On ne vend pas la mobilité.<br><span class=\"soft\">On retire les frictions du mouvement.</span>",
-    hero_sub: "On ne donne pas de programme — <strong>on prend les décisions.</strong><br>On ne personnalise pas l'exercice — <strong>on personnalise l'expérience.</strong><br>Tu n'as pas à réfléchir. On pense pour toi.",
-    hero_title: "Chacun <span class=\"it\">son</span> <span class=\"em\">Mobility Club.</span>",
-    hero_cta: 'Découvre le tien',
+    hero_eyebrow: 'Le club de mobilité quotidienne',
+    hero_title: "Bouge mieux.<br>Chaque jour.<br><span class=\"em\">Sans y penser.</span>",
+    hero_sub: "La mobilité qui tient dans ton quotidien — <strong>8 minutes par jour, décidées pour toi.</strong> Le club lit ton sport et ton corps, et te sert la bonne séance. Tu ouvres, tu bouges.",
+    hero_cta: 'Commence gratuitement',
+    hero_proof: "<b>309 membres</b> · Diagnostic + Timer gratuits",
     scroll_hint: 'Défile',
     shot_today: 'Ta séance du jour — déjà là',
     shot_onboarding: "Ton profil — dans l'app",
@@ -1171,11 +1168,11 @@ const I18N = {
 
   en: {
     wm_tag: '/ MANIFESTO',
-    hero_eyebrow: 'The movement club of tomorrow',
-    hero_lead: "We don't sell mobility.<br><span class=\"soft\">We remove the friction of movement.</span>",
-    hero_sub: "We don't hand you a program — <strong>we make the decisions.</strong><br>We don't personalize the exercise — <strong>we personalize the whole experience.</strong><br>You don't have to think. We think for you.",
-    hero_title: "<span class=\"it\">Your</span> <span class=\"em\">Mobility Club.</span>",
-    hero_cta: 'Find yours',
+    hero_eyebrow: 'The daily mobility club',
+    hero_title: "Move better.<br>Every day.<br><span class=\"em\">Without thinking.</span>",
+    hero_sub: "Mobility that fits into your life — <strong>8 minutes a day, decided for you.</strong> The club reads your sport and your body and serves you the right session. You open it, you move.",
+    hero_cta: 'Start free',
+    hero_proof: "<b>309 members</b> · Free Diagnostic + Timer",
     scroll_hint: 'Scroll',
     shot_today: "Today's session — already there",
     shot_onboarding: 'Your profile — in the app',
