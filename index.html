@@ -571,6 +571,16 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .mc-slider::-moz-range-track{ height:4px; border-radius:2px; background:rgba(255,255,255,0.1); }
 .mc-slider::-moz-range-progress{ height:4px; border-radius:2px; background:#E8A020; }
 .mc-slider::-moz-range-thumb{ height:24px; width:24px; border-radius:50%; background:#E8A020; border:4px solid var(--bg-primary); }
+/* Calendrier (étape 2 du tour) compact → tient dans le phone sans scroll interne (mobile + desktop) */
+.scal-hero{ font-size:20px; margin:8px 0 4px; }
+.scal-diag{ margin-top:8px; padding:7px 11px; }
+.scal-gridwrap{ margin-top:8px; }
+.scal-grow{ padding:2px 0; }
+.scal-cell{ min-height:32px; }
+.scal-tray{ margin-top:9px; padding:11px; }
+.scal-tray-head{ margin-top:8px !important; }
+.scal-token{ margin-top:7px; padding:9px 12px; }
+.scal-search input{ height:38px; }
 
 @media (max-width:860px){
   .demo{ grid-template-columns:1fr; }
@@ -807,16 +817,6 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
   .sticky-inner{ border-radius:16px; padding:12px 12px 12px 18px; gap:12px; }
   .sticky-txt{ font-size:12.5px; }
   .sticky-btn{ width:auto; height:44px; padding-inline:16px; }
-  /* Calendrier (étape 2 du tour) resserré sur mobile → tient dans le phone sans scroll interne */
-  .scal-hero{ font-size:20px; margin:8px 0 4px; }
-  .scal-diag{ margin-top:8px; padding:7px 11px; }
-  .scal-gridwrap{ margin-top:8px; }
-  .scal-grow{ padding:2px 0; }
-  .scal-cell{ min-height:32px; }
-  .scal-tray{ margin-top:9px; padding:11px; }
-  .scal-tray-head{ margin-top:8px !important; }
-  .scal-token{ margin-top:7px; padding:9px 12px; }
-  .scal-search input{ height:38px; }
 }
 
 @media (prefers-reduced-motion:reduce){
