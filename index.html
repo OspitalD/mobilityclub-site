@@ -528,7 +528,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .scal-sres-none{ padding:12px; font-size:12.5px; color:var(--text-tertiary); }
 
 /* ---- Tour produit : phone-stage + stepper + slider diagnostic ---- */
-.phone.tour-stage{ height:560px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
+.phone.tour-stage{ height:612px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
 .phone.tour-stage::-webkit-scrollbar{ width:0; }
 .phone.tour-stage.is-shot{ padding:0; overflow:hidden; }
 .tour-img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top center; }
@@ -546,24 +546,26 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .tour-side .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
 .tour-side .dg-live .v b{ color:var(--accent-green); }
 /* diagnostic slider (or) */
-.td-instr{ font-size:14px; color:var(--text-primary); line-height:1.42; margin-bottom:16px; }
-.td-tabs{ display:flex; border-bottom:1px solid var(--border-active); margin-bottom:15px; }
+.td-instr{ font-size:13.5px; color:var(--text-primary); line-height:1.4; margin-bottom:12px; }
+.td-tabs{ display:flex; border-bottom:1px solid var(--border-active); margin-bottom:12px; }
 .td-tab{ flex:1; appearance:none; background:none; border:none; cursor:pointer; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-secondary); padding:10px 0; position:relative; }
 .td-tab.on{ color:#E8A020; }
 .td-tab.on::after{ content:""; position:absolute; left:14%; right:14%; bottom:-1px; height:2px; background:#E8A020; border-radius:2px; }
-.td-lead{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); line-height:1.5; margin-bottom:14px; }
+.td-lead{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); line-height:1.5; margin-bottom:11px; }
 .td-card{ border:1px solid rgba(232,160,32,0.3); border-radius:16px; padding:20px 18px; text-align:center; background:rgba(232,160,32,0.05); position:relative; }
 .td-badge{ position:absolute; top:12px; right:12px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.6px; color:#E8A020; background:rgba(232,160,32,0.12); border:1px solid rgba(232,160,32,0.3); border-radius:100px; padding:4px 9px; }
-.td-pal{ font-family:var(--font-display); font-size:24px; font-weight:800; letter-spacing:-0.02em; margin-top:6px; color:var(--text-primary); }
+.td-pal{ font-size:15px; font-weight:700; letter-spacing:-0.01em; text-align:center; color:var(--text-primary); margin:0 0 2px; }
 .td-desc{ font-size:13px; color:var(--text-secondary); margin-top:6px; }
+.td-video-wrap{ position:relative; width:100%; max-width:212px; aspect-ratio:3/4; margin:0 auto 10px; border-radius:14px; overflow:hidden; border:1px solid var(--border-strong); background:var(--bg-surface); }
+.td-frame{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; background:var(--bg-surface); transition:opacity .18s ease; }
 .td-scale{ display:flex; justify-content:space-between; margin-top:2px; padding:0 8px; }
 .td-scale span{ font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); }
 .td-scale span.on{ color:#E8A020; font-weight:700; }
-.td-score{ display:flex; align-items:center; justify-content:space-between; margin-top:18px; padding-top:16px; border-top:1px solid var(--hair); }
+.td-score{ display:flex; align-items:center; justify-content:space-between; margin-top:13px; padding-top:13px; border-top:1px solid var(--hair); }
 .td-score .k{ font-family:var(--font-mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
 .td-score .v b{ font-family:var(--font-display); font-size:30px; font-weight:800; color:var(--accent-green); }
 .td-score .v span{ font-size:13px; color:var(--text-tertiary); }
-.mc-slider{ -webkit-appearance:none; appearance:none; width:100%; height:40px; background:transparent; cursor:pointer; margin-top:14px; }
+.mc-slider{ -webkit-appearance:none; appearance:none; width:100%; height:34px; background:transparent; cursor:pointer; margin-top:12px; }
 .mc-slider::-webkit-slider-runnable-track{ height:4px; border-radius:2px; background:linear-gradient(90deg,#E8A020 0 var(--fill,75%), rgba(255,255,255,0.1) var(--fill,75%) 100%); }
 .mc-slider::-webkit-slider-thumb{ -webkit-appearance:none; height:24px; width:24px; border-radius:50%; background:#E8A020; margin-top:-10px; border:4px solid var(--bg-primary); box-shadow:0 0 0 1px rgba(232,160,32,0.4), 0 0 14px rgba(232,160,32,0.5); }
 .mc-slider::-moz-range-track{ height:4px; border-radius:2px; background:rgba(255,255,255,0.1); }
@@ -1625,28 +1627,43 @@ if (prefersReduced) {
     {fr:'Retest à J+30',en:'Retest at day 30'}
   ];
 
-  /* ---------- ÉTAPE 1 · diagnostic (slider amplitude) ---------- */
-  const PALLIERS = [
-    {a:'110°', d:{fr:'Main à 40+ cm du mur',en:'Hand 40+ cm from wall'}},
-    {a:'130°', d:{fr:'Main à 30–40 cm du mur',en:'Hand 30–40 cm from wall'}},
-    {a:'150°', d:{fr:'Main à 20–30 cm du mur',en:'Hand 20–30 cm from wall'}},
-    {a:'170°', d:{fr:'Main à 10–20 cm du mur',en:'Hand 10–20 cm from wall'}},
-    {a:'180°', d:{fr:'Main au mur — amplitude max',en:'Hand on wall — full range'}}
+  /* ---------- ÉTAPE 1 · diagnostic RÉEL (épaule · flexion, vraie vidéo) ---------- */
+  const DIAG_INSTR={fr:"Lève un bras vers le haut, pousse-le plus en arrière avec ta main libre. Limite sans que le dos décolle du mur.",en:"Raise one arm, push it further back with your free hand. Limit before your back leaves the wall."};
+  const PALLIERS=[
+    {fr:"Bras sous l'horizontale", en:"Arm below horizontal"},
+    {fr:"Bras au-dessus de l'horizontale (≈120°)", en:"Arm above horizontal (≈120°)"},
+    {fr:"Bras proche de la verticale (≈150°)", en:"Arm near vertical (≈150°)"},
+    {fr:"Main à 10–20 cm du mur (≈170°)", en:"Hand 10–20 cm from wall (≈170°)"},
+    {fr:"Main touche le mur, omoplates plaquées", en:"Hand touches wall, blades flat"}
   ];
   let side='D', lvl={D:3, G:3};
-  const diagScore = () => Math.round(46 + ((lvl.D+lvl.G)/2)/4*40); // ~46..86
+  const diagScore = () => Math.round(46 + ((lvl.D+lvl.G)/2)/4*40);
+  function diagFrame(){ const img=stage.querySelector('#tdimg'); if(!img) return; img.src='assets/app/diag-p'+(lvl[side]+1)+'.jpg'; }
+  function leadTxt(){ return tr('TON NIVEAU · ','YOUR LEVEL · ')+(side==='D'?tr('CÔTÉ DROIT','RIGHT'):tr('CÔTÉ GAUCHE','LEFT'))+' · '+tr('GLISSE JUSQU\'À TON AMPLITUDE','SLIDE TO YOUR RANGE'); }
+  function diagUpdate(){
+    const q=s=>stage.querySelector(s), v=lvl[side];
+    if(q('#tdpal')) q('#tdpal').textContent=PALLIERS[v][L()];
+    if(q('#tdbadge')) q('#tdbadge').textContent='● '+tr('PALIER ','TIER ')+(v+1);
+    if(q('#tdscore')) q('#tdscore').textContent=diagScore();
+    if(q('#tdlead')) q('#tdlead').textContent=leadTxt();
+    const sl=q('#tdslide'); if(sl){ sl.value=v; sl.style.setProperty('--fill',(v*25)+'%'); }
+    const sc=q('#tdscale'); if(sc) sc.innerHTML=[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('');
+    stage.querySelectorAll('.td-tab').forEach(t=>t.classList.toggle('on',t.getAttribute('data-side')===side));
+    diagFrame(); tourNote();
+  }
   function renderDiag(){
-    const p = PALLIERS[lvl[side]];
+    const v=lvl[side];
     stage.innerHTML =
-      '<div class="td-instr">'+tr('Lève un bras, pousse-le en arrière. Limite sans que le dos décolle du mur.','Raise one arm, push it back. Limit before your back leaves the wall.')+'</div>'+
+      '<div class="td-instr">'+DIAG_INSTR[L()]+'</div>'+
       '<div class="td-tabs"><button class="td-tab'+(side==='D'?' on':'')+'" data-side="D">'+tr('Côté droit','Right side')+'</button><button class="td-tab'+(side==='G'?' on':'')+'" data-side="G">'+tr('Côté gauche','Left side')+'</button></div>'+
-      '<div class="td-lead">'+tr('TON NIVEAU · ','YOUR LEVEL · ')+(side==='D'?tr('CÔTÉ DROIT','RIGHT'):tr('CÔTÉ GAUCHE','LEFT'))+' · '+tr('GLISSE LE CURSEUR','SLIDE THE CURSOR')+'</div>'+
-      '<div class="td-card"><div class="td-badge">● '+tr('PALIER ','TIER ')+(lvl[side]+1)+'</div><div class="td-pal">'+tr('Palier ','Tier ')+(lvl[side]+1)+'</div><div class="td-desc">'+p.d[L()]+' (≈'+p.a+')</div></div>'+
-      '<input type="range" class="mc-slider" min="0" max="4" step="1" value="'+lvl[side]+'" style="--fill:'+(lvl[side]*25)+'%" id="tdslide">'+
-      '<div class="td-scale">'+[1,2,3,4,5].map((n,i)=>'<span class="'+(i===lvl[side]?'on':'')+'">'+n+'</span>').join('')+'</div>'+
-      '<div class="td-score"><div class="k">'+tr('SCORE ÉPAULE','SHOULDER SCORE')+'</div><div class="v"><b>'+diagScore()+'</b><span>/100</span></div></div>';
-    stage.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); renderDiag(); tourNote(); });
-    const s=stage.querySelector('#tdslide'); if (s) s.oninput=e=>{ lvl[side]=+e.target.value; renderDiag(); tourNote(); };
+      '<div class="td-lead" id="tdlead">'+leadTxt()+'</div>'+
+      '<div class="td-video-wrap"><img class="td-frame" id="tdimg" src="assets/app/diag-p'+(v+1)+'.jpg" alt="'+tr('Test épaule flexion','Shoulder flexion test')+'"><span class="td-badge" id="tdbadge">● '+tr('PALIER ','TIER ')+(v+1)+'</span></div>'+
+      '<div class="td-pal" id="tdpal">'+PALLIERS[v][L()]+'</div>'+
+      '<input type="range" class="mc-slider" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide">'+
+      '<div class="td-scale" id="tdscale">'+[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('')+'</div>'+
+      '<div class="td-score"><div class="k">'+tr('SCORE ÉPAULE','SHOULDER SCORE')+'</div><div class="v"><b id="tdscore">'+diagScore()+'</b><span>/100</span></div></div>';
+    stage.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
+    const s=stage.querySelector('#tdslide'); if(s) s.oninput=e=>{ lvl[side]=+e.target.value; diagUpdate(); };
   }
 
   /* ---------- ÉTAPE 2 · calendrier drag & drop ---------- */
