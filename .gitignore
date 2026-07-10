@@ -6,3 +6,7 @@ node_modules/
 
 # Design context interne — hors repo public
 .impeccable.md
+
+# Outillage local (preview MCP, POC hero) — ne pas publier
+.claude/
+poc-hero-*.html

@@ -52,6 +52,7 @@
   --maxw: 1160px;
   --gutter: clamp(20px, 5vw, 64px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-line: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -293,6 +294,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 
 /* SECTION 02 — Reversal */
 .reversal{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:clamp(32px,6vw,80px); align-items:center; }
+.reversal-copy{ position:relative; padding-left:clamp(20px,2.4vw,30px); }
 .reversal-headline{
   font-size:clamp(40px, 7.2vw, 92px); font-weight:800; line-height:0.98;
   letter-spacing:-0.035em;
@@ -787,10 +789,57 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 .reveal{ opacity:0; transform:translateY(26px); transition:opacity .8s var(--ease), transform .8s var(--ease); will-change:opacity, transform; }
 .reveal.in{ opacity:1; transform:none; }
 
+/* ---- Masked line reveal (split-text ligne par ligne) ----
+   Chaque ligne est un masque overflow:hidden ; l'intérieur monte de sous le masque.
+   Utilisé sur les moments manifeste (statement problème, headline renversement). */
+.reveal-lines .ln{ display:block; overflow:hidden; padding-bottom:0.04em; }
+.reveal-lines .ln-i{
+  display:block; transform:translateY(112%); will-change:transform;
+  transition:transform 0.95s var(--ease-line);
+}
+.reveal-lines.in .ln-i{ transform:none; }
+.reveal-lines .w{ display:inline; }
+/* stagger pour les lignes écrites à la main (le split JS pose son propre delay inline) */
+.reveal-lines .ln:nth-child(2) .ln-i{ transition-delay:95ms; }
+.reveal-lines .ln:nth-child(3) .ln-i{ transition-delay:190ms; }
+
+/* ---- Clip wipe reveal (démasquage par le bord bas) ---- */
+.reveal-clip{
+  clip-path:inset(0 0 100% 0); transform:translateY(22px); opacity:0;
+  transition:clip-path 1.05s var(--ease-line), transform 1.05s var(--ease-line), opacity 0.8s var(--ease);
+  will-change:clip-path, transform;
+}
+.reveal-clip.in{ clip-path:inset(0 0 0 0); transform:none; opacity:1; }
+
+/* ---- Section épinglée (scroll-driven) : le renversement ---- */
+.pin-track{ position:relative; }
+.pin-stage{ position:sticky; top:0; min-height:100vh; display:flex; flex-direction:column; justify-content:center; }
+/* piste de progression verticale à gauche du couplet, remplie au scroll */
+.pin-rail{ position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--hair); overflow:hidden; }
+.pin-rail::after{ content:""; position:absolute; inset:0 0 auto 0; height:100%; transform:scaleY(var(--pin, 0)); transform-origin:top; background:linear-gradient(180deg, var(--accent-green), rgba(62,207,160,0.25)); }
+/* activation séquentielle des 3 étapes pilotée au scroll */
+.reversal-steps .rstep{ color:var(--text-tertiary); transition:color 0.5s var(--ease), border-color 0.5s var(--ease); }
+.reversal-steps .rstep .n{ color:var(--text-tertiary); transition:color 0.5s var(--ease); }
+.reversal-steps .rstep.on{ color:var(--text-secondary); border-color:rgba(62,207,160,0.28); }
+.reversal-steps .rstep.on b{ color:var(--text-primary); }
+.reversal-steps .rstep.on .n{ color:var(--accent-green); }
+
+/* Nombre qui compte — tabular pour éviter le jitter de largeur */
+.num{ font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+
+/* ---- Lenis smooth-scroll (classes posées par la lib sur <html>) ---- */
+html.lenis, html.lenis body{ height:auto; }
+html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smooth natif en doublon */
+.lenis [data-lenis-prevent]{ overscroll-behavior:contain; }
+.lenis.lenis-stopped{ overflow:clip; }
+
 /* ============================================================
    Responsive
    ============================================================ */
 @media (max-width:900px){
+  /* pas d'épinglage sur mobile : flux normal, la piste ne réserve pas de hauteur */
+  .pin-sec .pin-track{ height:auto !important; }
+  .pin-sec .pin-stage{ position:static; min-height:0; display:block; }
   .reversal{ grid-template-columns:1fr; gap:36px; align-items:start; }
   .method{ grid-template-columns:1fr; gap:40px; }
   .method-media{ order:-1; }
@@ -820,6 +869,10 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 @media (prefers-reduced-motion:reduce){
   *{ animation:none !important; scroll-behavior:auto !important; }
   .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  .reveal-lines .ln-i{ transform:none !important; transition:none !important; }
+  .reveal-clip{ clip-path:none !important; opacity:1 !important; transform:none !important; transition:none !important; }
+  .reversal-steps .rstep, .reversal-steps .rstep .n{ color:inherit; }
+  .pin-stage{ position:static !important; min-height:0 !important; }
   .bar-fill{ transition:none !important; }
 }
 </style>
@@ -890,7 +943,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <div class="section-head reveal">
       <span class="eyebrow muted"><span class="idx">01</span><span data-i18n="s1_eyebrow">Le problème</span></span>
     </div>
-    <p class="problem-stmt reveal" data-i18n="s1_text">
+    <p class="problem-stmt reveal-lines" data-split-lines data-i18n="s1_text">
       Tu sais que la mobilité compte. <span class="soft">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class="warn">trois semaines.</span>
     </p>
   </div>
@@ -899,31 +952,37 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 <hr class="divider" />
 
 <!-- ============================ 02 · RENVERSEMENT ============================ -->
-<section class="pad" aria-label="Le renversement">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow"><span class="idx">02</span><span data-i18n="s2_eyebrow">Le renversement</span></span>
-    </div>
-    <div class="reversal">
-      <div class="reversal-copy">
-        <h2 class="reversal-headline reveal">We plan.<br><span class="stop it">You move.</span></h2>
-        <p class="reversal-text reveal" data-i18n="s2_text">
-          Tu ouvres. <strong>Tout est prêt.</strong> Tu ne réfléchis pas. Tu bouges. Le club travaille pendant que tu vis.
-        </p>
-        <div class="reversal-steps reveal" data-stagger>
-          <div class="rstep"><span class="n">01</span><span data-i18n="s2_step1">Tu ouvres l'app.</span></div>
-          <div class="rstep"><span class="n">02</span><span data-i18n="s2_step2"><b>La séance du jour est déjà là.</b></span></div>
-          <div class="rstep"><span class="n">03</span><span data-i18n="s2_step3">Tu lances. Tu bouges. C'est tout.</span></div>
-        </div>
+<section class="pad pin-sec" id="reversal" aria-label="Le renversement">
+  <div class="pin-track" id="pinTrack">
+    <div class="pin-stage wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="idx">02</span><span data-i18n="s2_eyebrow">Le renversement</span></span>
       </div>
-      <div class="reversal-media reveal">
-        <div class="shot-wrap">
-          <figure class="shot">
-            <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
-                 alt="Écran Aujourd'hui du Mobility Club : la séance du jour, déjà prête, avec bouton Lancer la séance" />
-          </figure>
+      <div class="reversal">
+        <div class="reversal-copy">
+          <span class="pin-rail" aria-hidden="true"></span>
+          <h2 class="reversal-headline reveal-lines">
+            <span class="ln"><span class="ln-i">We plan.</span></span>
+            <span class="ln"><span class="ln-i stop it">You move.</span></span>
+          </h2>
+          <p class="reversal-text reveal" data-i18n="s2_text">
+            Tu ouvres. <strong>Tout est prêt.</strong> Tu ne réfléchis pas. Tu bouges. Le club travaille pendant que tu vis.
+          </p>
+          <div class="reversal-steps" data-steps>
+            <div class="rstep"><span class="n">01</span><span data-i18n="s2_step1">Tu ouvres l'app.</span></div>
+            <div class="rstep"><span class="n">02</span><span data-i18n="s2_step2"><b>La séance du jour est déjà là.</b></span></div>
+            <div class="rstep"><span class="n">03</span><span data-i18n="s2_step3">Tu lances. Tu bouges. C'est tout.</span></div>
+          </div>
         </div>
-        <span class="shot-cap"><span class="dot"></span><span data-i18n="shot_today">Ta séance du jour — déjà là</span></span>
+        <div class="reversal-media reveal-clip">
+          <div class="shot-wrap">
+            <figure class="shot">
+              <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
+                   alt="Écran Aujourd'hui du Mobility Club : la séance du jour, déjà prête, avec bouton Lancer la séance" />
+            </figure>
+          </div>
+          <span class="shot-cap"><span class="dot"></span><span data-i18n="shot_today">Ta séance du jour — déjà là</span></span>
+        </div>
       </div>
     </div>
   </div>
@@ -937,7 +996,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo</span></span>
     </div>
-    <h2 class="demo-title reveal" data-i18n="demo_title">Compose ta semaine.<br>Le club cale la mobilité.</h2>
+    <h2 class="demo-title reveal-lines" data-split-lines data-i18n="demo_title">Compose ta semaine.<br>Le club cale la mobilité.</h2>
     <p class="demo-sub reveal" data-i18n="demo_sub">Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.</p>
 
     <div class="demo reveal">
@@ -964,7 +1023,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     </div>
     <div class="method">
       <div>
-        <blockquote class="method-quote reveal" data-i18n="s3_quote">
+        <blockquote class="method-quote reveal-lines" data-split-lines data-i18n="s3_quote">
           Ce n'est pas une IA générique. <span class="hl">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.
         </blockquote>
         <div class="method-sign reveal">
@@ -980,7 +1039,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
           <span class="pill">UEFA&nbsp;B</span>
         </div>
       </div>
-      <div class="method-media reveal">
+      <div class="method-media reveal-clip">
         <div class="photo-slot" role="img" aria-label="Emplacement photo Damien Ospital">
           <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
           <span class="frame-corner bl"></span><span class="frame-corner br"></span>
@@ -999,12 +1058,12 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx">04</span><span data-i18n="s4_eyebrow">1 membre = 1 Mobility Club</span></span>
     </div>
-    <p class="s4-intro reveal" data-i18n="s4_intro">
+    <p class="s4-intro reveal-lines" data-split-lines data-i18n="s4_intro">
       Le même moteur. <span class="dim">Un produit différent pour chaque membre — façonné par son sport, son corps, sa semaine.</span>
     </p>
 
     <div class="s4-showcase">
-      <div class="shot-wrap reveal">
+      <div class="shot-wrap reveal-clip">
         <figure class="shot">
           <img src="assets/app/onboarding.png" width="1080" height="1350" loading="lazy"
                alt="Onboarding du Mobility Club : choix du sport principal, dominante d'entraînement et fréquence hebdomadaire" />
@@ -1047,8 +1106,8 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
       </div>
     </div>
 
-    <div class="s4-close reveal">
-      <p class="big" data-i18n="s4_close">Même logiciel. <span class="hl">Un produit par membre.</span></p>
+    <div class="s4-close">
+      <p class="big reveal-lines" data-split-lines data-i18n="s4_close">Même logiciel. <span class="hl">Un produit par membre.</span></p>
     </div>
   </div>
 </section>
@@ -1061,17 +1120,17 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <div class="section-head reveal">
       <span class="eyebrow muted"><span class="idx">05</span><span data-i18n="s5_eyebrow">Résultats membres</span></span>
     </div>
-    <h2 class="s5-title reveal" data-i18n="s5_title">Ce qui change, une fois dedans.</h2>
+    <h2 class="s5-title reveal-lines" data-split-lines data-i18n="s5_title">Ce qui change, une fois dedans.</h2>
 
     <div class="s5-proof">
-      <div class="shot-wrap reveal">
+      <div class="shot-wrap reveal-clip">
         <figure class="shot">
           <img src="assets/app/progression.png" width="1080" height="1350" loading="lazy"
                alt="Écran Progression du Mobility Club : score global, évolution +14 points et radar mobilité baseline vs aujourd'hui" />
         </figure>
       </div>
       <div class="reveal">
-        <p class="s5-proof-h" data-i18n="s5_proof_h">Preuve, <span class="hl">pas promesse.</span></p>
+        <p class="s5-proof-h reveal-lines" data-split-lines data-i18n="s5_proof_h">Preuve, <span class="hl">pas promesse.</span></p>
         <p class="s5-proof-p" data-i18n="s5_proof_p">
           Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.
         </p>
@@ -1129,7 +1188,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     </div>
 
     <div class="diag-preview reveal">
-      <div class="shot-wrap">
+      <div class="shot-wrap reveal-clip">
         <figure class="shot">
           <img src="assets/app/diagnostic-result.png" width="1290" height="2796" loading="lazy"
                alt="Écran de résultat du Mobility Diagnostic : radar 5 zones, score 86/100, « Base solide »" />
@@ -1203,7 +1262,7 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
   <div class="wrap">
     <div class="footer-brand reveal">
       <img src="assets/brand/logo-otb.png" width="700" height="700" loading="lazy" class="footer-logo" alt="Mobility Club — Out of the box" />
-      <p class="footer-mission" data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
+      <p class="footer-mission reveal-lines" data-split-lines data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
     </div>
     <div class="footer-bottom">
       <div class="footer-links">
@@ -1217,6 +1276,8 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
   </div>
 </footer>
 
+<!-- Lenis smooth-scroll (dégradation gracieuse si le CDN échoue → scroll natif) -->
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
 <script>
 /* ============================================================
    PLACEHOLDERS — URLs de l'écosystème.
@@ -1227,6 +1288,84 @@ const LINKS = {
   timer:      'https://mobilitytimer.com',                  // Mobility Timer (gratuit)
   club:       'https://www.skool.com/mobility-club/about'   // Mobility Club — communauté Skool (le produit)
 };
+
+/* ============================================================
+   MOTION TOOLKIT (Phase A) — réutilisable, propageable.
+   splitLines : découpe en lignes visuelles masquées (.ln > .ln-i),
+   en préservant les spans inline (.soft/.warn) ; re-mesurable au
+   resize et re-jouable au changement de langue.
+   countUp    : compteur 0 → cible, easing cubic-out, une seule fois.
+   ============================================================ */
+const PRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function splitLines(el){
+  if (PRM) return;
+  // HTML pristine : 1er passage = lecture DOM ; ensuite on repart de data-raw.
+  let raw = el.getAttribute('data-raw');
+  if (raw == null){ raw = el.innerHTML; el.setAttribute('data-raw', raw); }
+  el.innerHTML = raw;
+
+  // 1) aplatir en mots en conservant la classe du span source (.soft/.warn)
+  const words = [];
+  (function walk(node, cls){
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3){
+        n.textContent.split(/(\s+)/).forEach(p => {
+          if (!p) return;
+          if (/^\s+$/.test(p)) words.push({ space:true });
+          else words.push({ word:p, cls });
+        });
+      } else if (n.nodeType === 1){
+        if (n.tagName === 'BR'){ words.push({ br:true }); return; }
+        walk(n, n.getAttribute('class') || cls);
+      }
+    });
+  })(el, '');
+
+  // 2) rendu à plat pour mesurer les retours à la ligne réels
+  el.innerHTML = '';
+  const flat = [];
+  words.forEach(w => {
+    if (w.space){ el.appendChild(document.createTextNode(' ')); return; }
+    if (w.br){ el.appendChild(document.createElement('br')); return; }  // saut de ligne intentionnel
+    const s = document.createElement('span');
+    s.className = 'w' + (w.cls ? ' ' + w.cls : '');
+    s.textContent = w.word;
+    el.appendChild(s); flat.push(s);
+  });
+
+  // 3) grouper par offsetTop → lignes visuelles
+  const lines = []; let cur = null, top = null;
+  flat.forEach(s => {
+    const t = s.offsetTop;
+    if (top === null || Math.abs(t - top) > 3){ cur = []; lines.push(cur); top = t; }
+    cur.push(s);
+  });
+
+  // 4) envelopper chaque ligne dans .ln > .ln-i (stagger via transition-delay)
+  el.innerHTML = '';
+  lines.forEach((line, i) => {
+    const ln = document.createElement('span'); ln.className = 'ln';
+    const inner = document.createElement('span'); inner.className = 'ln-i';
+    inner.style.transitionDelay = (i * 85) + 'ms';
+    line.forEach((s, j) => { if (j) inner.appendChild(document.createTextNode(' ')); inner.appendChild(s); });
+    ln.appendChild(inner); el.appendChild(ln);
+  });
+}
+
+function countUp(el){
+  if (el.__counted) return; el.__counted = true;
+  const target = parseFloat(el.getAttribute('data-count'));
+  if (isNaN(target)) return;
+  if (PRM){ el.textContent = target.toLocaleString('fr-FR'); return; }
+  const dur = 1200, t0 = performance.now();
+  (function step(now){
+    const p = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * e).toLocaleString('fr-FR');
+    if (p < 1) requestAnimationFrame(step);
+  })(performance.now());
+}
 
 /* ============================================================
    i18n — dictionnaire FR / EN. FR par défaut.
@@ -1240,7 +1379,7 @@ const I18N = {
     hero_title: "Bouge mieux.<br>Chaque jour.<br><span class=\"em\">Sans y penser.</span>",
     hero_sub: "La mobilité qui tient dans ton quotidien — <strong>8 minutes par jour, décidées pour toi.</strong> Le club lit ton sport et ton corps, et te sert la bonne séance. Tu ouvres, tu bouges.",
     hero_cta: 'Commence gratuitement',
-    hero_proof: "<b>309 membres</b> · Diagnostic + Timer gratuits",
+    hero_proof: '<b><span class="num" data-count="309">309</span> membres</b> · Diagnostic + Timer gratuits',
     scroll_hint: 'Défile',
     shot_today: 'Ta séance du jour — déjà là',
     shot_onboarding: "Ton profil — dans l'app",
@@ -1325,7 +1464,7 @@ const I18N = {
     hero_title: "Move better.<br>Every day.<br><span class=\"em\">Without thinking.</span>",
     hero_sub: "Mobility that fits into your life — <strong>8 minutes a day, decided for you.</strong> The club reads your sport and your body and serves you the right session. You open it, you move.",
     hero_cta: 'Start free',
-    hero_proof: "<b>309 members</b> · Free Diagnostic + Timer",
+    hero_proof: '<b><span class="num" data-count="309">309</span> members</b> · Free Diagnostic + Timer',
     scroll_hint: 'Scroll',
     shot_today: "Today's session — already there",
     shot_onboarding: 'Your profile — in the app',
@@ -1419,6 +1558,14 @@ function setLang(lang){
   const clubGo = document.querySelector('[data-door="club"] .door-go span:first-child');
   if (clubGo) clubGo.innerHTML = dict.door_go_club;
 
+  // re-découper les statements en lignes masquées (le texte vient d'être remplacé)
+  if (!PRM){
+    document.querySelectorAll('[data-split-lines]').forEach(el => {
+      el.removeAttribute('data-raw');   // forcer la relecture du nouveau texte
+      splitLines(el);                   // si l'élément a déjà .in, les lignes s'affichent aussitôt
+    });
+  }
+
   // toggle UI state
   document.querySelectorAll('.lang button').forEach(b => {
     b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
@@ -1493,12 +1640,86 @@ frame();
 window.addEventListener('scroll', onScroll, { passive:true });
 window.addEventListener('resize', onScroll, { passive:true });
 
+/* ============================================================
+   Lenis smooth-scroll (site-wide) + ancres pilotées.
+   Dégradation gracieuse : reduced-motion ou CDN KO → scroll natif.
+   Lenis garde window.scrollY synchrone → le hero WebGL, la barre de
+   progression et la parallaxe continuent de fonctionner tels quels.
+   ============================================================ */
+let lenis = null;
+if (!PRM && window.Lenis){
+  lenis = new Lenis({
+    duration: 1.05,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.5
+  });
+  lenis.on('scroll', onScroll);
+  const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+  // ancres internes (#doors, #top…) pilotées en douceur par Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (!id || id.length < 2) return;
+      const tgt = document.querySelector(id);
+      if (!tgt) return;
+      e.preventDefault();
+      lenis.scrollTo(tgt, { duration: 1.1 });
+    });
+  });
+}
+
+/* ============================================================
+   Section épinglée « 02 · renversement » (scroll-driven).
+   La piste réserve de la hauteur ; le couplet reste centré pendant
+   qu'on avance, la piste mint se remplit et les 3 étapes s'allument
+   séquentiellement. Désactivée sur mobile et en reduced-motion.
+   ============================================================ */
+(function pinReversal(){
+  const track = document.getElementById('pinTrack');
+  const sec = document.getElementById('reversal');
+  if (!track || !sec) return;
+  const rail = sec.querySelector('.pin-rail');
+  const steps = [...sec.querySelectorAll('[data-steps] .rstep')];
+  const desktop = window.matchMedia('(min-width:901px)');
+  const EXTRA = 0.5; // demi-écran de scroll pendant l'épinglage (pin adouci)
+
+  function setHeight(){
+    if (PRM || !desktop.matches){ track.style.height = ''; return; }
+    track.style.height = Math.round(window.innerHeight * (1 + EXTRA)) + 'px';
+  }
+  function update(){
+    if (PRM || !desktop.matches){
+      steps.forEach(s => s.classList.add('on'));
+      if (rail) rail.style.setProperty('--pin', '1');
+      return;
+    }
+    const r = track.getBoundingClientRect();
+    const total = track.offsetHeight - window.innerHeight;
+    const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+    if (rail) rail.style.setProperty('--pin', p.toFixed(3));
+    steps.forEach((s, i) => {
+      const threshold = (i / steps.length) * 0.85;   // 0 · 0.28 · 0.57
+      s.classList.toggle('on', p >= threshold);
+    });
+  }
+  setHeight(); update();
+  window.addEventListener('resize', () => { setHeight(); update(); }, { passive:true });
+  if (lenis) lenis.on('scroll', update);
+  else window.addEventListener('scroll', update, { passive:true });
+})();
+
 /* ---- Scroll reveal + staggered children + bar fills ---- */
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReduced) {
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.reveal, .reveal-lines, .reveal-clip').forEach(el => el.classList.add('in'));
   document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.w || '0'; });
+  document.querySelectorAll('[data-count]').forEach(el => {
+    el.textContent = parseFloat(el.getAttribute('data-count')).toLocaleString('fr-FR');
+  });
 } else {
   // stagger delays
   document.querySelectorAll('[data-stagger]').forEach(group => {
@@ -1510,16 +1731,32 @@ if (prefersReduced) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      entry.target.classList.add('in');
+      const t = entry.target;
+      t.classList.add('in');
       // animate mock bars when their card reveals
-      entry.target.querySelectorAll?.('.bar-fill').forEach((bar, i) => {
+      t.querySelectorAll?.('.bar-fill').forEach((bar, i) => {
         setTimeout(() => { bar.style.width = bar.dataset.w || '0'; }, 220 + i * 130);
       });
-      io.unobserve(entry.target);
+      // compteurs (0 → cible) au premier passage en vue
+      if (t.matches('[data-count]')) countUp(t);
+      t.querySelectorAll?.('[data-count]').forEach(countUp);
+      io.unobserve(t);
     });
   }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('.reveal, .reveal-lines, .reveal-clip').forEach(el => io.observe(el));
+
+  /* Le découpage en lignes dépend des métriques de police : (re)découper
+     une fois les fonts chargées, puis à chaque resize (débouncé). Les
+     éléments déjà révélés (.in) réaffichent leurs lignes immédiatement. */
+  // fonts/resize : garder data-raw (texte pristine) comme source ; splitLines
+  // le restaure avant de re-mesurer. On ne le purge PAS ici (sinon on re-lirait
+  // le DOM déjà enveloppé). Seul un changement de langue purge data-raw.
+  const resplit = () => document.querySelectorAll('[data-split-lines]').forEach(splitLines);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resplit);
+  else resplit();
+  let rsT;
+  window.addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(resplit, 180); }, { passive:true });
 }
 
 /* ============================================================
