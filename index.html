@@ -365,7 +365,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
    ============================================================ */
 .demo-title{ font-size:clamp(30px,5vw,58px); font-weight:800; letter-spacing:-0.03em; line-height:1.02; }
 .demo-sub{ margin-top:18px; font-size:clamp(15px,1.7vw,19px); color:var(--text-secondary); max-width:48ch; line-height:1.55; }
-.demo{ margin-top:clamp(36px,5vh,56px); display:grid; grid-template-columns:minmax(300px,380px) 1fr; gap:clamp(28px,5vw,64px); align-items:center; }
+.demo{ margin-top:clamp(36px,5vh,56px); display:grid; grid-template-columns:minmax(300px,392px) 1fr; gap:clamp(28px,5vw,64px); align-items:start; }
 
 .demo-stage{ position:relative; }
 .demo-stage::after{ content:""; position:absolute; z-index:-1; inset:4% 8% 0; background:radial-gradient(60% 46% at 50% 24%, rgba(62,207,160,0.18), transparent 72%); filter:blur(52px); }
@@ -433,10 +433,82 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .demo-next{ width:100%; }
 .demo-hint{ margin-top:16px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.3px; color:var(--text-tertiary); line-height:1.5; }
 
+/* ---- Calendrier drag & drop réel (porté de l'app) ---- */
+.demo-phone{ position:relative; }
+.demo-phone::after{ content:""; position:absolute; z-index:-1; inset:2% 6% 0; background:radial-gradient(60% 44% at 50% 20%, rgba(62,207,160,0.16), transparent 72%); filter:blur(52px); }
+.phone.scal{
+  --scal-s2:#161a18; --scal-green-fill:rgba(62,207,160,0.07);
+  --accent-green-soft:rgba(62,207,160,0.12); --accent-green-line:rgba(62,207,160,0.32);
+  --border-strong:rgba(255,255,255,0.10);
+  width:100%; max-width:392px; margin-inline:auto;
+  background:var(--bg-primary); border:1px solid var(--border-active); border-radius:26px;
+  padding:20px 16px; box-shadow:0 54px 110px -58px rgba(0,0,0,0.95);
+  font-family:var(--font-sans); color:var(--text-primary);
+}
+.scal-eyebrow{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); }
+.scal-eyebrow .scal-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent-green); }
+.scal-hero{ font-size:23px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 6px; color:var(--text-primary); }
+.scal-lede{ font-size:12.5px; color:var(--text-secondary); line-height:1.45; margin:0; }
+.scal-lede b{ color:var(--text-primary); }
+.scal-lede .mint{ color:var(--accent-green); }
+.scal-gridwrap{ margin-top:14px; }
+.scal-ghead{ display:grid; grid-template-columns:30px 1fr 1fr 1fr; gap:6px; padding-bottom:7px; }
+.scal-ghead>span{ font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:1.1px; color:var(--text-tertiary); text-align:center; }
+.scal-ghead>span:first-child{ text-align:left; }
+.scal-grow{ display:grid; grid-template-columns:30px 1fr 1fr 1fr; gap:5px; padding:3px 0; }
+.scal-grow+.scal-grow{ border-top:1px solid var(--border-subtle); }
+.scal-gday{ display:flex; align-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--text-secondary); }
+.scal-cell{ min-height:38px; border-radius:10px; border:1px dashed transparent; display:flex; transition:background .12s var(--ease), border-color .12s var(--ease); }
+.scal-cell.drop-ok{ border-color:var(--accent-green-line); background:var(--accent-green-soft); }
+.scal-cell.drop-no{ border-color:rgba(224,90,74,0.5); background:rgba(224,90,74,0.07); }
+.scal-blk{ flex:1; border-radius:9px; padding:6px 8px; min-width:0; display:flex; flex-direction:column; justify-content:center; gap:2px; }
+.scal-blk .scal-bt{ font-size:11.5px; font-weight:700; letter-spacing:-0.01em; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.scal-blk .scal-bm{ font-family:var(--font-sans); font-size:9px; font-weight:500; line-height:1; }
+.scal-blk.sport{ background:var(--scal-s2); border:1px solid var(--border-strong); }
+.scal-blk.sport .scal-bt{ color:var(--text-primary); }
+.scal-blk.sport .scal-bm{ color:var(--text-tertiary); }
+.scal-blk.mob{ background:var(--scal-green-fill); border:1px dashed var(--accent-green-line); }
+.scal-blk.mob .scal-bt{ color:var(--accent-green); }
+.scal-blk.mob .scal-bm{ color:rgba(62,207,160,0.72); }
+.scal-tray{ margin-top:13px; padding:13px; border-radius:16px; background:var(--bg-surface); border:1px solid var(--border-active); }
+.scal-tray-head{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+.scal-tray-head .th{ font-size:13px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
+.scal-tray-head .th span{ font-weight:500; color:var(--text-tertiary); }
+.scal-tray-head .thb{ margin-left:auto; font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:0.6px; color:var(--accent-green); background:var(--accent-green-soft); border:1px solid var(--accent-green-line); padding:2px 7px; border-radius:999px; }
+.scal-palette{ display:flex; gap:7px; flex-wrap:wrap; }
+.scal-ptoken{ display:inline-flex; align-items:center; gap:7px; padding:8px 11px; border-radius:11px; background:var(--scal-s2); border:1px solid var(--border-strong); cursor:grab; touch-action:none; user-select:none; }
+.scal-ptoken .pdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.scal-ptoken .pn{ font-size:13px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
+.scal-ptoken .pg{ color:var(--text-tertiary); display:flex; font-size:12px; }
+.scal-ptoken.dragging{ opacity:0.3; }
+.scal-ptoken.pulse{ animation:scal-pulse 1.7s var(--ease) infinite; border-color:var(--accent-green-line); }
+@keyframes scal-pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(62,207,160,0); } 50%{ box-shadow:0 0 0 5px rgba(62,207,160,0.12); } }
+.scal-token{ display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:12px; cursor:grab; background:var(--scal-green-fill); border:1px dashed var(--accent-green-line); touch-action:none; user-select:none; margin-top:10px; }
+.scal-token .tk-ic{ width:30px; height:30px; flex-shrink:0; border-radius:8px; background:var(--accent-green-soft); border:1px solid var(--accent-green-line); color:var(--accent-green); display:flex; align-items:center; justify-content:center; font-size:14px; }
+.scal-token .tk-t{ font-size:13px; font-weight:700; color:var(--accent-green); letter-spacing:-0.01em; }
+.scal-token .tk-s{ font-family:var(--font-mono); font-size:9px; color:rgba(62,207,160,0.7); margin-top:2px; letter-spacing:0.5px; }
+.scal-token .tk-grab{ margin-left:auto; color:var(--accent-green-line); font-size:12px; }
+.scal-token.pulse{ animation:scal-pulse 1.7s var(--ease) infinite; }
+.scal-ghost{ position:fixed; z-index:120; pointer-events:none; left:0; top:0; min-width:150px; display:flex; align-items:center; gap:9px; padding:10px 12px; border-radius:12px; background:rgba(20,28,24,0.96); border:1px dashed var(--accent-green); box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); transform:translate(-50%,-50%) scale(1.02); }
+.scal-ghost .gt{ font-size:13px; font-weight:700; }
+.scal-ghost .gs{ font-family:var(--font-mono); font-size:9px; }
+.scal-toast{ position:fixed; left:50%; bottom:40px; transform:translateX(-50%) translateY(8px); opacity:0; background:rgba(20,28,24,0.96); border:1px solid var(--accent-green-line); color:var(--accent-green); font-size:12px; font-weight:600; padding:9px 14px; border-radius:10px; pointer-events:none; transition:all .22s var(--ease); white-space:nowrap; z-index:121; }
+.scal-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+.demo-guide .dg-eyebrow{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); margin-bottom:10px; }
+.demo-guide .dg-step{ display:flex; gap:14px; padding:15px 0; border-top:1px solid var(--hair); color:var(--text-tertiary); transition:color .3s var(--ease); }
+.demo-guide .dg-step .n{ font-family:var(--font-mono); font-size:12px; }
+.demo-guide .dg-step.on{ color:var(--text-primary); }
+.demo-guide .dg-step.on .n{ color:var(--accent-green); }
+.demo-guide .dg-step.done .n{ color:var(--accent-green); }
+.demo-guide .dg-step .t{ font-size:15px; font-weight:600; letter-spacing:-0.01em; }
+.demo-guide .dg-live{ margin-top:22px; padding:16px 18px; border:1px solid var(--border-active); border-radius:14px; background:var(--bg-surface); }
+.demo-guide .dg-live .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
+.demo-guide .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
+.demo-guide .dg-live .v b{ color:var(--accent-green); }
+
 @media (max-width:860px){
   .demo{ grid-template-columns:1fr; }
-  .demo-stage{ max-width:400px; margin-inline:auto; width:100%; }
-  .demo-side{ max-width:400px; margin-inline:auto; width:100%; }
+  .demo-side{ max-width:392px; margin-inline:auto; width:100%; }
 }
 
 @media (max-width:900px){
@@ -785,17 +857,16 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo</span></span>
     </div>
-    <h2 class="demo-title reveal" data-i18n="demo_title">Vois le moteur tourner.</h2>
-    <p class="demo-sub reveal" data-i18n="demo_sub">Diagnostic → planning de la semaine → séance du jour → retest à J+30. La boucle complète, en direct.</p>
+    <h2 class="demo-title reveal" data-i18n="demo_title">Compose ta semaine.<br>Le club cale la mobilité.</h2>
+    <p class="demo-sub reveal" data-i18n="demo_sub">Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.</p>
 
     <div class="demo reveal">
-      <div class="demo-stage">
-        <div class="demo-screen" id="demoScreen" aria-live="polite"></div>
+      <div class="demo-phone">
+        <div class="phone scal" id="scal"></div>
       </div>
       <div class="demo-side">
-        <ol class="demo-steps" id="demoSteps"></ol>
-        <button class="btn btn-primary demo-next" id="demoNext" type="button">…</button>
-        <p class="demo-hint" id="demoHint" data-i18n="demo_hint">Données simulées — c'est bien ton moteur, avec un profil au hasard.</p>
+        <div class="demo-guide" id="demoGuide"></div>
+        <p class="demo-hint" data-i18n="demo_hint">Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.</p>
       </div>
     </div>
   </div>
@@ -1107,10 +1178,10 @@ const I18N = {
     s2_step1: "Tu ouvres l'app.",
     s2_step2: "<b>La séance du jour est déjà là.</b>",
     s2_step3: "Tu lances. Tu bouges. C'est tout.",
-    demo_eyebrow: 'La démo',
-    demo_title: 'Vois le moteur tourner.',
-    demo_sub: "Diagnostic → planning de la semaine → séance du jour → retest à J+30. La boucle complète, en direct.",
-    demo_hint: "Données simulées — c'est bien ton moteur, avec un profil au hasard.",
+    demo_eyebrow: 'La démo · le vrai calendrier',
+    demo_title: "Compose ta semaine.<br>Le club cale la mobilité.",
+    demo_sub: "Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.",
+    demo_hint: "Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.",
 
     s3_eyebrow: 'La méthode',
     s3_quote: "Ce n'est pas une IA générique. <span class=\"hl\">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.",
@@ -1192,10 +1263,10 @@ const I18N = {
     s2_step1: 'You open the app.',
     s2_step2: "<b>Today's session is already there.</b>",
     s2_step3: "You start. You move. That's it.",
-    demo_eyebrow: 'The demo',
-    demo_title: 'Watch the engine run.',
-    demo_sub: "Diagnostic → weekly plan → today's session → retest at day 30. The full loop, live.",
-    demo_hint: "Simulated data — it's your real engine, with a random profile.",
+    demo_eyebrow: 'The demo · the real calendar',
+    demo_title: "Build your week.<br>The club handles mobility.",
+    demo_sub: "Grab a sport, drop it on a slot. The club adds mobility around it — automatically. It's the real app screen.",
+    demo_hint: "Real Mobility Club onboarding screen — here as a demo. On mobile: touch and drag.",
 
     s3_eyebrow: 'The method',
     s3_quote: "This isn't a generic AI. <span class=\"hl\">It's my method</span> — a decade of movement expertise, encoded into an engine that decides for you.",
@@ -1463,138 +1534,131 @@ if (prefersReduced) {
 })();
 
 /* ============================================================
-   Démo interactive — le loop produit en direct.
-   Diagnostic aléatoire → planning hebdo → séance du jour → retest J+30.
-   Vanilla + SVG, bilingue, données simulées (le vrai moteur, profil au hasard).
+   Démo — le vrai calendrier drag & drop de l'app (porté vanilla).
+   Prends un sport, glisse-le sur un créneau → le club cale la mobilité.
    ============================================================ */
-(function demoEngine(){
-  const screen = document.getElementById('demoScreen');
-  const stepsEl = document.getElementById('demoSteps');
-  const nextBtn = document.getElementById('demoNext');
-  if (!screen || !stepsEl || !nextBtn) return;
+(function demoCalendar(){
+  const root = document.getElementById('scal');
+  const guide = document.getElementById('demoGuide');
+  if (!root || !guide) return;
 
   const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
-  const tr = (fr, en) => (L() === 'en' ? en : fr);
+  const tr = (fr,en) => (L()==='en'?en:fr);
 
-  const ZONES = [
-    { fr:'Épaules', en:'Shoulders', sh:{fr:'Épaul.',en:'Shld'} },
-    { fr:'Hanches', en:'Hips',      sh:{fr:'Hanch.',en:'Hips'} },
-    { fr:'Chevilles', en:'Ankles',  sh:{fr:'Chev.',en:'Ankl'} },
-    { fr:'Colonne', en:'Spine',     sh:{fr:'Colon.',en:'Spine'} },
-    { fr:'Ch. post.', en:'P. chain', sh:{fr:'Ch.p.',en:'P.ch'} }
+  const DAYS   = { fr:['LUN','MAR','MER','JEU','VEN','SAM','DIM'], en:['MON','TUE','WED','THU','FRI','SAT','SUN'] };
+  const DAYLBL = { fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'], en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] };
+  const SLOTLBL= { fr:['MATIN','MIDI','SOIR'], en:['MORN','NOON','EVE'] };
+  const SPORTS = [
+    { id:'crossfit', name:{fr:'CrossFit',en:'CrossFit'}, color:'#8FD9A8', zone:{fr:'thoracique',en:'thoracic'} },
+    { id:'course',   name:{fr:'Course',en:'Running'},    color:'#7FB2E8', zone:{fr:'cheville',en:'ankle'} },
+    { id:'padel',    name:{fr:'Padel',en:'Padel'},       color:'#E0B36B', zone:{fr:'épaule',en:'shoulder'} },
+    { id:'muscu',    name:{fr:'Muscu',en:'Strength'},    color:'#C9C7C0', zone:{fr:'hanche',en:'hip'} }
   ];
-  const EXOS = [
-    [{fr:"CARS d'épaule",en:'Shoulder CARS'},{fr:'PAILs/RAILs scapula',en:'Scapular PAILs/RAILs'}],
-    [{fr:'90/90 hanche',en:'90/90 hip'},{fr:'CARS de hanche',en:'Hip CARS'}],
-    [{fr:'Dorsiflexion lestée',en:'Loaded dorsiflexion'},{fr:'CARS cheville',en:'Ankle CARS'}],
-    [{fr:'Rotation thoracique',en:'Thoracic rotation'},{fr:'Segmentation colonne',en:'Spinal segmentation'}],
-    [{fr:'Jefferson curl',en:'Jefferson curl'},{fr:'Good morning lesté',en:'Loaded good morning'}]
-  ];
-  const DAYS = [{fr:'Lun',en:'Mon'},{fr:'Mar',en:'Tue'},{fr:'Mer',en:'Wed'},{fr:'Jeu',en:'Thu'},{fr:'Ven',en:'Fri'},{fr:'Sam',en:'Sat'},{fr:'Dim',en:'Sun'}];
-  const STEP_LABELS = [
-    {fr:'Diagnostic',en:'Diagnostic'},
-    {fr:'Planning de la semaine',en:'Weekly plan'},
-    {fr:'Ta séance du jour',en:"Today's session"},
-    {fr:'Retest à J+30',en:'Retest at day 30'}
-  ];
-  const BTN = [
-    {fr:'Créer mon planning →',en:'Build my plan →'},
-    {fr:"Voir aujourd'hui →",en:'See today →'},
-    {fr:'Retester à J+30 →',en:'Retest at day 30 →'},
-    {fr:'↻ Relancer un diagnostic',en:'↻ Run a new diagnostic'}
-  ];
+  const sportById = id => SPORTS.find(s=>s.id===id);
 
-  let baseline = [], retest = [], plan = [], step = 0;
-  const avg = a => Math.round(a.reduce((s,v)=>s+v,0)/a.length);
-  const ri = (min,max) => min + Math.floor(Math.random()*(max-min+1));
+  let sessions=[], mob=[];
+  const keyAt = (arr,di,si)=>arr.find(x=>x.di===di&&x.si===si);
+  const nSport = ()=>sessions.length, nMob=()=>mob.length;
+  function autoZone(){ if (sessions.length){ return sportById(sessions[sessions.length-1].sportId).zone[L()]; } return tr('colonne','spine'); }
 
-  function generate(){
-    baseline = ZONES.map(()=>ri(28,64));
-    retest = baseline.map(v => Math.min(97, v + ri(9,20)));
-    const order = baseline.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
-    const p1 = order[0].i, p2 = order[1].i;
-    const pat = [p1,p2,p1,-1,p2,p1,-1];
-    plan = pat.map(z => ({ work:z>=0, zone:z }));
-    step = 0;
-  }
-  function weakest(){ return baseline.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v)[0].i; }
-
-  function radar(vals, base){
-    const S=280, c=S/2, R=92;
-    const pt=(v,i)=>{ const a=(-90+i*72)*Math.PI/180, r=(v/100)*R; return [c+r*Math.cos(a), c+r*Math.sin(a)]; };
-    const poly=a=>a.map((v,i)=>{ const p=pt(v,i); return p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
-    let g='';
-    [0.34,0.67,1].forEach(k=>{
-      const ring=ZONES.map((_,i)=>{ const a=(-90+i*72)*Math.PI/180, r=R*k; return (c+r*Math.cos(a)).toFixed(1)+','+(c+r*Math.sin(a)).toFixed(1); }).join(' ');
-      g+='<polygon class="grid" points="'+ring+'"/>';
-    });
-    let ax='', lab='';
-    ZONES.forEach((z,i)=>{
-      const a=(-90+i*72)*Math.PI/180;
-      ax+='<line class="axis" x1="'+c+'" y1="'+c+'" x2="'+(c+R*Math.cos(a)).toFixed(1)+'" y2="'+(c+R*Math.sin(a)).toFixed(1)+'"/>';
-      const lx=c+(R+15)*Math.cos(a), ly=c+(R+15)*Math.sin(a);
-      const anchor=Math.abs(Math.cos(a))<0.35?'middle':(Math.cos(a)>0?'start':'end');
-      lab+='<text class="zlabel" x="'+lx.toFixed(1)+'" y="'+(ly+3).toFixed(1)+'" text-anchor="'+anchor+'">'+z[L()].toUpperCase()+'</text>';
-    });
-    const baseP = base ? '<polygon class="base" points="'+poly(base)+'"/>' : '';
-    return '<svg viewBox="0 0 '+S+' '+S+'" role="img" aria-label="radar">'+g+ax+lab+baseP+
-      '<polygon class="now" points="'+poly(vals)+'"/>'+
-      '<text class="cscore" x="'+c+'" y="'+(c+4)+'">'+avg(vals)+'</text>'+
-      '<text class="cslash" x="'+c+'" y="'+(c+22)+'">/100</text></svg>';
-  }
-
-  function renderScreen(){
-    let h='';
-    if (step===0){
-      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>Diagnostic</span><span class="ds-date">'+tr('Jour 0','Day 0')+'</span></div>'+
-        '<div class="ds-radar">'+radar(baseline)+'</div>'+
-        '<div class="ds-callout">'+tr('Priorité','Priority')+' · <b>'+ZONES[weakest()][L()]+'</b><span class="tag">'+tr('à travailler','to work')+'</span></div>';
-    } else if (step===1){
-      const week=DAYS.map((d,i)=>{ const p=plan[i];
-        const chip = p.work ? '<span class="ds-daychip work">'+ZONES[p.zone].sh[L()]+'</span>' : '<span class="ds-daychip rest">'+tr('Repos','Rest')+'</span>';
-        return '<div class="ds-day"><span class="ds-dayname">'+d[L()]+'</span>'+chip+'</div>';
-      }).join('');
-      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>'+tr('Planning · Semaine 1','Plan · Week 1')+'</span></div>'+
-        '<div class="ds-week">'+week+'</div>'+
-        '<div class="ds-week-note">'+tr('5 séances, 2 repos.','5 sessions, 2 rest days.')+' <b>'+tr('Calé sur tes 2 zones les plus faibles.','Built around your 2 weakest zones.')+'</b></div>';
-    } else if (step===2){
-      const tz=plan[0].zone;
-      h='<div class="ds-head"><span class="ds-eyebrow"><span class="d"></span>'+tr('Ta séance du jour · 8 min',"Today's session · 8 min")+'</span></div>'+
-        '<div class="ds-today-focus-label">'+tr('Priorité du jour',"Today's priority")+'</div>'+
-        '<div class="ds-today-focus">'+ZONES[tz][L()]+'</div>'+
-        '<ul class="ds-exos">'+
-          '<li class="ds-exo"><span class="n">01</span><span class="t">'+EXOS[tz][0][L()]+'</span><span class="m">4 min</span></li>'+
-          '<li class="ds-exo"><span class="n">02</span><span class="t">'+EXOS[tz][1][L()]+'</span><span class="m">4 min</span></li>'+
-        '</ul>'+
-        '<div class="ds-cta">▶ '+tr('Lancer la séance','Start session')+'</div>';
-    } else {
-      h='<div class="ds-head"><span class="ds-eyebrow gold"><span class="d"></span>'+tr('Retest · Jour 30','Retest · Day 30')+'</span></div>'+
-        '<div class="ds-radar">'+radar(retest, baseline)+'</div>'+
-        '<div class="ds-delta"><b>+'+(avg(retest)-avg(baseline))+' pts</b><span>'+tr('en 30 jours — mesuré, pas ressenti','in 30 days — measured, not felt')+'</span></div>';
+  function renderScal(){
+    const dd=DAYS[L()], sl=SLOTLBL[L()];
+    let grid='';
+    for (let di=0; di<7; di++){
+      let cells='';
+      for (let si=0; si<3; si++){
+        const ses=keyAt(sessions,di,si), m=keyAt(mob,di,si);
+        let inner='';
+        if (ses){ inner='<div class="scal-blk sport"><span class="scal-bt">'+sportById(ses.sportId).name[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>'; }
+        else if (m){ inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>'; }
+        cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>';
+      }
+      grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>';
     }
-    screen.innerHTML=h;
+    const tokens=SPORTS.map((s,i)=>'<div class="scal-ptoken'+(i===0&&!nSport()?' pulse':'')+'" data-sport="'+s.id+'"><span class="pdot" style="background:'+s.color+'"></span><span class="pn">'+s.name[L()]+'</span><span class="pg">⠿</span></div>').join('');
+    root.innerHTML =
+      '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('TON CALENDRIER SPORT','YOUR SPORT CALENDAR')+'</div>'+
+      '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
+      '<p class="scal-lede">'+tr('Glisse un <b>sport</b> sur un créneau, puis la <b class="mint">mobilité</b> — zone choisie auto.','Drag a <b>sport</b> onto a slot, then <b class="mint">mobility</b> — zone auto-picked.')+'</p>'+
+      '<div class="scal-gridwrap"><div class="scal-ghead"><span></span><span>'+sl[0]+'</span><span>'+sl[1]+'</span><span>'+sl[2]+'</span></div>'+grid+'</div>'+
+      '<div class="scal-tray">'+
+        '<div class="scal-tray-head"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse sur la grille','drag onto the grid')+'</span></span><span class="thb">'+nSport()+' '+tr('placé','placed')+(nSport()>1?'s':'')+'</span></div>'+
+        '<div class="scal-palette">'+tokens+'</div>'+
+        '<div class="scal-token'+(nSport()&&!nMob()?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · ZONE AUTO','DRAG ME · AUTO ZONE')+'</div></div><span class="tk-grab">⠿</span></div>'+
+      '</div>';
+    attach();
   }
-  function renderSteps(){
-    stepsEl.innerHTML = STEP_LABELS.map((s,i)=>{
-      const cls = i<step ? 'done' : (i===step ? 'active' : '');
-      return '<li class="demo-step '+cls+'"><span class="sl">'+s[L()]+'</span></li>';
-    }).join('');
+
+  function renderGuide(){
+    const step = nMob() ? 2 : (nSport() ? 1 : 0);
+    const steps=[
+      tr('Prends un sport, glisse-le sur un créneau.','Grab a sport, drop it on a slot.'),
+      tr('Ajoute la mobilité — le club choisit la zone.','Add mobility — the club picks the zone.'),
+      tr('Ta semaine se construit. Le club décide le reste.','Your week takes shape. The club does the rest.')
+    ];
+    let live;
+    if (!nSport()) live=tr('Glisse un sport pour voir le club décider.','Drop a sport to watch the club decide.');
+    else if (nMob()) live=tr('<b>'+nSport()+' séance'+(nSport()>1?'s':'')+'</b> calée'+(nSport()>1?'s':'')+' · le club prépare la mobilité avant chacune.','<b>'+nSport()+' session'+(nSport()>1?'s':'')+'</b> set · the club preps mobility before each.');
+    else { const last=sportById(sessions[sessions.length-1].sportId); const dl=DAYLBL[L()][sessions[sessions.length-1].di];
+      live=tr('Avant ton '+last.name.fr+' du '+dl+' → le club prépare <b>'+last.zone.fr+'</b>.','Before your '+last.name.en+' on '+dl+' → the club preps <b>'+last.zone.en+'</b>.'); }
+    guide.innerHTML =
+      '<div class="dg-eyebrow">'+tr('Ce que le club décide','What the club decides')+'</div>'+
+      steps.map((t,i)=>'<div class="dg-step '+(i<step?'done':(i===step?'on':''))+'"><span class="n">0'+(i+1)+'</span><span class="t">'+t+'</span></div>').join('')+
+      '<div class="dg-live"><div class="k">'+tr('En direct','Live')+'</div><div class="v">'+live+'</div></div>';
   }
-  function refreshBtn(){ nextBtn.textContent = BTN[step][L()]; }
-  function paint(){ renderScreen(); renderSteps(); refreshBtn(); }
 
-  nextBtn.addEventListener('click', ()=>{
-    screen.classList.add('swapping');
-    setTimeout(()=>{
-      if (step>=3) generate(); else step++;
-      paint();
-      screen.classList.remove('swapping');
-    }, 200);
-  });
-  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click', ()=>{ paint(); }));
+  function paintAll(){ renderScal(); renderGuide(); }
 
-  generate();
-  paint();
+  let toastEl=null, toastT=0;
+  function toast(msg){
+    if (!toastEl){ toastEl=document.createElement('div'); toastEl.className='scal-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=msg; toastEl.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove('show'),1700);
+  }
+
+  let drag=null;
+  function cellUnder(e){ if (drag&&drag.ghost) drag.ghost.style.display='none'; const el=document.elementFromPoint(e.clientX,e.clientY); if (drag&&drag.ghost) drag.ghost.style.display=''; return el?el.closest('.scal-cell'):null; }
+  function clearHi(){ root.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
+  function highlight(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
+  function startGhost(){
+    let label,sub,mint;
+    if (drag.kind==='mob'){ label=tr('Mobilité','Mobility'); sub=tr('ZONE AUTO · 8′','AUTO ZONE · 8′'); mint=true; }
+    else { const s=sportById(drag.sportId); label=s.name[L()]; sub=tr('NOUVELLE SÉANCE','NEW SESSION'); mint=false; }
+    const g=document.createElement('div'); g.className='scal-ghost';
+    g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';
+    document.body.appendChild(g); drag.ghost=g; drag.started=true; if (drag.src) drag.src.classList.add('dragging');
+  }
+  function onMove(e){
+    if (!drag) return;
+    if (!drag.started){ const dx=e.clientX-drag.sx, dy=e.clientY-drag.sy; if (Math.sqrt(dx*dx+dy*dy)<7) return; startGhost(); }
+    if (drag.ghost){ drag.ghost.style.left=e.clientX+'px'; drag.ghost.style.top=e.clientY+'px'; }
+    const cell=cellUnder(e); if (drag.lastCell&&drag.lastCell!==cell) drag.lastCell.classList.remove('drop-ok','drop-no'); if (cell) highlight(cell); drag.lastCell=cell;
+  }
+  function onUp(e){
+    document.removeEventListener('pointermove',onMove);
+    if (!drag) return;
+    if (drag.started){ const cell=cellUnder(e); if (cell) drop(cell); }
+    clearHi(); if (drag.ghost) drag.ghost.remove(); drag=null; paintAll();
+  }
+  function begin(e, payload, src){
+    e.preventDefault();
+    drag={ kind:payload.kind, sportId:payload.sportId, src, sx:e.clientX, sy:e.clientY, started:false, ghost:null, lastCell:null };
+    document.addEventListener('pointermove',onMove);
+    document.addEventListener('pointerup',onUp,{once:true});
+  }
+  function drop(cell){
+    const p=cell.getAttribute('data-cell').split('|'), di=+p[0], si=+p[1];
+    if (keyAt(sessions,di,si)||keyAt(mob,di,si)){ toast(tr('Créneau occupé','Slot taken')); return; }
+    if (drag.kind==='mob'){ const z=autoZone(); mob.push({di,si,zone:z}); toast(tr('Mobilité ','Mobility ')+z+' · '+DAYLBL[L()][di]); }
+    else { const s=sportById(drag.sportId); sessions.push({di,si,sportId:s.id}); toast(s.name[L()]+' · '+DAYLBL[L()][di]); }
+  }
+  function attach(){
+    root.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown', e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
+    const mt=root.querySelector('[data-mob]'); if (mt) mt.addEventListener('pointerdown', e=>begin(e,{kind:'mob'},mt));
+  }
+
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click', ()=>paintAll()));
+  paintAll();
 })();
 
 (function heroFlow(){
