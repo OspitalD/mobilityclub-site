@@ -527,6 +527,49 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .scal-sres.added .srn{ color:var(--text-tertiary); }
 .scal-sres-none{ padding:12px; font-size:12.5px; color:var(--text-tertiary); }
 
+/* ---- Tour produit : phone-stage + stepper + slider diagnostic ---- */
+.phone.tour-stage{ height:560px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
+.phone.tour-stage::-webkit-scrollbar{ width:0; }
+.phone.tour-stage.is-shot{ padding:0; overflow:hidden; }
+.tour-img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top center; }
+.tour-steps{ list-style:none; display:flex; flex-direction:column; margin-bottom:22px; }
+.tour-step{ display:flex; align-items:center; gap:13px; padding:11px 0; border-top:1px solid var(--hair); color:var(--text-tertiary); transition:color .3s var(--ease); }
+.tour-step .n{ width:22px; height:22px; border-radius:50%; border:1px solid var(--border-active); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; flex-shrink:0; }
+.tour-step .t{ font-size:14.5px; font-weight:600; letter-spacing:-0.01em; }
+.tour-step.done{ color:var(--text-secondary); }
+.tour-step.done .n{ color:var(--accent-green); border-color:var(--accent-green-line); }
+.tour-step.active{ color:var(--text-primary); }
+.tour-step.active .n{ color:var(--bg-primary); background:var(--accent-green); border-color:var(--accent-green); }
+.tour-next{ width:100%; }
+.tour-side .dg-live{ margin-top:18px; padding:16px 18px; border:1px solid var(--border-active); border-radius:14px; background:var(--bg-surface); }
+.tour-side .dg-live .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
+.tour-side .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
+.tour-side .dg-live .v b{ color:var(--accent-green); }
+/* diagnostic slider (or) */
+.td-instr{ font-size:14px; color:var(--text-primary); line-height:1.42; margin-bottom:16px; }
+.td-tabs{ display:flex; border-bottom:1px solid var(--border-active); margin-bottom:15px; }
+.td-tab{ flex:1; appearance:none; background:none; border:none; cursor:pointer; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-secondary); padding:10px 0; position:relative; }
+.td-tab.on{ color:#E8A020; }
+.td-tab.on::after{ content:""; position:absolute; left:14%; right:14%; bottom:-1px; height:2px; background:#E8A020; border-radius:2px; }
+.td-lead{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); line-height:1.5; margin-bottom:14px; }
+.td-card{ border:1px solid rgba(232,160,32,0.3); border-radius:16px; padding:20px 18px; text-align:center; background:rgba(232,160,32,0.05); position:relative; }
+.td-badge{ position:absolute; top:12px; right:12px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.6px; color:#E8A020; background:rgba(232,160,32,0.12); border:1px solid rgba(232,160,32,0.3); border-radius:100px; padding:4px 9px; }
+.td-pal{ font-family:var(--font-display); font-size:24px; font-weight:800; letter-spacing:-0.02em; margin-top:6px; color:var(--text-primary); }
+.td-desc{ font-size:13px; color:var(--text-secondary); margin-top:6px; }
+.td-scale{ display:flex; justify-content:space-between; margin-top:2px; padding:0 8px; }
+.td-scale span{ font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); }
+.td-scale span.on{ color:#E8A020; font-weight:700; }
+.td-score{ display:flex; align-items:center; justify-content:space-between; margin-top:18px; padding-top:16px; border-top:1px solid var(--hair); }
+.td-score .k{ font-family:var(--font-mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
+.td-score .v b{ font-family:var(--font-display); font-size:30px; font-weight:800; color:var(--accent-green); }
+.td-score .v span{ font-size:13px; color:var(--text-tertiary); }
+.mc-slider{ -webkit-appearance:none; appearance:none; width:100%; height:40px; background:transparent; cursor:pointer; margin-top:14px; }
+.mc-slider::-webkit-slider-runnable-track{ height:4px; border-radius:2px; background:linear-gradient(90deg,#E8A020 0 var(--fill,75%), rgba(255,255,255,0.1) var(--fill,75%) 100%); }
+.mc-slider::-webkit-slider-thumb{ -webkit-appearance:none; height:24px; width:24px; border-radius:50%; background:#E8A020; margin-top:-10px; border:4px solid var(--bg-primary); box-shadow:0 0 0 1px rgba(232,160,32,0.4), 0 0 14px rgba(232,160,32,0.5); }
+.mc-slider::-moz-range-track{ height:4px; border-radius:2px; background:rgba(255,255,255,0.1); }
+.mc-slider::-moz-range-progress{ height:4px; border-radius:2px; background:#E8A020; }
+.mc-slider::-moz-range-thumb{ height:24px; width:24px; border-radius:50%; background:#E8A020; border:4px solid var(--bg-primary); }
+
 @media (max-width:860px){
   .demo{ grid-template-columns:1fr; }
   .demo-side{ max-width:392px; margin-inline:auto; width:100%; }
@@ -883,11 +926,13 @@ footer.site{ border-top:1px solid var(--border-subtle); padding-block:clamp(56px
 
     <div class="demo reveal">
       <div class="demo-phone">
-        <div class="phone scal" id="scal"></div>
+        <div class="phone tour-stage scal" id="tourStage"></div>
       </div>
       <div class="demo-side">
-        <div class="demo-guide" id="demoGuide"></div>
-        <p class="demo-hint" data-i18n="demo_hint">Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.</p>
+        <ol class="tour-steps" id="tourSteps"></ol>
+        <button class="btn btn-primary tour-next" id="tourNext" type="button">…</button>
+        <div class="dg-live" id="tourNote"></div>
+        <p class="demo-hint" data-i18n="demo_hint">Vrais écrans + interactions du produit. Diagnostic et emploi du temps sont jouables. Sur mobile : touche et glisse.</p>
       </div>
     </div>
   </div>
@@ -1199,9 +1244,9 @@ const I18N = {
     s2_step1: "Tu ouvres l'app.",
     s2_step2: "<b>La séance du jour est déjà là.</b>",
     s2_step3: "Tu lances. Tu bouges. C'est tout.",
-    demo_eyebrow: 'La démo · le vrai calendrier',
-    demo_title: "Compose ta semaine.<br>Le club cale la mobilité.",
-    demo_sub: "Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.",
+    demo_eyebrow: 'La démo · le produit en vrai',
+    demo_title: "La boucle complète.<br>Joue-la.",
+    demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
     demo_hint: "Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.",
 
     s3_eyebrow: 'La méthode',
@@ -1284,9 +1329,9 @@ const I18N = {
     s2_step1: 'You open the app.',
     s2_step2: "<b>Today's session is already there.</b>",
     s2_step3: "You start. You move. That's it.",
-    demo_eyebrow: 'The demo · the real calendar',
-    demo_title: "Build your week.<br>The club handles mobility.",
-    demo_sub: "Grab a sport, drop it on a slot. The club adds mobility around it — automatically. It's the real app screen.",
+    demo_eyebrow: 'The demo · the real product',
+    demo_title: "The full loop.<br>Play it.",
+    demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
     demo_hint: "Real Mobility Club onboarding screen — here as a demo. On mobile: touch and drag.",
 
     s3_eyebrow: 'The method',
@@ -1555,176 +1600,144 @@ if (prefersReduced) {
 })();
 
 /* ============================================================
-   Démo — vrai calendrier onboarding (recherche + drag & drop).
-   Diagnostic → priorité zone. Pose un sport → le club auto-cale la
-   mobilité (zone du diagnostic). Mobilité aussi plaçable à la main.
+   Démo produit — la boucle complète, guidée.
+   1 Diagnostic (slider amplitude réel) · 2 Emploi du temps (drag & drop)
+   · 3 Programme · 4 Vidéo au coach · 5 Correction · 6 Retest J+30.
+   Interactif (slider + calendrier) + vraies captures. Vanilla, bilingue.
    ============================================================ */
-(function demoCalendar(){
-  const root = document.getElementById('scal');
-  const guide = document.getElementById('demoGuide');
-  if (!root || !guide) return;
+(function productTour(){
+  const stage = document.getElementById('tourStage');
+  const stepsEl = document.getElementById('tourSteps');
+  const nextBtn = document.getElementById('tourNext');
+  const noteEl = document.getElementById('tourNote');
+  if (!stage || !stepsEl || !nextBtn) return;
 
   const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
   const tr = (fr,en) => (L()==='en'?en:fr);
+  let step = 0;
 
-  const DAYS   = { fr:['LUN','MAR','MER','JEU','VEN','SAM','DIM'], en:['MON','TUE','WED','THU','FRI','SAT','SUN'] };
-  const DAYLBL = { fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'], en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] };
-  const SLOTLBL= { fr:['MATIN','MIDI','SOIR'], en:['MORN','NOON','EVE'] };
-  const ZONES  = [{fr:'Épaules',en:'Shoulders'},{fr:'Hanches',en:'Hips'},{fr:'Chevilles',en:'Ankles'},{fr:'Colonne',en:'Spine'},{fr:'Thoracique',en:'Thoracic'}];
-  const FAM = { force:'#C9C7C0', course:'#7FB2E8', velo:'#9FD0E8', combat:'#C99BE0', raquette:'#E0B36B', collectif:'#8FD9A8', eau:'#7FCBD9', souplesse:'#E0A8C8', autre:'#E89B7F' };
-  const FAMLBL = { force:{fr:'Force',en:'Strength'}, course:{fr:'Course',en:'Running'}, velo:{fr:'Cyclisme',en:'Cycling'}, combat:{fr:'Combat',en:'Combat'}, raquette:{fr:'Raquette',en:'Racket'}, collectif:{fr:'Collectif',en:'Team'}, eau:{fr:'Eau',en:'Water'}, souplesse:{fr:'Souplesse',en:'Flexibility'}, autre:{fr:'Autre',en:'Other'} };
-  const CATALOG = [
-    {id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},
-    {id:'course',fr:'Course à pied',en:'Running',fam:'course'},
-    {id:'trail',fr:'Trail',en:'Trail',fam:'course'},
-    {id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},
-    {id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},
-    {id:'haltero',fr:'Haltérophilie',en:'Weightlifting',fam:'force'},
-    {id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},
-    {id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},
-    {id:'foot',fr:'Football',en:'Football',fam:'collectif'},
-    {id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},
-    {id:'basket',fr:'Basket',en:'Basketball',fam:'collectif'},
-    {id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},
-    {id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},
-    {id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},
-    {id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},
-    {id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},
-    {id:'pilates',fr:'Pilates',en:'Pilates',fam:'souplesse'},
-    {id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},
-    {id:'golf',fr:'Golf',en:'Golf',fam:'autre'},
-    {id:'danse',fr:'Danse',en:'Dance',fam:'souplesse'}
+  const STEPS = [
+    {fr:'Diagnostic',en:'Diagnostic'},
+    {fr:'Emploi du temps',en:'Schedule'},
+    {fr:'Programme généré',en:'Program built'},
+    {fr:'Vidéo au coach',en:'Video to coach'},
+    {fr:'Correction du coach',en:'Coach feedback'},
+    {fr:'Retest à J+30',en:'Retest at day 30'}
   ];
-  const cat = id => CATALOG.find(c=>c.id===id);
 
-  let palette = ['crossfit','course'];
-  let sessions=[], mob=[], query='', diag=3; // diag = index zone (Colonne par défaut)
-  const keyAt = (arr,di,si)=>arr.find(x=>x.di===di&&x.si===si);
-  const nSport = ()=>sessions.length, nMob=()=>mob.length;
-  const diagZone = ()=>ZONES[diag][L()];
-  const ri = (a,b)=>a+Math.floor(Math.random()*(b-a+1));
-  function firstFree(preferDi){
-    for (let si=0; si<3; si++){ if (!keyAt(sessions,preferDi,si) && !keyAt(mob,preferDi,si)) return {di:preferDi,si}; }
-    for (let di=0; di<7; di++){ for (let si=0; si<3; si++){ if (!keyAt(sessions,di,si)&&!keyAt(mob,di,si)) return {di,si}; } }
-    return null;
+  /* ---------- ÉTAPE 1 · diagnostic (slider amplitude) ---------- */
+  const PALLIERS = [
+    {a:'110°', d:{fr:'Main à 40+ cm du mur',en:'Hand 40+ cm from wall'}},
+    {a:'130°', d:{fr:'Main à 30–40 cm du mur',en:'Hand 30–40 cm from wall'}},
+    {a:'150°', d:{fr:'Main à 20–30 cm du mur',en:'Hand 20–30 cm from wall'}},
+    {a:'170°', d:{fr:'Main à 10–20 cm du mur',en:'Hand 10–20 cm from wall'}},
+    {a:'180°', d:{fr:'Main au mur — amplitude max',en:'Hand on wall — full range'}}
+  ];
+  let side='D', lvl={D:3, G:3};
+  const diagScore = () => Math.round(46 + ((lvl.D+lvl.G)/2)/4*40); // ~46..86
+  function renderDiag(){
+    const p = PALLIERS[lvl[side]];
+    stage.innerHTML =
+      '<div class="td-instr">'+tr('Lève un bras, pousse-le en arrière. Limite sans que le dos décolle du mur.','Raise one arm, push it back. Limit before your back leaves the wall.')+'</div>'+
+      '<div class="td-tabs"><button class="td-tab'+(side==='D'?' on':'')+'" data-side="D">'+tr('Côté droit','Right side')+'</button><button class="td-tab'+(side==='G'?' on':'')+'" data-side="G">'+tr('Côté gauche','Left side')+'</button></div>'+
+      '<div class="td-lead">'+tr('TON NIVEAU · ','YOUR LEVEL · ')+(side==='D'?tr('CÔTÉ DROIT','RIGHT'):tr('CÔTÉ GAUCHE','LEFT'))+' · '+tr('GLISSE LE CURSEUR','SLIDE THE CURSOR')+'</div>'+
+      '<div class="td-card"><div class="td-badge">● '+tr('PALIER ','TIER ')+(lvl[side]+1)+'</div><div class="td-pal">'+tr('Palier ','Tier ')+(lvl[side]+1)+'</div><div class="td-desc">'+p.d[L()]+' (≈'+p.a+')</div></div>'+
+      '<input type="range" class="mc-slider" min="0" max="4" step="1" value="'+lvl[side]+'" style="--fill:'+(lvl[side]*25)+'%" id="tdslide">'+
+      '<div class="td-scale">'+[1,2,3,4,5].map((n,i)=>'<span class="'+(i===lvl[side]?'on':'')+'">'+n+'</span>').join('')+'</div>'+
+      '<div class="td-score"><div class="k">'+tr('SCORE ÉPAULE','SHOULDER SCORE')+'</div><div class="v"><b>'+diagScore()+'</b><span>/100</span></div></div>';
+    stage.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); renderDiag(); tourNote(); });
+    const s=stage.querySelector('#tdslide'); if (s) s.oninput=e=>{ lvl[side]=+e.target.value; renderDiag(); tourNote(); };
   }
 
-  function renderScal(){
-    const dd=DAYS[L()], sl=SLOTLBL[L()];
-    let grid='';
-    for (let di=0; di<7; di++){
-      let cells='';
-      for (let si=0; si<3; si++){
-        const ses=keyAt(sessions,di,si), m=keyAt(mob,di,si);
-        let inner='';
-        if (ses){ inner='<div class="scal-blk sport"><span class="scal-bt">'+cat(ses.sportId)[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>'; }
-        else if (m){ inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+(m.auto?' <span style="font-weight:600;opacity:.7">· auto</span>':'')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>'; }
-        cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>';
-      }
-      grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>';
-    }
-    const tokens=palette.map((id,i)=>{const c=cat(id);return '<div class="scal-ptoken'+(i===0&&!nSport()?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
-    root.innerHTML =
+  /* ---------- ÉTAPE 2 · calendrier drag & drop ---------- */
+  const DAYS={fr:['LUN','MAR','MER','JEU','VEN','SAM','DIM'],en:['MON','TUE','WED','THU','FRI','SAT','SUN']};
+  const DAYLBL={fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'],en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']};
+  const SLOTLBL={fr:['MATIN','MIDI','SOIR'],en:['MORN','NOON','EVE']};
+  const ZONES=[{fr:'Épaules',en:'Shoulders'},{fr:'Hanches',en:'Hips'},{fr:'Chevilles',en:'Ankles'},{fr:'Colonne',en:'Spine'},{fr:'Thoracique',en:'Thoracic'}];
+  const FAM={force:'#C9C7C0',course:'#7FB2E8',velo:'#9FD0E8',combat:'#C99BE0',raquette:'#E0B36B',collectif:'#8FD9A8',eau:'#7FCBD9',souplesse:'#E0A8C8',autre:'#E89B7F'};
+  const FAMLBL={force:{fr:'Force',en:'Strength'},course:{fr:'Course',en:'Running'},velo:{fr:'Cyclisme',en:'Cycling'},combat:{fr:'Combat',en:'Combat'},raquette:{fr:'Raquette',en:'Racket'},collectif:{fr:'Collectif',en:'Team'},eau:{fr:'Eau',en:'Water'},souplesse:{fr:'Souplesse',en:'Flex'},autre:{fr:'Autre',en:'Other'}};
+  const CATALOG=[{id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},{id:'course',fr:'Course à pied',en:'Running',fam:'course'},{id:'trail',fr:'Trail',en:'Trail',fam:'course'},{id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},{id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},{id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},{id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},{id:'foot',fr:'Football',en:'Football',fam:'collectif'},{id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},{id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},{id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},{id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},{id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},{id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},{id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},{id:'golf',fr:'Golf',en:'Golf',fam:'autre'}];
+  const catf=id=>CATALOG.find(c=>c.id===id);
+  let palette=['crossfit','course'], sessions=[], mob=[], query='', diag=3;
+  const keyAt=(a,di,si)=>a.find(x=>x.di===di&&x.si===si);
+  const diagZone=()=>ZONES[diag][L()];
+  const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  function firstFree(pd){ for(let si=0;si<3;si++){if(!keyAt(sessions,pd,si)&&!keyAt(mob,pd,si))return{di:pd,si};} for(let di=0;di<7;di++)for(let si=0;si<3;si++){if(!keyAt(sessions,di,si)&&!keyAt(mob,di,si))return{di,si};} return null; }
+  function renderCal(){
+    const dd=DAYS[L()], sl=SLOTLBL[L()]; let grid='';
+    for(let di=0;di<7;di++){ let cells='';
+      for(let si=0;si<3;si++){ const s=keyAt(sessions,di,si),m=keyAt(mob,di,si); let inner='';
+        if(s) inner='<div class="scal-blk sport"><span class="scal-bt">'+catf(s.sportId)[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>';
+        else if(m) inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+(m.auto?' <span style="font-weight:600;opacity:.7">· auto</span>':'')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>';
+        cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>'; }
+      grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>'; }
+    const tokens=palette.map((id,i)=>{const c=catf(id);return '<div class="scal-ptoken'+(i===0&&!sessions.length?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
+    stage.innerHTML=
       '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('TON CALENDRIER SPORT','YOUR SPORT CALENDAR')+'</div>'+
       '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
-      '<p class="scal-lede">'+tr('Cherche ton sport, glisse-le. Le club <b class="mint">cale la mobilité</b> selon ton diagnostic.','Find your sport, drag it. The club <b class="mint">adds mobility</b> from your diagnostic.')+'</p>'+
-      '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻ relancer','↻ new')+'</span></div>'+
+      '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻','↻')+'</span></div>'+
       '<div class="scal-gridwrap"><div class="scal-ghead"><span></span><span>'+sl[0]+'</span><span>'+sl[1]+'</span><span>'+sl[2]+'</span></div>'+grid+'</div>'+
-      '<div class="scal-tray">'+
-        '<div class="scal-search"><span class="si">⌕</span><input id="scalq" placeholder="'+tr('Ajoute un sport…','Add a sport…')+'" autocomplete="off" value="'+query.replace(/"/g,'&quot;')+'"></div>'+
-        '<div class="scal-searchres" id="scalres"></div>'+
-        '<div class="scal-tray-head" style="margin-top:11px"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse sur la grille','drag onto grid')+'</span></span><span class="thb">'+nSport()+' '+tr('placé','placed')+(nSport()>1?'s':'')+'</span></div>'+
-        '<div class="scal-palette">'+tokens+'</div>'+
-        '<div class="scal-token'+(nSport()&&!nMob()?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · MANUEL','DRAG ME · MANUAL')+'</div></div><span class="tk-grab">⠿</span></div>'+
-      '</div>';
-    attach();
-    renderResults();
+      '<div class="scal-tray"><div class="scal-search"><span class="si">⌕</span><input id="scalq" placeholder="'+tr('Ajoute un sport…','Add a sport…')+'" autocomplete="off" value="'+query.replace(/"/g,'&quot;')+'"></div><div class="scal-searchres" id="scalres"></div>'+
+      '<div class="scal-tray-head" style="margin-top:11px"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse','drag')+'</span></span><span class="thb">'+sessions.length+' '+tr('placé','placed')+(sessions.length>1?'s':'')+'</span></div>'+
+      '<div class="scal-palette">'+tokens+'</div>'+
+      '<div class="scal-token'+(sessions.length&&!mob.length?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · MANUEL','DRAG ME · MANUAL')+'</div></div><span class="tk-grab">⠿</span></div></div>';
+    calAttach(); calResults();
   }
-
-  function renderResults(){
-    const box=root.querySelector('#scalres'); if (!box) return;
-    const q=query.trim().toLowerCase();
-    if (!q){ box.innerHTML=''; box.style.display='none'; return; }
-    box.style.display='';
-    const m=CATALOG.filter(c=>c.fr.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)).slice(0,6);
-    box.innerHTML = m.length ? m.map(c=>{const added=palette.indexOf(c.id)>=0;return '<div class="scal-sres'+(added?' added':'')+'" data-add="'+c.id+'"><span class="sdot" style="background:'+FAM[c.fam]+'"></span><span class="srn">'+c[L()]+'</span><span class="scat">'+(added?tr('ajouté','added'):FAMLBL[c.fam][L()])+'</span></div>';}).join('')
-      : '<div class="scal-sres-none">'+tr('Aucun sport pour « ','No sport for “')+query+' ».</div>';
+  function calResults(){ const box=stage.querySelector('#scalres'); if(!box)return; const q=query.trim().toLowerCase();
+    if(!q){box.innerHTML='';box.style.display='none';return;} box.style.display='';
+    const m=CATALOG.filter(c=>c.fr.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)).slice(0,5);
+    box.innerHTML=m.length?m.map(c=>{const ad=palette.indexOf(c.id)>=0;return '<div class="scal-sres'+(ad?' added':'')+'" data-add="'+c.id+'"><span class="sdot" style="background:'+FAM[c.fam]+'"></span><span class="srn">'+c[L()]+'</span><span class="scat">'+(ad?tr('ajouté','added'):FAMLBL[c.fam][L()])+'</span></div>';}).join(''):'<div class="scal-sres-none">'+tr('Aucun sport.','No sport.')+'</div>'; }
+  function calAttach(){
+    stage.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown',e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
+    const mt=stage.querySelector('[data-mob]'); if(mt) mt.addEventListener('pointerdown',e=>begin(e,{kind:'mob'},mt));
+    const inp=stage.querySelector('#scalq'); if(inp) inp.addEventListener('input',e=>{query=e.target.value;calResults();});
+    const res=stage.querySelector('#scalres'); if(res) res.addEventListener('click',e=>{const r=e.target.closest('[data-add]');if(!r)return;const id=r.getAttribute('data-add');if(palette.indexOf(id)<0){palette.push(id);toast(catf(id)[L()]+tr(' ajouté',' added'));}query='';renderCal();tourNote();});
+    const dz=stage.querySelector('[data-diag]'); if(dz) dz.addEventListener('click',()=>{diag=ri(0,ZONES.length-1);sessions=[];mob=[];query='';toast(tr('Diagnostic · ','Diagnostic · ')+diagZone());renderCal();tourNote();});
   }
-
-  function renderGuide(){
-    const step = nSport() ? (nMob()?2:1) : 0;
-    const steps=[
-      tr('Cherche et glisse ton sport.','Search and drag your sport.'),
-      tr('Le club auto-cale la mobilité (diagnostic).','The club auto-adds mobility (diagnostic).'),
-      tr('Ajoute-en à la main si tu veux. C\'est ta semaine.','Add more by hand if you like. It\'s your week.')
-    ];
-    let live;
-    if (!nSport()) live=tr('Ton diagnostic pointe <b>'+diagZone()+'</b>. Pose un sport → le club cale la mobilité autour.','Your diagnostic flags <b>'+diagZone()+'</b>. Drop a sport → the club sets mobility around it.');
-    else live=tr('<b>'+nMob()+'</b> bloc'+(nMob()>1?'s':'')+' de mobilité <b>'+diagZone()+'</b> calé'+(nMob()>1?'s':'')+' auto · '+nSport()+' séance'+(nSport()>1?'s':'')+'.','<b>'+nMob()+'</b> <b>'+diagZone()+'</b> mobility block'+(nMob()>1?'s':'')+' auto-set · '+nSport()+' session'+(nSport()>1?'s':'')+'.');
-    guide.innerHTML =
-      '<div class="dg-eyebrow">'+tr('Ce que le club décide','What the club decides')+'</div>'+
-      steps.map((t,i)=>'<div class="dg-step '+(i<step?'done':(i===step?'on':''))+'"><span class="n">0'+(i+1)+'</span><span class="t">'+t+'</span></div>').join('')+
-      '<div class="dg-live"><div class="k">'+tr('En direct','Live')+'</div><div class="v">'+live+'</div></div>';
-  }
-
-  function paintAll(){ renderScal(); renderGuide(); }
-
-  let toastEl=null, toastT=0;
-  function toast(msg){
-    if (!toastEl){ toastEl=document.createElement('div'); toastEl.className='scal-toast'; document.body.appendChild(toastEl); }
-    toastEl.textContent=msg; toastEl.classList.add('show');
-    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove('show'),1900);
-  }
-
   let drag=null;
-  function cellUnder(e){ if (drag&&drag.ghost) drag.ghost.style.display='none'; const el=document.elementFromPoint(e.clientX,e.clientY); if (drag&&drag.ghost) drag.ghost.style.display=''; return el?el.closest('.scal-cell'):null; }
-  function clearHi(){ root.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
-  function highlight(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
-  function startGhost(){
-    let label,sub,mint;
-    if (drag.kind==='mob'){ label=tr('Mobilité','Mobility'); sub=diagZone()+' · 8′'; mint=true; }
-    else { const c=cat(drag.sportId); label=c[L()]; sub=tr('NOUVELLE SÉANCE','NEW SESSION'); mint=false; }
-    const g=document.createElement('div'); g.className='scal-ghost';
-    g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';
-    document.body.appendChild(g); drag.ghost=g; drag.started=true; if (drag.src) drag.src.classList.add('dragging');
-  }
-  function onMove(e){
-    if (!drag) return;
-    if (!drag.started){ const dx=e.clientX-drag.sx, dy=e.clientY-drag.sy; if (Math.sqrt(dx*dx+dy*dy)<7) return; startGhost(); }
-    if (drag.ghost){ drag.ghost.style.left=e.clientX+'px'; drag.ghost.style.top=e.clientY+'px'; }
-    const cell=cellUnder(e); if (drag.lastCell&&drag.lastCell!==cell) drag.lastCell.classList.remove('drop-ok','drop-no'); if (cell) highlight(cell); drag.lastCell=cell;
-  }
-  function onUp(e){
-    document.removeEventListener('pointermove',onMove);
-    if (!drag) return;
-    if (drag.started){ const cell=cellUnder(e); if (cell) drop(cell); }
-    clearHi(); if (drag.ghost) drag.ghost.remove(); drag=null; paintAll();
-  }
-  function begin(e, payload, src){
-    e.preventDefault();
-    drag={ kind:payload.kind, sportId:payload.sportId, src, sx:e.clientX, sy:e.clientY, started:false, ghost:null, lastCell:null };
-    document.addEventListener('pointermove',onMove);
-    document.addEventListener('pointerup',onUp,{once:true});
-  }
-  function drop(cell){
-    const p=cell.getAttribute('data-cell').split('|'), di=+p[0], si=+p[1];
-    if (keyAt(sessions,di,si)||keyAt(mob,di,si)){ toast(tr('Créneau occupé','Slot taken')); return; }
-    if (drag.kind==='mob'){ mob.push({di,si,zone:diagZone(),auto:false}); toast(tr('Mobilité ','Mobility ')+diagZone()+' · '+DAYLBL[L()][di]); return; }
-    const c=cat(drag.sportId); sessions.push({di,si,sportId:c.id});
-    const f=firstFree(di);
-    if (f){ mob.push({di:f.di,si:f.si,zone:diagZone(),auto:true}); toast(c[L()]+' + '+tr('mobilité ','mobility ')+diagZone()+' '+tr('(auto)','(auto)')); }
-    else toast(c[L()]+' · '+DAYLBL[L()][di]);
-  }
-  function attach(){
-    root.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown', e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
-    const mt=root.querySelector('[data-mob]'); if (mt) mt.addEventListener('pointerdown', e=>begin(e,{kind:'mob'},mt));
-    const inp=root.querySelector('#scalq'); if (inp) inp.addEventListener('input', e=>{ query=e.target.value; renderResults(); });
-    const res=root.querySelector('#scalres'); if (res) res.addEventListener('click', e=>{ const r=e.target.closest('[data-add]'); if (!r) return; const id=r.getAttribute('data-add'); if (palette.indexOf(id)<0){ palette.push(id); toast(cat(id)[L()]+tr(' ajouté','' + ' added')); } query=''; paintAll(); });
-    const dz=root.querySelector('[data-diag]'); if (dz) dz.addEventListener('click', ()=>{ diag=ri(0,ZONES.length-1); sessions=[]; mob=[]; query=''; toast(tr('Nouveau diagnostic · ','New diagnostic · ')+diagZone()); paintAll(); });
-  }
+  function cellUnder(e){ if(drag&&drag.ghost)drag.ghost.style.display='none'; const el=document.elementFromPoint(e.clientX,e.clientY); if(drag&&drag.ghost)drag.ghost.style.display=''; return el?el.closest('.scal-cell'):null; }
+  function clearHi(){ stage.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
+  function hi(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
+  function startGhost(){ let label,sub,mint; if(drag.kind==='mob'){label=tr('Mobilité','Mobility');sub=diagZone()+' · 8′';mint=true;} else {const c=catf(drag.sportId);label=c[L()];sub=tr('NOUVELLE SÉANCE','NEW SESSION');mint=false;}
+    const g=document.createElement('div');g.className='scal-ghost';g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';document.body.appendChild(g);drag.ghost=g;drag.started=true;if(drag.src)drag.src.classList.add('dragging'); }
+  function onMove(e){ if(!drag)return; if(!drag.started){const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.sqrt(dx*dx+dy*dy)<7)return;startGhost();} if(drag.ghost){drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';} const cell=cellUnder(e); if(drag.lastCell&&drag.lastCell!==cell)drag.lastCell.classList.remove('drop-ok','drop-no'); if(cell)hi(cell); drag.lastCell=cell; }
+  function onUp(e){ document.removeEventListener('pointermove',onMove); if(!drag)return; if(drag.started){const cell=cellUnder(e);if(cell)drop(cell);} clearHi(); if(drag.ghost)drag.ghost.remove(); drag=null; renderCal(); tourNote(); }
+  function begin(e,pl,src){ e.preventDefault(); drag={kind:pl.kind,sportId:pl.sportId,src,sx:e.clientX,sy:e.clientY,started:false,ghost:null,lastCell:null}; document.addEventListener('pointermove',onMove); document.addEventListener('pointerup',onUp,{once:true}); }
+  function drop(cell){ const p=cell.getAttribute('data-cell').split('|'),di=+p[0],si=+p[1]; if(keyAt(sessions,di,si)||keyAt(mob,di,si)){toast(tr('Créneau occupé','Slot taken'));return;}
+    if(drag.kind==='mob'){mob.push({di,si,zone:diagZone(),auto:false});toast(tr('Mobilité ','Mobility ')+diagZone()+' · '+DAYLBL[L()][di]);return;}
+    const c=catf(drag.sportId);sessions.push({di,si,sportId:c.id});const f=firstFree(di);
+    if(f){mob.push({di:f.di,si:f.si,zone:diagZone(),auto:true});toast(c[L()]+' + '+tr('mobilité ','mobility ')+diagZone()+' (auto)');} else toast(c[L()]+' · '+DAYLBL[L()][di]); }
+  let toastEl=null,toastT=0;
+  function toast(msg){ if(!toastEl){toastEl=document.createElement('div');toastEl.className='scal-toast';document.body.appendChild(toastEl);} toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
-  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click', ()=>paintAll()));
-  paintAll();
+  /* ---------- étapes 3-6 · vraies captures ---------- */
+  function renderImg(src,alt){ stage.classList.add('is-shot'); stage.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" loading="lazy">'; }
+
+  function renderStage(){
+    stage.classList.remove('is-shot');
+    if(step===0) renderDiag();
+    else if(step===1) renderCal();
+    else if(step===2) renderImg('assets/app/programme.png', tr('Programme généré','Program built'));
+    else if(step===3) renderImg('assets/app/video-send.png', tr('Envoi vidéo au coach','Send video to coach'));
+    else if(step===4) renderImg('assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
+    else renderImg('assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+  }
+  function renderSteps(){ stepsEl.innerHTML=STEPS.map((s,i)=>'<li class="tour-step '+(i<step?'done':(i===step?'active':''))+'"><span class="n">'+(i+1)+'</span><span class="t">'+s[L()]+'</span></li>').join(''); }
+  function tourNote(){
+    let v;
+    if(step===0) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
+    else if(step===1) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
+    else if(step===2) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
+    else if(step===3) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
+    else if(step===4) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
+    else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
+    if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
+  }
+  function refreshBtn(){ nextBtn.textContent = step>=5 ? tr('↻ Recommencer','↻ Restart') : (step<=1 ? tr('Continuer →','Continue →') : tr('Suivant →','Next →')); }
+  function paint(){ renderStage(); renderSteps(); tourNote(); refreshBtn(); }
+  nextBtn.addEventListener('click',()=>{ step = step>=5 ? 0 : step+1; paint(); });
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>paint()));
+  paint();
 })();
 
 (function heroFlow(){
