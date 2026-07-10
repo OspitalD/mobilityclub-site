@@ -108,6 +108,13 @@ section{ position:relative; }
 .s5-title, .s4-close .big, .footer-mission, .s5-proof-h, .s4-lead{
   font-family:var(--font-display);
 }
+/* Réglages éditoriaux : lignes équilibrées sur les titres, veuves évitées
+   sur le corps, optical sizing du display variable (Bricolage opsz). */
+.hero-title, .reversal-headline, .problem-stmt, .method-quote, .s5-title,
+.s4-close .big, .footer-mission, .s5-proof-h, .s4-lead, .demo-title, .s4-intro{
+  text-wrap:balance; font-optical-sizing:auto;
+}
+.hero-sub, .reversal-text, .s5-proof-p, .door-desc, .demo-sub{ text-wrap:pretty; }
 /* accent italique (contraste éditorial, façon magazine — usage rare) */
 .it{ font-family:var(--font-accent); font-style:italic; font-weight:500; letter-spacing:0; }
 .hero-title .it{ font-weight:400; }
