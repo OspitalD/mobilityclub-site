@@ -827,9 +827,14 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .stories-empty{ color:var(--text-tertiary); font-size:14px; padding:20px 2px; }
 .stories-hint{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary); margin:-12px 0 18px; }
 /* mur vivant : 2 rangs qui défilent en continu, fondu aux bords, pause au survol/toucher */
-.stories-wall{ position:relative; display:flex; flex-direction:column; gap:16px; overflow:hidden; padding:8px 0;
+.stories-wall{ position:relative; display:flex; flex-direction:column; gap:10px; overflow:hidden; padding:10px 0;
   -webkit-mask:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   mask:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+/* profondeur : le rang arrière est plus petit, atténué, légèrement flou → recule ; l'avant est net et proche */
+.stories-lane{ position:relative; }
+.stories-lane.back{ transform:scale(0.9); transform-origin:center bottom; filter:brightness(0.66) saturate(0.9) blur(0.4px); margin-bottom:-14px; z-index:0; }
+.stories-lane.front{ z-index:1; }
+.stories-lane.back .story{ min-height:200px; }
 .stories-row{ display:flex; gap:16px; width:max-content; will-change:transform; }
 .stories-row.anim{ animation:marquee var(--dur,80s) linear infinite; }
 .stories-row.anim.rev{ animation-direction:reverse; }
@@ -1286,8 +1291,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <div class="stories-filters" id="storiesFilters" role="tablist" aria-label="Filtrer les témoignages"></div>
       <p class="stories-hint" data-i18n="s5_stories_hint">Survole (ou touche) pour lire · filtre par ta situation</p>
       <div class="stories-wall" id="storiesWall">
-        <div class="stories-row"></div>
-        <div class="stories-row"></div>
+        <div class="stories-lane back"><div class="stories-row"></div></div>
+        <div class="stories-lane front"><div class="stories-row"></div></div>
       </div>
       <p class="stories-empty" id="storiesEmpty" hidden data-i18n="s5_stories_empty">Aucun témoignage dans cette catégorie.</p>
     </div>
@@ -2488,8 +2493,9 @@ if (prefersReduced) {
         row.style.removeProperty('--dur');
         row.innerHTML = html;
       } else {
-        row.className = 'stories-row anim' + (ri === 1 ? ' rev' : '');
-        row.style.setProperty('--dur', Math.max(48, items.length * 11) + 's');
+        const isBack = ri === 0;   // rows[0] = lane arrière : plus lent + sens inverse (parallaxe de profondeur)
+        row.className = 'stories-row anim' + (isBack ? ' rev' : '');
+        row.style.setProperty('--dur', Math.max(52, items.length * (isBack ? 16 : 11)) + 's');
         row.innerHTML = html + html;                // dupliqué → boucle sans couture
       }
     });
