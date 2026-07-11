@@ -2614,7 +2614,7 @@ if (prefersReduced) {
   let filter = 'all';
   let pool = [];          // témoignages affichés (filtrés + entrelacés)
   let active = 0;         // index de la vedette dans pool
-  const TICK = 6500;      // durée d'affichage d'une vedette (ms)
+  const TICK = 10000;     // durée d'affichage d'une vedette (ms)
   const shown = () => TESTIMONIALS.filter(t => filter === 'all' || t.cat === filter);
   const catLabel = (t, l) => (CAT[t.cat] || {})[l] || '';
 
@@ -2696,7 +2696,7 @@ if (prefersReduced) {
       trackEl.innerHTML = html;
     } else {
       trackEl.className = 'ribbon-track anim';
-      trackEl.style.setProperty('--dur', Math.max(48, Math.round(pool.length * 4.6)) + 's');
+      trackEl.style.setProperty('--dur', Math.max(90, Math.round(pool.length * 9.6)) + 's');
       trackEl.innerHTML = html + html;   // dupliqué → boucle sans couture
     }
     highlight();
