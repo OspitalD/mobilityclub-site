@@ -494,12 +494,23 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .tour-note{ max-width:520px; margin:22px auto 0; text-align:left; }
 .demo .demo-hint{ text-align:center; max-width:560px; margin-inline:auto; }
 
-@media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .cs-card.is-center .cs-title{ animation:none !important; } }
+@media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .cs-card.is-center .cs-head{ animation:none !important; } }
 @media (max-width:640px){
-  .carousel{ height:712px; perspective:1300px; }
-  .cs-card{ width:320px; margin-left:-160px; }
+  /* mobile : carte + bouton « Valider » visibles ensemble (on regarde la rotation ET on tape) */
+  .carousel{ height:624px; perspective:1200px; }
+  .cs-card{ width:322px; margin-left:-161px; }
+  .cs-card .phone.tour-stage{ height:560px; }
+  /* diagnostic compacté pour tenir sans scroll interne (slider + score visibles) */
+  .cs-card .td-video-wrap{ max-width:150px; }
+  .cs-card .td-instr{ font-size:12.5px; margin-bottom:9px; }
+  .cs-card .td-lead{ margin-bottom:8px; }
+  .cs-card .mc-slider{ margin-top:8px; }
+  .cs-card .td-score{ margin-top:9px; padding-top:9px; }
+  .cs-head{ margin-bottom:12px; min-height:42px; }
   .cs-benefit{ font-size:14.5px; }
   .cs-nav{ width:36px; height:36px; }
+  .demo-controls{ gap:12px; margin-top:14px; }
+  .tour-note{ margin-top:16px; }
 }
 .phone.scal{
   --scal-s2:#161a18; --scal-green-fill:rgba(62,207,160,0.07);
