@@ -2152,7 +2152,7 @@ if (prefersReduced) {
     stageD.classList.remove('is-shot'); renderDiag();
     renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[3],'assets/app/today.png',       tr('Programme généré','Program built'));
+    renderImg(cards[3],'assets/app/seance-jour.png', tr('Programme généré','Program built'));
     renderImg(cards[4],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
     renderImg(cards[5],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
     renderImg(cards[6],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
@@ -2203,7 +2203,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','today','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
+  ['diagnostic-result','seance-jour','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
