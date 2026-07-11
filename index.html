@@ -815,13 +815,29 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 
 /* SECTION 05 — Results */
 .s5-title{ font-size:clamp(26px,4vw,50px); font-weight:700; letter-spacing:-0.025em; line-height:1.1; max-width:16ch; }
-.stories{ margin-top:clamp(40px,6vh,60px); display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+/* Témoignages — défilement horizontal (glisse / swipe / flèches), alimenté par un tableau JS */
+.stories{ margin-top:clamp(40px,6vh,60px); position:relative; }
+.stories-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+.stories-eyebrow{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
+.stories-nav{ display:flex; gap:8px; flex-shrink:0; }
+.stories-nav button{ width:38px; height:38px; border-radius:50%; border:1px solid var(--border-active); background:var(--bg-surface); color:var(--text-secondary); cursor:pointer; font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center; transition:border-color .2s var(--ease), color .2s var(--ease); }
+.stories-nav button:hover{ border-color:var(--accent-green-line); color:var(--accent-green); }
+.stories-nav button:disabled{ opacity:0.28; pointer-events:none; }
+.stories-scroll{ display:flex; gap:16px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; scroll-behavior:smooth; padding:4px 2px 14px; margin:0 -2px; scrollbar-width:none; -webkit-overflow-scrolling:touch; cursor:grab; }
+.stories-scroll::-webkit-scrollbar{ display:none; }
+.stories-scroll.dragging{ cursor:grabbing; scroll-behavior:auto; scroll-snap-type:none; }
+.stories-scroll.dragging .story{ pointer-events:none; }
+.stories-scroll .story{ flex:0 0 clamp(266px,74vw,338px); scroll-snap-align:start; }
+/* fondus aux bords : signalent qu'il y a plus à voir */
+.stories::before, .stories::after{ content:""; position:absolute; top:44px; bottom:14px; width:52px; z-index:2; pointer-events:none; transition:opacity .3s var(--ease); }
+.stories::before{ left:-2px; background:linear-gradient(90deg, var(--bg-primary), transparent); opacity:var(--fade-l,0); }
+.stories::after{ right:-2px; background:linear-gradient(270deg, var(--bg-primary), transparent); opacity:var(--fade-r,1); }
 .story{
   background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px;
-  padding:24px 22px; display:flex; flex-direction:column; min-height:260px;
+  padding:24px 22px; display:flex; flex-direction:column; min-height:262px;
   transition:transform .35s var(--ease), border-color .35s var(--ease);
 }
-.story:hover{ transform:translateY(-4px); border-color:var(--border-active); }
+.story:hover{ border-color:var(--border-active); }
 .story .quote-mark{ font-family:var(--font-mono); color:var(--accent-green); font-size:26px; line-height:1; margin-bottom:14px; }
 .story .body{ font-size:14.5px; line-height:1.6; color:var(--text-primary); flex:1; }
 .story .placeholder-txt{ color:var(--text-secondary); font-style:normal; }
@@ -1244,42 +1260,15 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
     </div>
 
-    <div class="stories">
-      <article class="story reveal">
-        <div class="quote-mark">“</div>
-        <p class="body" data-i18n="story1">Arrivé avec une fasciite plantaire — courir était devenu impossible. Trois mois de routines, et la douleur a disparu. 5 km, 10 km, semi… puis le Marathon de Paris. Sans douleur, même après la course.</p>
-        <div class="story-foot">
-          <div>
-            <div class="who" data-i18n="story1_who">Ghislain</div>
-            <div class="sport" data-i18n="story1_sport">Course à pied</div>
-          </div>
-          <div class="dur" data-i18n="story1_dur">18 mois</div>
-        </div>
-      </article>
-
-      <article class="story reveal">
-        <div class="quote-mark">“</div>
-        <p class="body" data-i18n="story2">Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.</p>
-        <div class="story-foot">
-          <div>
-            <div class="who" data-i18n="story2_who">Éloïse</div>
-            <div class="sport" data-i18n="story2_sport">Mobilité</div>
-          </div>
-          <div class="dur" data-i18n="story2_dur">quelques mois</div>
-        </div>
-      </article>
-
-      <article class="story reveal">
-        <div class="quote-mark">“</div>
-        <p class="body" data-i18n="story3">Un an au club : mes charges en squat et en fentes ont grimpé en flèche. J'ai repris le développé couché malgré les douleurs — et passé 100 kg pour la première fois.</p>
-        <div class="story-foot">
-          <div>
-            <div class="who" data-i18n="story3_who">Thibault</div>
-            <div class="sport" data-i18n="story3_sport">Force</div>
-          </div>
-          <div class="dur" data-i18n="story3_dur">1 an</div>
-        </div>
-      </article>
+    <div class="stories reveal">
+      <div class="stories-head">
+        <span class="stories-eyebrow" data-i18n="s5_stories_eyebrow">Leurs retours · glisse pour parcourir</span>
+        <span class="stories-nav">
+          <button id="storiesPrev" type="button" aria-label="Témoignages précédents">‹</button>
+          <button id="storiesNext" type="button" aria-label="Témoignages suivants">›</button>
+        </span>
+      </div>
+      <div class="stories-scroll" id="storiesScroll"></div>
     </div>
   </div>
 </section>
@@ -1496,6 +1485,7 @@ const I18N = {
     s4_profiles_label: '3 membres · 3 produits · même moteur',
     s5_proof_h: "Preuve, <span class=\"hl\">pas promesse.</span>",
     s5_proof_p: "Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.",
+    s5_stories_eyebrow: 'Leurs retours · glisse pour parcourir',
 
     s1_eyebrow: 'Le problème',
     s1_text: "Tu sais que la mobilité compte. <span class=\"soft\">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class=\"warn it\">trois semaines.</span>",
@@ -1581,6 +1571,7 @@ const I18N = {
     s4_profiles_label: '3 members · 3 products · one engine',
     s5_proof_h: "Proof, <span class=\"hl\">not promises.</span>",
     s5_proof_p: "Every member re-tests their mobility. <strong>+14 points in 90 days</strong> — measured, not felt. Your radar, before / after.",
+    s5_stories_eyebrow: 'Member stories · drag to browse',
 
     s1_eyebrow: 'The problem',
     s1_text: "You know mobility matters. <span class=\"soft\">But the apps prescribe you the same routine as everyone else.</span> So you quit within <span class=\"warn it\">three weeks.</span>",
@@ -2249,6 +2240,67 @@ if (prefersReduced) {
     probe.onerror = () => tryNext(i + 1);
     probe.src = candidates[i];
   })(0);
+})();
+
+/* Témoignages §05 — défilement horizontal alimenté par un tableau.
+   Damien : pour en ajouter, copie un bloc dans TESTIMONIALS ci-dessous. */
+(function testimonials(){
+  const scroll = document.getElementById('storiesScroll');
+  if (!scroll) return;
+  const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const TESTIMONIALS = [
+    { who:'Ghislain', sport:{fr:'Course à pied',en:'Running'}, dur:{fr:'18 mois',en:'18 months'},
+      fr:"Arrivé avec une fasciite plantaire — courir était devenu impossible. Trois mois de routines, et la douleur a disparu. 5 km, 10 km, semi… puis le Marathon de Paris. Sans douleur, même après la course.",
+      en:"Arrived with plantar fasciitis — running had become impossible. Three months of routines, and the pain was gone. 5K, 10K, half… then the Paris Marathon. Pain-free, even after the race." },
+    { who:'Éloïse', sport:{fr:'Mobilité',en:'Mobility'}, dur:{fr:'quelques mois',en:'a few months'},
+      fr:"Énorme progression sur la mobilité de cheville : je réalise enfin un squat complet, ce qui me paraissait impossible. Le chrono me garde concentrée sur la qualité du mouvement.",
+      en:"Huge progress on ankle mobility: I can finally do a full squat, which felt impossible before. The timer keeps me focused on movement quality, not the clock." },
+    { who:'Thibault', sport:{fr:'Force',en:'Strength'}, dur:{fr:'1 an',en:'1 year'},
+      fr:"Un an au club : mes charges en squat et en fentes ont grimpé en flèche. J'ai repris le développé couché malgré les douleurs — et passé 100 kg pour la première fois.",
+      en:"One year in: my squat and lunge loads shot up. I got back to bench press despite the pain — and hit 100 kg for the first time." }
+  ];
+
+  function render(){
+    const l = L();
+    scroll.innerHTML = TESTIMONIALS.map(t =>
+      '<article class="story"><div class="quote-mark">“</div>' +
+      '<p class="body">' + esc(t[l]) + '</p>' +
+      '<div class="story-foot"><div>' +
+      '<div class="who">' + esc(t.who) + '</div>' +
+      '<div class="sport">' + esc(t.sport[l]) + '</div></div>' +
+      '<div class="dur">' + esc(t.dur[l]) + '</div></div></article>'
+    ).join('');
+  }
+
+  /* glisser pour défiler (desktop) — le touch/swipe est natif */
+  let down=false, sx=0, sl=0, moved=false;
+  scroll.addEventListener('pointerdown', e => { down=true; moved=false; sx=e.clientX; sl=scroll.scrollLeft; scroll.classList.add('dragging'); });
+  scroll.addEventListener('pointermove', e => { if(!down) return; const dx=e.clientX-sx; if(Math.abs(dx)>4) moved=true; scroll.scrollLeft = sl - dx; });
+  const end = () => { down=false; scroll.classList.remove('dragging'); };
+  scroll.addEventListener('pointerup', end); scroll.addEventListener('pointerleave', end); scroll.addEventListener('pointercancel', end);
+  scroll.addEventListener('click', e => { if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
+
+  const prev=document.getElementById('storiesPrev'), next=document.getElementById('storiesNext'), wrap=scroll.closest('.stories');
+  const step = () => Math.max(240, Math.round(scroll.clientWidth * 0.8));
+  prev && prev.addEventListener('click', () => scroll.scrollBy({ left:-step(), behavior:'smooth' }));
+  next && next.addEventListener('click', () => scroll.scrollBy({ left: step(), behavior:'smooth' }));
+
+  const head = wrap.querySelector('.stories-head');
+  function upd(){
+    const max = scroll.scrollWidth - scroll.clientWidth, x = scroll.scrollLeft, scrollable = max > 4;
+    if(head) head.style.display = scrollable ? 'flex' : 'none';   // hint + flèches seulement si ça défile
+    wrap.style.setProperty('--fade-l', scrollable && x > 4 ? 1 : 0);
+    wrap.style.setProperty('--fade-r', scrollable && x < max - 4 ? 1 : 0);
+    if(prev) prev.disabled = x <= 2;
+    if(next) next.disabled = x >= max - 2;
+  }
+  scroll.addEventListener('scroll', upd, { passive:true });
+  window.addEventListener('resize', upd, { passive:true });
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { render(); upd(); }));
+
+  render(); upd();
 })();
 
 (function heroFlow(){
