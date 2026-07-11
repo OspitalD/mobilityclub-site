@@ -461,7 +461,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .cs-card{ position:absolute; top:0; left:50%; width:392px; margin-left:-196px;
   display:flex; flex-direction:column; align-items:center;
   transition:transform .78s cubic-bezier(0.62,0.04,0.18,1), opacity .6s var(--ease), filter .6s var(--ease);
-  transform-origin:center center; backface-visibility:hidden; transform-style:preserve-3d; will-change:transform, opacity; }
+  transform-origin:center center; }   /* pas de will-change/backface/preserve-3d : évite la rastérisation basse-def (flou retina) */
 .cs-card .phone{ margin:0; }
 .cs-card:not(.is-center){ filter:brightness(0.9); }
 .cs-card:not(.is-center) .phone{ box-shadow:0 44px 90px -52px rgba(0,0,0,0.95); }
@@ -2139,7 +2139,8 @@ if (prefersReduced) {
   function toast(msg){ if(!toastEl){toastEl=document.createElement('div');toastEl.className='scal-toast';document.body.appendChild(toastEl);} toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
   /* ---------- étapes 3-6 · vraies captures (rendues dans leur carte) ---------- */
-  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" decoding="async">'; }
+  const ASSET_V='?v=2';   // cache-bust : force le fetch des captures ré-exportées (netteté)
+  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.innerHTML='<img class="tour-img" src="'+src+ASSET_V+'" alt="'+alt+'" decoding="async">'; }
 
   /* calendrier pré-rempli : Musculation + Course déjà placés, mobilité calée auto autour */
   function seedCal(){
@@ -2203,7 +2204,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','seance-jour','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
+  ['diagnostic-result','seance-jour','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'+ASSET_V; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
