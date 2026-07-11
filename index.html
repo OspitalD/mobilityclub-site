@@ -838,21 +838,28 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 @keyframes marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
 .stories-row .story{ flex:0 0 clamp(282px,82vw,348px); }
 .story{
-  position:relative;
+  position:relative; overflow:hidden;
   background:
-    radial-gradient(130% 80% at 50% -8%, rgba(62,207,160,0.05), transparent 55%),
-    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 26%),
+    radial-gradient(130% 80% at 50% -8%, rgba(62,207,160,0.055), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.022), transparent 26%),
     var(--bg-surface);
   border:1px solid var(--border-active); border-radius:16px;
-  padding:26px 24px 22px; display:flex; flex-direction:column; min-height:222px;
+  padding:22px 24px; display:flex; flex-direction:column; min-height:236px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), 0 26px 54px -36px rgba(0,0,0,0.9);
-  transition:transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+  transition:transform .55s var(--ease-line), border-color .45s var(--ease), box-shadow .55s var(--ease), opacity .45s var(--ease), filter .45s var(--ease);
 }
-.story:hover{ transform:translateY(-6px); border-color:#2b332e;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 42px 72px -32px rgba(0,0,0,0.95), 0 24px 64px -40px rgba(62,207,160,0.22); }
-.story .quote-mark{ font-family:var(--font-display); font-weight:800; color:var(--accent-green); font-size:44px; line-height:0.6; height:22px; margin-bottom:14px; }
-.story .body{ font-size:14.5px; line-height:1.6; color:var(--text-primary); flex:1; }
-.story-foot{ margin-top:22px; padding-top:15px; border-top:1px solid var(--hair); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.story::before{ content:""; position:absolute; inset:0 0 auto 0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(62,207,160,0.6), transparent); opacity:0; transition:opacity .45s var(--ease); }
+.story:hover{ transform:translateY(-8px) scale(1.035); border-color:rgba(62,207,160,0.42); z-index:3;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), 0 46px 84px -30px rgba(0,0,0,0.95), 0 30px 74px -32px rgba(62,207,160,0.36); }
+.story:hover::before{ opacity:1; }
+/* spotlight : une carte survolée s'illumine, les autres s'effacent */
+.stories-wall:has(.story:hover) .story:not(:hover){ opacity:0.34; filter:saturate(0.8) brightness(0.8); }
+.story-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.stars{ color:var(--accent-green); font-size:13px; letter-spacing:2.5px; line-height:1; text-shadow:0 0 12px rgba(62,207,160,0.45); }
+.story .quote-mark{ font-family:var(--font-display); font-weight:800; color:rgba(62,207,160,0.32); font-size:40px; line-height:0.5; height:14px; }
+.story .body{ font-size:14.5px; line-height:1.62; color:var(--text-primary); flex:1; }
+.story-foot{ margin-top:20px; padding-top:15px; border-top:1px solid var(--hair); display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .story-foot .who{ font-weight:700; font-size:13.5px; letter-spacing:-0.01em; }
 .story-foot .sport{ font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:var(--accent-green);
   border:1px solid rgba(62,207,160,0.3); border-radius:100px; padding:4px 10px; white-space:nowrap; }
@@ -2453,8 +2460,9 @@ if (prefersReduced) {
   let filter = 'all';
   const shown = () => TESTIMONIALS.filter(t => filter === 'all' || t.cat === filter);
 
+  const STARS = '<div class="stars" role="img" aria-label="Noté 5 sur 5">★★★★★</div>';
   const card = (t, l) =>
-    '<article class="story"><div class="quote-mark">“</div>' +
+    '<article class="story"><div class="story-top">' + STARS + '<span class="quote-mark">“</span></div>' +
     '<p class="body">' + esc(t[l]) + '</p>' +
     '<div class="story-foot"><div class="who">' + esc(t.who) + '</div>' +
     '<div class="sport">' + esc((CAT[t.cat] || {})[l] || '') + '</div></div></article>';
@@ -2481,7 +2489,7 @@ if (prefersReduced) {
         row.innerHTML = html;
       } else {
         row.className = 'stories-row anim' + (ri === 1 ? ' rev' : '');
-        row.style.setProperty('--dur', Math.max(28, items.length * 6) + 's');
+        row.style.setProperty('--dur', Math.max(48, items.length * 11) + 's');
         row.innerHTML = html + html;                // dupliqué → boucle sans couture
       }
     });
