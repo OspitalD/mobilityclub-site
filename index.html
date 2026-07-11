@@ -456,7 +456,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .demo-phone::after{ content:""; position:absolute; z-index:-1; inset:2% 6% 0; background:radial-gradient(60% 44% at 50% 20%, rgba(62,207,160,0.16), transparent 72%); filter:blur(52px); }
 
 /* ---- Carrousel 3D (coverflow) : on voit l'écran suivant arriver et pivoter au centre ---- */
-.carousel{ position:relative; width:100%; height:712px; perspective:2100px; margin:6px 0; overflow-x:clip; overflow-y:visible; }
+.carousel{ position:relative; width:100%; height:748px; perspective:2100px; margin:6px 0; overflow-x:clip; overflow-y:visible; }
 .carousel-track{ position:absolute; inset:0; transform-style:preserve-3d; }
 .cs-card{ position:absolute; top:0; left:50%; width:392px; margin-left:-196px;
   display:flex; flex-direction:column; align-items:center;
@@ -466,12 +466,14 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .cs-card:not(.is-center){ filter:brightness(0.9); }
 .cs-card:not(.is-center) .phone{ box-shadow:0 44px 90px -52px rgba(0,0,0,0.95); }
 
-/* titre flottant attaché à chaque écran (tourne en 3D avec sa carte) */
-.cs-title{ display:flex; align-items:baseline; justify-content:center; gap:9px; margin-bottom:16px; height:16px;
-  opacity:0.45; transition:opacity .6s var(--ease); transform-origin:center bottom; }
-.cs-card.is-center .cs-title{ opacity:1; animation:csFloat 4.2s ease-in-out infinite; }
-.cs-title .tn{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); white-space:nowrap; }
-.cs-title .tt{ font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); white-space:nowrap; }
+/* en-tête flottant attaché à chaque écran (tourne en 3D avec sa carte) : titre + bénéfice */
+.cs-head{ text-align:center; margin-bottom:18px; min-height:48px; opacity:0.4;
+  transition:opacity .6s var(--ease); transform-origin:center bottom; }
+.cs-card.is-center .cs-head{ opacity:1; animation:csFloat 4.4s ease-in-out infinite; }
+.cs-title{ display:flex; align-items:baseline; justify-content:center; gap:9px; margin-bottom:8px; }
+.cs-title .tn{ font-family:var(--font-mono); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-tertiary); white-space:nowrap; }
+.cs-title .tt{ font-family:var(--font-mono); font-size:13.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent-green); white-space:nowrap; }
+.cs-benefit{ font-size:clamp(15px,1.5vw,18px); font-weight:700; color:var(--text-primary); letter-spacing:-0.01em; line-height:1.25; max-width:330px; margin-inline:auto; text-wrap:balance; }
 @keyframes csFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
 /* flèches de navigation */
 .cs-nav{ position:absolute; top:50%; transform:translateY(-50%); z-index:20; width:44px; height:44px; border-radius:50%;
@@ -494,9 +496,10 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 
 @media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .cs-card.is-center .cs-title{ animation:none !important; } }
 @media (max-width:640px){
-  .carousel{ height:648px; perspective:1300px; }
+  .carousel{ height:712px; perspective:1300px; }
   .cs-card{ width:320px; margin-left:-160px; }
-  .cs-nav{ width:38px; height:38px; }
+  .cs-benefit{ font-size:14.5px; }
+  .cs-nav{ width:36px; height:36px; }
 }
 .phone.scal{
   --scal-s2:#161a18; --scal-green-fill:rgba(62,207,160,0.07);
@@ -1689,6 +1692,7 @@ const progressEl = document.querySelector('.scroll-progress');
 const stickyEl = document.getElementById('stickyCta');
 const doorsEl = document.getElementById('doors');
 const heroEl = document.querySelector('.hero');
+const demoEl = document.querySelector('[aria-label="Démo interactive"]');
 // Écrans flottants : chaque capture .shot est un objet physique qui s'incline
 // en 3D + parallaxe selon sa position dans le viewport (orienté 3/4 vers le centre).
 const shotEls = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -1728,7 +1732,10 @@ function frame(){
     const pastHero = y > heroEl.offsetHeight * 0.85;
     const doorsTop = doorsEl ? doorsEl.getBoundingClientRect().top : Infinity;
     const nearDoors = doorsTop < window.innerHeight * 0.9;
-    const show = pastHero && !nearDoors;
+    // ne pas recouvrir la démo (le bandeau chevauchait le bouton « Valider l'étape »)
+    let overDemo = false;
+    if (demoEl){ const r = demoEl.getBoundingClientRect(); overDemo = r.top < window.innerHeight * 0.85 && r.bottom > window.innerHeight * 0.2; }
+    const show = pastHero && !nearDoors && !overDemo;
     stickyEl.classList.toggle('show', show);
     stickyEl.setAttribute('aria-hidden', String(!show));
   }
@@ -2007,24 +2014,29 @@ if (prefersReduced) {
   let current = 0;
 
   const STEPS = [
-    {fr:'Diagnostic',en:'Diagnostic'},
-    {fr:'Ton bilan',en:'Your report'},
-    {fr:'Emploi du temps',en:'Schedule'},
-    {fr:'Programme généré',en:'Program built'},
-    {fr:'Vidéo au coach',en:'Video to coach'},
-    {fr:'Correction du coach',en:'Coach feedback'},
-    {fr:'Retest à J+30',en:'Retest at day 30'}
+    {fr:'Diagnostic',en:'Diagnostic', bf:'Sais exactement où tu en es.', be:'Know exactly where you stand.'},
+    {fr:'Ton bilan',en:'Your report', bf:'Ton corps chiffré, tes priorités claires.', be:'Your body quantified, priorities clear.'},
+    {fr:'Emploi du temps',en:'Schedule', bf:'Le club cale la mobilité autour de ta vie.', be:'The club fits mobility around your life.'},
+    {fr:'Programme généré',en:'Program built', bf:'Ta séance du jour, déjà prête.', be:'Today\'s session, already built.'},
+    {fr:'Vidéo au coach',en:'Video to coach', bf:'Un doute ? Tu filmes, le coach regarde.', be:'In doubt? Film it, the coach looks.'},
+    {fr:'Correction du coach',en:'Coach feedback', bf:'Une vraie correction humaine, pas un algo.', be:'Real human feedback, not an algo.'},
+    {fr:'Retest à J+30',en:'Retest at day 30', bf:'Tu progresses — mesuré, pas ressenti.', be:'You progress — measured, not felt.'}
   ];
 
   /* cartes persistantes du carrousel (une par étape) : titre flottant + écran */
   const cards = STEPS.map((s,i)=>{
     const card=document.createElement('div'); card.className='cs-card'; card.dataset.i=i;
-    const title=document.createElement('div'); title.className='cs-title';
+    const head=document.createElement('div'); head.className='cs-head';
+    head.innerHTML='<div class="cs-title"></div><div class="cs-benefit"></div>';
     const ph=document.createElement('div'); ph.className='phone tour-stage scal';
-    card.appendChild(title); card.appendChild(ph); track.appendChild(card); return ph;
+    card.appendChild(head); card.appendChild(ph); track.appendChild(card); return ph;
   });
   const stageD = cards[0], stageC = cards[2];   // diagnostic → carte 0, calendrier → carte 2 (carte 1 = bilan)
-  function renderTitles(){ cards.forEach((ph,i)=>{ const t=ph.parentElement.querySelector('.cs-title'); if(t) t.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(i+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[i][L()]+'</span>'; }); }
+  function renderTitles(){ cards.forEach((ph,i)=>{ const card=ph.parentElement;
+    const t=card.querySelector('.cs-title'), b=card.querySelector('.cs-benefit');
+    if(t) t.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(i+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[i][L()]+'</span>';
+    if(b) b.textContent = L()==='en'?STEPS[i].be:STEPS[i].bf;
+  }); }
 
   /* ---------- ÉTAPE 1 · diagnostic RÉEL (épaule · flexion, vraie vidéo) ---------- */
   const DIAG_INSTR={fr:"Lève un bras vers le haut, pousse-le plus en arrière avec ta main libre. Limite sans que le dos décolle du mur.",en:"Raise one arm, push it further back with your free hand. Limit before your back leaves the wall."};
@@ -2074,7 +2086,7 @@ if (prefersReduced) {
   const FAMLBL={force:{fr:'Force',en:'Strength'},course:{fr:'Course',en:'Running'},velo:{fr:'Cyclisme',en:'Cycling'},combat:{fr:'Combat',en:'Combat'},raquette:{fr:'Raquette',en:'Racket'},collectif:{fr:'Collectif',en:'Team'},eau:{fr:'Eau',en:'Water'},souplesse:{fr:'Souplesse',en:'Flex'},autre:{fr:'Autre',en:'Other'}};
   const CATALOG=[{id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},{id:'course',fr:'Course à pied',en:'Running',fam:'course'},{id:'trail',fr:'Trail',en:'Trail',fam:'course'},{id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},{id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},{id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},{id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},{id:'foot',fr:'Football',en:'Football',fam:'collectif'},{id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},{id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},{id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},{id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},{id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},{id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},{id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},{id:'golf',fr:'Golf',en:'Golf',fam:'autre'}];
   const catf=id=>CATALOG.find(c=>c.id===id);
-  let palette=['muscu','course'], sessions=[], mob=[], query='', diag=3;
+  let palette=['muscu','course'], sessions=[], mob=[], query='', diag=2;   // Chevilles = zone cohérente avec le bilan (asymétrie cheville) + la séance générée
   const keyAt=(a,di,si)=>a.find(x=>x.di===di&&x.si===si);
   const diagZone=()=>ZONES[diag][L()];
   const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
@@ -2140,7 +2152,7 @@ if (prefersReduced) {
     stageD.classList.remove('is-shot'); renderDiag();
     renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[3],'assets/app/programme.png',   tr('Programme généré','Program built'));
+    renderImg(cards[3],'assets/app/today.png',       tr('Programme généré','Program built'));
     renderImg(cards[4],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
     renderImg(cards[5],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
     renderImg(cards[6],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
@@ -2150,17 +2162,23 @@ if (prefersReduced) {
   function layout(){
     const N=cards.length;
     for(let i=0;i<N;i++){
-      const card=cards[i].parentElement, off=i-current, a=Math.abs(off), sg=Math.sign(off);
-      let tx,tz,ry,sc,op;   // coverflow : fan visible dès le début, magnitude plafonnée (sg*const)
+      const card=cards[i].parentElement;
+      let off=i-current; if(off>N/2) off-=N; else if(off<-N/2) off+=N;   // circulaire : distance la plus courte sur l'anneau
+      const a=Math.abs(off), sg=Math.sign(off);
+      let tx,tz,ry,sc,op;
       if(off===0){ tx=0; tz=0; ry=0; sc=1; op=1; }
       else if(a===1){ tx=sg*50; tz=-150; ry=sg*-36; sc=0.9;  op=0.78; }
       else if(a===2){ tx=sg*82; tz=-320; ry=sg*-43; sc=0.8;  op=0.5; }
-      else if(a===3){ tx=sg*106; tz=-480; ry=sg*-47; sc=0.72; op=0.26; }
-      else { tx=sg*124; tz=-620; ry=sg*-49; sc=0.66; op=0; }
+      else { tx=sg*106; tz=-480; ry=sg*-47; sc=0.72; op=0.26; }
+      // carte qui « fait le tour » (saut > 1) : on la téléporte sans l'animer en travers de l'écran
+      const prev=card.__off;
+      if(prev!==undefined && Math.abs(off-prev)>1){ card.style.transition='none'; }
+      card.__off=off;
       card.style.transform='translateX('+tx+'%) translateZ('+tz+'px) rotateY('+ry+'deg) scale('+sc+')';
       card.style.opacity=op; card.style.zIndex=N-a;
       card.style.pointerEvents = off===0 ? 'auto' : 'none';   // seule la carte de face est jouable
       card.classList.toggle('is-center', off===0);
+      if(card.style.transition==='none'){ void card.offsetWidth; card.style.transition=''; }  // restaure pour les prochains
     }
   }
   function renderDots(){ if(!dotsEl) return; dotsEl.innerHTML=STEPS.map((s,i)=>'<button class="dot '+(i<current?'done':(i===current?'on':''))+'" data-i="'+i+'" type="button" aria-label="'+s[L()]+'"></button>').join(''); }
@@ -2175,21 +2193,18 @@ if (prefersReduced) {
     else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
-  function refreshBtn(){
-    nextBtn.textContent = current>=STEPS.length-1 ? tr('↻ Recommencer','↻ Restart') : tr('Valider l\'étape →','Validate step →');
-    if(prevBtn) prevBtn.disabled = current===0;
-    if(nextArrow) nextArrow.disabled = current>=STEPS.length-1;
-  }
+  function refreshBtn(){ nextBtn.textContent = tr('Valider l\'étape →','Validate step →'); }   // circulaire : toujours actif
   function refresh(){ layout(); tourNote(); refreshBtn(); renderDots(); }
+  const N = STEPS.length;
   function goTo(ns){
-    ns=Math.max(0,Math.min(STEPS.length-1,ns));
+    ns=((ns%N)+N)%N;                             // circulaire
     if(ns===current) return;
     current=ns;
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','programme','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
-  nextBtn.addEventListener('click',()=>{ goTo(current>=STEPS.length-1 ? 0 : current+1); });
+  ['diagnostic-result','today','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
+  nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
   if(dotsEl) dotsEl.addEventListener('click',e=>{ const d=e.target.closest('[data-i]'); if(d) goTo(+d.dataset.i); });
