@@ -456,20 +456,23 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .demo-phone::after{ content:""; position:absolute; z-index:-1; inset:2% 6% 0; background:radial-gradient(60% 44% at 50% 20%, rgba(62,207,160,0.16), transparent 72%); filter:blur(52px); }
 
 /* ---- Carrousel 3D (coverflow) : on voit l'écran suivant arriver et pivoter au centre ---- */
-.turn-title{ display:flex; align-items:baseline; justify-content:center; gap:10px; margin-bottom:6px; min-height:18px;
-  transition:opacity .26s var(--ease), transform .26s var(--ease); }
-.turn-title.swap{ opacity:0; transform:translateY(-5px); }
-.turn-title .tn{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
-.turn-title .tt{ font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); }
-
-.carousel{ position:relative; width:100%; height:668px; perspective:1900px; margin:10px 0 6px; overflow-x:clip; overflow-y:visible; }
+.carousel{ position:relative; width:100%; height:712px; perspective:2100px; margin:6px 0; overflow-x:clip; overflow-y:visible; }
 .carousel-track{ position:absolute; inset:0; transform-style:preserve-3d; }
 .cs-card{ position:absolute; top:0; left:50%; width:392px; margin-left:-196px;
-  transition:transform .64s var(--ease-line), opacity .5s var(--ease), filter .5s var(--ease);
-  transform-origin:center center; backface-visibility:hidden; will-change:transform, opacity; }
+  display:flex; flex-direction:column; align-items:center;
+  transition:transform .78s cubic-bezier(0.62,0.04,0.18,1), opacity .6s var(--ease), filter .6s var(--ease);
+  transform-origin:center center; backface-visibility:hidden; transform-style:preserve-3d; will-change:transform, opacity; }
 .cs-card .phone{ margin:0; }
-.cs-card:not(.is-center) .phone{ box-shadow:0 40px 90px -50px rgba(0,0,0,0.95); }
-.cs-card:not(.is-center){ filter:saturate(0.85) brightness(0.82); }
+.cs-card:not(.is-center){ filter:brightness(0.9); }
+.cs-card:not(.is-center) .phone{ box-shadow:0 44px 90px -52px rgba(0,0,0,0.95); }
+
+/* titre flottant attaché à chaque écran (tourne en 3D avec sa carte) */
+.cs-title{ display:flex; align-items:baseline; justify-content:center; gap:9px; margin-bottom:16px; height:16px;
+  opacity:0.45; transition:opacity .6s var(--ease); transform-origin:center bottom; }
+.cs-card.is-center .cs-title{ opacity:1; animation:csFloat 4.2s ease-in-out infinite; }
+.cs-title .tn{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); white-space:nowrap; }
+.cs-title .tt{ font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); white-space:nowrap; }
+@keyframes csFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
 /* flèches de navigation */
 .cs-nav{ position:absolute; top:50%; transform:translateY(-50%); z-index:20; width:44px; height:44px; border-radius:50%;
   border:1px solid var(--border-active); background:rgba(17,20,18,0.72); backdrop-filter:blur(6px); color:var(--text-primary);
@@ -489,9 +492,9 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .tour-note{ max-width:520px; margin:22px auto 0; text-align:left; }
 .demo .demo-hint{ text-align:center; max-width:560px; margin-inline:auto; }
 
-@media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .turn-title{ transition:none !important; } }
+@media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .cs-card.is-center .cs-title{ animation:none !important; } }
 @media (max-width:640px){
-  .carousel{ height:600px; perspective:1200px; }
+  .carousel{ height:648px; perspective:1300px; }
   .cs-card{ width:320px; margin-left:-160px; }
   .cs-nav{ width:38px; height:38px; }
 }
@@ -1082,7 +1085,6 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <p class="demo-sub reveal" data-i18n="demo_sub">Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.</p>
 
     <div class="demo reveal">
-      <div class="turn-title" id="turnTitle" aria-live="polite"></div>
       <div class="carousel" id="carousel">
         <button class="cs-nav prev" id="tourPrev" type="button" aria-label="Étape précédente">‹</button>
         <button class="cs-nav next" id="tourNextArrow" type="button" aria-label="Étape suivante">›</button>
@@ -1996,7 +1998,6 @@ if (prefersReduced) {
   const prevBtn = document.getElementById('tourPrev');
   const nextArrow = document.getElementById('tourNextArrow');
   const noteEl = document.getElementById('tourNote');
-  const turnTitle = document.getElementById('turnTitle');
   const dotsEl = document.getElementById('tourDots');
   if (!track || !nextBtn) return;
   const z = n => String(n).padStart(2, '0');
@@ -2007,6 +2008,7 @@ if (prefersReduced) {
 
   const STEPS = [
     {fr:'Diagnostic',en:'Diagnostic'},
+    {fr:'Ton bilan',en:'Your report'},
     {fr:'Emploi du temps',en:'Schedule'},
     {fr:'Programme généré',en:'Program built'},
     {fr:'Vidéo au coach',en:'Video to coach'},
@@ -2014,13 +2016,15 @@ if (prefersReduced) {
     {fr:'Retest à J+30',en:'Retest at day 30'}
   ];
 
-  /* 6 cartes persistantes du carrousel (une par étape) */
+  /* cartes persistantes du carrousel (une par étape) : titre flottant + écran */
   const cards = STEPS.map((s,i)=>{
     const card=document.createElement('div'); card.className='cs-card'; card.dataset.i=i;
+    const title=document.createElement('div'); title.className='cs-title';
     const ph=document.createElement('div'); ph.className='phone tour-stage scal';
-    card.appendChild(ph); track.appendChild(card); return ph;
+    card.appendChild(title); card.appendChild(ph); track.appendChild(card); return ph;
   });
-  const stageD = cards[0], stageC = cards[1];   // diagnostic → carte 0, calendrier → carte 1
+  const stageD = cards[0], stageC = cards[2];   // diagnostic → carte 0, calendrier → carte 2 (carte 1 = bilan)
+  function renderTitles(){ cards.forEach((ph,i)=>{ const t=ph.parentElement.querySelector('.cs-title'); if(t) t.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(i+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[i][L()]+'</span>'; }); }
 
   /* ---------- ÉTAPE 1 · diagnostic RÉEL (épaule · flexion, vraie vidéo) ---------- */
   const DIAG_INSTR={fr:"Lève un bras vers le haut, pousse-le plus en arrière avec ta main libre. Limite sans que le dos décolle du mur.",en:"Raise one arm, push it further back with your free hand. Limit before your back leaves the wall."};
@@ -2070,7 +2074,7 @@ if (prefersReduced) {
   const FAMLBL={force:{fr:'Force',en:'Strength'},course:{fr:'Course',en:'Running'},velo:{fr:'Cyclisme',en:'Cycling'},combat:{fr:'Combat',en:'Combat'},raquette:{fr:'Raquette',en:'Racket'},collectif:{fr:'Collectif',en:'Team'},eau:{fr:'Eau',en:'Water'},souplesse:{fr:'Souplesse',en:'Flex'},autre:{fr:'Autre',en:'Other'}};
   const CATALOG=[{id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},{id:'course',fr:'Course à pied',en:'Running',fam:'course'},{id:'trail',fr:'Trail',en:'Trail',fam:'course'},{id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},{id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},{id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},{id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},{id:'foot',fr:'Football',en:'Football',fam:'collectif'},{id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},{id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},{id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},{id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},{id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},{id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},{id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},{id:'golf',fr:'Golf',en:'Golf',fam:'autre'}];
   const catf=id=>CATALOG.find(c=>c.id===id);
-  let palette=['crossfit','course'], sessions=[], mob=[], query='', diag=3;
+  let palette=['muscu','course'], sessions=[], mob=[], query='', diag=3;
   const keyAt=(a,di,si)=>a.find(x=>x.di===di&&x.si===si);
   const diagZone=()=>ZONES[diag][L()];
   const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
@@ -2125,40 +2129,49 @@ if (prefersReduced) {
   /* ---------- étapes 3-6 · vraies captures (rendues dans leur carte) ---------- */
   function renderImg(el,src,alt){ el.classList.add('is-shot'); el.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" decoding="async">'; }
 
+  /* calendrier pré-rempli : Musculation + Course déjà placés, mobilité calée auto autour */
+  function seedCal(){
+    sessions=[{di:0,si:0,sportId:'muscu'},{di:3,si:2,sportId:'course'}];
+    mob=[{di:0,si:1,zone:diagZone(),auto:true},{di:3,si:1,zone:diagZone(),auto:true}];
+  }
+
   /* rend le contenu de chaque carte une seule fois (re-appelé au changement de langue) */
   function renderAll(){
     stageD.classList.remove('is-shot'); renderDiag();
+    renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[2],'assets/app/programme.png',   tr('Programme généré','Program built'));
-    renderImg(cards[3],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
-    renderImg(cards[4],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
-    renderImg(cards[5],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+    renderImg(cards[3],'assets/app/programme.png',   tr('Programme généré','Program built'));
+    renderImg(cards[4],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
+    renderImg(cards[5],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
+    renderImg(cards[6],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
   }
 
   /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
   function layout(){
-    for(let i=0;i<cards.length;i++){
+    const N=cards.length;
+    for(let i=0;i<N;i++){
       const card=cards[i].parentElement, off=i-current, a=Math.abs(off), sg=Math.sign(off);
-      let tx,tz,ry,sc,op,zi;   // magnitude plafonnée (sg*const) : les cartes lointaines ne débordent pas
-      if(off===0){ tx=0; tz=0; ry=0; sc=1; op=1; zi=6; }
-      else if(a===1){ tx=sg*60; tz=-250; ry=sg*-40; sc=0.94; op=0.55; zi=4; }
-      else if(a===2){ tx=sg*88; tz=-500; ry=sg*-46; sc=0.84; op=0.16; zi=2; }
-      else { tx=sg*72; tz=-680; ry=sg*-48; sc=0.8; op=0; zi=1; }
+      let tx,tz,ry,sc,op;   // coverflow : fan visible dès le début, magnitude plafonnée (sg*const)
+      if(off===0){ tx=0; tz=0; ry=0; sc=1; op=1; }
+      else if(a===1){ tx=sg*50; tz=-150; ry=sg*-36; sc=0.9;  op=0.78; }
+      else if(a===2){ tx=sg*82; tz=-320; ry=sg*-43; sc=0.8;  op=0.5; }
+      else if(a===3){ tx=sg*106; tz=-480; ry=sg*-47; sc=0.72; op=0.26; }
+      else { tx=sg*124; tz=-620; ry=sg*-49; sc=0.66; op=0; }
       card.style.transform='translateX('+tx+'%) translateZ('+tz+'px) rotateY('+ry+'deg) scale('+sc+')';
-      card.style.opacity=op; card.style.zIndex=zi;
+      card.style.opacity=op; card.style.zIndex=N-a;
       card.style.pointerEvents = off===0 ? 'auto' : 'none';   // seule la carte de face est jouable
       card.classList.toggle('is-center', off===0);
     }
   }
   function renderDots(){ if(!dotsEl) return; dotsEl.innerHTML=STEPS.map((s,i)=>'<button class="dot '+(i<current?'done':(i===current?'on':''))+'" data-i="'+i+'" type="button" aria-label="'+s[L()]+'"></button>').join(''); }
-  function setTitle(){ if(turnTitle) turnTitle.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(current+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[current][L()]+'</span>'; }
   function tourNote(){
     const step=current; let v;
     if(step===0) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
-    else if(step===1) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
-    else if(step===2) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
-    else if(step===3) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
-    else if(step===4) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
+    else if(step===1) v=tr('Ton bilan articulaire : score global + zones prioritaires. Ton point de départ, mesuré.','Your joint report: global score + priority zones. Your starting point, measured.');
+    else if(step===2) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
+    else if(step===3) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
+    else if(step===4) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
+    else if(step===5) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
     else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
@@ -2170,21 +2183,19 @@ if (prefersReduced) {
   function refresh(){ layout(); tourNote(); refreshBtn(); renderDots(); }
   function goTo(ns){
     ns=Math.max(0,Math.min(STEPS.length-1,ns));
-    if(ns===current){ refresh(); return; }
+    if(ns===current) return;
     current=ns;
-    refresh();                                   // le carrousel s'anime via la transition CSS
-    if(turnTitle && !PRM){ turnTitle.classList.add('swap'); setTimeout(()=>{ setTitle(); turnTitle.classList.remove('swap'); },190); }
-    else setTitle();
+    refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['programme','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
+  ['diagnostic-result','programme','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
   nextBtn.addEventListener('click',()=>{ goTo(current>=STEPS.length-1 ? 0 : current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
   if(dotsEl) dotsEl.addEventListener('click',e=>{ const d=e.target.closest('[data-i]'); if(d) goTo(+d.dataset.i); });
-  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); setTitle(); refresh(); }));
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); renderTitles(); refresh(); }));
 
-  renderAll(); setTitle(); refresh();
+  seedCal(); renderAll(); renderTitles(); refresh();
 })();
 
 (function heroFlow(){
