@@ -825,34 +825,41 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .stories-filter[aria-selected="true"]{ background:var(--accent-green); color:var(--bg-primary); border-color:var(--accent-green); }
 .stories-filter .n{ font-size:9.5px; opacity:0.7; }
 .stories-empty{ color:var(--text-tertiary); font-size:14px; padding:20px 2px; }
-.stories-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
-.stories-eyebrow{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
-.stories-nav{ display:flex; gap:8px; flex-shrink:0; }
-.stories-nav button{ width:38px; height:38px; border-radius:50%; border:1px solid var(--border-active); background:var(--bg-surface); color:var(--text-secondary); cursor:pointer; font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center; transition:border-color .2s var(--ease), color .2s var(--ease); }
-.stories-nav button:hover{ border-color:var(--accent-green-line); color:var(--accent-green); }
-.stories-nav button:disabled{ opacity:0.28; pointer-events:none; }
-.stories-scroll{ display:flex; gap:16px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; scroll-behavior:smooth; padding:4px 2px 14px; margin:0 -2px; scrollbar-width:none; -webkit-overflow-scrolling:touch; cursor:grab; }
-.stories-scroll::-webkit-scrollbar{ display:none; }
-.stories-scroll.dragging{ cursor:grabbing; scroll-behavior:auto; scroll-snap-type:none; }
-.stories-scroll.dragging .story{ pointer-events:none; }
-.stories-scroll .story{ flex:0 0 clamp(266px,74vw,338px); scroll-snap-align:start; }
-/* fondus aux bords : signalent qu'il y a plus à voir */
-.stories::before, .stories::after{ content:""; position:absolute; top:44px; bottom:14px; width:52px; z-index:2; pointer-events:none; transition:opacity .3s var(--ease); }
-.stories::before{ left:-2px; background:linear-gradient(90deg, var(--bg-primary), transparent); opacity:var(--fade-l,0); }
-.stories::after{ right:-2px; background:linear-gradient(270deg, var(--bg-primary), transparent); opacity:var(--fade-r,1); }
+.stories-hint{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary); margin:-12px 0 18px; }
+/* mur vivant : 2 rangs qui défilent en continu, fondu aux bords, pause au survol/toucher */
+.stories-wall{ position:relative; display:flex; flex-direction:column; gap:16px; overflow:hidden; padding:8px 0;
+  -webkit-mask:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+.stories-row{ display:flex; gap:16px; width:max-content; will-change:transform; }
+.stories-row.anim{ animation:marquee var(--dur,80s) linear infinite; }
+.stories-row.anim.rev{ animation-direction:reverse; }
+.stories-wall:hover .stories-row.anim,
+.stories-wall.paused .stories-row.anim{ animation-play-state:paused; }
+@keyframes marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+.stories-row .story{ flex:0 0 clamp(282px,82vw,348px); }
 .story{
-  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px;
-  padding:24px 22px; display:flex; flex-direction:column; min-height:262px;
-  transition:transform .35s var(--ease), border-color .35s var(--ease);
+  position:relative;
+  background:
+    radial-gradient(130% 80% at 50% -8%, rgba(62,207,160,0.05), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 26%),
+    var(--bg-surface);
+  border:1px solid var(--border-active); border-radius:16px;
+  padding:26px 24px 22px; display:flex; flex-direction:column; min-height:222px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04), 0 26px 54px -36px rgba(0,0,0,0.9);
+  transition:transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
 }
-.story:hover{ border-color:var(--border-active); }
-.story .quote-mark{ font-family:var(--font-mono); color:var(--accent-green); font-size:26px; line-height:1; margin-bottom:14px; }
+.story:hover{ transform:translateY(-6px); border-color:#2b332e;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 42px 72px -32px rgba(0,0,0,0.95), 0 24px 64px -40px rgba(62,207,160,0.22); }
+.story .quote-mark{ font-family:var(--font-display); font-weight:800; color:var(--accent-green); font-size:44px; line-height:0.6; height:22px; margin-bottom:14px; }
 .story .body{ font-size:14.5px; line-height:1.6; color:var(--text-primary); flex:1; }
-.story .placeholder-txt{ color:var(--text-secondary); font-style:normal; }
-.story-foot{ margin-top:22px; padding-top:16px; border-top:1px solid var(--hair); display:flex; align-items:center; justify-content:space-between; }
-.story-foot .who{ font-weight:700; font-size:13px; }
-.story-foot .sport{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.6px; text-transform:uppercase; color:var(--accent-green); }
-.story-foot .dur{ font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary); }
+.story-foot{ margin-top:22px; padding-top:15px; border-top:1px solid var(--hair); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.story-foot .who{ font-weight:700; font-size:13.5px; letter-spacing:-0.01em; }
+.story-foot .sport{ font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:var(--accent-green);
+  border:1px solid rgba(62,207,160,0.3); border-radius:100px; padding:4px 10px; white-space:nowrap; }
+@media (prefers-reduced-motion:reduce){
+  .stories-row.anim{ animation:none; }
+  .stories-row{ flex-wrap:wrap; width:auto; }
+}
 .ph-badge{
   display:inline-block; font-family:var(--font-mono); font-size:9px; letter-spacing:1px;
   text-transform:uppercase; color:var(--accent-gold); border:1px dashed rgba(232,160,32,0.4);
@@ -1270,14 +1277,11 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 
     <div class="stories reveal">
       <div class="stories-filters" id="storiesFilters" role="tablist" aria-label="Filtrer les témoignages"></div>
-      <div class="stories-head">
-        <span class="stories-eyebrow" data-i18n="s5_stories_eyebrow">Leurs retours · glisse pour parcourir</span>
-        <span class="stories-nav">
-          <button id="storiesPrev" type="button" aria-label="Témoignages précédents">‹</button>
-          <button id="storiesNext" type="button" aria-label="Témoignages suivants">›</button>
-        </span>
+      <p class="stories-hint" data-i18n="s5_stories_hint">Survole (ou touche) pour lire · filtre par ta situation</p>
+      <div class="stories-wall" id="storiesWall">
+        <div class="stories-row"></div>
+        <div class="stories-row"></div>
       </div>
-      <div class="stories-scroll" id="storiesScroll"></div>
       <p class="stories-empty" id="storiesEmpty" hidden data-i18n="s5_stories_empty">Aucun témoignage dans cette catégorie.</p>
     </div>
   </div>
@@ -1497,6 +1501,7 @@ const I18N = {
     s5_proof_p: "Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.",
     s5_stories_eyebrow: 'Leurs retours · glisse pour parcourir',
     s5_stories_empty: 'Aucun témoignage dans cette catégorie.',
+    s5_stories_hint: 'Survole (ou touche) pour lire · filtre par ta situation',
 
     s1_eyebrow: 'Le problème',
     s1_text: "Tu sais que la mobilité compte. <span class=\"soft\">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class=\"warn it\">trois semaines.</span>",
@@ -1584,6 +1589,7 @@ const I18N = {
     s5_proof_p: "Every member re-tests their mobility. <strong>+14 points in 90 days</strong> — measured, not felt. Your radar, before / after.",
     s5_stories_eyebrow: 'Member stories · drag to browse',
     s5_stories_empty: 'No testimonial in this category.',
+    s5_stories_hint: 'Hover (or touch) to read · filter by your situation',
 
     s1_eyebrow: 'The problem',
     s1_text: "You know mobility matters. <span class=\"soft\">But the apps prescribe you the same routine as everyone else.</span> So you quit within <span class=\"warn it\">three weeks.</span>",
@@ -2257,10 +2263,12 @@ if (prefersReduced) {
 /* Témoignages §05 — défilement horizontal alimenté par un tableau.
    Damien : pour en ajouter, copie un bloc dans TESTIMONIALS ci-dessous. */
 (function testimonials(){
-  const scroll = document.getElementById('storiesScroll');
+  const wall = document.getElementById('storiesWall');
   const filtersEl = document.getElementById('storiesFilters');
   const emptyEl = document.getElementById('storiesEmpty');
-  if (!scroll) return;
+  if (!wall) return;
+  const rows = [...wall.querySelectorAll('.stories-row')];
+  const PRM_local = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
@@ -2288,78 +2296,78 @@ if (prefersReduced) {
     { who:'Mickael', cat:'douleur',
       fr:"Plus aucune douleur lombaire, et j'ai repris la course cette semaine.",
       en:"No more lower-back pain, and I got back to running this week." },
-    { who:'Membre', cat:'douleur',
+    { who:'Julien', cat:'douleur',
       fr:"Grâce au Mobility Fondation, j'ai enlevé une douleur de hanche que je traînais depuis deux ans.",
       en:"Thanks to Mobility Foundation, I cleared a hip pain I'd been dragging around for two years." },
     { who:'François', cat:'douleur',
       fr:"Après 5 jours de routines, une vraie diminution des douleurs à l'épaule et au coude.",
       en:"After 5 days of routines, a real drop in my shoulder and elbow pain." },
-    { who:'Membre', cat:'douleur',
+    { who:'Marie', cat:'douleur',
       fr:"En peu de temps, plus aucune douleur pendant mes matchs de padel. Les RACs et les routines sont redoutablement efficaces.",
       en:"In no time, no more pain during my padel matches. The RACs and routines are ruthlessly effective." },
     { who:'David', cat:'douleur',
       fr:"Avec la mobilité, on récupère bien plus vite. Épaule blessée : 23 jours et c'est réglé, là où ça aurait pris des mois.",
       en:"With mobility, you recover so much faster. Injured shoulder: 23 days and it's sorted, where it would've taken months." },
-    { who:'Membre', cat:'douleur',
+    { who:'Antoine', cat:'douleur',
       fr:"Grosse différence aux hanches : le pincement a largement diminué, je ne le sens presque plus. J'ai gagné en souplesse et en amplitude.",
       en:"Big difference in my hips: the pinching has dropped way down, I barely feel it now. I've gained flexibility and range." },
-    { who:'Membre', cat:'douleur',
+    { who:'Sophie', cat:'douleur',
       fr:"Le mouvement dynamique plus les fondations… je vais peut-être annuler mon rendez-vous chez le médecin du sport. Affaire à suivre.",
       en:"The dynamic movements plus the foundations… I might just cancel my sports-doctor appointment. To be continued." },
-    { who:'Membre', cat:'douleur',
+    { who:'Nicolas', cat:'douleur',
       fr:"J'utilise la routine sur mes warm-ups, sur recommandation de mon kiné. J'en ressors sans douleur, et je commence à prendre en amplitude.",
       en:"I use the routine on my warm-ups, on my physio's recommendation. I come out pain-free, and I'm starting to gain range." },
     // ——— Mobilité gagnée ———
-    { who:'Membre', cat:'mobilite',
+    { who:'Camille', cat:'mobilite',
       fr:"Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie.",
       en:"After two weeks, I can finally touch my toes with straight legs — for the first time in my life." },
-    { who:'Membre', cat:'mobilite',
+    { who:'Maxime', cat:'mobilite',
       fr:"J'arrive presque à m'accroupir jusqu'au sol et à tenir la position. Il y a un mois, c'était impossible.",
       en:"I can almost squat all the way down and hold it. A month ago, impossible." },
     { who:'Laura', cat:'mobilite',
       fr:"Le Mobility Club m'a rendue plus forte sur mes articulations problématiques et a débloqué ma mobilité générale. Plus flexible, plus mobile, plus résiliente.",
       en:"Mobility Club made me stronger on my problem joints and freed up my overall mobility. More flexible, more mobile, more resilient." },
-    { who:'Membre', cat:'mobilite',
+    { who:'Léa', cat:'mobilite',
       fr:"Niveau épaules, j'ai débloqué une nouvelle mobilité sans douleur. Et je tiens enfin un deep squat pieds serrés.",
       en:"My shoulders unlocked a whole new range, pain-free. And I can finally hold a deep squat, feet together." },
     { who:'Alice', cat:'mobilite',
       fr:"Je ne peux plus m'en passer : je me sens beaucoup plus libre et plus souple dans mes mouvements.",
       en:"I can't do without it anymore: I feel so much freer and more supple in my movements." },
-    { who:'Membre', cat:'mobilite',
+    { who:'Hugo', cat:'mobilite',
       fr:"En fin de séance, un squat complet sans aide, sans douleur ni difficulté — ce qui était impossible avant. Grosse, grosse satisfaction.",
       en:"End of session: a full squat with no help, no pain, no struggle — which was impossible before. Huge, huge satisfaction." },
     { who:'Romain', cat:'mobilite',
       fr:"Blessé au genou et à la cheville, je cherchais à tout remobiliser. Vu la banque d'exercices ici, j'ai trouvé mon bonheur. Vraiment surpris du travail.",
       en:"Injured knee and ankle, I was looking to remobilize everything. Given the exercise library here, I found exactly what I needed. Genuinely impressed." },
-    { who:'Membre', cat:'mobilite',
+    { who:'Clément', cat:'mobilite',
       fr:"J'ai gagné de l'amplitude sur mon squat, et un bien meilleur alignement du bassin quand je travaille le grand écart.",
       en:"I've gained range on my squat, and much better pelvis alignment when I work on the splits." },
-    { who:'Membre', cat:'mobilite',
+    { who:'Sarah', cat:'mobilite',
       fr:"Mes épaules commencent à se débloquer, je le ressens autant au JJB qu'à la musculation.",
       en:"My shoulders are starting to open up — I feel it as much in BJJ as in the gym." },
     // ——— Performance ———
-    { who:'Membre', cat:'performance',
+    { who:'Guillaume', cat:'performance',
       fr:"En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg.",
       en:"In 3 months: progressing without getting hurt, my lower back and knees under control, and my deadlift went from 70 to 95 kg." },
-    { who:'Membre', cat:'performance',
+    { who:'Pauline', cat:'performance',
       fr:"Squat lourd : un PR plutôt facile et surtout 0 douleur. Reprise de la course : des foulées vraiment souples.",
       en:"Heavy squat: a PR that felt easy and, above all, zero pain. Back to running: strides that feel truly loose." },
-    { who:'Membre', cat:'performance',
+    { who:'Vincent', cat:'performance',
       fr:"3 semaines de mobilité et je me sens tellement à l'aise que j'ai passé mon PR au snatch aujourd'hui.",
       en:"3 weeks of mobility and I feel so comfortable I hit my snatch PR today." },
-    { who:'Membre', cat:'performance',
+    { who:'Manon', cat:'performance',
       fr:"Grâce aux rotations, aucune gêne en chin-ups — le coude, d'habitude — ni en front lever.",
       en:"Thanks to the rotation work, no discomfort in chin-ups — usually my elbow — or in front lever." },
     { who:'Thomas', cat:'performance',
       fr:"RAC + PAILs/RAILs genoux : de super sensations de « libération » sur mes squats lourds, et bien plus de facilité sur mes sauts.",
       en:"RAC + PAILs/RAILs on the knees: great feelings of “release” on my heavy squats, and far more ease on my jumps." },
-    { who:'Membre', cat:'performance',
+    { who:'Baptiste', cat:'performance',
       fr:"4 entraînements par semaine et je progresse encore : environ 106 kg au deadlift, et plus aucune douleur au dos ni aux genoux.",
       en:"4 training sessions a week and I'm still progressing: around 106 kg on the deadlift, and no more pain in my back or knees." },
-    { who:'Membre', cat:'performance',
+    { who:'Émilie', cat:'performance',
       fr:"15-20 min de mobilité avant ma séance, ça a vraiment tout changé dans mes entraînements.",
       en:"15-20 min of mobility before my session — it genuinely changed everything in my training." },
-    { who:'Membre', cat:'performance',
+    { who:'Lucas', cat:'performance',
       fr:"La séance épaule m'a permis de relancer des balles bien plus efficacement, et sans douleur.",
       en:"The shoulder session let me throw balls far more efficiently, and pain-free." },
     // ——— Confiance ———
@@ -2369,47 +2377,47 @@ if (prefersReduced) {
     { who:'Valentin', cat:'confiance',
       fr:"Coach sportif à Paris, spécialisé dans le mouvement, j'étais curieux de la méthode de Damien. Parce que oui, les coachs aussi se font coacher.",
       en:"A movement-focused personal trainer in Paris, I was curious about Damien's method. Because yes, coaches get coached too." },
-    { who:'Membre', cat:'confiance',
+    { who:'Chloé', cat:'confiance',
       fr:"Fracture du scaphoïde il y a 3 ans. Vu mes progrès sur les chevilles, je sais que c'est possible — ça me motive à continuer.",
       en:"Fractured my scaphoid 3 years ago. Seeing my ankle progress, I know it's possible — it keeps me going." },
     { who:'Geoffroy', cat:'confiance',
       fr:"Content d'avoir franchi le pas : j'ai le sentiment de faire du bien à mon corps et de mieux gérer les blessures.",
       en:"Glad I took the leap: I feel like I'm doing my body good and managing injuries better." },
-    { who:'Membre', cat:'confiance',
+    { who:'Adrien', cat:'confiance',
       fr:"Un accompagnement au top : de l'écoute, des conseils personnalisés, des routines adaptées, et le tout dans la bonne humeur. Que demander de plus ?",
       en:"Top-tier support: real listening, personalized advice, tailored routines, all in good spirits. What more could you want?" },
     { who:'Karin', cat:'confiance',
       fr:"On adore : tous les outils réunis au même endroit, assemblés et enseignés intelligemment pour se réparer ou performer.",
       en:"We love it: every tool gathered in one place, assembled and taught intelligently to repair yourself or perform." },
-    { who:'Membre', cat:'confiance',
+    { who:'Julie', cat:'confiance',
       fr:"J'avais peur que les séances soient trop longues. L'appel avec Damien m'a rassuré : on adapte la mobilité à sa vie, pas l'inverse.",
       en:"I was afraid the sessions would take too long. The call with Damien reassured me: you fit mobility around your life, not the other way around." },
-    { who:'Membre', cat:'confiance',
+    { who:'Théo', cat:'confiance',
       fr:"Routine poignet suivie en entier — très fier. Grosse progression après une première séance où je n'avais même pas pu terminer les exercices.",
       en:"Finished the full wrist routine — really proud. Big progress after a first session where I couldn't even complete the exercises." },
     // ——— Au quotidien ———
-    { who:'Membre', cat:'quotidien',
+    { who:'Alexandre', cat:'quotidien',
       fr:"En trois semaines : plus de fluidité, moins de tensions, une meilleure conscience corporelle. Et fini les réveils raide comme un balai.",
       en:"In three weeks: more fluidity, less tension, better body awareness. And no more waking up stiff as a board." },
     { who:'Caroline', cat:'quotidien',
       fr:"Même dans ma posture de tous les jours, je ressens le changement.",
       en:"Even in my everyday posture, I feel the difference." },
-    { who:'Membre', cat:'quotidien',
+    { who:'Mathilde', cat:'quotidien',
       fr:"15 min avant la séance et j'ai les jambes moins lourdes, moins de charge sur les lombaires. Un vrai bien-être.",
       en:"15 min before training and my legs feel lighter, less load on my lower back. Real wellbeing." },
     { who:'Éloïse', cat:'quotidien',
       fr:"Le plus beau, c'est de se sentir bien dans son corps et dans sa tête, au quotidien.",
       en:"The best part is feeling good in your body and mind, every day." },
-    { who:'Membre', cat:'quotidien',
+    { who:'Quentin', cat:'quotidien',
       fr:"Sentir la différence, et surtout n'avoir aucune douleur : c'est un vrai plus dans ma pratique au quotidien.",
       en:"Feeling the difference, and above all no pain at all: it's a real plus in my daily practice." },
-    { who:'Membre', cat:'quotidien',
+    { who:'Céline', cat:'quotidien',
       fr:"Format parfait : c'est quasiment tout ce que j'utilise, parce que sinon « pas le temps ». Et toutes les articulations y passent.",
       en:"Perfect format: it's pretty much all I use, because otherwise it's “no time.” And every joint gets covered." },
-    { who:'Membre', cat:'quotidien',
+    { who:'Benjamin', cat:'quotidien',
       fr:"J'ai pris goût à commencer ma journée par le breathwork puis les hanches — ça éveille tous les sens pour bien démarrer.",
       en:"I've grown to love starting my day with breathwork then hips — it wakes up every sense for a good start." },
-    { who:'Membre', cat:'quotidien',
+    { who:'Anaïs', cat:'quotidien',
       fr:"Appli super intuitive : la vidéo qui correspond à l'exercice, les consignes de temps, le timer. Top de chez top.",
       en:"Super intuitive app: the video that matches each exercise, the timing cues, the timer. Top of the top." },
     // ——— Transformation ———
@@ -2419,25 +2427,25 @@ if (prefersReduced) {
     { who:'Éloïse', cat:'transformation',
       fr:"En 6 mois, j'ai grandi. Mes chevilles vont de mieux en mieux, mes douleurs musculaires ont disparu — en plus du foot à haut niveau. Et un meilleur squat en muscu.",
       en:"In 6 months, I've grown. My ankles keep improving, my muscle pain is gone — on top of high-level football. And a better squat in the gym." },
-    { who:'Membre', cat:'transformation',
+    { who:'Fabien', cat:'transformation',
       fr:"Une infiltration m'avait laissé une épaule faible. Elle est redevenue forte et stable, je n'ai quasiment plus jamais mal. Meilleur investissement de temps que j'ai fait.",
       en:"A cortisone shot had left my shoulder weak. It's strong and stable again, almost never hurts. Best time investment I've made." },
-    { who:'Membre', cat:'transformation',
+    { who:'Élodie', cat:'transformation',
       fr:"Un pote m'a lancé « waouh, tu descends bas sur tes squats ». Il y a 8 mois, j'en étais incapable sans avoir mal au dos. Le boulot sur les hanches est démentiel.",
       en:"A buddy said “whoa, you go deep on your squats.” 8 months ago I couldn't without back pain. The hip work is insane." },
-    { who:'Membre', cat:'transformation',
+    { who:'Rémi', cat:'transformation',
       fr:"En 1 mois : gain de mobilité et moins de douleurs aux hanches. Là où j'avais mal après chaque squat, je sors d'une compétition de CrossFit tout neuf.",
       en:"In 1 month: more mobility and less hip pain. Where I used to hurt after every squat, I came out of a CrossFit competition feeling brand new." },
-    { who:'Membre', cat:'transformation',
+    { who:'Audrey', cat:'transformation',
       fr:"En une semaine : plus aucune douleur en muscu, plus de raideur au réveil, et de bien meilleurs squats. Juste en bougeant correctement.",
       en:"In one week: no more pain in the gym, no more morning stiffness, and much better squats. Just by moving properly." },
     { who:'Éloïse', cat:'transformation',
       fr:"Après 3 mois : quasiment plus de douleur malgré le sport de haut niveau. Ce matin, je suis allée courir… pour le plaisir. 20 min par jour, des bienfaits de fou.",
       en:"After 3 months: barely any pain despite high-level sport. This morning, I went for a run… for the fun of it. 20 min a day, insane benefits." },
-    { who:'Membre', cat:'transformation',
+    { who:'Loïc', cat:'transformation',
       fr:"Depuis le club : bien moins de douleurs même en pratique intensive, chevilles plus mobiles, hanches plus fortes. 15 min par jour, 4 à 5 fois par semaine.",
       en:"Since joining: far less pain even with intense training, more mobile ankles, stronger hips. 15 min a day, 4 to 5 times a week." },
-    { who:'Membre', cat:'transformation',
+    { who:'Margaux', cat:'transformation',
       fr:"Bras plus stable en natation, squat sans douleur de hanche, plus d'amplitude au deadlift — et je peux bouger n'importe comment sans réveiller mon dos.",
       en:"Steadier arm in swimming, hip-pain-free squat, more range on the deadlift — and I can move any which way without waking up my back." }
   ];
@@ -2445,18 +2453,38 @@ if (prefersReduced) {
   let filter = 'all';
   const shown = () => TESTIMONIALS.filter(t => filter === 'all' || t.cat === filter);
 
+  const card = (t, l) =>
+    '<article class="story"><div class="quote-mark">“</div>' +
+    '<p class="body">' + esc(t[l]) + '</p>' +
+    '<div class="story-foot"><div class="who">' + esc(t.who) + '</div>' +
+    '<div class="sport">' + esc((CAT[t.cat] || {})[l] || '') + '</div></div></article>';
+
+  function interleave(list){   // « Tout » : alterne les catégories → variété visible à chaque instant
+    const by = {}; list.forEach(t => (by[t.cat] = by[t.cat] || []).push(t));
+    const out = []; let added = true;
+    while (added){ added = false; CAT_ORDER.forEach(c => { if (by[c] && by[c].length){ out.push(by[c].shift()); added = true; } }); }
+    return out;
+  }
   function render(){
     const l = L();
-    const list = shown();
-    scroll.innerHTML = list.map(t =>
-      '<article class="story"><div class="quote-mark">“</div>' +
-      '<p class="body">' + esc(t[l]) + '</p>' +
-      '<div class="story-foot"><div>' +
-      '<div class="who">' + esc(t.who || (l==='en'?'Member':'Membre')) + '</div>' +
-      '<div class="sport">' + esc((CAT[t.cat] || {})[l] || '') + '</div></div></div></article>'
-    ).join('');
+    let list = shown();
+    if (filter === 'all') list = interleave(list);
     if (emptyEl) emptyEl.hidden = list.length > 0;
-    scroll.scrollLeft = 0;
+    const split = [[], []];
+    list.forEach((t, i) => split[i % 2].push(t));   // réparti sur 2 rangs
+    rows.forEach((row, ri) => {
+      const items = split[ri] || [];
+      const html = items.map(t => card(t, l)).join('');
+      if (PRM_local || items.length === 0){
+        row.className = 'stories-row';
+        row.style.removeProperty('--dur');
+        row.innerHTML = html;
+      } else {
+        row.className = 'stories-row anim' + (ri === 1 ? ' rev' : '');
+        row.style.setProperty('--dur', Math.max(28, items.length * 6) + 's');
+        row.innerHTML = html + html;                // dupliqué → boucle sans couture
+      }
+    });
   }
 
   function renderFilters(){
@@ -2469,37 +2497,18 @@ if (prefersReduced) {
       present.map(c => chip(c, CAT[c][l], count(c))).join('');
   }
 
-  /* glisser pour défiler (desktop) — le touch/swipe est natif */
-  let down=false, sx=0, sl=0, moved=false;
-  scroll.addEventListener('pointerdown', e => { down=true; moved=false; sx=e.clientX; sl=scroll.scrollLeft; scroll.classList.add('dragging'); });
-  scroll.addEventListener('pointermove', e => { if(!down) return; const dx=e.clientX-sx; if(Math.abs(dx)>4) moved=true; scroll.scrollLeft = sl - dx; });
-  const end = () => { down=false; scroll.classList.remove('dragging'); };
-  scroll.addEventListener('pointerup', end); scroll.addEventListener('pointerleave', end); scroll.addEventListener('pointercancel', end);
-  scroll.addEventListener('click', e => { if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
+  // pause au toucher (mobile : pas de hover)
+  wall.addEventListener('pointerdown', () => wall.classList.add('paused'));
+  const resume = () => wall.classList.remove('paused');
+  wall.addEventListener('pointerup', resume); wall.addEventListener('pointercancel', resume); wall.addEventListener('pointerleave', resume);
 
-  const prev=document.getElementById('storiesPrev'), next=document.getElementById('storiesNext'), wrap=scroll.closest('.stories');
-  const step = () => Math.max(240, Math.round(scroll.clientWidth * 0.8));
-  prev && prev.addEventListener('click', () => scroll.scrollBy({ left:-step(), behavior:'smooth' }));
-  next && next.addEventListener('click', () => scroll.scrollBy({ left: step(), behavior:'smooth' }));
-
-  const head = wrap.querySelector('.stories-head');
-  function upd(){
-    const max = scroll.scrollWidth - scroll.clientWidth, x = scroll.scrollLeft, scrollable = max > 4;
-    if(head) head.style.display = scrollable ? 'flex' : 'none';   // hint + flèches seulement si ça défile
-    wrap.style.setProperty('--fade-l', scrollable && x > 4 ? 1 : 0);
-    wrap.style.setProperty('--fade-r', scrollable && x < max - 4 ? 1 : 0);
-    if(prev) prev.disabled = x <= 2;
-    if(next) next.disabled = x >= max - 2;
-  }
-  scroll.addEventListener('scroll', upd, { passive:true });
-  window.addEventListener('resize', upd, { passive:true });
   filtersEl && filtersEl.addEventListener('click', e => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
-    filter = b.dataset.cat; renderFilters(); render(); upd();
+    filter = b.dataset.cat; renderFilters(); render();
   });
-  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { renderFilters(); render(); upd(); }));
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { renderFilters(); render(); }));
 
-  renderFilters(); render(); upd();
+  renderFilters(); render();
 })();
 
 (function heroFlow(){
