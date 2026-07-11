@@ -675,13 +675,19 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 
 /* SECTION 03 — Method + Damien */
-.method{ display:grid; grid-template-columns:1fr 0.82fr; gap:clamp(32px,5vw,72px); align-items:center; }
+.method{ display:grid; grid-template-columns:1fr 0.82fr; gap:clamp(32px,5vw,72px); align-items:start; }
 .method-quote{
   font-size:clamp(22px,3vw,38px); font-weight:700; line-height:1.22; letter-spacing:-0.02em;
 }
 .method-quote .hl{ color:var(--accent-green); }
-.method-sign{ margin-top:30px; display:flex; align-items:center; gap:14px; }
-.method-sign .name{ font-weight:700; font-size:15px; }
+/* récit fondateur */
+.method-story{ max-width:58ch; }
+.method-lead{ font-family:var(--font-display); font-size:clamp(21px,2.6vw,32px); font-weight:800; line-height:1.16; letter-spacing:-0.02em; margin-bottom:28px; text-wrap:balance; }
+.method-p{ font-size:clamp(14.5px,1.35vw,16.5px); line-height:1.66; color:var(--text-secondary); margin-bottom:16px; }
+.method-p strong{ color:var(--text-primary); font-weight:600; }
+.method-media{ position:sticky; top:96px; }
+.method-sign{ margin-top:28px; display:flex; flex-direction:column; gap:4px; }
+.method-sign .name{ font-weight:700; font-size:16px; letter-spacing:-0.01em; }
 .method-sign .role{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; color:var(--text-secondary); text-transform:uppercase; }
 .cert-label{ margin-top:34px; font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px; }
 .certs{ display:flex; gap:10px; flex-wrap:wrap; }
@@ -989,7 +995,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   .pin-sec .pin-stage{ position:static; min-height:0; display:block; }
   .reversal{ grid-template-columns:1fr; gap:36px; align-items:start; }
   .method{ grid-template-columns:1fr; gap:40px; }
-  .method-media{ order:-1; }
+  .method-media{ order:-1; position:static; }
+  .method-story{ max-width:none; }
   .photo-slot{ aspect-ratio:16/12; max-height:380px; }
   .profiles{ grid-template-columns:1fr; max-width:420px; }
   .stories{ grid-template-columns:1fr; }
@@ -1171,21 +1178,15 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="eyebrow muted"><span class="idx">03</span><span data-i18n="s3_eyebrow">La méthode</span></span>
     </div>
     <div class="method">
-      <div>
-        <blockquote class="method-quote reveal-lines" data-split-lines data-i18n="s3_quote">
-          Ce n'est pas une IA générique. <span class="hl">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.
-        </blockquote>
+      <div class="method-story">
+        <p class="method-lead reveal-lines" data-split-lines data-i18n="s3_lead">La mobilité n'est pas un sport. Elle est au service de ton sport — et de ta vie.</p>
+        <p class="method-p reveal" data-i18n="s3_p1">Dix-huit ans de football, six ans à entraîner jusqu'aux plus hauts niveaux jeunes français. Ce qui m'anime, ce n'est pas la performance — c'est la <strong>transmission</strong>. La mobilité, je l'ai d'abord testée sur moi, après une cheville lourdement blessée. Dès les premiers jours, mon corps réapprenait à bouger.</p>
+        <p class="method-p reveal" data-i18n="s3_p2">Les protocoles existants étaient inapplicables : 1h30, trois fois par semaine, rien que pour une cheville. Le déclic est venu d'une vingtaine d'appels — les gens voulaient juste savoir quoi faire, dans le temps qui était le leur. Pas un suivi lourd à 150&nbsp;€ par mois.</p>
+        <p class="method-p reveal" data-i18n="s3_p3">Alors je l'ai construit. Le meilleur programme n'est pas celui avec les meilleurs exercices — <strong>c'est celui qu'on commence et qu'on finit.</strong> Inconcevable, pour moi, que deux personnes suivent le même : emploi du temps, articulations, sport — la séance se compose à partir des trois.</p>
+        <p class="method-p reveal" data-i18n="s3_p4">J'ai appelé ça un <strong>club</strong> parce que ce qui nous lie, ce ne sont pas nos objectifs — c'est la mobilité. Et le club s'améliore avec ses membres.</p>
         <div class="method-sign reveal">
-          <div>
-            <div class="name">Damien Ospital</div>
-            <div class="role" data-i18n="s3_role">Fondateur · Mobility Club</div>
-          </div>
-        </div>
-        <div class="cert-label reveal" data-i18n="s3_cert_label">Preuve d'autorité méthodologique</div>
-        <div class="certs reveal" data-stagger>
-          <span class="pill">BPJEPS</span>
-          <span class="pill">DEUST</span>
-          <span class="pill">UEFA&nbsp;B</span>
+          <div class="name">— Damien Ospital</div>
+          <div class="role" data-i18n="s3_role">Fondateur · Mobility Club</div>
         </div>
       </div>
       <div class="method-media reveal">
@@ -1528,7 +1529,12 @@ const I18N = {
     demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
     demo_hint: "Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.",
 
-    s3_eyebrow: 'La méthode',
+    s3_eyebrow: 'Le fondateur',
+    s3_lead: "La mobilité n'est pas un sport. Elle est au service de ton sport — et de ta vie.",
+    s3_p1: "Dix-huit ans de football, six ans à entraîner jusqu'aux plus hauts niveaux jeunes français. Ce qui m'anime, ce n'est pas la performance — c'est la <strong>transmission</strong>. La mobilité, je l'ai d'abord testée sur moi, après une cheville lourdement blessée. Dès les premiers jours, mon corps réapprenait à bouger.",
+    s3_p2: "Les protocoles existants étaient inapplicables : 1h30, trois fois par semaine, rien que pour une cheville. Le déclic est venu d'une vingtaine d'appels — les gens voulaient juste savoir quoi faire, dans le temps qui était le leur. Pas un suivi lourd à 150&nbsp;€ par mois.",
+    s3_p3: "Alors je l'ai construit. Le meilleur programme n'est pas celui avec les meilleurs exercices — <strong>c'est celui qu'on commence et qu'on finit.</strong> Inconcevable, pour moi, que deux personnes suivent le même : emploi du temps, articulations, sport — la séance se compose à partir des trois.",
+    s3_p4: "J'ai appelé ça un <strong>club</strong> parce que ce qui nous lie, ce ne sont pas nos objectifs — c'est la mobilité. Et le club s'améliore avec ses membres.",
     s3_quote: "Ce n'est pas une IA générique. <span class=\"hl\">C'est ma méthode</span> — dix ans d'expertise du mouvement, encodée dans un moteur qui décide pour toi.",
     s3_role: 'Fondateur · Mobility Club',
     s3_cert_label: "Preuve d'autorité méthodologique",
@@ -1616,7 +1622,12 @@ const I18N = {
     demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
     demo_hint: "Real Mobility Club onboarding screen — here as a demo. On mobile: touch and drag.",
 
-    s3_eyebrow: 'The method',
+    s3_eyebrow: 'The founder',
+    s3_lead: "Mobility isn't a sport. It serves your sport — and your life.",
+    s3_p1: "Eighteen years of football, six coaching up to France's top youth levels. What drives me isn't performance — it's <strong>transmission</strong>. I tested mobility on myself first, after a badly injured ankle. Within days, my body was relearning how to move.",
+    s3_p2: "The existing protocols were unworkable: 90 minutes, three times a week, just for one ankle. The click came from about twenty calls — people just wanted to know what to do, in the time that was theirs. Not heavy €150-a-month coaching.",
+    s3_p3: "So I built it. The best program isn't the one with the best exercises — <strong>it's the one you start and finish.</strong> Inconceivable, to me, that two people follow the same one: schedule, joints, sport — the session is composed from all three.",
+    s3_p4: "I called it a <strong>club</strong> because what connects us isn't our goals — it's mobility. And the club gets better with its members.",
     s3_quote: "This isn't a generic AI. <span class=\"hl\">It's my method</span> — a decade of movement expertise, encoded into an engine that decides for you.",
     s3_role: 'Founder · Mobility Club',
     s3_cert_label: 'Proof of methodological authority',
