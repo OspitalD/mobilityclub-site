@@ -918,6 +918,43 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   border-radius:5px; padding:3px 7px; margin-bottom:12px;
 }
 
+/* ✦ FRICTION — l'insight central : la friction, pas la méthode (le « deux tapes »)
+   Traitement centré, isolé, une seule idée qui respire → le punch du site. */
+.friction .wrap{ text-align:center; }
+.friction .section-head{ display:flex; justify-content:center; }
+.friction-lead{ font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3.5vw,42px);
+  line-height:1.22; letter-spacing:-0.02em; color:var(--text-primary); max-width:21ch; margin:0 auto; text-wrap:balance; }
+.friction-p{ font-size:clamp(15px,1.5vw,18px); line-height:1.62; color:var(--text-secondary); max-width:46ch; margin:22px auto 0; }
+/* deux pulsations mint = « deux tapes » */
+.taps{ display:flex; gap:38px; justify-content:center; align-items:center; margin:clamp(40px,6vh,66px) auto clamp(22px,3vh,30px); }
+.tap{ position:relative; width:36px; height:36px; display:grid; place-items:center; }
+.tap-dot{ width:16px; height:16px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 18px rgba(62,207,160,0.85); }
+.tap-ring{ position:absolute; inset:0; border-radius:50%; border:2px solid var(--accent-green); opacity:0; }
+.tap:nth-child(1) .tap-dot{ animation:tapGlow 2.6s var(--ease) infinite; }
+.tap:nth-child(1) .tap-ring{ animation:tapPing 2.6s var(--ease) infinite; }
+.tap:nth-child(2) .tap-dot{ animation:tapGlow 2.6s var(--ease) infinite; animation-delay:.55s; }
+.tap:nth-child(2) .tap-ring{ animation:tapPing 2.6s var(--ease) infinite; animation-delay:.55s; }
+@keyframes tapPing{ 0%{ transform:scale(.5); opacity:.9; } 60%{ transform:scale(1.95); opacity:0; } 100%{ opacity:0; } }
+@keyframes tapGlow{ 0%,100%{ transform:scale(1); } 10%{ transform:scale(.8); } 26%{ transform:scale(1); } }
+.friction-taps-label{ font-size:clamp(14px,1.6vw,18px); line-height:1.5; color:var(--text-secondary); max-width:40ch; margin:0 auto; }
+.friction-taps-label strong{ font-family:var(--font-display); font-weight:800; color:var(--accent-green); font-size:1.18em; letter-spacing:-0.01em; }
+.friction-punch{ font-family:var(--font-display); font-weight:800; font-size:clamp(32px,6.6vw,86px);
+  line-height:1.02; letter-spacing:-0.03em; color:var(--text-primary); margin:clamp(42px,7vh,82px) auto 0; max-width:15ch; text-wrap:balance; }
+.friction-punch .hl{ color:var(--accent-green); }
+@media (prefers-reduced-motion:reduce){
+  .tap-ring{ animation:none !important; opacity:.45; transform:scale(1.4); }
+  .tap-dot{ animation:none !important; }
+}
+
+/* ✦ WHY-SCALE — pourquoi un produit, pas juste du coaching (bascule avant les portes) */
+.whyscale-lead{ font-family:var(--font-display); font-weight:700; font-size:clamp(24px,4.1vw,52px);
+  line-height:1.15; letter-spacing:-0.025em; color:var(--text-primary); max-width:20ch; text-wrap:balance; }
+.whyscale-p{ font-size:clamp(15px,1.5vw,18.5px); line-height:1.62; color:var(--text-secondary); max-width:52ch; margin-top:22px; }
+.whyscale-p.accent{ position:relative; padding-left:22px; color:var(--text-primary); font-weight:600;
+  font-size:clamp(16px,1.8vw,22px); line-height:1.45; max-width:38ch; margin-top:26px; }
+.whyscale-p.accent::before{ content:""; position:absolute; left:0; top:5px; bottom:5px; width:3px; border-radius:2px;
+  background:linear-gradient(180deg, var(--accent-green), rgba(62,207,160,0.18)); }
+
 /* SECTION 06 — 3 portes */
 .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .door{
@@ -1178,6 +1215,26 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 
 <hr class="divider" />
 
+<!-- ============================ ✦ FRICTION — L'INSIGHT CENTRAL ============================ -->
+<section class="pad friction" aria-label="La vraie raison">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">✦</span><span data-i18n="fr_eyebrow">La vraie raison pour laquelle tu abandonnes</span></span>
+    </div>
+    <p class="friction-lead reveal-lines" data-split-lines data-i18n="fr_lead">Après plus de 300 membres, une seule chose compte vraiment : si les gens ne font pas leur mobilité, ce n'est pas faute de bons exercices. C'est qu'ils ne tiennent pas l'habitude.</p>
+    <p class="friction-p reveal" data-i18n="fr_p1">Alors on a supprimé tout ce qui se met entre toi et le mouvement.</p>
+    <div class="taps reveal" aria-hidden="true">
+      <span class="tap"><span class="tap-ring"></span><span class="tap-dot"></span></span>
+      <span class="tap"><span class="tap-ring"></span><span class="tap-dot"></span></span>
+    </div>
+    <p class="friction-taps-label reveal" data-i18n="fr_taps">Tu appuies pour ouvrir. Tu appuies pour lancer. <strong>Deux tapes.</strong></p>
+    <p class="friction-p reveal" data-i18n="fr_p2">Pas quoi faire — c'est déjà décidé. Pas combien de temps — c'est déjà calé. Tu ouvres, tu fais, tu progresses.</p>
+    <p class="friction-punch reveal" data-i18n="fr_punch">Il ne reste plus qu'une chose à faire : <span class="hl">faire.</span></p>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <!-- ============================ ▸ DÉMO INTERACTIVE ============================ -->
 <section class="pad" aria-label="Démo interactive">
   <div class="wrap">
@@ -1338,6 +1395,20 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
       <p class="stories-empty" id="storiesEmpty" hidden data-i18n="s5_stories_empty">Aucun témoignage dans cette catégorie.</p>
     </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ ✦ WHY-SCALE — POURQUOI UN PRODUIT ============================ -->
+<section class="pad whyscale" aria-label="Pourquoi un produit">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">✦</span><span data-i18n="ws_eyebrow">Pourquoi un produit, et pas juste du coaching</span></span>
+    </div>
+    <p class="whyscale-lead reveal-lines" data-split-lines data-i18n="ws_lead">J'ai vu des membres arriver d'applications à des millions d'utilisateurs, sans résultats. Et obtenir, avec quelques centaines de membres chez nous, ce qu'ils cherchaient depuis des années.</p>
+    <p class="whyscale-p reveal" data-i18n="ws_p1">Le jour où tu comprends que ta méthode aide plus de gens que les mastodontes du marché, continuer à accompagner une personne à la fois devient une forme de gâchis.</p>
+    <p class="whyscale-p accent reveal" data-i18n="ws_p2">Alors j'ai appris à coder. Pour mettre cette méthode devant des millions de personnes — pas quelques centaines.</p>
   </div>
 </section>
 
@@ -1565,6 +1636,16 @@ const I18N = {
     s2_step1: "Tu ouvres l'app.",
     s2_step2: "<b>La séance du jour est déjà là.</b>",
     s2_step3: "Tu lances. Tu bouges. C'est tout.",
+    fr_eyebrow: "La vraie raison pour laquelle tu abandonnes",
+    fr_lead: "Après plus de 300 membres, une seule chose compte vraiment : si les gens ne font pas leur mobilité, ce n'est pas faute de bons exercices. C'est qu'ils ne tiennent pas l'habitude.",
+    fr_p1: "Alors on a supprimé tout ce qui se met entre toi et le mouvement.",
+    fr_taps: "Tu appuies pour ouvrir. Tu appuies pour lancer. <strong>Deux tapes.</strong>",
+    fr_p2: "Pas quoi faire — c'est déjà décidé. Pas combien de temps — c'est déjà calé. Tu ouvres, tu fais, tu progresses.",
+    fr_punch: "Il ne reste plus qu'une chose à faire : <span class=\"hl\">faire.</span>",
+    ws_eyebrow: "Pourquoi un produit, et pas juste du coaching",
+    ws_lead: "J'ai vu des membres arriver d'applications à des millions d'utilisateurs, sans résultats. Et obtenir, avec quelques centaines de membres chez nous, ce qu'ils cherchaient depuis des années.",
+    ws_p1: "Le jour où tu comprends que ta méthode aide plus de gens que les mastodontes du marché, continuer à accompagner une personne à la fois devient une forme de gâchis.",
+    ws_p2: "Alors j'ai appris à coder. Pour mettre cette méthode devant des millions de personnes — pas quelques centaines.",
     demo_eyebrow: 'La démo · le produit en vrai',
     demo_title: "La boucle complète.<br>Joue-la.",
     demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
@@ -1658,6 +1739,16 @@ const I18N = {
     s2_step1: 'You open the app.',
     s2_step2: "<b>Today's session is already there.</b>",
     s2_step3: "You start. You move. That's it.",
+    fr_eyebrow: "The real reason you quit",
+    fr_lead: "After 300+ members, only one thing truly matters: when people don't do their mobility, it's not for lack of good exercises. It's because they can't hold the habit.",
+    fr_p1: "So we removed everything standing between you and the movement.",
+    fr_taps: "Tap to open. Tap to start. <strong>Two taps.</strong>",
+    fr_p2: "Not what to do — it's already decided. Not how long — it's already set. You open, you move, you progress.",
+    fr_punch: "There's only one thing left to do: <span class=\"hl\">do it.</span>",
+    ws_eyebrow: "Why a product, not just coaching",
+    ws_lead: "I've watched members arrive from apps with millions of users, with nothing to show for it. And get, with a few hundred members here, what they'd been chasing for years.",
+    ws_p1: "The day you realize your method helps more people than the market's giants, coaching one person at a time starts to feel like waste.",
+    ws_p2: "So I learned to build. To put this method in front of millions — not a few hundred.",
     demo_eyebrow: 'The demo · the real product',
     demo_title: "The full loop.<br>Play it.",
     demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
