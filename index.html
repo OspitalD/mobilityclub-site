@@ -94,7 +94,7 @@ section{ position:relative; }
   position:absolute; top:-0.16em; right:clamp(-20px, 1vw, 32px);
   font-family:var(--font-display); font-weight:800; line-height:0.8;
   font-size:clamp(170px, 30vw, 480px); letter-spacing:-0.05em;
-  color:rgba(255,255,255,0.055); pointer-events:none; user-select:none;
+  color:rgba(255,255,255,0.075); pointer-events:none; user-select:none;
   z-index:0; will-change:transform;
 }
 .pad > .wrap, .pad > .pin-track{ position:relative; z-index:1; }
@@ -1015,7 +1015,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
             <div class="rstep"><span class="n">03</span><span data-i18n="s2_step3">Tu lances. Tu bouges. C'est tout.</span></div>
           </div>
         </div>
-        <div class="reversal-media reveal-clip">
+        <div class="reversal-media reveal">
           <div class="shot-wrap">
             <figure class="shot">
               <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
@@ -1080,7 +1080,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
           <span class="pill">UEFA&nbsp;B</span>
         </div>
       </div>
-      <div class="method-media reveal-clip">
+      <div class="method-media reveal">
         <div class="photo-slot" role="img" aria-label="Emplacement photo Damien Ospital">
           <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
           <span class="frame-corner bl"></span><span class="frame-corner br"></span>
@@ -1104,7 +1104,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     </p>
 
     <div class="s4-showcase">
-      <div class="shot-wrap reveal-clip">
+      <div class="shot-wrap reveal">
         <figure class="shot">
           <img src="assets/app/onboarding.png" width="1080" height="1350" loading="lazy"
                alt="Onboarding du Mobility Club : choix du sport principal, dominante d'entraînement et fréquence hebdomadaire" />
@@ -1164,7 +1164,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <h2 class="s5-title reveal-lines" data-split-lines data-i18n="s5_title">Ce qui change, une fois dedans.</h2>
 
     <div class="s5-proof">
-      <div class="shot-wrap reveal-clip">
+      <div class="shot-wrap reveal">
         <figure class="shot">
           <img src="assets/app/progression.png" width="1080" height="1350" loading="lazy"
                alt="Écran Progression du Mobility Club : score global, évolution +14 points et radar mobilité baseline vs aujourd'hui" />
@@ -1229,7 +1229,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     </div>
 
     <div class="diag-preview reveal">
-      <div class="shot-wrap reveal-clip">
+      <div class="shot-wrap reveal">
         <figure class="shot">
           <img src="assets/app/diagnostic-result.png" width="1290" height="2796" loading="lazy"
                alt="Écran de résultat du Mobility Diagnostic : radar 5 zones, score 86/100, « Base solide »" />
@@ -1696,12 +1696,12 @@ function frame(){
     const py = (r.top + r.height / 2 - vh / 2) / vh;   // vertical : -.6 → .6, 0 au centre
     const qx = (r.left + r.width / 2 - vw / 2) / vw;    // horizontal : négatif à gauche
     // lean 3/4 permanent (allure « product shot ») orienté vers le centre de page + inclinaison dynamique
-    const baseY = qx < -0.03 ? 11 : (qx > 0.03 ? -11 : 0);   // lean 3/4 marqué (cinéma)
-    const rotX = (-py * 10 - ptrY * 4).toFixed(2);            // + réaction curseur
-    const rotY = (baseY - qx * 5 + ptrX * 5).toFixed(2);
-    const ty   = (-py * 32).toFixed(1);
-    el.style.transform = 'perspective(1100px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(' + ty + 'px)';
-    if (img) img.style.transform = 'scale(1.1) translateY(' + (py * 22).toFixed(1) + 'px)';  // parallaxe interne (2e couche)
+    const baseY = qx < -0.03 ? 14 : (qx > 0.03 ? -14 : 0);   // lean 3/4 net mais premium
+    const rotX = (-py * 13 - ptrY * 6).toFixed(2);           // + réaction curseur
+    const rotY = (baseY - qx * 5 + ptrX * 7).toFixed(2);
+    const ty   = (-py * 38).toFixed(1);
+    el.style.transform = 'perspective(1000px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(' + ty + 'px)';
+    if (img) img.style.transform = 'scale(1.11) translateY(' + (py * 24).toFixed(1) + 'px)';  // parallaxe interne (2e couche)
   }
 
   // plans d'arrière-fond : les grands numéros dérivent plus lentement que le contenu
@@ -1827,8 +1827,6 @@ if (prefersReduced) {
       // compteurs (0 → cible) au premier passage en vue
       if (t.matches('[data-count]')) countUp(t);
       t.querySelectorAll?.('[data-count]').forEach(countUp);
-      // une fois le wipe terminé, on retire le clip pour libérer l'inclinaison 3D + l'ombre
-      if (t.classList.contains('reveal-clip')) setTimeout(() => { t.style.clipPath = 'none'; }, 1150);
       io.unobserve(t);
     });
   }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
