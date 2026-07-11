@@ -715,6 +715,11 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   border:1px dashed var(--border-active); border-radius:6px; padding:8px 12px;
   background:rgba(13,15,14,0.55);
 }
+/* photo réelle présente : remplit le cadre, masque le placeholder (garde le cadre mint discret) */
+.photo-slot .photo-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 20%; z-index:1; }
+.photo-slot.has-photo::before{ display:none; }
+.photo-slot.has-photo .tag{ display:none; }
+.photo-slot.has-photo .frame-corner{ border-color:rgba(255,255,255,0.22); }
 
 /* SECTION 04 — 1 membre = 1 club */
 .s4-intro{ font-size:clamp(17px,2vw,22px); line-height:1.5; color:var(--text-primary); font-weight:500; max-width:34ch; letter-spacing:-0.01em; }
@@ -1141,7 +1146,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         </div>
       </div>
       <div class="method-media reveal">
-        <div class="photo-slot" role="img" aria-label="Emplacement photo Damien Ospital">
+        <div class="photo-slot" id="damienPhoto" role="img" aria-label="Damien Ospital — fondateur du Mobility Club">
           <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
           <span class="frame-corner bl"></span><span class="frame-corner br"></span>
           <span class="tag" data-i18n="s3_photo_tag">[ PLACEHOLDER · PHOTO DAMIEN ]</span>
@@ -2223,6 +2228,27 @@ if (prefersReduced) {
   document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); renderTitles(); refresh(); }));
 
   seedCal(); renderAll(); renderTitles(); refresh();
+})();
+
+/* Photo Damien (§03) : s'affiche automatiquement dès que le fichier existe,
+   sinon le placeholder balisé reste. Damien : dépose assets/brand/damien.jpg (portrait 4:5). */
+(function damienPhoto(){
+  const slot = document.getElementById('damienPhoto');
+  if (!slot) return;
+  const candidates = ['assets/brand/damien.jpg', 'assets/brand/damien.png'];
+  (function tryNext(i){
+    if (i >= candidates.length) return;
+    const probe = new Image();
+    probe.onload = () => {
+      const img = document.createElement('img');
+      img.className = 'photo-img'; img.src = candidates[i]; img.decoding = 'async';
+      img.alt = 'Damien Ospital — fondateur du Mobility Club';
+      slot.insertBefore(img, slot.firstChild);
+      slot.classList.add('has-photo');
+    };
+    probe.onerror = () => tryNext(i + 1);
+    probe.src = candidates[i];
+  })(0);
 })();
 
 (function heroFlow(){
