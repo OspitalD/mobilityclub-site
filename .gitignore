@@ -10,3 +10,4 @@ node_modules/
 # Outillage local (preview MCP, POC hero) — ne pas publier
 .claude/
 poc-hero-*.html
+assets/app/reviews-src/
