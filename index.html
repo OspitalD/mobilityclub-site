@@ -383,7 +383,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
    ============================================================ */
 .demo-title{ font-size:clamp(30px,5vw,58px); font-weight:800; letter-spacing:-0.03em; line-height:1.02; }
 .demo-sub{ margin-top:18px; font-size:clamp(15px,1.7vw,19px); color:var(--text-secondary); max-width:48ch; line-height:1.55; }
-.demo{ margin-top:clamp(36px,5vh,56px); display:grid; grid-template-columns:minmax(300px,392px) 1fr; gap:clamp(28px,5vw,64px); align-items:start; }
+.demo{ margin-top:clamp(36px,5vh,56px); display:flex; flex-direction:column; align-items:center; }
 
 .demo-stage{ position:relative; }
 .demo-stage::after{ content:""; position:absolute; z-index:-1; inset:4% 8% 0; background:radial-gradient(60% 46% at 50% 24%, rgba(62,207,160,0.18), transparent 72%); filter:blur(52px); }
@@ -454,6 +454,47 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 /* ---- Calendrier drag & drop réel (porté de l'app) ---- */
 .demo-phone{ position:relative; }
 .demo-phone::after{ content:""; position:absolute; z-index:-1; inset:2% 6% 0; background:radial-gradient(60% 44% at 50% 20%, rgba(62,207,160,0.16), transparent 72%); filter:blur(52px); }
+
+/* ---- Carrousel 3D (coverflow) : on voit l'écran suivant arriver et pivoter au centre ---- */
+.turn-title{ display:flex; align-items:baseline; justify-content:center; gap:10px; margin-bottom:6px; min-height:18px;
+  transition:opacity .26s var(--ease), transform .26s var(--ease); }
+.turn-title.swap{ opacity:0; transform:translateY(-5px); }
+.turn-title .tn{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
+.turn-title .tt{ font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); }
+
+.carousel{ position:relative; width:100%; height:668px; perspective:1900px; margin:10px 0 6px; overflow-x:clip; overflow-y:visible; }
+.carousel-track{ position:absolute; inset:0; transform-style:preserve-3d; }
+.cs-card{ position:absolute; top:0; left:50%; width:392px; margin-left:-196px;
+  transition:transform .64s var(--ease-line), opacity .5s var(--ease), filter .5s var(--ease);
+  transform-origin:center center; backface-visibility:hidden; will-change:transform, opacity; }
+.cs-card .phone{ margin:0; }
+.cs-card:not(.is-center) .phone{ box-shadow:0 40px 90px -50px rgba(0,0,0,0.95); }
+.cs-card:not(.is-center){ filter:saturate(0.85) brightness(0.82); }
+/* flèches de navigation */
+.cs-nav{ position:absolute; top:50%; transform:translateY(-50%); z-index:20; width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--border-active); background:rgba(17,20,18,0.72); backdrop-filter:blur(6px); color:var(--text-primary);
+  font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease); }
+.cs-nav:hover{ border-color:var(--accent-green-line); color:var(--accent-green); }
+.cs-nav.prev{ left:clamp(4px,3vw,40px); } .cs-nav.next{ right:clamp(4px,3vw,40px); }
+.cs-nav:disabled{ opacity:0.25; pointer-events:none; }
+
+.demo-controls{ display:flex; align-items:center; justify-content:center; gap:clamp(16px,3vw,30px); margin-top:18px; flex-wrap:wrap; }
+.tour-dots{ display:flex; gap:9px; }
+.tour-dots .dot{ width:9px; height:9px; border-radius:50%; border:1px solid var(--border-active); background:transparent; cursor:pointer; padding:0;
+  transition:background .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease); }
+.tour-dots .dot.done{ background:var(--accent-green-line); border-color:var(--accent-green-line); }
+.tour-dots .dot.on{ background:var(--accent-green); border-color:var(--accent-green); transform:scale(1.25); }
+.cs-validate{ min-width:210px; }
+.tour-note{ max-width:520px; margin:22px auto 0; text-align:left; }
+.demo .demo-hint{ text-align:center; max-width:560px; margin-inline:auto; }
+
+@media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .turn-title{ transition:none !important; } }
+@media (max-width:640px){
+  .carousel{ height:600px; perspective:1200px; }
+  .cs-card{ width:320px; margin-left:-160px; }
+  .cs-nav{ width:38px; height:38px; }
+}
 .phone.scal{
   --scal-s2:#161a18; --scal-green-fill:rgba(62,207,160,0.07);
   --accent-green-soft:rgba(62,207,160,0.12); --accent-green-line:rgba(62,207,160,0.32);
@@ -1041,15 +1082,18 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <p class="demo-sub reveal" data-i18n="demo_sub">Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.</p>
 
     <div class="demo reveal">
-      <div class="demo-phone">
-        <div class="phone tour-stage scal" id="tourStage"></div>
+      <div class="turn-title" id="turnTitle" aria-live="polite"></div>
+      <div class="carousel" id="carousel">
+        <button class="cs-nav prev" id="tourPrev" type="button" aria-label="Étape précédente">‹</button>
+        <button class="cs-nav next" id="tourNextArrow" type="button" aria-label="Étape suivante">›</button>
+        <div class="carousel-track" id="carTrack"></div>
       </div>
-      <div class="demo-side">
-        <ol class="tour-steps" id="tourSteps"></ol>
-        <button class="btn btn-primary tour-next" id="tourNext" type="button">…</button>
-        <div class="dg-live" id="tourNote"></div>
-        <p class="demo-hint" data-i18n="demo_hint">Vrais écrans + interactions du produit. Diagnostic et emploi du temps sont jouables. Sur mobile : touche et glisse.</p>
+      <div class="demo-controls">
+        <div class="tour-dots" id="tourDots"></div>
+        <button class="btn btn-primary cs-validate" id="tourNext" type="button">…</button>
       </div>
+      <div class="dg-live tour-note" id="tourNote"></div>
+      <p class="demo-hint" data-i18n="demo_hint">Vrais écrans + interactions du produit. Diagnostic et emploi du temps sont jouables. Sur mobile : touche et glisse.</p>
     </div>
   </div>
 </section>
@@ -1947,15 +1991,19 @@ if (prefersReduced) {
    Interactif (slider + calendrier) + vraies captures. Vanilla, bilingue.
    ============================================================ */
 (function productTour(){
-  const stage = document.getElementById('tourStage');
-  const stepsEl = document.getElementById('tourSteps');
+  const track = document.getElementById('carTrack');
   const nextBtn = document.getElementById('tourNext');
+  const prevBtn = document.getElementById('tourPrev');
+  const nextArrow = document.getElementById('tourNextArrow');
   const noteEl = document.getElementById('tourNote');
-  if (!stage || !stepsEl || !nextBtn) return;
+  const turnTitle = document.getElementById('turnTitle');
+  const dotsEl = document.getElementById('tourDots');
+  if (!track || !nextBtn) return;
+  const z = n => String(n).padStart(2, '0');
 
   const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
   const tr = (fr,en) => (L()==='en'?en:fr);
-  let step = 0;
+  let current = 0;
 
   const STEPS = [
     {fr:'Diagnostic',en:'Diagnostic'},
@@ -1965,6 +2013,14 @@ if (prefersReduced) {
     {fr:'Correction du coach',en:'Coach feedback'},
     {fr:'Retest à J+30',en:'Retest at day 30'}
   ];
+
+  /* 6 cartes persistantes du carrousel (une par étape) */
+  const cards = STEPS.map((s,i)=>{
+    const card=document.createElement('div'); card.className='cs-card'; card.dataset.i=i;
+    const ph=document.createElement('div'); ph.className='phone tour-stage scal';
+    card.appendChild(ph); track.appendChild(card); return ph;
+  });
+  const stageD = cards[0], stageC = cards[1];   // diagnostic → carte 0, calendrier → carte 1
 
   /* ---------- ÉTAPE 1 · diagnostic RÉEL (épaule · flexion, vraie vidéo) ---------- */
   const DIAG_INSTR={fr:"Lève un bras vers le haut, pousse-le plus en arrière avec ta main libre. Limite sans que le dos décolle du mur.",en:"Raise one arm, push it further back with your free hand. Limit before your back leaves the wall."};
@@ -1977,22 +2033,22 @@ if (prefersReduced) {
   ];
   let side='D', lvl={D:3, G:3};
   const diagScore = () => Math.round(46 + ((lvl.D+lvl.G)/2)/4*40);
-  function diagFrame(){ const img=stage.querySelector('#tdimg'); if(!img) return; img.src='assets/app/diag-p'+(lvl[side]+1)+'.jpg'; }
+  function diagFrame(){ const img=stageD.querySelector('#tdimg'); if(!img) return; img.src='assets/app/diag-p'+(lvl[side]+1)+'.jpg'; }
   function leadTxt(){ return tr('TON NIVEAU · ','YOUR LEVEL · ')+(side==='D'?tr('CÔTÉ DROIT','RIGHT'):tr('CÔTÉ GAUCHE','LEFT'))+' · '+tr('GLISSE JUSQU\'À TON AMPLITUDE','SLIDE TO YOUR RANGE'); }
   function diagUpdate(){
-    const q=s=>stage.querySelector(s), v=lvl[side];
+    const q=s=>stageD.querySelector(s), v=lvl[side];
     if(q('#tdpal')) q('#tdpal').textContent=PALLIERS[v][L()];
     if(q('#tdbadge')) q('#tdbadge').textContent='● '+tr('PALIER ','TIER ')+(v+1);
     if(q('#tdscore')) q('#tdscore').textContent=diagScore();
     if(q('#tdlead')) q('#tdlead').textContent=leadTxt();
     const sl=q('#tdslide'); if(sl){ sl.value=v; sl.style.setProperty('--fill',(v*25)+'%'); }
     const sc=q('#tdscale'); if(sc) sc.innerHTML=[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('');
-    stage.querySelectorAll('.td-tab').forEach(t=>t.classList.toggle('on',t.getAttribute('data-side')===side));
+    stageD.querySelectorAll('.td-tab').forEach(t=>t.classList.toggle('on',t.getAttribute('data-side')===side));
     diagFrame(); tourNote();
   }
   function renderDiag(){
     const v=lvl[side];
-    stage.innerHTML =
+    stageD.innerHTML =
       '<div class="td-instr">'+DIAG_INSTR[L()]+'</div>'+
       '<div class="td-tabs"><button class="td-tab'+(side==='D'?' on':'')+'" data-side="D">'+tr('Côté droit','Right side')+'</button><button class="td-tab'+(side==='G'?' on':'')+'" data-side="G">'+tr('Côté gauche','Left side')+'</button></div>'+
       '<div class="td-lead" id="tdlead">'+leadTxt()+'</div>'+
@@ -2001,8 +2057,8 @@ if (prefersReduced) {
       '<input type="range" class="mc-slider" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide">'+
       '<div class="td-scale" id="tdscale">'+[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('')+'</div>'+
       '<div class="td-score"><div class="k">'+tr('SCORE ÉPAULE','SHOULDER SCORE')+'</div><div class="v"><b id="tdscore">'+diagScore()+'</b><span>/100</span></div></div>';
-    stage.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
-    const s=stage.querySelector('#tdslide'); if(s) s.oninput=e=>{ lvl[side]=+e.target.value; diagUpdate(); };
+    stageD.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
+    const s=stageD.querySelector('#tdslide'); if(s) s.oninput=e=>{ lvl[side]=+e.target.value; diagUpdate(); };
   }
 
   /* ---------- ÉTAPE 2 · calendrier drag & drop ---------- */
@@ -2028,7 +2084,7 @@ if (prefersReduced) {
         cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>'; }
       grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>'; }
     const tokens=palette.map((id,i)=>{const c=catf(id);return '<div class="scal-ptoken'+(i===0&&!sessions.length?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
-    stage.innerHTML=
+    stageC.innerHTML=
       '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('TON CALENDRIER SPORT','YOUR SPORT CALENDAR')+'</div>'+
       '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
       '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻','↻')+'</span></div>'+
@@ -2039,20 +2095,20 @@ if (prefersReduced) {
       '<div class="scal-token'+(sessions.length&&!mob.length?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · MANUEL','DRAG ME · MANUAL')+'</div></div><span class="tk-grab">⠿</span></div></div>';
     calAttach(); calResults();
   }
-  function calResults(){ const box=stage.querySelector('#scalres'); if(!box)return; const q=query.trim().toLowerCase();
+  function calResults(){ const box=stageC.querySelector('#scalres'); if(!box)return; const q=query.trim().toLowerCase();
     if(!q){box.innerHTML='';box.style.display='none';return;} box.style.display='';
     const m=CATALOG.filter(c=>c.fr.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)).slice(0,5);
     box.innerHTML=m.length?m.map(c=>{const ad=palette.indexOf(c.id)>=0;return '<div class="scal-sres'+(ad?' added':'')+'" data-add="'+c.id+'"><span class="sdot" style="background:'+FAM[c.fam]+'"></span><span class="srn">'+c[L()]+'</span><span class="scat">'+(ad?tr('ajouté','added'):FAMLBL[c.fam][L()])+'</span></div>';}).join(''):'<div class="scal-sres-none">'+tr('Aucun sport.','No sport.')+'</div>'; }
   function calAttach(){
-    stage.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown',e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
-    const mt=stage.querySelector('[data-mob]'); if(mt) mt.addEventListener('pointerdown',e=>begin(e,{kind:'mob'},mt));
-    const inp=stage.querySelector('#scalq'); if(inp) inp.addEventListener('input',e=>{query=e.target.value;calResults();});
-    const res=stage.querySelector('#scalres'); if(res) res.addEventListener('click',e=>{const r=e.target.closest('[data-add]');if(!r)return;const id=r.getAttribute('data-add');if(palette.indexOf(id)<0){palette.push(id);toast(catf(id)[L()]+tr(' ajouté',' added'));}query='';renderCal();tourNote();});
-    const dz=stage.querySelector('[data-diag]'); if(dz) dz.addEventListener('click',()=>{diag=ri(0,ZONES.length-1);sessions=[];mob=[];query='';toast(tr('Diagnostic · ','Diagnostic · ')+diagZone());renderCal();tourNote();});
+    stageC.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown',e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
+    const mt=stageC.querySelector('[data-mob]'); if(mt) mt.addEventListener('pointerdown',e=>begin(e,{kind:'mob'},mt));
+    const inp=stageC.querySelector('#scalq'); if(inp) inp.addEventListener('input',e=>{query=e.target.value;calResults();});
+    const res=stageC.querySelector('#scalres'); if(res) res.addEventListener('click',e=>{const r=e.target.closest('[data-add]');if(!r)return;const id=r.getAttribute('data-add');if(palette.indexOf(id)<0){palette.push(id);toast(catf(id)[L()]+tr(' ajouté',' added'));}query='';renderCal();tourNote();});
+    const dz=stageC.querySelector('[data-diag]'); if(dz) dz.addEventListener('click',()=>{diag=ri(0,ZONES.length-1);sessions=[];mob=[];query='';toast(tr('Diagnostic · ','Diagnostic · ')+diagZone());renderCal();tourNote();});
   }
   let drag=null;
   function cellUnder(e){ if(drag&&drag.ghost)drag.ghost.style.display='none'; const el=document.elementFromPoint(e.clientX,e.clientY); if(drag&&drag.ghost)drag.ghost.style.display=''; return el?el.closest('.scal-cell'):null; }
-  function clearHi(){ stage.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
+  function clearHi(){ stageC.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
   function hi(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
   function startGhost(){ let label,sub,mint; if(drag.kind==='mob'){label=tr('Mobilité','Mobility');sub=diagZone()+' · 8′';mint=true;} else {const c=catf(drag.sportId);label=c[L()];sub=tr('NOUVELLE SÉANCE','NEW SESSION');mint=false;}
     const g=document.createElement('div');g.className='scal-ghost';g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';document.body.appendChild(g);drag.ghost=g;drag.started=true;if(drag.src)drag.src.classList.add('dragging'); }
@@ -2066,21 +2122,38 @@ if (prefersReduced) {
   let toastEl=null,toastT=0;
   function toast(msg){ if(!toastEl){toastEl=document.createElement('div');toastEl.className='scal-toast';document.body.appendChild(toastEl);} toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
-  /* ---------- étapes 3-6 · vraies captures ---------- */
-  function renderImg(src,alt){ stage.classList.add('is-shot'); stage.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" decoding="async">'; }
+  /* ---------- étapes 3-6 · vraies captures (rendues dans leur carte) ---------- */
+  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.innerHTML='<img class="tour-img" src="'+src+'" alt="'+alt+'" decoding="async">'; }
 
-  function renderStage(){
-    stage.classList.remove('is-shot');
-    if(step===0) renderDiag();
-    else if(step===1) renderCal();
-    else if(step===2) renderImg('assets/app/programme.png', tr('Programme généré','Program built'));
-    else if(step===3) renderImg('assets/app/video-send.png', tr('Envoi vidéo au coach','Send video to coach'));
-    else if(step===4) renderImg('assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
-    else renderImg('assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+  /* rend le contenu de chaque carte une seule fois (re-appelé au changement de langue) */
+  function renderAll(){
+    stageD.classList.remove('is-shot'); renderDiag();
+    stageC.classList.remove('is-shot'); renderCal();
+    renderImg(cards[2],'assets/app/programme.png',   tr('Programme généré','Program built'));
+    renderImg(cards[3],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
+    renderImg(cards[4],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
+    renderImg(cards[5],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
   }
-  function renderSteps(){ stepsEl.innerHTML=STEPS.map((s,i)=>'<li class="tour-step '+(i<step?'done':(i===step?'active':''))+'"><span class="n">'+(i+1)+'</span><span class="t">'+s[L()]+'</span></li>').join(''); }
+
+  /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
+  function layout(){
+    for(let i=0;i<cards.length;i++){
+      const card=cards[i].parentElement, off=i-current, a=Math.abs(off), sg=Math.sign(off);
+      let tx,tz,ry,sc,op,zi;   // magnitude plafonnée (sg*const) : les cartes lointaines ne débordent pas
+      if(off===0){ tx=0; tz=0; ry=0; sc=1; op=1; zi=6; }
+      else if(a===1){ tx=sg*60; tz=-250; ry=sg*-40; sc=0.94; op=0.55; zi=4; }
+      else if(a===2){ tx=sg*88; tz=-500; ry=sg*-46; sc=0.84; op=0.16; zi=2; }
+      else { tx=sg*72; tz=-680; ry=sg*-48; sc=0.8; op=0; zi=1; }
+      card.style.transform='translateX('+tx+'%) translateZ('+tz+'px) rotateY('+ry+'deg) scale('+sc+')';
+      card.style.opacity=op; card.style.zIndex=zi;
+      card.style.pointerEvents = off===0 ? 'auto' : 'none';   // seule la carte de face est jouable
+      card.classList.toggle('is-center', off===0);
+    }
+  }
+  function renderDots(){ if(!dotsEl) return; dotsEl.innerHTML=STEPS.map((s,i)=>'<button class="dot '+(i<current?'done':(i===current?'on':''))+'" data-i="'+i+'" type="button" aria-label="'+s[L()]+'"></button>').join(''); }
+  function setTitle(){ if(turnTitle) turnTitle.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(current+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[current][L()]+'</span>'; }
   function tourNote(){
-    let v;
+    const step=current; let v;
     if(step===0) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
     else if(step===1) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
     else if(step===2) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
@@ -2089,13 +2162,29 @@ if (prefersReduced) {
     else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
-  function refreshBtn(){ nextBtn.textContent = step>=5 ? tr('↻ Recommencer','↻ Restart') : (step<=1 ? tr('Continuer →','Continue →') : tr('Suivant →','Next →')); }
-  function paint(){ renderStage(); renderSteps(); tourNote(); refreshBtn(); }
-  /* précharge les captures du tour → pas de flash blanc entre les étapes (surtout mobile data) */
+  function refreshBtn(){
+    nextBtn.textContent = current>=STEPS.length-1 ? tr('↻ Recommencer','↻ Restart') : tr('Valider l\'étape →','Validate step →');
+    if(prevBtn) prevBtn.disabled = current===0;
+    if(nextArrow) nextArrow.disabled = current>=STEPS.length-1;
+  }
+  function refresh(){ layout(); tourNote(); refreshBtn(); renderDots(); }
+  function goTo(ns){
+    ns=Math.max(0,Math.min(STEPS.length-1,ns));
+    if(ns===current){ refresh(); return; }
+    current=ns;
+    refresh();                                   // le carrousel s'anime via la transition CSS
+    if(turnTitle && !PRM){ turnTitle.classList.add('swap'); setTimeout(()=>{ setTitle(); turnTitle.classList.remove('swap'); },190); }
+    else setTitle();
+  }
+
   ['programme','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'; });
-  nextBtn.addEventListener('click',()=>{ step = step>=5 ? 0 : step+1; paint(); });
-  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>paint()));
-  paint();
+  nextBtn.addEventListener('click',()=>{ goTo(current>=STEPS.length-1 ? 0 : current+1); });
+  if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
+  if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
+  if(dotsEl) dotsEl.addEventListener('click',e=>{ const d=e.target.closest('[data-i]'); if(d) goTo(+d.dataset.i); });
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); setTitle(); refresh(); }));
+
+  renderAll(); setTitle(); refresh();
 })();
 
 (function heroFlow(){
