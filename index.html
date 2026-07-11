@@ -89,6 +89,16 @@ body{
 section{ position:relative; }
 .pad{ padding-block:clamp(96px, 15vh, 168px); }
 
+/* ---------- Plan d'arrière-fond : grand numéro de section en filigrane ---------- */
+.depth-num{
+  position:absolute; top:-0.16em; right:clamp(-20px, 1vw, 32px);
+  font-family:var(--font-display); font-weight:800; line-height:0.8;
+  font-size:clamp(170px, 30vw, 480px); letter-spacing:-0.05em;
+  color:rgba(255,255,255,0.055); pointer-events:none; user-select:none;
+  z-index:0; will-change:transform;
+}
+.pad > .wrap, .pad > .pin-track{ position:relative; z-index:1; }
+
 .eyebrow{
   font-family:var(--font-mono);
   font-size:11px; font-weight:600; letter-spacing:1.6px;
@@ -328,8 +338,9 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   position:relative; border-radius:20px; overflow:hidden;
   border:1px solid var(--border-active); background:var(--bg-surface);
   box-shadow:0 54px 110px -58px rgba(0,0,0,0.95);
+  transform-origin:center center; backface-visibility:hidden; will-change:transform;
 }
-.shot img{ display:block; width:100%; height:auto; }
+.shot img{ display:block; width:100%; height:auto; will-change:transform; }
 .shot::before{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%);
@@ -1632,7 +1643,28 @@ const progressEl = document.querySelector('.scroll-progress');
 const stickyEl = document.getElementById('stickyCta');
 const doorsEl = document.getElementById('doors');
 const heroEl = document.querySelector('.hero');
-const parallaxEls = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? [] : [...document.querySelectorAll('.shot img')];
+// Écrans flottants : chaque capture .shot est un objet physique qui s'incline
+// en 3D + parallaxe selon sa position dans le viewport (orienté 3/4 vers le centre).
+const shotEls = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ? [] : [...document.querySelectorAll('.shot')].map(el => ({ el, img: el.querySelector('img') }));
+
+// Plan d'arrière-fond : grand numéro de section en filigrane, dérive lente (parallaxe).
+const depthNums = [];
+if (!PRM){
+  document.querySelectorAll('section.pad').forEach(sec => {
+    if (sec.classList.contains('pin-sec')) return;                  // pas sur la section épinglée
+    const idx = sec.querySelector('.section-head .idx');
+    if (!idx || !/^\d+$/.test(idx.textContent.trim())) return;
+    const g = document.createElement('span');
+    g.className = 'depth-num'; g.setAttribute('aria-hidden', 'true');
+    g.textContent = idx.textContent.trim();
+    sec.insertBefore(g, sec.firstChild);
+    depthNums.push(g);
+  });
+}
+
+// Inclinaison réactive au curseur (comme le hero) — offset partagé par tous les écrans.
+let ptrX = 0, ptrY = 0;
 
 let ticking = false;
 function frame(){
@@ -1655,13 +1687,30 @@ function frame(){
     stickyEl.setAttribute('aria-hidden', String(!show));
   }
 
-  // parallax léger sur les captures (transform only)
-  for (let i = 0; i < parallaxEls.length; i++){
-    const el = parallaxEls[i];
+  // écrans flottants : inclinaison 3D + parallaxe pilotées par la position au scroll
+  const vh = window.innerHeight, vw = window.innerWidth;
+  for (let i = 0; i < shotEls.length; i++){
+    const { el, img } = shotEls[i];
     const r = el.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > window.innerHeight + 100) continue;
-    const p = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
-    el.style.transform = 'translate3d(0,' + (p * -20).toFixed(1) + 'px,0) scale(1.09)';
+    if (r.bottom < -140 || r.top > vh + 140) continue;
+    const py = (r.top + r.height / 2 - vh / 2) / vh;   // vertical : -.6 → .6, 0 au centre
+    const qx = (r.left + r.width / 2 - vw / 2) / vw;    // horizontal : négatif à gauche
+    // lean 3/4 permanent (allure « product shot ») orienté vers le centre de page + inclinaison dynamique
+    const baseY = qx < -0.03 ? 11 : (qx > 0.03 ? -11 : 0);   // lean 3/4 marqué (cinéma)
+    const rotX = (-py * 10 - ptrY * 4).toFixed(2);            // + réaction curseur
+    const rotY = (baseY - qx * 5 + ptrX * 5).toFixed(2);
+    const ty   = (-py * 32).toFixed(1);
+    el.style.transform = 'perspective(1100px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(' + ty + 'px)';
+    if (img) img.style.transform = 'scale(1.1) translateY(' + (py * 22).toFixed(1) + 'px)';  // parallaxe interne (2e couche)
+  }
+
+  // plans d'arrière-fond : les grands numéros dérivent plus lentement que le contenu
+  for (let i = 0; i < depthNums.length; i++){
+    const g = depthNums[i], sec = g.parentElement;
+    const r = sec.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > vh) continue;
+    const p = (r.top + r.height / 2 - vh / 2) / vh;
+    g.style.transform = 'translateY(' + (p * 54).toFixed(1) + 'px)';
   }
   ticking = false;
 }
@@ -1669,6 +1718,14 @@ function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(frame)
 frame();
 window.addEventListener('scroll', onScroll, { passive:true });
 window.addEventListener('resize', onScroll, { passive:true });
+// curseur → inclinaison des écrans (réutilise le throttle rAF de frame())
+if (!PRM && shotEls.length){
+  window.addEventListener('pointermove', (e) => {
+    ptrX = e.clientX / window.innerWidth - 0.5;
+    ptrY = e.clientY / window.innerHeight - 0.5;
+    onScroll();
+  }, { passive:true });
+}
 
 /* ============================================================
    Lenis smooth-scroll (site-wide) + ancres pilotées.
@@ -1770,6 +1827,8 @@ if (prefersReduced) {
       // compteurs (0 → cible) au premier passage en vue
       if (t.matches('[data-count]')) countUp(t);
       t.querySelectorAll?.('[data-count]').forEach(countUp);
+      // une fois le wipe terminé, on retire le clip pour libérer l'inclinaison 3D + l'ombre
+      if (t.classList.contains('reveal-clip')) setTimeout(() => { t.style.clipPath = 'none'; }, 1150);
       io.unobserve(t);
     });
   }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
