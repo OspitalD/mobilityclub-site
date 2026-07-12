@@ -955,6 +955,34 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .whyscale-p.accent::before{ content:""; position:absolute; left:0; top:5px; bottom:5px; width:3px; border-radius:2px;
   background:linear-gradient(180deg, var(--accent-green), rgba(62,207,160,0.18)); }
 
+/* ◑ COACH VOCAL (beta) — accent VIOLET = l'intelligence/le vocal (le vert reste réservé à l'action ailleurs) */
+.voice{ --v:#B990E0; --v-soft:rgba(185,144,224,0.12); --v-line:rgba(185,144,224,0.34); }
+.voice .voice-idx{ color:var(--v); }
+.beta-pill{ margin-left:10px; font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+  color:var(--v); background:var(--v-soft); border:1px solid var(--v-line); border-radius:100px; padding:3px 9px; }
+.voice-grid{ display:grid; grid-template-columns:0.82fr 1.18fr; gap:clamp(28px,5vw,60px); align-items:center; margin-top:clamp(28px,4vh,44px); }
+.voice-title{ font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.2vw,52px); line-height:1.06; letter-spacing:-0.03em; color:var(--text-primary); max-width:15ch; text-wrap:balance; }
+.voice-sub{ margin-top:20px; font-size:clamp(14.5px,1.5vw,17.5px); line-height:1.6; color:var(--text-secondary); max-width:44ch; }
+.voice-chips{ margin-top:24px; display:flex; flex-wrap:wrap; gap:9px; }
+.vchip{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.2px; color:var(--text-primary);
+  background:var(--v-soft); border:1px solid var(--v-line); border-radius:100px; padding:8px 14px; }
+.voice-priv{ margin-top:22px; display:inline-flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.4px; color:var(--text-tertiary); }
+.voice-priv .vlock{ color:var(--v); }
+.voice-shots{ display:flex; gap:16px; justify-content:center; align-items:flex-end; }
+.voice-shot{ flex:0 1 200px; }
+.voice-shot .shot{ max-width:100%; border-color:var(--v-line); }
+.voice-shot.lead{ flex-basis:224px; }
+.voice-shot.lead .shot{ box-shadow:0 54px 110px -58px rgba(0,0,0,0.95), 0 30px 80px -46px rgba(185,144,224,0.4); }
+.voice-media .shot-wrap::after{ background:radial-gradient(58% 46% at 50% 22%, rgba(185,144,224,0.22), transparent 72%); }  /* glow violet */
+.voice-media .shot-cap{ display:flex; justify-content:center; margin-top:18px; }
+.voice-media .vdot{ background:var(--v); box-shadow:0 0 0 3px var(--v-soft); }
+/* placeholder gracieux tant que la capture n'est pas déposée (section + démo) */
+.shot.shot-ph{ aspect-ratio:9/19; display:grid; place-items:center; border-style:dashed; border-color:var(--v-line); background:var(--v-soft); }
+.shot-ph-txt{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; text-transform:uppercase; color:var(--v); text-align:center; padding:16px; }
+.tour-stage.tour-ph{ display:grid; place-items:center; background:var(--v-soft); border:1px dashed var(--v-line); border-radius:16px; }
+.tour-ph-txt{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--v); text-align:center; line-height:1.7; padding:20px; }
+@media (max-width:760px){ .voice-grid{ grid-template-columns:1fr; gap:26px; } .voice-title{ max-width:none; } }
+
 /* SECTION 06 — 3 portes */
 .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .door{
@@ -1279,6 +1307,41 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
       <div class="dg-live tour-note" id="tourNote"></div>
       <p class="demo-hint" data-i18n="demo_hint">Vrais écrans + interactions du produit. Diagnostic et emploi du temps sont jouables. Sur mobile : touche et glisse.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ ◑ COACH VOCAL (beta) ============================ -->
+<section class="pad voice" aria-label="Coach vocal">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx voice-idx">◑</span><span data-i18n="voice_eyebrow">Coach vocal</span><span class="beta-pill" data-i18n="voice_beta">Nouveau · en approche</span></span>
+    </div>
+    <div class="voice-grid">
+      <div class="voice-copy">
+        <h2 class="voice-title reveal-lines" data-split-lines data-i18n="voice_title">Parle. Ton coach s'occupe du reste.</h2>
+        <p class="voice-sub reveal" data-i18n="voice_sub">Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.</p>
+        <div class="voice-chips reveal" data-stagger>
+          <span class="vchip" data-i18n="voice_c1">« J'ai mal à l'épaule droite »</span>
+          <span class="vchip" data-i18n="voice_c2">« Ajoute du padel le jeudi »</span>
+          <span class="vchip" data-i18n="voice_c3">« J'ai que 10 minutes »</span>
+          <span class="vchip" data-i18n="voice_c4">« Où j'en suis ? »</span>
+        </div>
+        <p class="voice-priv reveal"><span class="vlock" aria-hidden="true">◈</span><span data-i18n="voice_priv">Ta voix n'est jamais conservée — transcrite, puis oubliée.</span></p>
+      </div>
+      <div class="voice-media reveal">
+        <div class="voice-shots">
+          <div class="shot-wrap voice-shot">
+            <figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1900" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure>
+          </div>
+          <div class="shot-wrap voice-shot lead">
+            <figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1900" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure>
+          </div>
+        </div>
+        <span class="shot-cap"><span class="dot vdot"></span><span data-i18n="voice_cap">Tu parles · il reformule · tu valides</span></span>
+      </div>
     </div>
   </div>
 </section>
@@ -1683,6 +1746,16 @@ const I18N = {
     ws_lead: "J'ai vu des membres arriver d'applications à des millions d'utilisateurs, sans résultats. Et obtenir, avec quelques centaines de membres chez nous, ce qu'ils cherchaient depuis des années.",
     ws_p1: "Le jour où tu comprends que ta méthode aide plus de gens que les mastodontes du marché, continuer à accompagner une personne à la fois devient une forme de gâchis.",
     ws_p2: "Alors j'ai appris à coder. Pour mettre cette méthode devant des millions de personnes — pas quelques centaines.",
+    voice_eyebrow: 'Coach vocal',
+    voice_beta: 'Nouveau · en approche',
+    voice_title: "Parle. Ton coach s'occupe du reste.",
+    voice_sub: "Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.",
+    voice_c1: "« J'ai mal à l'épaule droite »",
+    voice_c2: '« Ajoute du padel le jeudi »',
+    voice_c3: "« J'ai que 10 minutes »",
+    voice_c4: "« Où j'en suis ? »",
+    voice_priv: "Ta voix n'est jamais conservée — transcrite, puis oubliée.",
+    voice_cap: 'Tu parles · il reformule · tu valides',
     demo_eyebrow: 'La démo · le produit en vrai',
     demo_title: "La boucle complète.<br>Joue-la.",
     demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
@@ -1792,6 +1865,16 @@ const I18N = {
     ws_lead: "I've watched members arrive from apps with millions of users, with nothing to show for it. And get, with a few hundred members here, what they'd been chasing for years.",
     ws_p1: "The day you realize your method helps more people than the market's giants, coaching one person at a time starts to feel like waste.",
     ws_p2: "So I learned to build. To put this method in front of millions — not a few hundred.",
+    voice_eyebrow: 'Voice coach',
+    voice_beta: 'New · rolling out',
+    voice_title: 'Talk. Your coach handles the rest.',
+    voice_sub: "In pain, short on time, thrown off? Just say it out loud — today's session and your week adapt. The method's intelligence, with zero menus to fill in.",
+    voice_c1: '“My right shoulder hurts”',
+    voice_c2: '“Add padel on Thursday”',
+    voice_c3: "“I've only got 10 minutes”",
+    voice_c4: '“Where am I at?”',
+    voice_priv: 'Your voice is never kept — transcribed, then forgotten.',
+    voice_cap: 'You talk · it reframes · you confirm',
     demo_eyebrow: 'The demo · the real product',
     demo_title: "The full loop.<br>Play it.",
     demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
@@ -2247,6 +2330,7 @@ if (prefersReduced) {
     {fr:'Ton bilan',en:'Your report', bf:'Ton corps chiffré, tes priorités claires.', be:'Your body quantified, priorities clear.'},
     {fr:'Emploi du temps',en:'Schedule', bf:'Le club cale la mobilité autour de ta vie.', be:'The club fits mobility around your life.'},
     {fr:'Programme généré',en:'Program built', bf:'Ta séance du jour, déjà prête.', be:'Today\'s session, already built.'},
+    {fr:'Parle à ton coach',en:'Talk to your coach', bf:'Une douleur ? Dis-le. Ta séance s\'adapte.', be:'In pain? Say it. Your session adapts.'},
     {fr:'Vidéo au coach',en:'Video to coach', bf:'Un doute ? Tu filmes, le coach regarde.', be:'In doubt? Film it, the coach looks.'},
     {fr:'Correction du coach',en:'Coach feedback', bf:'Une vraie correction humaine, pas un algo.', be:'Real human feedback, not an algo.'},
     {fr:'Retest à J+30',en:'Retest at day 30', bf:'Tu progresses — mesuré, pas ressenti.', be:'You progress — measured, not felt.'}
@@ -2369,7 +2453,12 @@ if (prefersReduced) {
 
   /* ---------- étapes 3-6 · vraies captures (rendues dans leur carte) ---------- */
   const ASSET_V='?v=2';   // cache-bust : force le fetch des captures ré-exportées (netteté)
-  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.innerHTML='<img class="tour-img" src="'+src+ASSET_V+'" alt="'+alt+'" decoding="async">'; }
+  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.classList.remove('tour-ph');
+    el.innerHTML='<img class="tour-img" src="'+src+ASSET_V+'" alt="'+alt+'" decoding="async">';
+    const im=el.querySelector('img');
+    im.addEventListener('error',()=>{ el.classList.remove('is-shot'); el.classList.add('tour-ph');
+      el.innerHTML='<span class="tour-ph-txt">'+alt+'<br><small>'+tr('capture à venir','screenshot coming')+'</small></span>'; });
+  }
 
   /* calendrier pré-rempli : Musculation + Course déjà placés, mobilité calée auto autour */
   function seedCal(){
@@ -2383,9 +2472,10 @@ if (prefersReduced) {
     renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
     renderImg(cards[3],'assets/app/seance-jour.png', tr('Programme généré','Program built'));
-    renderImg(cards[4],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
-    renderImg(cards[5],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
-    renderImg(cards[6],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+    renderImg(cards[4],'assets/app/voice-understood.png', tr('Le coach a compris','The coach understood'));
+    renderImg(cards[5],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
+    renderImg(cards[6],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
+    renderImg(cards[7],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
   }
 
   /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
@@ -2418,8 +2508,9 @@ if (prefersReduced) {
     else if(step===1) v=tr('Ton bilan articulaire : score global + zones prioritaires. Ton point de départ, mesuré.','Your joint report: global score + priority zones. Your starting point, measured.');
     else if(step===2) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
     else if(step===3) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
-    else if(step===4) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
-    else if(step===5) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
+    else if(step===4) v=tr('Tu parles à ton coach : « j\'ai mal à l\'épaule droite » → il allège ta séance. Tu valides. <b>Beta.</b>','You talk to your coach: “my right shoulder hurts” → it eases your session. You confirm. <b>Beta.</b>');
+    else if(step===5) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
+    else if(step===6) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
     else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
@@ -2433,7 +2524,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','seance-jour','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'+ASSET_V; });
+  ['diagnostic-result','seance-jour','voice-understood','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'+ASSET_V; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
@@ -2462,6 +2553,19 @@ if (prefersReduced) {
     probe.onerror = () => tryNext(i + 1);
     probe.src = candidates[i];
   })(0);
+})();
+
+/* Coach vocal §◑ — captures fournies par Damien (voice-listen / voice-understood).
+   Placeholder violet gracieux tant qu'elles ne sont pas déposées → review non cassée. */
+(function voiceShots(){
+  const en = document.documentElement.getAttribute('lang') === 'en';
+  document.querySelectorAll('img[data-voice-shot]').forEach(img => {
+    img.addEventListener('error', () => {
+      const fig = img.closest('.shot'); if (!fig) return;
+      fig.classList.add('shot-ph');
+      fig.innerHTML = '<span class="shot-ph-txt">' + (en ? 'Screenshot coming' : 'Capture à venir') + '</span>';
+    });
+  });
 })();
 
 /* Témoignages §05 — défilement horizontal alimenté par un tableau.
