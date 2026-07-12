@@ -990,6 +990,29 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .pricing .v b{ font-weight:700; }
 .pricing .sep{ color:var(--text-tertiary); }
 
+/* Boutons d'abonnement (PayPal) — mensuel (secondaire) + annuel (mis en avant) */
+.plans{ margin-top:18px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.plan-btn{ position:relative; flex:0 1 264px; display:flex; flex-direction:column; gap:9px;
+  padding:20px 22px 18px; border-radius:14px; border:1px solid var(--border-active); background:var(--bg-surface);
+  text-decoration:none; transition:transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease); }
+.plan-btn:hover{ transform:translateY(-4px); border-color:rgba(62,207,160,0.5); box-shadow:0 24px 50px -34px rgba(0,0,0,0.9); }
+.plan-price{ display:flex; align-items:baseline; gap:5px; color:var(--text-primary); }
+.plan-price b{ font-family:var(--font-display); font-size:30px; font-weight:800; letter-spacing:-0.02em; }
+.plan-per{ font-family:var(--font-mono); font-size:12px; font-weight:500; color:var(--text-secondary); }
+.plan-sub{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.3px; color:var(--text-secondary); }
+.plan-go{ margin-top:4px; display:inline-flex; align-items:center; justify-content:center; gap:8px; height:46px;
+  border-radius:9px; font-weight:700; font-size:14px; }
+.plan-go .arrow{ transition:transform .25s var(--ease); }
+.plan-btn:not(.feat) .plan-go{ border:1px solid var(--accent-green); color:var(--accent-green); }
+.plan-btn:not(.feat):hover .plan-go{ background:rgba(62,207,160,0.08); }
+.plan-btn.feat{ border-color:rgba(62,207,160,0.4); background:linear-gradient(180deg, rgba(62,207,160,0.06), transparent 58%), var(--bg-surface); }
+.plan-btn.feat .plan-go{ background:var(--accent-green); color:var(--bg-primary); }
+.plan-btn.feat:hover .plan-go .arrow{ transform:translateX(4px); }
+.plan-tag{ position:absolute; top:-10px; left:50%; transform:translateX(-50%); white-space:nowrap;
+  font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+  color:var(--bg-primary); background:var(--accent-green); border-radius:100px; padding:4px 11px; }
+@media (max-width:560px){ .plans{ flex-direction:column; align-items:stretch; } .plan-btn{ flex-basis:auto; } }
+
 /* ============================================================
    FOOTER
    ============================================================ */
@@ -1473,6 +1496,20 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="v dim" data-i18n="pricing_then">puis 24€/mois ou 197€/an</span>
     </div>
 
+    <div class="plans reveal" data-stagger>
+      <a class="plan-btn" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-5XX0392295518134PNIFO64Y" target="_blank" rel="noopener" aria-label="S'abonner — 20€ par mois">
+        <span class="plan-price"><b>20€</b><span class="plan-per" data-i18n="plan_per_mo">/mois</span></span>
+        <span class="plan-sub" data-i18n="plan_flex">Sans engagement · annule quand tu veux</span>
+        <span class="plan-go"><span data-i18n="plan_cta">S'abonner</span><span class="arrow">→</span></span>
+      </a>
+      <a class="plan-btn feat" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" aria-label="S'abonner — 175€ par an">
+        <span class="plan-tag" data-i18n="plan_save">Économise 65€</span>
+        <span class="plan-price"><b>175€</b><span class="plan-per" data-i18n="plan_per_yr">/an</span></span>
+        <span class="plan-sub" data-i18n="plan_permo">≈ 14,60€/mois</span>
+        <span class="plan-go"><span data-i18n="plan_cta">S'abonner</span><span class="arrow">→</span></span>
+      </a>
+    </div>
+
     <div class="trust-row reveal" data-stagger>
       <div class="trust-item"><span class="trust-k" data-i18n="trust_1k">Gratuit pour commencer</span><span class="trust-v" data-i18n="trust_1v">Diagnostic + Timer · 0€</span></div>
       <div class="trust-item"><span class="trust-k" data-i18n="trust_2k">Sans engagement</span><span class="trust-v" data-i18n="trust_2v">Tu annules quand tu veux</span></div>
@@ -1699,6 +1736,12 @@ const I18N = {
     pricing_k: 'Offre de lancement',
     pricing_v: "<b>20€/mois</b> ou <b>175€/an</b> jusqu'au 1er août",
     pricing_then: 'puis 24€/mois ou 197€/an',
+    plan_cta: "S'abonner",
+    plan_per_mo: '/mois',
+    plan_per_yr: '/an',
+    plan_flex: 'Sans engagement · annule quand tu veux',
+    plan_save: 'Économise 65€',
+    plan_permo: '≈ 14,60€/mois',
     nav_cta: 'Commencer',
     sticky_txt: "<b>Commence gratuitement.</b> Diagnostic + Timer offerts.",
     sticky_btn: 'Découvre le tien',
@@ -1802,6 +1845,12 @@ const I18N = {
     pricing_k: 'Launch pricing',
     pricing_v: '<b>€20/mo</b> or <b>€175/yr</b> through August 1',
     pricing_then: 'then €24/mo or €197/yr',
+    plan_cta: 'Subscribe',
+    plan_per_mo: '/mo',
+    plan_per_yr: '/yr',
+    plan_flex: 'No commitment · cancel anytime',
+    plan_save: 'Save €65',
+    plan_permo: '≈ €14.60/mo',
     nav_cta: 'Start',
     sticky_txt: "<b>Start free.</b> Diagnostic + Timer included.",
     sticky_btn: 'Find yours',
