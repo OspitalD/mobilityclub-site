@@ -960,28 +960,30 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .voice .voice-idx{ color:var(--v); }
 .beta-pill{ margin-left:10px; font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
   color:var(--v); background:var(--v-soft); border:1px solid var(--v-line); border-radius:100px; padding:3px 9px; }
-.voice-grid{ display:grid; grid-template-columns:0.82fr 1.18fr; gap:clamp(28px,5vw,60px); align-items:center; margin-top:clamp(28px,4vh,44px); }
-.voice-title{ font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.2vw,52px); line-height:1.06; letter-spacing:-0.03em; color:var(--text-primary); max-width:15ch; text-wrap:balance; }
-.voice-sub{ margin-top:20px; font-size:clamp(14.5px,1.5vw,17.5px); line-height:1.6; color:var(--text-secondary); max-width:44ch; }
-.voice-chips{ margin-top:24px; display:flex; flex-wrap:wrap; gap:9px; }
+.voice-head{ margin-top:clamp(26px,4vh,42px); }
+.voice-title{ font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.2vw,52px); line-height:1.06; letter-spacing:-0.03em; color:var(--text-primary); max-width:18ch; text-wrap:balance; }
+.voice-sub{ margin-top:18px; font-size:clamp(14.5px,1.5vw,17.5px); line-height:1.6; color:var(--text-secondary); max-width:52ch; }
+/* storyboard : ouvre → parle → c'est fait */
+.voice-flow{ display:flex; gap:clamp(14px,2.4vw,28px); justify-content:center; align-items:flex-start; margin:clamp(32px,5vh,54px) 0 clamp(26px,4vh,38px); }
+.voice-step{ flex:1 1 0; max-width:300px; margin:0; display:flex; flex-direction:column; }
+.voice-step .shot{ border-color:var(--v-line); }
+.voice-step.lead .shot{ box-shadow:0 54px 110px -58px rgba(0,0,0,0.95), 0 30px 80px -46px rgba(185,144,224,0.4); }
+.voice-step figcaption{ margin-top:16px; display:flex; align-items:flex-start; gap:10px; font-size:13px; line-height:1.42; color:var(--text-secondary); }
+.vstep-n{ flex:0 0 22px; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; margin-top:1px;
+  font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--v); background:var(--v-soft); border:1px solid var(--v-line); }
+.voice .shot-wrap::after{ background:radial-gradient(58% 46% at 50% 22%, rgba(185,144,224,0.22), transparent 72%); }  /* glow violet */
+.voice-foot{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px 24px; }
+.voice-chips{ display:flex; flex-wrap:wrap; gap:9px; }
 .vchip{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.2px; color:var(--text-primary);
   background:var(--v-soft); border:1px solid var(--v-line); border-radius:100px; padding:8px 14px; }
-.voice-priv{ margin-top:22px; display:inline-flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.4px; color:var(--text-tertiary); }
+.voice-priv{ display:inline-flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.4px; color:var(--text-tertiary); }
 .voice-priv .vlock{ color:var(--v); }
-.voice-shots{ display:flex; gap:16px; justify-content:center; align-items:flex-end; }
-.voice-shot{ flex:0 1 200px; }
-.voice-shot .shot{ max-width:100%; border-color:var(--v-line); }
-.voice-shot.lead{ flex-basis:224px; }
-.voice-shot.lead .shot{ box-shadow:0 54px 110px -58px rgba(0,0,0,0.95), 0 30px 80px -46px rgba(185,144,224,0.4); }
-.voice-media .shot-wrap::after{ background:radial-gradient(58% 46% at 50% 22%, rgba(185,144,224,0.22), transparent 72%); }  /* glow violet */
-.voice-media .shot-cap{ display:flex; justify-content:center; margin-top:18px; }
-.voice-media .vdot{ background:var(--v); box-shadow:0 0 0 3px var(--v-soft); }
 /* placeholder gracieux tant que la capture n'est pas déposée (section + démo) */
 .shot.shot-ph{ aspect-ratio:9/19; display:grid; place-items:center; border-style:dashed; border-color:var(--v-line); background:var(--v-soft); }
 .shot-ph-txt{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; text-transform:uppercase; color:var(--v); text-align:center; padding:16px; }
 .tour-stage.tour-ph{ display:grid; place-items:center; background:var(--v-soft); border:1px dashed var(--v-line); border-radius:16px; }
 .tour-ph-txt{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--v); text-align:center; line-height:1.7; padding:20px; }
-@media (max-width:760px){ .voice-grid{ grid-template-columns:1fr; gap:26px; } .voice-title{ max-width:none; } }
+@media (max-width:760px){ .voice-flow{ flex-direction:column; align-items:center; } .voice-step{ max-width:330px; width:100%; } .voice-title{ max-width:none; } }
 
 /* SECTION 06 — 3 portes */
 .doors{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
@@ -1319,29 +1321,34 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx voice-idx">◑</span><span data-i18n="voice_eyebrow">Coach vocal</span><span class="beta-pill" data-i18n="voice_beta">Nouveau · en approche</span></span>
     </div>
-    <div class="voice-grid">
-      <div class="voice-copy">
-        <h2 class="voice-title reveal-lines" data-split-lines data-i18n="voice_title">Parle. Ton coach s'occupe du reste.</h2>
-        <p class="voice-sub reveal" data-i18n="voice_sub">Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.</p>
-        <div class="voice-chips reveal" data-stagger>
-          <span class="vchip" data-i18n="voice_c1">« J'ai mal à l'épaule droite »</span>
-          <span class="vchip" data-i18n="voice_c2">« Ajoute du padel le jeudi »</span>
-          <span class="vchip" data-i18n="voice_c3">« J'ai que 10 minutes »</span>
-          <span class="vchip" data-i18n="voice_c4">« Où j'en suis ? »</span>
-        </div>
-        <p class="voice-priv reveal"><span class="vlock" aria-hidden="true">◈</span><span data-i18n="voice_priv">Ta voix n'est jamais conservée — transcrite, puis oubliée.</span></p>
+    <div class="voice-head">
+      <h2 class="voice-title reveal-lines" data-split-lines data-i18n="voice_title">Parle. Ton coach s'occupe du reste.</h2>
+      <p class="voice-sub reveal" data-i18n="voice_sub">Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.</p>
+    </div>
+
+    <div class="voice-flow reveal" data-stagger>
+      <figure class="voice-step">
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-nub.png" width="880" height="1904" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
+        <figcaption><span class="vstep-n">1</span><span data-i18n="voice_s1">Ouvre — le bouton est au centre de ta nav, à portée de pouce.</span></figcaption>
+      </figure>
+      <figure class="voice-step">
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1904" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure></div>
+        <figcaption><span class="vstep-n">2</span><span data-i18n="voice_s2">Parle — dis ta contrainte du jour, en langage normal.</span></figcaption>
+      </figure>
+      <figure class="voice-step lead">
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1904" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure></div>
+        <figcaption><span class="vstep-n">3</span><span data-i18n="voice_s3">C'est fait — il reformule, tu valides. Ta séance s'adapte.</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="voice-foot reveal">
+      <div class="voice-chips" data-stagger>
+        <span class="vchip" data-i18n="voice_c1">« J'ai mal à l'épaule droite »</span>
+        <span class="vchip" data-i18n="voice_c2">« Ajoute du padel le jeudi »</span>
+        <span class="vchip" data-i18n="voice_c3">« J'ai que 10 minutes »</span>
+        <span class="vchip" data-i18n="voice_c4">« Où j'en suis ? »</span>
       </div>
-      <div class="voice-media reveal">
-        <div class="voice-shots">
-          <div class="shot-wrap voice-shot">
-            <figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1900" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure>
-          </div>
-          <div class="shot-wrap voice-shot lead">
-            <figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1900" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure>
-          </div>
-        </div>
-        <span class="shot-cap"><span class="dot vdot"></span><span data-i18n="voice_cap">Tu parles · il reformule · tu valides</span></span>
-      </div>
+      <p class="voice-priv"><span class="vlock" aria-hidden="true">◈</span><span data-i18n="voice_priv">Ta voix n'est jamais conservée — transcrite, puis oubliée.</span></p>
     </div>
   </div>
 </section>
@@ -1756,6 +1763,9 @@ const I18N = {
     voice_c4: "« Où j'en suis ? »",
     voice_priv: "Ta voix n'est jamais conservée — transcrite, puis oubliée.",
     voice_cap: 'Tu parles · il reformule · tu valides',
+    voice_s1: 'Ouvre — le bouton est au centre de ta nav, à portée de pouce.',
+    voice_s2: 'Parle — dis ta contrainte du jour, en langage normal.',
+    voice_s3: "C'est fait — il reformule, tu valides. Ta séance s'adapte.",
     demo_eyebrow: 'La démo · le produit en vrai',
     demo_title: "La boucle complète.<br>Joue-la.",
     demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
@@ -1875,6 +1885,9 @@ const I18N = {
     voice_c4: '“Where am I at?”',
     voice_priv: 'Your voice is never kept — transcribed, then forgotten.',
     voice_cap: 'You talk · it reframes · you confirm',
+    voice_s1: 'Open — the button sits center of your nav, a thumb away.',
+    voice_s2: 'Talk — say your constraint of the day, in plain words.',
+    voice_s3: "Done — it reframes, you confirm. Your session adapts.",
     demo_eyebrow: 'The demo · the real product',
     demo_title: "The full loop.<br>Play it.",
     demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
