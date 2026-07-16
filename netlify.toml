@@ -1,7 +1,13 @@
 # Mobility Club — site vitrine (statique, aucun build)
+# Le site reste 100% statique : `command = ""`. Netlify installe seulement les
+# dépendances de la Function (@netlify/blobs) — index.html n'est jamais buildé.
 [build]
   publish = "."
   command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # En-têtes de sécurité de base (site statique, aucune donnée sensible)
 [[headers]]

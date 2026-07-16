@@ -257,6 +257,18 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   color:var(--text-primary);
 }
 .hero-title .em{ color:var(--accent-green); }
+/* Le hook « vision » est une phrase longue (baseline verrouillée) : au corps
+   display de 128px il déborderait. Sizing piloté par la variante, en CSS —
+   le JS ne fait que poser data-v. */
+.hero-title[data-v="vision"]{
+  font-size:clamp(34px, 5.6vw, 76px); line-height:1.02; letter-spacing:-0.025em;
+}
+/* Sur mobile (le gros du trafic : Instagram organique), les <br> pensés pour le
+   desktop laissaient des orphelins (« garde » seul, « jeunes. » seul). On les
+   neutralise et on laisse text-wrap:balance équilibrer le bloc. */
+@media (max-width:560px){
+  .hero-title[data-v="vision"] br{ display:none; }
+}
 .hero-cta-row{ margin-top:clamp(34px, 5vh, 52px); display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
 .hero-proof{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.3px; color:var(--text-secondary); }
 .hero-proof b{ color:var(--text-primary); font-weight:600; }
@@ -280,6 +292,11 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 .btn-secondary:hover{ background:var(--accent-green-dim); transform:translateY(-2px); }
 
+/* ⚠️ `.hero > :not(.hero-3d)` (spécificité 0,2,0) écrase le position:absolute
+   de `.scroll-hint` (0,1,0) → le hint retombait dans le flux, et son bottom/left
+   pensés pour l'absolu le poussaient SUR le bouton CTA. Bug présent en prod
+   avant ce ticket. On restaure l'absolu à spécificité égale, après la règle. */
+.hero > .scroll-hint{ position:absolute; }
 .scroll-hint{
   position:absolute; bottom:28px; left:var(--gutter);
   display:flex; align-items:center; gap:12px;
@@ -308,6 +325,53 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 .problem-stmt .soft{ color:var(--text-secondary); font-weight:600; }
 .problem-stmt .warn{ color:var(--accent-red); }
+
+/* ============================================================
+   ✦ L'ENJEU — aujourd'hui → demain (objectifs de vie)
+   ============================================================ */
+.stakes-lead{
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(24px,4vw,50px); line-height:1.12; letter-spacing:-0.03em;
+  max-width:20ch;
+}
+.stakes-grid{
+  list-style:none; margin:clamp(34px,5vh,52px) 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
+  background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:12px;
+  overflow:hidden;
+}
+.stake{
+  background:var(--bg-primary); padding:clamp(20px,2.4vw,28px);
+  display:flex; gap:14px; align-items:flex-start;
+  transition:background .4s var(--ease);
+}
+.stake:hover{ background:var(--bg-surface); }
+.stake-n{
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  color:var(--accent-green); flex:0 0 auto; padding-top:3px; letter-spacing:0.04em;
+}
+.stake-txt{
+  font-size:clamp(14px,1.5vw,17px); line-height:1.55; color:var(--text-secondary);
+}
+.stake-txt b{ color:var(--text-primary); font-weight:600; }
+.stakes-close{
+  margin-top:clamp(28px,4vh,40px);
+  font-size:clamp(15px,1.5vw,18px); line-height:1.62; color:var(--text-secondary); max-width:48ch;
+}
+.stakes-close .warn{ color:var(--accent-gold); font-weight:600; }
+@media (max-width:720px){
+  .stakes-grid{ grid-template-columns:1fr; }
+}
+
+/* Disclaimer bien-être / prévention — zone réglementaire.
+   Discret mais lisible : jamais en text-tertiary (illisible = non affiché). */
+.disclaimer{
+  margin-top:clamp(26px,3.5vh,38px); padding-left:14px;
+  border-left:2px solid var(--border-active);
+  font-size:12.5px; line-height:1.6; color:var(--text-secondary);
+  max-width:60ch;
+}
+.footer-disclaimer{ margin:clamp(30px,4vh,44px) 0 0; }
 
 /* SECTION 02 — Reversal */
 .reversal{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:clamp(32px,6vw,80px); align-items:center; }
@@ -368,6 +432,40 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .s5-proof-h .hl{ color:var(--accent-green); }
 .s5-proof-p{ margin-top:16px; font-size:clamp(14px,1.6vw,17px); line-height:1.62; color:var(--text-secondary); max-width:42ch; }
 .s5-proof-p strong{ color:var(--text-primary); font-weight:600; }
+
+/* ---- Retest mis en scène (hier → aujourd'hui) ----
+   Carte volontairement sobre : c'est un EXEMPLE, il ne doit pas se lire comme
+   un résultat mesuré. D'où le tag en mono et le chiffre en or (priorité), pas
+   en vert (qui code l'action/le succès dans le design system). */
+.retest{
+  margin:24px 0 0; padding:18px 20px;
+  background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px;
+  max-width:46ch;
+}
+.retest-tag{
+  font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary);
+  margin-bottom:14px;
+}
+.retest-row{
+  display:flex; gap:12px; align-items:baseline;
+  font-size:clamp(13px,1.4vw,15px); line-height:1.55;
+}
+.retest-row + .retest-row{
+  margin-top:10px; padding-top:10px; border-top:1px solid var(--border-subtle);
+}
+.retest-when{
+  flex:0 0 auto; font-family:var(--font-mono); font-size:11px; font-weight:600;
+  letter-spacing:0.04em; color:var(--text-tertiary); min-width:9.5ch;
+}
+.retest-row.now .retest-when{ color:var(--accent-gold); }
+.retest-what{ color:var(--text-secondary); }
+.retest-row.now .retest-what{ color:var(--text-primary); }
+.retest-row.now .retest-what b{ color:var(--accent-gold); font-weight:700; }
+@media (max-width:560px){
+  .retest-row{ flex-direction:column; gap:3px; }
+  .retest-when{ min-width:0; }
+}
 
 /* Aperçu Diagnostic (écran réel) avant les 3 portes */
 .diag-preview{ display:grid; grid-template-columns:300px 1fr; gap:clamp(28px,5vw,64px); align-items:center; margin-bottom:clamp(48px,7vh,80px); }
@@ -1192,7 +1290,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
     </a>
     <div class="header-right">
-      <a class="header-cta" href="#doors" data-i18n="nav_cta">Commencer</a>
+      <a class="header-cta" href="#doors" data-cta="header" data-i18n="nav_cta">Commencer</a>
       <div class="lang" role="group" aria-label="Language / Langue">
         <span class="thumb" aria-hidden="true"></span>
         <button type="button" data-lang="fr" aria-pressed="true">FR</button>
@@ -1209,10 +1307,14 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   <canvas class="hero-3d" id="hero3d" aria-hidden="true"></canvas>
   <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mobilité quotidienne</span></span>
 
-  <h1 class="hero-title reveal" data-i18n="hero_title">Bouge mieux.<br>Chaque jour.<br><span class="em">Sans y penser.</span></h1>
+  <!-- Hero A/B — le HTML statique porte la variante `forced` (cf. const AB).
+       Sans JS, c'est ce hook qui s'affiche. -->
+  <!-- L'espace avant chaque <br> est VOLONTAIRE : en desktop il est absorbé en fin
+       de ligne, et en mobile (où le <br> est masqué) il évite « mobilité,c'est ». -->
+  <h1 class="hero-title reveal" data-v="vision" data-i18n="hero_title_vision">La mobilité, <br>c'est la pratique qui garde <br><span class="em">tes articulations jeunes.</span></h1>
 
-  <p class="hero-sub reveal" data-i18n="hero_sub">
-    La mobilité qui tient dans ton quotidien — <strong>8 minutes par jour, décidées pour toi.</strong> Le club lit ton sport et ton corps, et te sert la bonne séance. Tu ouvres, tu bouges.
+  <p class="hero-sub reveal" data-i18n="hero_sub_vision">
+    Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong>
   </p>
 
   <div class="hero-cta-row reveal">
@@ -1226,6 +1328,45 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   <div class="scroll-hint reveal" aria-hidden="true">
     <span class="line"></span>
     <span data-i18n="scroll_hint">Défile</span>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ============================ ✦ L'ENJEU — AUJOURD'HUI → DEMAIN ============================ -->
+<!-- Encaisse la promesse du hero : « articulations jeunes » → pour quoi faire.
+     Vend la capacité (ce que ton corps pourra encore faire), pas la feature. -->
+<section class="pad stakes" aria-label="Ce qui est en jeu">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="idx">✦</span><span data-i18n="stk_eyebrow">Ce qui est en jeu</span></span>
+    </div>
+    <p class="stakes-lead reveal-lines" data-split-lines data-i18n="stk_lead">Ce que tu fais de tes articulations aujourd'hui décide de <span class="hl">ce que ton corps pourra encore faire demain.</span></p>
+
+    <ul class="stakes-grid reveal" data-stagger>
+      <li class="stake">
+        <span class="stake-n">01</span>
+        <span class="stake-txt" data-i18n="stk_1">T'accroupir pour jouer avec tes enfants — <b>et pouvoir encore le faire à 60 ans.</b></span>
+      </li>
+      <li class="stake">
+        <span class="stake-n">02</span>
+        <span class="stake-txt" data-i18n="stk_2">Attraper quelque chose en hauteur <b>sans que ton épaule négocie.</b></span>
+      </li>
+      <li class="stake">
+        <span class="stake-n">03</span>
+        <span class="stake-txt" data-i18n="stk_3">Courir, grimper, porter — <b>sans que ton corps te freine.</b></span>
+      </li>
+      <li class="stake">
+        <span class="stake-n">04</span>
+        <span class="stake-txt" data-i18n="stk_4">Te relever du sol <b>sans y penser, sans les mains.</b></span>
+      </li>
+    </ul>
+
+    <p class="stakes-close reveal" data-i18n="stk_close">Aucune de ces choses ne se perd d'un coup. Elles s'en vont <span class="warn">quelques degrés par an</span> — et elles se regagnent de la même façon.</p>
+
+    <!-- Disclaimer bien-être : obligatoire dès qu'on parle d'âge articulaire.
+         Placé DANS la section qui porte l'angle, pas seulement en pied de page. -->
+    <p class="disclaimer reveal" data-i18n="stk_disclaimer">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
   </div>
 </section>
 
@@ -1511,8 +1652,23 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <div class="reveal">
         <p class="s5-proof-h reveal-lines" data-split-lines data-i18n="s5_proof_h">Preuve, <span class="hl">pas promesse.</span></p>
         <p class="s5-proof-p" data-i18n="s5_proof_p">
-          Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.
+          Chaque membre re-teste sa mobilité — les mêmes tests, 90 jours plus tard. <strong>Mesuré, pas ressenti.</strong> Ton radar, avant / après.
         </p>
+
+        <!-- Retest mis en scène. ⚠️ EXEMPLE ILLUSTRATIF, jamais une moyenne mesurée :
+             le chiffre n'est pas sourcé, donc il est étiqueté comme tel (cf. audit). -->
+        <figure class="retest reveal">
+          <figcaption class="retest-tag" data-i18n="retest_tag">Exemple · à quoi ressemble un retest</figcaption>
+          <div class="retest-row then">
+            <span class="retest-when" data-i18n="retest_then_k">Il y a 3 mois</span>
+            <span class="retest-what" data-i18n="retest_then_v">ta cheville bloquait dès que tu descendais en squat.</span>
+          </div>
+          <div class="retest-row now">
+            <span class="retest-when" data-i18n="retest_now_k">Aujourd'hui</span>
+            <span class="retest-what" data-i18n="retest_now_v"><b>+22%</b> d'amplitude en dorsiflexion — re-mesurée au même test.</span>
+          </div>
+        </figure>
+
         <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="shot_progress">Ta progression — dans l'app</span></span>
       </div>
     </div>
@@ -1639,7 +1795,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <div class="sticky-cta" id="stickyCta" aria-hidden="true">
   <div class="sticky-inner">
     <span class="sticky-txt" data-i18n="sticky_txt"><b>Commence gratuitement.</b> Diagnostic + Timer offerts.</span>
-    <a class="btn btn-primary sticky-btn" href="#doors"><span data-i18n="sticky_btn">Découvre le tien</span><span class="arrow">→</span></a>
+    <a class="btn btn-primary sticky-btn" href="#doors" data-cta="sticky"><span data-i18n="sticky_btn">Découvre le tien</span><span class="arrow">→</span></a>
   </div>
 </div>
 
@@ -1650,6 +1806,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <img src="assets/brand/logo-otb.png" width="700" height="700" loading="lazy" class="footer-logo" alt="Mobility Club — Out of the box" />
       <p class="footer-mission reveal-lines" data-split-lines data-i18n="footer_mission">La mobilité — <span class="hl">le moment qui permet la vie.</span></p>
     </div>
+    <p class="disclaimer footer-disclaimer reveal" data-i18n="footer_disclaimer">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
+
     <div class="footer-bottom">
       <div class="footer-links">
         <a href="#top" data-i18n="fl_top">Haut de page</a>
@@ -1674,6 +1832,83 @@ const LINKS = {
   timer:      'https://mobilitytimer.com',                  // Mobility Timer (gratuit)
   club:       'https://www.skool.com/mobility-club/about'   // Mobility Club — communauté Skool (le produit)
 };
+
+/* ============================================================
+   A/B — CONFIG. Le seul endroit à toucher pour piloter le test.
+
+   enabled:false  → TEST À L'ARRÊT (état actuel). Tout le monde voit `forced`.
+                    Les events partent quand même : c'est ce qui donne la
+                    baseline de trafic avant de décider si le test vaut le coup.
+   enabled:true   → assignation aléatoire stable par visiteur (localStorage).
+
+   POUR FIGER LA VARIANTE GAGNANTE : enabled:false + forced:'<gagnante>'.
+   Rien d'autre à faire — le hero suit, en FR comme en EN.
+   ============================================================ */
+const AB = {
+  enabled: false,
+  forced:  'vision',                  // 'vision' = hook articulations jeunes
+  variants: ['vision', 'friction'],   // 'friction' = hook « décidé pour toi »
+};
+
+/* ============================================================
+   TRACKING — collecteur first-party (Netlify Function → Blobs).
+   Anonyme, sans PII, sans cookie tiers. Ne doit JAMAIS casser la page :
+   toute erreur réseau est avalée.
+   ============================================================ */
+const TRACK_URL = '/.netlify/functions/track-site-event';
+
+/* Identifiant visiteur pseudonyme : sert à (a) garder la même variante entre
+   deux visites, (b) dédupliquer les vues. Aucune donnée perso, jamais croisé
+   avec un autre site. Si localStorage est refusé, on dégrade en session-only. */
+function visitorId(){
+  try {
+    let v = localStorage.getItem('mc_vid');
+    if (!v){ v = Math.random().toString(36).slice(2,12); localStorage.setItem('mc_vid', v); }
+    return v;
+  } catch(e){ return null; }
+}
+
+function track(event, props){
+  try {
+    const body = JSON.stringify({
+      event,
+      variant: AB.current || null,
+      vid: visitorId(),
+      props: Object.assign({ lang: document.documentElement.lang || 'fr' }, props || {})
+    });
+    // sendBeacon survit à la navigation sortante (clic sur une porte → autre domaine).
+    if (navigator.sendBeacon){
+      navigator.sendBeacon(TRACK_URL, new Blob([body], { type: 'application/json' }));
+    } else {
+      fetch(TRACK_URL, { method:'POST', body, keepalive:true, headers:{'Content-Type':'application/json'} }).catch(()=>{});
+    }
+  } catch(e){ /* le tracking ne doit jamais empêcher de bouger */ }
+}
+
+/* ---- Assignation de la variante (stable par visiteur) ---- */
+(function assignVariant(){
+  if (!AB.enabled){ AB.current = AB.forced; return; }
+  let v = null;
+  try { v = localStorage.getItem('mc_ab_hero'); } catch(e){}
+  if (!AB.variants.includes(v)){
+    v = AB.variants[Math.floor(Math.random() * AB.variants.length)];
+    try { localStorage.setItem('mc_ab_hero', v); } catch(e){}
+  }
+  AB.current = v;
+})();
+
+/* ---- Le hero suit la variante VIA les clés i18n ----
+   On réécrit l'attribut data-i18n avant initLang() : setLang() fait le reste,
+   donc la variante tient en FR comme en EN, et au changement de langue. */
+(function applyVariant(){
+  const t = document.querySelector('.hero-title');
+  const s = document.querySelector('.hero-sub');
+  if (t){
+    t.setAttribute('data-i18n', 'hero_title_' + AB.current);
+    t.setAttribute('data-v', AB.current);   // pilote le sizing (CSS), pas le contenu
+  }
+  if (s) s.setAttribute('data-i18n', 'hero_sub_' + AB.current);
+})();
 
 /* ============================================================
    MOTION TOOLKIT (Phase A) — réutilisable, propageable.
@@ -1762,8 +1997,13 @@ const I18N = {
   fr: {
     wm_tag: '/ MANIFESTE',
     hero_eyebrow: 'Le club de mobilité quotidienne',
-    hero_title: "Bouge mieux.<br>Chaque jour.<br><span class=\"em\">Sans y penser.</span>",
-    hero_sub: "La mobilité qui tient dans ton quotidien — <strong>8 minutes par jour, décidées pour toi.</strong> Le club lit ton sport et ton corps, et te sert la bonne séance. Tu ouvres, tu bouges.",
+    // Hero A/B — deux portes d'entrée. `vision` = enjeu long terme (articulations
+    // jeunes), `friction` = l'insight qui nous différencie (décidé pour toi).
+    // Les deux sous-titres gardent le « comment » : ~8 min/jour décidées pour toi.
+    hero_title_vision: "La mobilité, <br>c'est la pratique qui garde <br><span class=\"em\">tes articulations jeunes.</span>",
+    hero_sub_vision: "Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong>",
+    hero_title_friction: "Ta mobilité.<br>Décidée pour toi.<br><span class=\"em\">Chaque jour.</span>",
+    hero_sub_friction: "Le club lit ton sport, ton corps et ta semaine, puis te sert la bonne séance — <strong>~8 min par jour, décidées pour toi.</strong> Tu ouvres, tu bouges.",
     hero_cta: 'Commence gratuitement',
     hero_proof: '<b><span class="num" data-count="309">309</span> membres</b> · Diagnostic + Timer gratuits',
     scroll_hint: 'Défile',
@@ -1775,11 +2015,24 @@ const I18N = {
     s4_switch_note: "<span class=\"dim\">Change de sport —</span> le produit change. Focus, priorités, calendrier. <span class=\"dim\">Le moteur, lui, ne change pas.</span>",
     s4_profiles_label: '3 membres · 3 produits · même moteur',
     s5_proof_h: "Preuve, <span class=\"hl\">pas promesse.</span>",
-    s5_proof_p: "Chaque membre re-teste sa mobilité. <strong>+14 points en 90 jours</strong> — mesurés, pas ressentis. Ton radar, avant / après.",
+    s5_proof_p: "Chaque membre re-teste sa mobilité — les mêmes tests, 90 jours plus tard. <strong>Mesuré, pas ressenti.</strong> Ton radar, avant / après.",
+    retest_tag: "Exemple · à quoi ressemble un retest",
+    retest_then_k: "Il y a 3 mois",
+    retest_then_v: "ta cheville bloquait dès que tu descendais en squat.",
+    retest_now_k: "Aujourd'hui",
+    retest_now_v: "<b>+22%</b> d'amplitude en dorsiflexion — re-mesurée au même test.",
     s5_stories_eyebrow: 'Leurs retours · glisse pour parcourir',
     s5_stories_empty: 'Aucun témoignage dans cette catégorie.',
     s5_stories_hint: "Défile tout seul · clique une carte du ruban pour l'ouvrir · filtre par ta situation",
 
+    stk_eyebrow: 'Ce qui est en jeu',
+    stk_lead: "Ce que tu fais de tes articulations aujourd'hui décide de <span class=\"hl\">ce que ton corps pourra encore faire demain.</span>",
+    stk_1: "T'accroupir pour jouer avec tes enfants — <b>et pouvoir encore le faire à 60 ans.</b>",
+    stk_2: "Attraper quelque chose en hauteur <b>sans que ton épaule négocie.</b>",
+    stk_3: "Courir, grimper, porter — <b>sans que ton corps te freine.</b>",
+    stk_4: "Te relever du sol <b>sans y penser, sans les mains.</b>",
+    stk_close: "Aucune de ces choses ne se perd d'un coup. Elles s'en vont <span class=\"warn\">quelques degrés par an</span> — et elles se regagnent de la même façon.",
+    stk_disclaimer: "Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.",
     s1_eyebrow: 'Le problème',
     s1_text: "Tu sais que la mobilité compte. <span class=\"soft\">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class=\"warn it\">trois semaines.</span>",
 
@@ -1885,14 +2138,17 @@ const I18N = {
     trust_3k: 'Méthode terrain', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "La mobilité — <span class=\"hl\">le moment qui permet la vie.</span>",
+    footer_disclaimer: "Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.",
     fl_top: 'Haut de page', fl_legal: 'Mentions légales', fl_privacy: 'Confidentialité · RGPD', fl_contact: 'Contact'
   },
 
   en: {
     wm_tag: '/ MANIFESTO',
     hero_eyebrow: 'The daily mobility club',
-    hero_title: "Move better.<br>Every day.<br><span class=\"em\">Without thinking.</span>",
-    hero_sub: "Mobility that fits into your life — <strong>8 minutes a day, decided for you.</strong> The club reads your sport and your body and serves you the right session. You open it, you move.",
+    hero_title_vision: "Mobility is <br>the practice that keeps <br><span class=\"em\">your joints young.</span>",
+    hero_sub_vision: "Personalised joint training that adapts to your sport and your schedule — <strong>~8 min a day, decided for you.</strong>",
+    hero_title_friction: "Your mobility.<br>Decided for you.<br><span class=\"em\">Every day.</span>",
+    hero_sub_friction: "The club reads your sport, your body and your week, then serves you the right session — <strong>~8 min a day, decided for you.</strong> You open it, you move.",
     hero_cta: 'Start free',
     hero_proof: '<b><span class="num" data-count="309">309</span> members</b> · Free Diagnostic + Timer',
     scroll_hint: 'Scroll',
@@ -1904,11 +2160,24 @@ const I18N = {
     s4_switch_note: "<span class=\"dim\">Switch sport —</span> the product changes. Focus, priorities, calendar. <span class=\"dim\">The engine doesn't.</span>",
     s4_profiles_label: '3 members · 3 products · one engine',
     s5_proof_h: "Proof, <span class=\"hl\">not promises.</span>",
-    s5_proof_p: "Every member re-tests their mobility. <strong>+14 points in 90 days</strong> — measured, not felt. Your radar, before / after.",
+    s5_proof_p: "Every member re-tests their mobility — the same tests, 90 days later. <strong>Measured, not felt.</strong> Your radar, before / after.",
+    retest_tag: "Example · what a re-test looks like",
+    retest_then_k: "3 months ago",
+    retest_then_v: "your ankle stalled the moment you dropped into a squat.",
+    retest_now_k: "Today",
+    retest_now_v: "<b>+22%</b> dorsiflexion range — re-measured on the same test.",
     s5_stories_eyebrow: 'Member stories · drag to browse',
     s5_stories_empty: 'No testimonial in this category.',
     s5_stories_hint: 'Auto-plays · tap a ribbon card to open it · filter by your situation',
 
+    stk_eyebrow: "What's at stake",
+    stk_lead: "What you do with your joints today decides <span class=\"hl\">what your body will still be able to do tomorrow.</span>",
+    stk_1: "Squatting down to play with your kids — <b>and still being able to at 60.</b>",
+    stk_2: "Reaching for something overhead <b>without your shoulder negotiating.</b>",
+    stk_3: "Running, climbing, carrying — <b>without your body holding you back.</b>",
+    stk_4: "Getting up off the floor <b>without thinking, without your hands.</b>",
+    stk_close: "None of this goes all at once. It leaves <span class=\"warn\">a few degrees a year</span> — and it comes back the same way.",
+    stk_disclaimer: "Mobility Club is a wellness and prevention tool. It does not replace a medical diagnosis, opinion or treatment. If you are in pain or have a diagnosed condition, consult a healthcare professional.",
     s1_eyebrow: 'The problem',
     s1_text: "You know mobility matters. <span class=\"soft\">But the apps prescribe you the same routine as everyone else.</span> So you quit within <span class=\"warn it\">three weeks.</span>",
 
@@ -2014,6 +2283,7 @@ const I18N = {
     trust_3k: 'Field-tested method', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "Mobility — <span class=\"hl\">the moment that makes life possible.</span>",
+    footer_disclaimer: "Mobility Club is a wellness and prevention tool. It does not replace a medical diagnosis, opinion or treatment. If you are in pain or have a diagnosed condition, consult a healthcare professional.",
     fl_top: 'Back to top', fl_legal: 'Legal notice', fl_privacy: 'Privacy · GDPR', fl_contact: 'Contact'
   }
 };
@@ -2068,6 +2338,29 @@ document.querySelectorAll('.lang button').forEach(b => {
     const k = d.getAttribute('data-door');
     if (map[k]) d.setAttribute('href', map[k]);
   });
+})();
+
+/* ============================================================
+   TRACKING — câblage des events.
+   Le funnel du site : page_view → cta_clicked → door_clicked / plan_clicked.
+   Il s'arrête à la porte : la suite (login → diagnostic → session_started →
+   session_completed) est mesurée par le dashboard, sur ses propres stores.
+   ============================================================ */
+(function wireTracking(){
+  track('page_view', { path: location.pathname });
+  track('hero_variant_viewed');
+
+  // Délégation : un seul listener, survit aux éléments réécrits par setLang().
+  document.addEventListener('click', (e) => {
+    const cta = e.target.closest('[data-cta]');
+    if (cta) track('cta_clicked', { cta: cta.getAttribute('data-cta') });
+
+    const door = e.target.closest('.door');
+    if (door) track('door_clicked', { door: door.getAttribute('data-door') });
+
+    const plan = e.target.closest('.plan-btn');
+    if (plan) track('plan_clicked', { plan: plan.classList.contains('feat') ? 'annuel_175' : 'mensuel_20' });
+  }, { passive: true });
 })();
 
 /* ---- Header state + barre de progression + sticky CTA + parallax ---- */

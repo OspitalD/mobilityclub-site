@@ -1,0 +1,10 @@
+{
+  "name": "mobilityclub-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site vitrine Mobility Club — statique (index.html) + collecteur d'events (Netlify Function).",
+  "dependencies": {
+    "@netlify/blobs": "^10.7.7"
+  }
+}
