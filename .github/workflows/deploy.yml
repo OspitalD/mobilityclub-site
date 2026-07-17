@@ -25,8 +25,17 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: "24"
+          cache: "npm"
 
-      # Aucun build : le site est un index.html autonome (vanilla, pas de bundler).
+      # Le site reste un index.html statique (aucun build de la page). MAIS depuis
+      # l'ajout du collecteur d'events (netlify/functions/track-site-event.js), le
+      # bundle esbuild de la Function doit résoudre @netlify/blobs → il faut les
+      # deps installées. @netlify/blobs est en dependencies (pas devDeps), donc
+      # --omit=dev l'installe. Sans ce step, le deploy échoue sur
+      # « Could not resolve "@netlify/blobs" ».
+      - name: Install deps (functions)
+        run: npm ci --omit=dev
+
       - name: Deploy to Netlify (production)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -34,4 +43,4 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           MSG=$(git log -1 --pretty=%s)
-          npx --yes netlify-cli@latest deploy --prod --dir=. --message="${MSG} (${COMMIT_SHA:0:7})"
+          npx --yes netlify-cli@latest deploy --prod --dir=. --functions=netlify/functions --message="${MSG} (${COMMIT_SHA:0:7})"
