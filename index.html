@@ -193,6 +193,34 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 .header-cta:hover{ background:var(--accent-green-dim); transform:translateY(-1px); }
 
+/* Navigation ancrée (2e rangée du header) — pills qui défilent vers les sections. */
+.jumpnav{
+  border-top:1px solid var(--border-subtle);
+  background:rgba(13,15,14,0.55); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.jumpnav-inner{
+  display:flex; align-items:center; gap:8px; height:44px;
+  overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+}
+.jumpnav-inner::-webkit-scrollbar{ display:none; }
+.jump{
+  flex:0 0 auto; text-decoration:none; white-space:nowrap;
+  font-family:var(--font-mono); font-size:11.5px; font-weight:600; letter-spacing:0.3px;
+  color:var(--text-secondary); padding:6px 13px; border-radius:100px;
+  border:1px solid transparent; transition:color .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease);
+}
+.jump:hover{ color:var(--text-primary); background:rgba(255,255,255,0.04); }
+.jump.active{ color:var(--accent-green); border-color:rgba(62,207,160,0.28); background:var(--accent-green-dim); }
+.jump-cta{ color:var(--accent-green); border-color:rgba(62,207,160,0.35); margin-left:auto; }
+.jump-cta:hover{ color:var(--bg-primary); background:var(--accent-green); border-color:var(--accent-green); }
+@media (max-width:640px){
+  .jump-cta{ margin-left:8px; }   /* plus d'auto : tout défile en ligne */
+}
+
+/* Décalage d'ancrage : les sections ciblées ne passent pas sous le header fixe. */
+#app, #fondateur, #avis, #doors, #reversal{ scroll-margin-top:118px; }
+
 /* Barre de progression scroll */
 .scroll-progress{
   position:fixed; top:0; left:0; height:2px; width:100%; z-index:60;
@@ -1325,6 +1353,16 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
     </div>
   </div>
+  <!-- Navigation ancrée : chaque pill défile vers sa section. Défilable horizontalement
+       sur mobile. L'état actif est mis à jour au scroll (scroll-spy). -->
+  <nav class="jumpnav" aria-label="Aller à une section">
+    <div class="wrap jumpnav-inner">
+      <a class="jump" href="#app" data-i18n="jn_app">L'app</a>
+      <a class="jump" href="#avis" data-i18n="jn_avis">Avis</a>
+      <a class="jump" href="#fondateur" data-i18n="jn_fondateur">Le fondateur</a>
+      <a class="jump jump-cta" href="#doors" data-i18n="jn_rejoindre">Rejoindre le club</a>
+    </div>
+  </nav>
 </header>
 
 <main id="top">
@@ -1474,7 +1512,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <hr class="divider" />
 
 <!-- ============================ ▸ DÉMO INTERACTIVE ============================ -->
-<section class="pad" aria-label="Démo interactive">
+<section class="pad" id="app" aria-label="Démo interactive">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo</span></span>
@@ -1570,7 +1608,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <hr class="divider" />
 
 <!-- ============================ 03 · MÉTHODE + DAMIEN ============================ -->
-<section class="pad" aria-label="La méthode">
+<section class="pad" id="fondateur" aria-label="La méthode">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow muted"><span class="idx">03</span><span data-i18n="s3_eyebrow">La méthode</span></span>
@@ -1663,7 +1701,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <hr class="divider" />
 
 <!-- ============================ 05 · RÉSULTATS ============================ -->
-<section class="pad" aria-label="Résultats membres">
+<section class="pad" id="avis" aria-label="Résultats membres">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow muted"><span class="idx">05</span><span data-i18n="s5_eyebrow">Résultats membres</span></span>
@@ -2002,6 +2040,7 @@ function countUp(el){
 const I18N = {
   fr: {
     wm_tag: '/ MANIFESTE',
+    jn_app: "L'app", jn_avis: 'Avis', jn_fondateur: 'Le fondateur', jn_rejoindre: 'Rejoindre le club',
     hero_eyebrow: 'Le club de mobilité quotidienne',
     // Hero A/B — deux portes d'entrée. `vision` = enjeu long terme (articulations
     // jeunes), `friction` = l'insight qui nous différencie (décidé pour toi).
@@ -2156,6 +2195,7 @@ const I18N = {
 
   en: {
     wm_tag: '/ MANIFESTO',
+    jn_app: 'The app', jn_avis: 'Reviews', jn_fondateur: 'The founder', jn_rejoindre: 'Join the club',
     hero_eyebrow: 'The daily mobility club',
     hero_title_vision: "Mobility is <br>the practice that keeps <br><span class=\"em\">your joints young.</span>",
     hero_sub_vision: "Personalised joint training that adapts to your sport and your schedule — <strong>~8 min a day, decided for you.</strong>",
@@ -2493,7 +2533,8 @@ if (!PRM && window.Lenis){
   lenis.on('scroll', onScroll);
   const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
   requestAnimationFrame(raf);
-  // ancres internes (#doors, #top…) pilotées en douceur par Lenis
+  // ancres internes (#app, #avis, #doors, #top…) pilotées en douceur par Lenis.
+  // Offset = hauteur du header fixe (2 rangées) pour que la section ne passe pas dessous.
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
@@ -2501,10 +2542,40 @@ if (!PRM && window.Lenis){
       const tgt = document.querySelector(id);
       if (!tgt) return;
       e.preventDefault();
-      lenis.scrollTo(tgt, { duration: 1.1 });
+      const header = document.getElementById('header');
+      lenis.scrollTo(tgt, { duration: 1.1, offset: header ? -header.offsetHeight : 0 });
     });
   });
 }
+
+/* Scroll-spy : la pill de la section courante s'allume. Basé sur la POSITION de
+   scroll (pas l'IntersectionObserver) → prévisible : aucune pill active tant qu'on
+   n'a pas atteint la 1re section suivie, et l'active suit la section en cours.
+   window.scrollY reste synchrone même sous Lenis, donc un listener scroll suffit. */
+(function jumpSpy(){
+  const links = [...document.querySelectorAll('.jump')];
+  const items = links.map(l => ({ link: l, sec: document.querySelector(l.getAttribute('href')) })).filter(x => x.sec);
+  if (!items.length) return;
+  const headerH = () => (document.getElementById('header')?.offsetHeight || 0) + 10;
+  let raf = 0;
+  function update(){
+    raf = 0;
+    const line = window.scrollY + headerH();
+    let active = null, activeTop = -1;
+    for (const it of items){
+      const top = it.sec.getBoundingClientRect().top + window.scrollY;
+      // section la PLUS BASSE dont le haut est déjà passé sous le header (indépendant
+      // de l'ordre des pills, qui peut différer de l'ordre des sections dans la page).
+      if (top <= line && top > activeTop){ active = it; activeTop = top; }
+    }
+    links.forEach(l => l.classList.remove('active'));
+    if (active) active.link.classList.add('active');
+  }
+  const onScrollSpy = () => { if (!raf) raf = requestAnimationFrame(update); };
+  update();
+  window.addEventListener('scroll', onScrollSpy, { passive:true });
+  window.addEventListener('resize', onScrollSpy, { passive:true });
+})();
 
 /* ============================================================
    Section épinglée « 02 · renversement » (scroll-driven).
