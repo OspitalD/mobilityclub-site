@@ -2380,13 +2380,13 @@ document.querySelectorAll('.lang button').forEach(b => {
   b.addEventListener('click', () => setLang(b.dataset.lang));
 });
 
-/* Initial language: saved pref → browser hint → FR default */
+/* Langue initiale : FRANÇAIS par défaut (audience FR). On ne détecte plus la
+   langue du navigateur. On respecte uniquement un choix explicite déjà mémorisé
+   (le visiteur a cliqué EN) ; sinon → FR. */
 (function initLang(){
   let saved = null;
   try { saved = localStorage.getItem('mc_lang'); } catch(e){}
-  const browser = (navigator.language || 'fr').slice(0,2).toLowerCase();
-  const lang = saved || (browser === 'en' ? 'en' : 'fr');
-  setLang(lang);
+  setLang(saved === 'en' ? 'en' : 'fr');
 })();
 
 /* ---- Wire ecosystem links ---- */
