@@ -270,6 +270,10 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   .hero-title[data-v="vision"] br{ display:none; }
 }
 .hero-cta-row{ margin-top:clamp(34px, 5vh, 52px); display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.hero-secondary{ display:inline-block; margin-top:16px; font-size:13.5px; color:var(--text-secondary); border-bottom:1px solid var(--border-active); padding-bottom:2px; transition:color .3s var(--ease); }
+.hero-secondary:hover{ color:var(--accent-green); }
+.doors-cta{ margin-top:clamp(30px,5vh,48px); text-align:center; }
+.doors-cta-note{ margin-top:14px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.3px; color:var(--text-tertiary); }
 .hero-proof{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.3px; color:var(--text-secondary); }
 .hero-proof b{ color:var(--text-primary); font-weight:600; }
 
@@ -1313,7 +1317,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
     </a>
     <div class="header-right">
-      <a class="header-cta" href="#doors" data-cta="header" data-i18n="nav_cta">Commencer</a>
+      <a class="header-cta" href="/devenir-membre" data-cta="header" data-i18n="nav_cta">Devenir membre</a>
       <div class="lang" role="group" aria-label="Language / Langue">
         <span class="thumb" aria-hidden="true"></span>
         <button type="button" data-lang="fr" aria-pressed="true">FR</button>
@@ -1341,12 +1345,13 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   </p>
 
   <div class="hero-cta-row reveal">
-    <a href="#doors" class="btn btn-primary" data-cta="hero">
-      <span data-i18n="hero_cta">Commence gratuitement</span>
+    <a href="/devenir-membre" class="btn btn-primary" data-cta="hero">
+      <span data-i18n="hero_cta">Devenir membre</span>
       <span class="arrow">→</span>
     </a>
-    <span class="hero-proof" data-i18n="hero_proof"><b>312 membres</b> · Diagnostic + Timer gratuits</span>
+    <span class="hero-proof" data-i18n="hero_proof"><b>312 membres</b> · méthode terrain</span>
   </div>
+  <a href="https://diagnostic.mobilityclub.co/" class="hero-secondary reveal" data-cta="hero_diagnostic" target="_blank" rel="noopener" data-i18n="hero_secondary">ou commence par le diagnostic gratuit →</a>
 
   <div class="scroll-hint reveal" aria-hidden="true">
     <span class="line"></span>
@@ -1772,7 +1777,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         <span class="door-go"><span data-i18n="door_go">Commencer</span><span class="arrow">→</span></span>
       </a>
 
-      <a class="door reveal" data-door="club" href="#" target="_blank" rel="noopener">
+      <a class="door reveal" data-door="club" href="/devenir-membre" rel="noopener">
         <div class="door-top">
           <span class="door-num">/03</span>
           <span class="door-tag product" data-i18n="tag_product">Le produit</span>
@@ -1783,36 +1788,9 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </a>
     </div>
 
-    <div class="pricing reveal">
-      <span class="k" data-i18n="pricing_k">Offre de lancement</span>
-      <span class="v" data-i18n="pricing_v"><b>20€/mois</b> ou <b>175€/an</b> jusqu'au 1er août</span>
-      <span class="sep">·</span>
-      <span class="v dim" data-i18n="pricing_then">puis 24€/mois ou 197€/an</span>
-    </div>
-
-    <div class="plans reveal" data-stagger>
-      <a class="plan-btn" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-5XX0392295518134PNIFO64Y" target="_blank" rel="noopener" aria-label="Devenir membre — 20€ par mois">
-        <span class="plan-price"><b>20€</b><span class="plan-per" data-i18n="plan_per_mo">/mois</span></span>
-        <span class="plan-sub" data-i18n="plan_flex">Sans engagement · annule quand tu veux</span>
-        <span class="plan-go"><span data-i18n="plan_cta">Devenir membre</span><span class="arrow">→</span></span>
-      </a>
-      <a class="plan-btn feat" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" aria-label="Devenir membre — 175€ par an">
-        <span class="plan-tag" data-i18n="plan_reco">Recommandé</span>
-        <span class="plan-price"><b>175€</b><span class="plan-per" data-i18n="plan_per_yr">/an</span></span>
-        <span class="plan-sub" data-i18n="plan_permo">≈ 14,60€/mois · économise 65€</span>
-        <span class="plan-go"><span data-i18n="plan_cta">Devenir membre</span><span class="arrow">→</span></span>
-      </a>
-    </div>
-
-    <div class="guarantee reveal">
-      <span class="guarantee-badge" data-i18n="guarantee_badge">Garantie progression</span>
-      <span class="guarantee-txt" data-i18n="guarantee_txt">Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.</span>
-    </div>
-
-    <div class="trust-row reveal" data-stagger>
-      <div class="trust-item"><span class="trust-k" data-i18n="trust_1k">Gratuit pour commencer</span><span class="trust-v" data-i18n="trust_1v">Diagnostic + Timer · 0€</span></div>
-      <div class="trust-item"><span class="trust-k" data-i18n="trust_2k">Sans engagement</span><span class="trust-v" data-i18n="trust_2v">Tu annules quand tu veux</span></div>
-      <div class="trust-item"><span class="trust-k" data-i18n="trust_3k">Méthode terrain</span><span class="trust-v" data-i18n="trust_3v">BPJEPS · DEUST · UEFA B</span></div>
+    <div class="doors-cta reveal">
+      <a href="/devenir-membre" class="btn btn-primary" data-cta="doors"><span data-i18n="doors_cta">Devenir membre</span><span class="arrow">→</span></a>
+      <p class="doors-cta-note" data-i18n="doors_cta_note">Offre de lancement jusqu'au 1er août · garantie progression</p>
     </div>
   </div>
 </section>
@@ -1823,7 +1801,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <div class="sticky-cta" id="stickyCta" aria-hidden="true">
   <div class="sticky-inner">
     <span class="sticky-txt" data-i18n="sticky_txt"><b>Commence gratuitement.</b> Diagnostic + Timer offerts.</span>
-    <a class="btn btn-primary sticky-btn" href="#doors" data-cta="sticky"><span data-i18n="sticky_btn">Découvre le tien</span><span class="arrow">→</span></a>
+    <a class="btn btn-primary sticky-btn" href="/devenir-membre" data-cta="sticky"><span data-i18n="sticky_btn">Devenir membre</span><span class="arrow">→</span></a>
   </div>
 </div>
 
@@ -1858,7 +1836,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 const LINKS = {
   diagnostic: 'https://diagnostic.mobilityclub.co/',        // Mobility Diagnostic (gratuit) — domaine de marque canonique (l'app déclare ce .co en rel=canonical ; l'alias netlify.app fonctionne mais n'est pas canonique)
   timer:      'https://mobilitytimer.com',                  // Mobility Timer (gratuit)
-  club:       'https://www.skool.com/mobility-club/about'   // Mobility Club — communauté Skool (le produit)
+  club:       '/devenir-membre'                             // Page offre dédiée (Devenir membre) — le produit
 };
 
 /* ============================================================
@@ -2032,8 +2010,11 @@ const I18N = {
     hero_sub_vision: "Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong>",
     hero_title_friction: "Ta mobilité.<br>Décidée pour toi.<br><span class=\"em\">Chaque jour.</span>",
     hero_sub_friction: "Le club lit ton sport, ton corps et ta semaine, puis te sert la bonne séance — <strong>~8 min par jour, décidées pour toi.</strong> Tu ouvres, tu bouges.",
-    hero_cta: 'Commence gratuitement',
-    hero_proof: '<b><span class="num" data-count="312">312</span> membres</b> · Diagnostic + Timer gratuits',
+    hero_cta: 'Devenir membre',
+    hero_secondary: 'ou commence par le diagnostic gratuit →',
+    doors_cta: 'Devenir membre',
+    doors_cta_note: "Offre de lancement jusqu'au 1er août · garantie progression",
+    hero_proof: '<b><span class="num" data-count="312">312</span> membres</b> · méthode terrain',
     scroll_hint: 'Défile',
     shot_today: 'Ta séance du jour — déjà là',
     shot_onboarding: "Ton profil — dans l'app",
@@ -2161,9 +2142,9 @@ const I18N = {
     plan_permo: '≈ 14,60€/mois · économise 65€',
     guarantee_badge: 'Garantie progression',
     guarantee_txt: "Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.",
-    nav_cta: 'Commencer',
-    sticky_txt: "<b>Commence gratuitement.</b> Diagnostic + Timer offerts.",
-    sticky_btn: 'Découvre le tien',
+    nav_cta: 'Devenir membre',
+    sticky_txt: "<b>Le Club qui garde tes articulations jeunes.</b>",
+    sticky_btn: 'Devenir membre',
     trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
     trust_2k: 'Sans engagement', trust_2v: 'Tu annules quand tu veux',
     trust_3k: 'Méthode terrain', trust_3v: 'BPJEPS · DEUST · UEFA B',
@@ -2180,8 +2161,11 @@ const I18N = {
     hero_sub_vision: "Personalised joint training that adapts to your sport and your schedule — <strong>~8 min a day, decided for you.</strong>",
     hero_title_friction: "Your mobility.<br>Decided for you.<br><span class=\"em\">Every day.</span>",
     hero_sub_friction: "The club reads your sport, your body and your week, then serves you the right session — <strong>~8 min a day, decided for you.</strong> You open it, you move.",
-    hero_cta: 'Start free',
-    hero_proof: '<b><span class="num" data-count="312">312</span> members</b> · Free Diagnostic + Timer',
+    hero_cta: 'Become a member',
+    hero_secondary: 'or start with the free diagnostic →',
+    doors_cta: 'Become a member',
+    doors_cta_note: 'Launch pricing through August 1 · progress guarantee',
+    hero_proof: '<b><span class="num" data-count="312">312</span> members</b> · field-tested method',
     scroll_hint: 'Scroll',
     shot_today: "Today's session — already there",
     shot_onboarding: 'Your profile — in the app',
@@ -2309,9 +2293,9 @@ const I18N = {
     plan_permo: '≈ €14.60/mo · save €65',
     guarantee_badge: 'Progress guarantee',
     guarantee_txt: "Follow your sessions for 60 days and retake your diagnostic. If your score hasn't improved, <b>your next month is on us.</b> We can promise it because we measure it.",
-    nav_cta: 'Start',
-    sticky_txt: "<b>Start free.</b> Diagnostic + Timer included.",
-    sticky_btn: 'Find yours',
+    nav_cta: 'Become a member',
+    sticky_txt: "<b>The Club that keeps your joints young.</b>",
+    sticky_btn: 'Become a member',
     trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
     trust_2k: 'No commitment', trust_2v: 'Cancel whenever you want',
     trust_3k: 'Field-tested method', trust_3v: 'BPJEPS · DEUST · UEFA B',
