@@ -66,6 +66,10 @@ section{padding:clamp(34px,6vh,60px) 0; border-top:1px solid var(--border-subtle
 .sec-head{margin-bottom:26px}
 .sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,34px); letter-spacing:-0.02em; line-height:1.15; margin-top:10px}
 
+/* Vitrine produit — capture des écrans de l'app */
+.showcase{margin:0 0 clamp(26px,4vh,42px)}
+.showcase img{display:block; width:100%; height:auto; border-radius:16px; border:1px solid var(--border-subtle)}
+
 /* Ce que tu obtiens — stack de valeur */
 .stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
 .stack-item{background:var(--bg-primary); padding:clamp(18px,2.4vw,24px); display:flex; gap:16px; align-items:flex-start}
@@ -155,11 +159,14 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
         <span class="eyebrow muted">Ce que tu obtiens</span>
         <h2>Un produit façonné pour toi, pas pour tout le monde.</h2>
       </div>
+      <figure class="showcase">
+        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
+             alt="L'app Mobility Club : ta séance du jour prête en 1 clic (3 exercices, 9 min), un coach vocal pour ajuster ta séance à la voix (« raccourcis ma séance à 10 min »), et le suivi de ta progression sur 5 zones de mobilité avec retest automatique." />
+      </figure>
       <div class="stack">
-        <div class="stack-item"><span class="stack-n">01</span><div><h3>Ta séance du jour, déjà décidée</h3><p>Le club lit ton sport, ton corps et ta semaine, et te sert la bonne séance. Zéro choix à faire — tu ouvres, tu bouges.</p></div></div>
-        <div class="stack-item"><span class="stack-n">02</span><div><h3>~8 minutes par jour, guidées</h3><p>Des séances courtes et minutées via le Timer intégré. Tenables au quotidien, même les jours pleins.</p></div></div>
-        <div class="stack-item"><span class="stack-n">03</span><div><h3>Ta progression, mesurée</h3><p>Ton diagnostic articulaire de départ, puis des retests à J+30 / 60 / 90. Tu vois ton amplitude gagner du terrain, chiffres à l'appui.</p></div></div>
-        <div class="stack-item"><span class="stack-n">04</span><div><h3>Le club et sa méthode</h3><p>Une communauté de 312 membres et une méthode terrain qui s'améliore avec ses pratiquants.</p></div></div>
+        <div class="stack-item"><span class="stack-n">01</span><div><h3>Ta séance du jour, déjà décidée</h3><p>Le club lit ton sport, ton corps et ta semaine, et te sert la bonne séance. Prête en 1 clic — tu ouvres, tu bouges.</p></div></div>
+        <div class="stack-item"><span class="stack-n">02</span><div><h3>Un coach vocal pour tout piloter</h3><p>« Raccourcis ma séance à 10 min », « décale à jeudi » — tu parles, l'app ajuste. Et un retour vidéo du coach sur ton exécution.</p></div></div>
+        <div class="stack-item"><span class="stack-n">03</span><div><h3>Ta progression, mesurée</h3><p>Ton diagnostic de départ, puis des retests automatiques. Tu vois ton amplitude gagner du terrain sur 5 zones, chiffres à l'appui.</p></div></div>
       </div>
     </div>
   </section>
