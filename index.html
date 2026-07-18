@@ -1157,6 +1157,37 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   color:var(--bg-primary); background:var(--accent-green); border-radius:100px; padding:4px 11px; }
 @media (max-width:560px){ .plans{ flex-direction:column; align-items:stretch; } .plan-btn{ flex-basis:auto; } }
 
+/* Bandeau essai — au-dessus des deux plans. Les deux démarrent par 7 j gratuits. */
+.trial-line{
+  margin-top:20px; text-align:center;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:0.4px;
+  color:var(--accent-green);
+}
+.trial-line b{ color:var(--text-primary); font-weight:600; }
+
+/* Étiquette « Recommandé » de l'annuel — même code que .plan-tag mais posée en bas. */
+.plan-reco{
+  font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px;
+  text-transform:uppercase; color:var(--accent-green);
+}
+
+/* Garantie progression — levier de conversion n°1 (Hormozi). Or = attention/priorité
+   dans le design system (jamais vert, réservé à l'action/CTA). Adossée au retest :
+   c'est mesurable, donc défendable. */
+.guarantee{
+  margin:22px auto 0; max-width:600px; padding:16px 20px;
+  background:var(--bg-surface); border:1px solid rgba(232,160,32,0.22); border-radius:12px;
+  display:flex; gap:14px; align-items:flex-start; text-align:left;
+}
+.guarantee-badge{
+  flex:0 0 auto; font-family:var(--font-mono); font-size:10px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--accent-gold);
+  border:1px solid rgba(232,160,32,0.3); border-radius:100px; padding:5px 11px; margin-top:2px;
+}
+.guarantee-txt{ font-size:13.5px; line-height:1.6; color:var(--text-secondary); }
+.guarantee-txt b{ color:var(--text-primary); font-weight:600; }
+@media (max-width:560px){ .guarantee{ flex-direction:column; gap:10px; } }
+
 /* ============================================================
    FOOTER
    ============================================================ */
@@ -1767,23 +1798,30 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="v dim" data-i18n="pricing_then">puis 24€/mois ou 197€/an</span>
     </div>
 
+    <p class="trial-line reveal" data-i18n="trial_line"><b>7 jours gratuits</b> sur tous les plans · tu n'es débité qu'ensuite</p>
+
     <div class="plans reveal" data-stagger>
-      <a class="plan-btn" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-5XX0392295518134PNIFO64Y" target="_blank" rel="noopener" aria-label="S'abonner — 20€ par mois">
+      <a class="plan-btn" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-5XX0392295518134PNIFO64Y" target="_blank" rel="noopener" aria-label="Commencer l'essai — puis 20€ par mois">
         <span class="plan-price"><b>20€</b><span class="plan-per" data-i18n="plan_per_mo">/mois</span></span>
         <span class="plan-sub" data-i18n="plan_flex">Sans engagement · annule quand tu veux</span>
-        <span class="plan-go"><span data-i18n="plan_cta">S'abonner</span><span class="arrow">→</span></span>
+        <span class="plan-go"><span data-i18n="plan_cta">Commencer l'essai</span><span class="arrow">→</span></span>
       </a>
-      <a class="plan-btn feat" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" aria-label="S'abonner — 175€ par an">
-        <span class="plan-tag" data-i18n="plan_save">Économise 65€</span>
+      <a class="plan-btn feat" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" aria-label="Commencer l'essai — puis 175€ par an">
+        <span class="plan-tag" data-i18n="plan_reco">Recommandé</span>
         <span class="plan-price"><b>175€</b><span class="plan-per" data-i18n="plan_per_yr">/an</span></span>
-        <span class="plan-sub" data-i18n="plan_permo">≈ 14,60€/mois</span>
-        <span class="plan-go"><span data-i18n="plan_cta">S'abonner</span><span class="arrow">→</span></span>
+        <span class="plan-sub" data-i18n="plan_permo">≈ 14,60€/mois · économise 65€</span>
+        <span class="plan-go"><span data-i18n="plan_cta">Commencer l'essai</span><span class="arrow">→</span></span>
       </a>
+    </div>
+
+    <div class="guarantee reveal">
+      <span class="guarantee-badge" data-i18n="guarantee_badge">Garantie progression</span>
+      <span class="guarantee-txt" data-i18n="guarantee_txt">Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.</span>
     </div>
 
     <div class="trust-row reveal" data-stagger>
       <div class="trust-item"><span class="trust-k" data-i18n="trust_1k">Gratuit pour commencer</span><span class="trust-v" data-i18n="trust_1v">Diagnostic + Timer · 0€</span></div>
-      <div class="trust-item"><span class="trust-k" data-i18n="trust_2k">Sans engagement</span><span class="trust-v" data-i18n="trust_2v">Tu annules quand tu veux</span></div>
+      <div class="trust-item"><span class="trust-k" data-i18n="trust_2k">7 jours d'essai</span><span class="trust-v" data-i18n="trust_2v">Puis annule quand tu veux</span></div>
       <div class="trust-item"><span class="trust-k" data-i18n="trust_3k">Méthode terrain</span><span class="trust-v" data-i18n="trust_3v">BPJEPS · DEUST · UEFA B</span></div>
     </div>
   </div>
@@ -2124,17 +2162,21 @@ const I18N = {
     pricing_k: 'Offre de lancement',
     pricing_v: "<b>20€/mois</b> ou <b>175€/an</b> jusqu'au 1er août",
     pricing_then: 'puis 24€/mois ou 197€/an',
-    plan_cta: "S'abonner",
+    plan_cta: "Commencer l'essai",
     plan_per_mo: '/mois',
     plan_per_yr: '/an',
     plan_flex: 'Sans engagement · annule quand tu veux',
     plan_save: 'Économise 65€',
-    plan_permo: '≈ 14,60€/mois',
+    plan_reco: 'Recommandé',
+    plan_permo: '≈ 14,60€/mois · économise 65€',
+    trial_line: "<b>7 jours gratuits</b> sur tous les plans · tu n'es débité qu'ensuite",
+    guarantee_badge: 'Garantie progression',
+    guarantee_txt: "Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.",
     nav_cta: 'Commencer',
     sticky_txt: "<b>Commence gratuitement.</b> Diagnostic + Timer offerts.",
     sticky_btn: 'Découvre le tien',
     trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
-    trust_2k: 'Sans engagement', trust_2v: 'Tu annules quand tu veux',
+    trust_2k: "7 jours d'essai", trust_2v: 'Puis annule quand tu veux',
     trust_3k: 'Méthode terrain', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "La mobilité — <span class=\"hl\">le moment qui permet la vie.</span>",
@@ -2269,17 +2311,21 @@ const I18N = {
     pricing_k: 'Launch pricing',
     pricing_v: '<b>€20/mo</b> or <b>€175/yr</b> through August 1',
     pricing_then: 'then €24/mo or €197/yr',
-    plan_cta: 'Subscribe',
+    plan_cta: 'Start free trial',
     plan_per_mo: '/mo',
     plan_per_yr: '/yr',
     plan_flex: 'No commitment · cancel anytime',
     plan_save: 'Save €65',
-    plan_permo: '≈ €14.60/mo',
+    plan_reco: 'Recommended',
+    plan_permo: '≈ €14.60/mo · save €65',
+    trial_line: "<b>7 days free</b> on every plan · you're only charged after",
+    guarantee_badge: 'Progress guarantee',
+    guarantee_txt: "Follow your sessions for 60 days and retake your diagnostic. If your score hasn't improved, <b>your next month is on us.</b> We can promise it because we measure it.",
     nav_cta: 'Start',
     sticky_txt: "<b>Start free.</b> Diagnostic + Timer included.",
     sticky_btn: 'Find yours',
     trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
-    trust_2k: 'No commitment', trust_2v: 'Cancel whenever you want',
+    trust_2k: '7-day trial', trust_2v: 'Then cancel anytime',
     trust_3k: 'Field-tested method', trust_3v: 'BPJEPS · DEUST · UEFA B',
 
     footer_mission: "Mobility — <span class=\"hl\">the moment that makes life possible.</span>",
