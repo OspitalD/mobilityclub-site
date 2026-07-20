@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex" />
 <title>Offre flash de lancement — Mobility Club</title>
-<meta name="description" content="48h seulement : 1 an d'accès au Mobility Club pour 150€ avant l'ouverture de l'app le 1er août. Le lien disparaît dimanche 19 juillet à 23:59." />
+<meta name="description" content="Dernières heures : 1 an d'accès au Mobility Club pour 150€ avant l'ouverture de l'app le 1er août. Le lien disparaît ce soir à 20h." />
 
 <meta property="og:title" content="Offre flash de lancement — Mobility Club" />
-<meta property="og:description" content="1 an d'accès pour 150€ — 48h avant l'ouverture de l'app. Économise 138€." />
+<meta property="og:description" content="1 an d'accès pour 150€ — dernières heures avant l'ouverture de l'app. Économise 138€." />
 <meta property="og:type" content="website" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -135,9 +135,9 @@ body.expired #flash-content{display:none}
   <!-- HERO + COUNTDOWN -->
   <section class="hero" style="border-top:none">
     <div class="wrap">
-      <span class="flash-badge"><span class="pulse"></span>Offre flash de lancement · 48h</span>
+      <span class="flash-badge"><span class="pulse"></span>Offre flash · dernières heures</span>
       <h1>1 an d'accès au Club<br>pour <span class="em">150&nbsp;€.</span></h1>
-      <p class="sub">Avant l'ouverture de l'app le 1<sup>er</sup> août, je récompense ceux qui <strong>soutiennent le projet maintenant.</strong> Un tarif qui ne reviendra jamais — le lien disparaît dimanche 19&nbsp;juillet à 23:59.</p>
+      <p class="sub">Avant l'ouverture de l'app le 1<sup>er</sup> août, je récompense ceux qui <strong>soutiennent le projet maintenant.</strong> Un tarif qui ne reviendra jamais — le lien disparaît <strong>ce soir à 20h.</strong></p>
 
       <div class="countdown">
         <div class="countdown-label">Le lien s'auto-détruit dans</div>
@@ -196,7 +196,7 @@ body.expired #flash-content{display:none}
   <section id="offre">
     <div class="wrap">
       <div class="offer-card">
-        <span class="flash-badge"><span class="pulse"></span>48h · puis le lien disparaît</span>
+        <span class="flash-badge"><span class="pulse"></span>Ce soir 20h · puis le lien disparaît</span>
         <div class="offer-price" style="margin-top:16px"><span class="cur">€</span>150</div>
         <p class="offer-what"><b>1 an d'accès complet</b> au Mobility Club</p>
         <p class="offer-anchor">au lieu de 288&nbsp;€ (24&nbsp;€/mois × 12 après le 1<sup>er</sup> août) · <b style="color:var(--accent-green)">−138&nbsp;€</b></p>
@@ -213,7 +213,7 @@ body.expired #flash-content{display:none}
   </section>
 </main>
 
-<!-- ÉTAT EXPIRÉ (auto-destruction après le 19/07 23:59) -->
+<!-- ÉTAT EXPIRÉ (auto-destruction après le 20/07 20:00) -->
 <section id="flash-over">
   <div class="wrap over-inner">
     <h1>L'offre flash est terminée.</h1>
@@ -226,8 +226,8 @@ body.expired #flash-content{display:none}
 
 <script>
 (function(){
-  // ⚠️ Deadline = dimanche 19 juillet 2026, 23:59:59, heure de France (UTC+2).
-  var DEADLINE = new Date('2026-07-19T23:59:59+02:00').getTime();
+  // ⚠️ Deadline = lundi 20 juillet 2026, 20:00:00, heure de France (UTC+2).
+  var DEADLINE = new Date('2026-07-20T20:00:00+02:00').getTime();
   var body = document.body;
   var over = document.getElementById('flash-over');
   var d=document.getElementById('cd-d'), h=document.getElementById('cd-h'), m=document.getElementById('cd-m'), s=document.getElementById('cd-s');
