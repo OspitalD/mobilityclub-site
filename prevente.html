@@ -70,8 +70,8 @@ window.MC_OFFRE = {
 
 <style>
 :root{
-  --bg-primary:#0D0F0E; --bg-surface:#111412;
-  --border-subtle:rgba(255,255,255,0.04); --border-active:#1A1E1C;
+  --bg-primary:#0D0F0E; --bg-surface:#111412; --bg-raised:#151815;
+  --border-subtle:rgba(255,255,255,0.05); --border-active:#1D211E;
   --accent-green:#3ECFA0; --accent-green-dim:rgba(62,207,160,0.14);
   --accent-bronze:#CD8032;                 /* diagnostic / retest */
   --accent-violet:#B990E0;                 /* video coaching UNIQUEMENT */
@@ -80,207 +80,287 @@ window.MC_OFFRE = {
   --font-sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
   --font-display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
   --font-mono:'JetBrains Mono',ui-monospace,monospace;
-  --maxw:820px; --gutter:clamp(20px,5vw,48px); --ease:cubic-bezier(0.22,1,0.36,1);
+  --maxw:760px; --maxw-wide:1080px; --gutter:clamp(20px,5vw,48px);
+  --ease:cubic-bezier(0.22,1,0.36,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary); line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden}
-a{color:inherit;text-decoration:none}
+body{font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary); line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden; text-wrap:pretty}
+a{color:var(--accent-green);text-decoration:none}
+a:hover{color:#66dcb6}
 .wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter)}
-.eyebrow{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary)}
+.wrap-wide{max-width:var(--maxw-wide); margin:0 auto; padding-inline:var(--gutter)}
 strong,b{font-weight:600}
 
-header{position:sticky; top:0; z-index:30; background:rgba(13,15,14,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border-subtle)}
-.header-inner{display:flex; align-items:center; justify-content:space-between; height:60px}
-.wordmark{display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px; letter-spacing:0.4px}
-.wordmark .dot{width:8px; height:8px; border-radius:50%; background:var(--accent-gold)}
+/* ── Index de section : un repère mono, aligné, identique partout ──────────── */
+.eyebrow{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--text-tertiary)}
+.eyebrow::before{content:''; width:22px; height:1px; background:var(--border-active); flex:0 0 auto}
+.eyebrow .idx{color:var(--accent-green); opacity:.55}
+
+header{position:sticky; top:0; z-index:30; background:rgba(13,15,14,0.82); backdrop-filter:blur(14px) saturate(1.2); -webkit-backdrop-filter:blur(14px) saturate(1.2); border-bottom:1px solid var(--border-subtle)}
+.header-inner{display:flex; align-items:center; justify-content:space-between; height:58px; max-width:var(--maxw-wide); margin:0 auto; padding-inline:var(--gutter)}
+.wordmark{display:flex; align-items:center; gap:9px; font-weight:700; font-size:13px; letter-spacing:0.6px; color:var(--text-primary)}
+.wordmark:hover{color:var(--text-primary)}
+.wordmark .dot{width:7px; height:7px; border-radius:50%; background:var(--accent-gold); box-shadow:0 0 12px rgba(232,160,32,.55)}
 .back{font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); transition:color .3s}
 .back:hover{color:var(--text-primary)}
 
-section{padding:clamp(34px,6vh,56px) 0; border-top:1px solid var(--border-subtle)}
-.sec-head{margin-bottom:24px}
-.sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,34px); letter-spacing:-0.02em; line-height:1.15; margin-top:10px; text-wrap:balance}
-.sec-lead{margin-top:14px; font-size:15px; color:var(--text-secondary); line-height:1.62; max-width:58ch}
+/* ── Rythme vertical : les sections respirent nettement plus qu'avant ─────── */
+section{padding:clamp(56px,9vh,104px) 0; border-top:1px solid var(--border-subtle)}
+.sec-head{margin-bottom:clamp(26px,4vh,38px)}
+.sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(25px,3.6vw,40px); letter-spacing:-0.025em; line-height:1.12; margin-top:14px; text-wrap:balance}
+.sec-lead{margin-top:16px; font-size:15.5px; color:var(--text-secondary); line-height:1.66; max-width:56ch}
 .sec-lead b{color:var(--text-primary)}
 
-/* HERO */
-.hero{padding:clamp(40px,7vh,80px) 0 clamp(30px,5vh,48px); border-top:none}
-.badge{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.3); background:rgba(232,160,32,0.06); border-radius:100px; padding:6px 13px}
-.hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(32px,5.6vw,56px); line-height:1.04; letter-spacing:-0.03em; margin-top:20px; text-wrap:balance}
+/* ═══ HERO ═════════════════════════════════════════════════════════════════ */
+.hero{padding:clamp(38px,8vh,88px) 0 clamp(44px,8vh,88px); border-top:none}
+.badge{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:1.1px; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.28); background:rgba(232,160,32,0.05); border-radius:100px; padding:6px 13px}
+.hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(35px,6.6vw,64px); line-height:1.02; letter-spacing:-0.035em; margin-top:22px; text-wrap:balance}
 .hero h1 .em{color:var(--accent-green)}
-.hero .sub{margin-top:20px; font-size:clamp(15px,1.7vw,18px); line-height:1.62; color:var(--text-secondary); max-width:54ch}
+.hero .sub{margin-top:20px; font-size:clamp(15px,1.6vw,17.5px); line-height:1.62; color:var(--text-secondary); max-width:48ch}
 .hero .sub strong{color:var(--text-primary)}
-.hero-proof{margin-top:18px; font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)}
-.hero-proof b{color:var(--text-primary)}
 
-/* BLOC PALIER — prix actuel + prix suivant. Aucune jauge, aucun compteur. */
-.palier{margin-top:clamp(26px,4vh,36px); padding:20px 22px; background:linear-gradient(180deg,rgba(62,207,160,0.07),transparent 70%),var(--bg-surface); border:1px solid rgba(62,207,160,0.25); border-radius:14px}
-.palier-row{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap}
-.palier-prix{font-family:var(--font-display); font-weight:800; font-size:clamp(38px,6.5vw,54px); line-height:1; color:var(--accent-green)}
-.palier-prix .cur{font-size:0.5em; vertical-align:top; margin-right:2px}
-.palier-unit{font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); letter-spacing:0.3px}
-.palier-next{margin-top:12px; font-size:13.5px; color:var(--text-secondary); line-height:1.55}
-.palier-next b{color:var(--text-primary)}
-.palier-cap{margin-top:12px; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary)}
+/* ── BLOC PALIER — le moment le plus lumineux du hero ─────────────────────
+   Le prix en JetBrains Mono (typo « chiffres » du design system), la jauge
+   traitée comme une règle graduée. Aucun compteur de places, jamais. */
+/* Plaque de verre : posée devant la colonne 3D, elle en laisse passer la lumière.
+   Le reflet ne traverse qu'une fois, l'inclinaison suit la souris (desktop). */
+.palier{position:relative; margin-top:clamp(28px,4.5vh,42px); border:1px solid rgba(255,255,255,0.12); border-radius:18px; overflow:hidden;
+  background:linear-gradient(150deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02) 55%,rgba(62,207,160,0.07));
+  backdrop-filter:blur(14px) saturate(1.3); -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:0 34px 80px -44px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.18);
+  transition:transform .3s var(--ease)}
+.palier-sweep{position:absolute; top:0; bottom:0; left:-25%; width:70px; z-index:2; pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.22),rgba(255,255,255,0));
+  transform:skewX(-18deg); animation:sweep 2.3s cubic-bezier(.4,0,.2,1) .5s both}
+@keyframes sweep{from{left:-25%}to{left:120%}}
+.palier-top{position:relative; padding:20px clamp(18px,3vw,26px) 18px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap}
+.palier-lab{font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:rgba(245,245,243,0.55)}
+.palier-prix{display:flex; align-items:flex-start; gap:2px; margin-top:6px; font-family:var(--font-mono); font-weight:700; font-size:clamp(48px,10.5vw,76px); line-height:.9; letter-spacing:-0.045em; color:var(--text-primary); text-shadow:0 2px 26px rgba(62,207,160,0.35)}
+.palier-prix .cur{font-size:0.42em; line-height:1.2; letter-spacing:0; color:var(--accent-green)}
+.palier-prix .n{font-variant-numeric:tabular-nums}
+.palier-unit{font-family:var(--font-mono); font-size:11.5px; line-height:1.5; color:rgba(245,245,243,0.7); letter-spacing:0.2px; padding-bottom:6px; text-align:right}
+.palier-unit b{color:var(--text-primary); font-weight:600}
+.palier-bottom{position:relative; padding:16px clamp(18px,3vw,26px) 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.16)}
 
 /* ── Canvas 3D du hero (colonne vertébrale) ────────────────────────────────
-   Fixe derrière le contenu, jamais cliquable, opacité pilotée par le scroll.
-   Se charge APRÈS le premier paint : le prix et le CTA n'attendent jamais. */
+   Décorative et volontairement discrète : elle ne doit jamais concurrencer
+   le prix. Opacité max abaissée (voir `op` dans la boucle animate). */
 .hero-3d{position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0; transition:opacity .8s var(--ease)}
 main, header, footer, #apres-lancement{position:relative; z-index:1}
 .hero .wrap{position:relative; z-index:2}
+/* voile radial : éteint la 3D derrière la colonne de texte, la laisse vivre au bord */
+.hero-veil{position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(120% 70% at 22% 34%, rgba(13,15,14,.94) 0%, rgba(13,15,14,.82) 38%, rgba(13,15,14,0) 78%)}
 
 /* ── JAUGE DE PALIERS ──────────────────────────────────────────────────────
    L'échelle des PRIX (120 · 130 · 140 · 150), pas un compteur de places :
    elle ne révèle jamais combien de membres ont rejoint. */
-.scale{margin-top:20px; padding-top:4px}
+.scale{padding-top:2px}
 .scale-grid{position:relative; display:grid; align-items:start}
-.scale-rail{position:absolute; top:5px; height:2px; background:var(--border-active); border-radius:2px}
+.scale-rail{position:absolute; top:5px; height:2px; background:rgba(255,255,255,0.14); border-radius:2px}
 .scale-fill{position:absolute; top:5px; height:2px; width:0; border-radius:2px;
-  background:linear-gradient(90deg,rgba(62,207,160,0.35),var(--accent-green));
-  box-shadow:0 0 12px rgba(62,207,160,0.55); transition:width 1.3s var(--ease) .25s}
+  background:linear-gradient(90deg,rgba(62,207,160,0.3),var(--accent-green));
+  box-shadow:0 0 12px rgba(62,207,160,0.5); transition:width 1.3s var(--ease) .25s}
 .scale-step{position:relative; display:flex; flex-direction:column; align-items:center; gap:9px}
-.scale-dot{width:12px; height:12px; border-radius:50%; background:var(--bg-surface); border:2px solid var(--border-active);
+.scale-dot{width:12px; height:12px; border-radius:50%; background:rgba(0,0,0,0.35); border:2px solid rgba(255,255,255,0.2);
   transition:background .45s var(--ease), border-color .45s var(--ease), transform .45s var(--ease)}
-.scale-val{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--text-tertiary); font-variant-numeric:tabular-nums; transition:color .45s var(--ease)}
-.scale-step.is-past .scale-dot{border-color:rgba(62,207,160,0.55); background:rgba(62,207,160,0.55)}
-.scale-step.is-past .scale-val{color:var(--text-secondary); text-decoration:line-through}
+.scale-val{font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:rgba(245,245,243,0.42); font-variant-numeric:tabular-nums; transition:color .45s var(--ease)}
+.scale-step.is-past .scale-dot{border-color:rgba(62,207,160,0.5); background:rgba(62,207,160,0.5)}
+.scale-step.is-past .scale-val{color:rgba(245,245,243,0.55); text-decoration:line-through}
 .scale-step.is-now .scale-dot{background:var(--accent-green); border-color:var(--accent-green); transform:scale(1.35); animation:scaleBeat 2.6s var(--ease) infinite}
 .scale-step.is-now .scale-val{color:var(--accent-green); font-weight:700}
 @keyframes scaleBeat{0%,100%{box-shadow:0 0 0 0 rgba(62,207,160,0.45)}55%{box-shadow:0 0 0 9px rgba(62,207,160,0)}}
-.scale-tags{display:flex; justify-content:space-between; margin-top:11px; font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary)}
+.scale-tags{display:flex; justify-content:space-between; margin-top:12px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.9px; text-transform:uppercase; color:rgba(245,245,243,0.42)}
 .scale-tags .here{color:var(--accent-green)}
-.scale-note{margin-top:14px; font-size:13.5px; color:var(--text-secondary); line-height:1.55}
+.scale-note{margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.1); font-size:13.5px; color:rgba(245,245,243,0.72); line-height:1.55}
 .scale-note b{color:var(--text-primary)}
 
-/* Prix animé : le chiffre compte à l'arrivée */
-.palier-prix .n{font-variant-numeric:tabular-nums}
+/* CTA principal du hero + ligne de preuve sous le bouton */
+.hero-cta-row{margin-top:clamp(18px,3vh,26px); display:flex; flex-direction:column; align-items:flex-start; gap:14px}
+.hero-proof{font-family:var(--font-mono); font-size:12px; letter-spacing:0.4px; color:var(--text-secondary); display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.hero-proof b{color:var(--text-primary); font-weight:600}
+.hero-proof .sep{color:var(--border-active)}
 
 /* ── BANDEAU D'AVIS (repris du manifeste) ──────────────────────────────────── */
-.ribbon{position:relative; overflow:hidden; padding:8px 0; margin-top:20px;
+.ribbon{position:relative; overflow:hidden; padding:8px 0;
   -webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
   mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .ribbon-track{display:flex; gap:12px; width:max-content; will-change:transform}
 .ribbon-track.anim{animation:marquee var(--dur,150s) linear infinite}
 .ribbon:hover .ribbon-track.anim, .ribbon.paused .ribbon-track.anim{animation-play-state:paused}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ribbon-card{flex:0 0 clamp(216px,58vw,264px); background:var(--bg-surface); border:1px solid var(--border-active);
+.ribbon-card{flex:0 0 clamp(216px,58vw,262px); background:var(--bg-surface); border:1px solid var(--border-subtle);
   border-radius:13px; padding:14px 16px; display:flex; flex-direction:column; gap:9px; min-height:104px;
   transition:border-color .25s var(--ease), transform .25s var(--ease)}
-.ribbon-card:hover{transform:translateY(-4px); border-color:rgba(62,207,160,0.4)}
-.ribbon-stars{color:var(--accent-green); font-size:10px; letter-spacing:2px; line-height:1}
+.ribbon-card:hover{transform:translateY(-4px); border-color:rgba(62,207,160,0.35)}
+.ribbon-stars{color:var(--accent-green); font-size:9px; letter-spacing:2px; line-height:1; opacity:.8}
 .ribbon-body{font-size:12.5px; line-height:1.5; color:var(--text-secondary);
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
 .ribbon-who{font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:var(--text-tertiary); margin-top:auto}
+.ribbon-wrap{margin-top:clamp(30px,5vh,46px)}
+.ribbon-lab{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px; padding-inline:var(--gutter); max-width:var(--maxw); margin-inline:auto}
 
-/* ── Motion : révélation au scroll ─────────────────────────────────────────── */
-.rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
-.rv.in{opacity:1; transform:none}
+/* ── Motion gradué ─────────────────────────────────────────────────────────
+   Titres de section : montée franche et lente. Cartes : fondu léger, décalé.
+   Deux registres seulement — assez pour créer une hiérarchie, pas un cirque. */
+.rv{opacity:0; transform:translateY(22px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+.rv-soft{opacity:0; transform:translateY(10px); transition:opacity .55s var(--ease) var(--d,0ms), transform .55s var(--ease) var(--d,0ms)}
+.rv.in, .rv-soft.in{opacity:1; transform:none}
 
 /* Stack numéroté */
 .stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
-.stack-item{background:var(--bg-primary); padding:clamp(16px,2.2vw,22px); display:flex; gap:14px; align-items:flex-start}
-.stack-n{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--accent-green); flex:0 0 auto; padding-top:3px}
+.stack-item{background:var(--bg-primary); padding:clamp(17px,2.4vw,24px); display:grid; grid-template-columns:34px 1fr; gap:14px; align-items:start; transition:background .3s var(--ease)}
+.stack-item:hover{background:var(--bg-surface)}
+.stack-n{font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--accent-green); padding-top:3px; letter-spacing:0.5px}
 .stack-n.bronze{color:var(--accent-bronze)}
 .stack-n.violet{color:var(--accent-violet)}
-.stack-item h3{font-size:15px; font-weight:600; margin-bottom:4px}
-.stack-item p{font-size:13.5px; color:var(--text-secondary); line-height:1.55}
+.stack-item h3{font-size:15.5px; font-weight:600; margin-bottom:5px; letter-spacing:-0.01em}
+.stack-item p{font-size:13.5px; color:var(--text-secondary); line-height:1.6; max-width:58ch}
 
-/* Problème */
-.problem{font-family:var(--font-display); font-weight:700; font-size:clamp(20px,3.2vw,30px); line-height:1.3; letter-spacing:-0.02em; text-wrap:balance}
+/* Problème — déclaration pleine largeur, aucune carte */
+.problem{font-family:var(--font-display); font-weight:700; font-size:clamp(23px,4.4vw,42px); line-height:1.18; letter-spacing:-0.03em; text-wrap:balance; margin-top:18px; max-width:22ch}
 .problem .soft{color:var(--text-secondary)}
-.problem .warn{color:var(--accent-bronze); font-style:italic}
+.problem .warn{color:var(--accent-bronze)}
+.problem-lead{margin-top:clamp(22px,3.5vh,32px); padding-left:18px; border-left:1px solid var(--border-active); font-size:15px; color:var(--text-secondary); line-height:1.7; max-width:52ch}
 
-/* Différence */
-.diff-grid{display:grid; gap:14px; margin-top:6px}
-.diff{padding:18px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px}
-.diff-k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green); margin-bottom:8px}
-.diff h3{font-size:15.5px; font-weight:600; margin-bottom:6px}
-.diff p{font-size:13.5px; color:var(--text-secondary); line-height:1.58}
+/* Différence — 2 colonnes sur desktop */
+.diff-grid{display:grid; gap:14px}
+.diff{padding:clamp(20px,2.6vw,26px); background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px}
+.diff-k{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--accent-green); margin-bottom:12px}
+.diff h3{font-family:var(--font-display); font-size:clamp(17px,2vw,20px); font-weight:700; letter-spacing:-0.02em; line-height:1.25; margin-bottom:10px}
+.diff p{font-size:13.5px; color:var(--text-secondary); line-height:1.65}
 
-/* Vitrine */
-.showcase img{display:block; width:100%; height:auto; border-radius:16px; border:1px solid var(--border-subtle)}
-.showcase figcaption{margin-top:12px; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); text-align:center}
+/* Vitrine — plein cadre, encadrement soigné */
+.showcase{margin-top:clamp(30px,5vh,48px)}
+.showcase-frame{position:relative; padding:clamp(10px,1.6vw,18px); border-radius:22px; border:1px solid var(--border-subtle);
+  background:linear-gradient(180deg,rgba(62,207,160,0.06),rgba(255,255,255,0.01) 40%),var(--bg-surface)}
+.showcase-frame::after{content:''; position:absolute; inset:0; border-radius:22px; pointer-events:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.showcase img{display:block; width:100%; height:auto; border-radius:14px; border:1px solid var(--border-active)}
+.showcase figcaption{margin-top:14px; display:flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary)}
 
 /* Preuve / avis */
-.proof-row{display:flex; gap:26px; flex-wrap:wrap; margin-bottom:22px}
-.proof-cell .n{font-family:var(--font-mono); font-weight:700; font-size:clamp(24px,4vw,32px); color:var(--text-primary); font-variant-numeric:tabular-nums}
-.proof-cell .l{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin-top:4px}
+.proof-row{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-subtle);
+  border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; margin-bottom:clamp(20px,3vh,30px)}
+.proof-cell{background:var(--bg-primary); padding:clamp(16px,2.4vw,22px)}
+.proof-cell .n{font-family:var(--font-mono); font-weight:700; font-size:clamp(24px,4.4vw,36px); line-height:1; letter-spacing:-0.03em; color:var(--text-primary); font-variant-numeric:tabular-nums}
+.proof-cell .l{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.1px; text-transform:uppercase; color:var(--text-tertiary); margin-top:9px}
 .avis-grid{display:grid; gap:14px}
-.avis{padding:18px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px}
-.avis-q{font-size:14.5px; line-height:1.6; color:var(--text-primary)}
-.avis-who{margin-top:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.3px; color:var(--accent-green)}
-.avis-stars{color:var(--accent-gold); font-size:12px; letter-spacing:2px; margin-bottom:9px}
+.avis{padding:clamp(19px,2.4vw,24px); background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:14px}
+.avis-q{font-size:15px; line-height:1.62; color:var(--text-primary); letter-spacing:-0.005em}
+.avis-who{margin-top:12px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--accent-green)}
+.avis-stars{color:var(--accent-gold); font-size:10px; letter-spacing:2px; margin-bottom:11px}
 
-/* Offre / CTA */
-.offer-card{text-align:center; padding:clamp(26px,4vw,40px) clamp(20px,3vw,32px); background:linear-gradient(180deg,rgba(62,207,160,0.06),transparent 60%),var(--bg-surface); border:1px solid rgba(62,207,160,0.35); border-radius:18px}
-.offer-price{font-family:var(--font-display); font-weight:800; font-size:clamp(44px,8vw,68px); line-height:1; color:var(--text-primary)}
-.offer-price .cur{font-size:0.5em; vertical-align:top}
-.offer-what{font-size:15px; color:var(--text-secondary); margin-top:8px}
+/* ═══ LE PRIX — la seule section qui casse le rythme ════════════════════════ */
+#prix{border-top:1px solid rgba(62,207,160,0.16); padding:clamp(66px,11vh,132px) 0;
+  background:radial-gradient(90% 60% at 50% 0%, rgba(62,207,160,0.075), rgba(62,207,160,0) 70%),var(--bg-surface)}
+#prix .sec-head{text-align:center}
+#prix .eyebrow{justify-content:center}
+#prix .eyebrow::after{content:''; width:22px; height:1px; background:var(--border-active)}
+.offer-wrap{max-width:520px; margin:0 auto; padding-inline:var(--gutter)}
+.offer-card{text-align:center; padding:clamp(28px,4vw,40px) clamp(20px,3vw,32px); background:var(--bg-primary);
+  border:1px solid rgba(62,207,160,0.32); border-radius:20px; box-shadow:0 50px 110px -60px rgba(62,207,160,0.5)}
+.offer-price{display:flex; align-items:flex-start; justify-content:center; gap:2px; margin-top:20px;
+  font-family:var(--font-mono); font-weight:700; font-size:clamp(56px,12vw,82px); line-height:.9; letter-spacing:-0.05em; color:var(--text-primary)}
+.offer-price .cur{font-size:0.42em; line-height:1.15; color:var(--accent-green)}
+.offer-price span[data-prix]{font-variant-numeric:tabular-nums}
+.offer-what{font-size:15px; color:var(--text-secondary); margin-top:14px}
 .offer-what b{color:var(--text-primary)}
-.offer-anchor{margin-top:10px; font-size:13px; color:var(--text-tertiary)}
+.offer-anchor{margin-top:8px; font-size:13px; color:var(--text-tertiary)}
 /* gap:0 — le libellé contient un <span data-prix> : en flex, chaque fragment de
    texte devient un item et un gap creuserait un trou (« 120   € »). */
-.cta{display:inline-flex; align-items:center; justify-content:center; gap:0; margin-top:22px; min-height:56px; padding:14px 32px; border-radius:10px; background:var(--accent-green); color:var(--bg-primary); font-weight:700; font-size:16px; text-align:center; transition:transform .2s var(--ease), box-shadow .25s var(--ease)}
-.cta:hover{transform:translateY(-2px); box-shadow:0 16px 40px -14px rgba(62,207,160,0.6)}
-.cta.is-off{background:var(--border-active); color:var(--text-secondary); cursor:not-allowed; pointer-events:none; box-shadow:none; transform:none}
-.cta-note{margin-top:14px; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)}
-.reassure{display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:22px; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)}
+.cta{display:inline-flex; align-items:center; justify-content:center; gap:0; min-height:58px; padding:15px 30px; border-radius:12px;
+  background:var(--accent-green); color:var(--bg-primary); font-weight:700; font-size:16px; letter-spacing:-0.01em; text-align:center;
+  transition:transform .2s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease)}
+.cta:hover{color:var(--bg-primary); background:#4ddcae; transform:translateY(-2px); box-shadow:0 18px 44px -14px rgba(62,207,160,0.65)}
+.cta:active{transform:translateY(0)}
+.cta.is-off{background:var(--border-active); color:var(--text-secondary); cursor:not-allowed; pointer-events:none; box-shadow:none; transform:none; font-size:13.5px; font-weight:600}
+.offer-card .cta{margin-top:26px; width:100%}
+.cta-note{margin-top:14px; font-family:var(--font-mono); font-size:10.5px; line-height:1.6; color:var(--text-secondary)}
+.reassure{display:grid; gap:9px; margin-top:22px; padding-top:20px; border-top:1px solid var(--border-subtle);
+  font-family:var(--font-mono); font-size:10.5px; color:var(--text-secondary); text-align:left}
+.reassure span{display:flex; gap:9px; align-items:baseline}
+.reassure span::before{content:'—'; color:var(--accent-green); flex:0 0 auto}
 .reassure b{color:var(--text-primary); font-weight:600}
-.after{margin-top:18px; padding:14px 16px; border:1px dashed var(--border-active); border-radius:10px; font-size:13px; color:var(--text-secondary); line-height:1.6}
+.after{margin-top:20px; font-size:13px; color:var(--text-secondary); line-height:1.65; text-align:center}
 .after b{color:var(--text-primary)}
 
 /* Garantie */
-.guarantee{margin-top:20px; padding:18px 20px; background:var(--bg-surface); border:1px solid rgba(62,207,160,0.22); border-radius:12px}
-.guarantee .g-k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green); margin-bottom:8px}
-.guarantee p{font-size:13.5px; color:var(--text-secondary); line-height:1.6}
+.guarantee{max-width:520px; margin:clamp(18px,3vh,26px) auto 0; padding-inline:var(--gutter)}
+.guarantee-in{padding:20px 22px; border:1px solid rgba(62,207,160,0.2); border-radius:14px; background:var(--bg-raised)}
+.guarantee .g-k{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--accent-green); margin-bottom:10px}
+.guarantee p{font-size:13.5px; color:var(--text-secondary); line-height:1.65}
 .guarantee b{color:var(--text-primary)}
 
 /* FAQ */
 .faq{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
 .faq details{background:var(--bg-primary)}
-.faq summary{list-style:none; cursor:pointer; padding:17px clamp(16px,2.2vw,22px); font-size:14.5px; font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:14px; transition:color .25s}
+.faq summary{list-style:none; cursor:pointer; padding:18px clamp(17px,2.4vw,24px); font-size:14.5px; font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:14px; transition:color .25s}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary:hover{color:var(--accent-green)}
 .faq summary::after{content:'+'; font-family:var(--font-mono); font-size:17px; color:var(--accent-green); flex:0 0 auto; transition:transform .25s var(--ease)}
 .faq details[open] summary::after{transform:rotate(45deg)}
-.faq .a{padding:0 clamp(16px,2.2vw,22px) 19px; font-size:13.5px; color:var(--text-secondary); line-height:1.62; max-width:64ch}
+.faq .a{padding:0 clamp(17px,2.4vw,24px) 20px; font-size:13.5px; color:var(--text-secondary); line-height:1.66; max-width:64ch}
 .faq .a b{color:var(--text-primary)}
 
-.disclaimer{margin-top:30px; padding-left:14px; border-left:2px solid var(--border-active); font-size:12px; line-height:1.6; color:var(--text-secondary); max-width:60ch}
-footer{padding:32px 0; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); text-align:center}
+/* CTA final */
+.final{text-align:center}
+.final h2{font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.6vw,44px); letter-spacing:-0.03em; line-height:1.08; text-wrap:balance}
+.final .sec-lead{margin-inline:auto; margin-bottom:clamp(22px,3.5vh,30px)}
+.disclaimer{margin-top:clamp(32px,5vh,46px); padding-left:16px; border-left:1px solid var(--border-active); font-size:12.5px; line-height:1.65; color:var(--text-secondary); max-width:58ch; text-align:left; margin-inline:auto}
+footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:10.5px; letter-spacing:1px; color:var(--text-tertiary); text-align:center}
 
-/* État post-lancement (1er août) */
-#apres-lancement{display:none; min-height:70vh; align-items:center; justify-content:center; text-align:center; padding:60px 0; border-top:none}
-#apres-lancement.on{display:flex}
-.over-inner{max-width:36ch}
-.over-inner h1{font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5vw,46px); letter-spacing:-0.02em; line-height:1.08}
-.over-inner p{margin-top:16px; font-size:15px; color:var(--text-secondary); line-height:1.6}
-.over-cta{display:inline-flex; align-items:center; gap:9px; margin-top:24px; min-height:50px; padding:12px 26px; border-radius:9px; border:1px solid var(--accent-green); color:var(--accent-green); font-weight:700; font-size:15px; transition:background .25s var(--ease)}
-.over-cta:hover{background:var(--accent-green-dim)}
-body.lance #prevente{display:none}
+/* ── BARRE CTA COLLANTE (mobile) ───────────────────────────────────────────
+   Apparaît après le hero, s'efface sur la section prix (le vrai bouton y est)
+   et en fin de page. Aucun compte à rebours, aucune pression : prix + accès. */
+.sticky-cta{position:fixed; left:0; right:0; bottom:0; z-index:40; padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+  background:rgba(13,15,14,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--border-active);
+  transform:translateY(115%); transition:transform .45s var(--ease); will-change:transform}
+.sticky-cta.on{transform:none}
+.sticky-inner{display:flex; align-items:center; justify-content:space-between; gap:14px; max-width:var(--maxw); margin:0 auto}
+.sticky-price{display:flex; flex-direction:column; gap:2px; min-width:0}
+.sticky-lab{font-family:var(--font-mono); font-size:9px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary)}
+.sticky-n{font-family:var(--font-mono); font-weight:700; font-size:21px; line-height:1; letter-spacing:-0.03em; color:var(--accent-green); font-variant-numeric:tabular-nums}
+.sticky-n .cur{font-size:0.6em; opacity:.85}
+.sticky-cta .cta{min-height:46px; padding:11px 20px; font-size:14.5px; border-radius:10px; flex:0 0 auto}
+@media (min-width:721px){ .sticky-cta{display:none} }
 
-@media (max-width:560px){
-  .stack-item{flex-direction:column; gap:10px}
-  .proof-row{gap:18px}
+@media (min-width:721px){
+  .diff-grid{grid-template-columns:1fr 1fr; gap:16px}
+  .hero .sub{font-size:17.5px}
+  .avis-grid{grid-template-columns:repeat(3,1fr)}
+  .avis-q{font-size:14px}
+}
+@media (max-width:420px){
+  .proof-row{grid-template-columns:1fr 1fr}
+  .proof-cell:first-child{grid-column:1 / -1}
+  .palier-unit{text-align:left}
+  .scale-val{font-size:10.5px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important; transition:none !important}
   html{scroll-behavior:auto}
   /* sans transition, .rv resterait invisible et le ruban ne défilerait jamais */
-  .rv{opacity:1 !important; transform:none !important}
+  .rv, .rv-soft{opacity:1 !important; transform:none !important}
+  .palier-sweep{display:none}
+  .palier{transform:none !important}
   .ribbon-track{flex-wrap:wrap; width:auto}
   .ribbon{-webkit-mask:none; mask:none}
-  .hero-3d{display:none}
+  .hero-3d, .hero-veil{display:none}
+  .sticky-cta.on{transform:none}
 }
 </style>
 </head>
 <body>
 
 <canvas class="hero-3d" id="hero3d" aria-hidden="true"></canvas>
+<div class="hero-veil" aria-hidden="true"></div>
 
 <header>
-  <div class="wrap header-inner">
+  <div class="header-inner">
     <a href="/" class="wordmark"><span class="dot"></span>MOBILITY&nbsp;CLUB</a>
     <a href="/" class="back">← Le manifeste</a>
   </div>
@@ -299,43 +379,48 @@ body.lance #prevente{display:none}
       <!-- COPY : sous-titre du hero -->
       <p class="sub">Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong> L'app ouvre le 1<sup>er</sup> août. Jusque-là, l'année est au tarif de prévente.</p>
 
-      <p class="hero-proof"><b data-membres>320</b> membres · méthode terrain</p>
-
       <!-- Bloc palier + jauge des PALIERS DE PRIX.
            Aucune jauge de places, aucun compteur de membres : l'échelle montre
            où en est le PRIX (120 → 150), jamais combien de places restent. -->
-      <div class="palier">
-        <div class="palier-row">
-          <span class="palier-prix"><span class="cur">€</span><span class="n" data-prix-anim>120</span></span>
-          <span class="palier-unit">l'année · accès complet</span>
+      <div class="palier" id="palier">
+        <span class="palier-sweep" aria-hidden="true"></span>
+        <div class="palier-top">
+          <div>
+            <div class="palier-lab">Tarif de prévente · palier actuel</div>
+            <div class="palier-prix"><span class="cur">€</span><span class="n" data-prix-anim>120</span></div>
+          </div>
+          <div class="palier-unit"><b>1 an d'accès complet</b><br>paiement unique · 4× sans frais</div>
         </div>
 
-        <div class="scale" id="scale" aria-label="Échelle des paliers de prix">
-          <div class="scale-grid" id="scaleGrid">
-            <div class="scale-rail" id="scaleRail"></div>
-            <div class="scale-fill" id="scaleFill"></div>
+        <div class="palier-bottom">
+          <div class="scale" id="scale" aria-label="Échelle des paliers de prix">
+            <div class="scale-grid" id="scaleGrid">
+              <div class="scale-rail" id="scaleRail"></div>
+              <div class="scale-fill" id="scaleFill"></div>
+            </div>
+            <div class="scale-tags">
+              <span class="here">▲ tu es ici</span>
+              <span>prix au lancement ▲</span>
+            </div>
           </div>
-          <div class="scale-tags">
-            <span class="here">▲ tu es ici</span>
-            <span>prix au lancement ▲</span>
-          </div>
+          <p class="scale-note" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres. <b>Le prix ne redescend jamais.</b></p>
         </div>
-
-        <p class="scale-note" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres. <b>Le prix ne redescend jamais.</b></p>
-        <p class="palier-cap">Paiement en une fois ou en 4× sans frais.</p>
       </div>
 
-      <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club —&nbsp;<span data-prix>120</span>&nbsp;€ →</a>
+      <div class="hero-cta-row">
+        <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club —&nbsp;<span data-prix>120</span>&nbsp;€ →</a>
+        <p class="hero-proof"><b data-membres>320</b> membres <span class="sep">·</span> méthode terrain <span class="sep">·</span> 2,5 ans</p>
+      </div>
     </div>
   </section>
 
   <!-- ═══ 2. LE PROBLÈME ════════════════════════════════════════════════════ -->
   <section>
     <div class="wrap">
-      <span class="eyebrow">Le problème</span>
+      <span class="eyebrow"><span class="idx">01</span> Le problème</span>
       <!-- COPY : le problème — la dette articulaire -->
-      <p class="problem" style="margin-top:14px">Tu sais que la mobilité compte. <span class="soft">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class="warn">trois semaines.</span></p>
-      <p class="sec-lead">Pendant ce temps, l'amplitude que tu ne travailles pas, tu la perds — doucement, sans rien sentir. C'est une dette : elle ne fait pas mal aujourd'hui, elle se paie plus tard, en raideur, en compensations, en gestes que tu évites sans t'en rendre compte.</p>
+      <p class="problem">Tu sais que la mobilité compte. <span class="soft">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class="warn">trois semaines.</span></p>
+      <p class="problem-lead">Pendant ce temps, l'amplitude que tu ne travailles pas, tu la perds — doucement, sans rien sentir. C'est une dette : elle ne fait pas mal aujourd'hui, elle se paie plus tard, en raideur, en compensations, en gestes que tu évites sans t'en rendre compte.</p>
     </div>
   </section>
 
@@ -343,7 +428,7 @@ body.lance #prevente{display:none}
   <section>
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">Concrètement</span>
+        <span class="eyebrow"><span class="idx">02</span> Concrètement</span>
         <h2>Tu ouvres. Tout est prêt.</h2>
       </div>
       <!-- COPY : les 4 étapes de la boucle -->
@@ -354,13 +439,25 @@ body.lance #prevente{display:none}
         <div class="stack-item"><span class="stack-n bronze">04</span><div><h3>Le retest</h3><p>Tous les mois, tu refais le diagnostic. Tu vois ton amplitude gagner du terrain, ou pas — et le programme s'ajuste.</p></div></div>
       </div>
     </div>
+
+    <!-- Vitrine remontée ici : l'image répond directement à « tout est prêt »,
+         au lieu d'arriver en fin de section preuve où elle passait inaperçue. -->
+    <div class="wrap-wide showcase">
+      <figure>
+        <div class="showcase-frame">
+          <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
+               alt="L'app Mobility Club : ta séance du jour prête en 1 clic, un coach vocal pour ajuster ta séance à la voix, et le suivi de ta progression sur 5 zones de mobilité." />
+        </div>
+        <figcaption>L'app que tu utilises chaque jour</figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ═══ 4. POURQUOI C'EST DIFFÉRENT ═══════════════════════════════════════ -->
   <section>
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">La différence</span>
+        <span class="eyebrow"><span class="idx">03</span> La différence</span>
         <h2>Un programme, pas une playlist d'exercices.</h2>
       </div>
       <!-- COPY : les 2 différences structurelles -->
@@ -379,42 +476,11 @@ body.lance #prevente{display:none}
     </div>
   </section>
 
-  <!-- ═══ 5. LA PREUVE ══════════════════════════════════════════════════════ -->
+  <!-- ═══ 5. CE QUE TU OBTIENS ══════════════════════════════════════════════ -->
   <section>
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">La preuve</span>
-        <h2>Ils y sont déjà.</h2>
-      </div>
-      <div class="proof-row">
-        <div class="proof-cell"><div class="n" data-membres>320</div><div class="l">membres</div></div>
-        <div class="proof-cell"><div class="n">2,5</div><div class="l">ans de méthode</div></div>
-        <div class="proof-cell"><div class="n">5</div><div class="l">zones mesurées</div></div>
-      </div>
-      <!-- COPY : témoignages — retours membres réels, ne pas inventer -->
-      <div class="avis-grid">
-        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En peu de temps, plus aucune douleur pendant mes matchs de padel. Les routines sont redoutablement efficaces. »</p><div class="avis-who">Marie · membre</div></div>
-        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie. »</p><div class="avis-who">Camille · membre</div></div>
-        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg. »</p><div class="avis-who">Guillaume · membre</div></div>
-      </div>
-      <!-- Bandeau d'avis défilant — même mécanisme que le manifeste (ruban marquee). -->
-      <div class="ribbon" id="ribbon" aria-label="Retours de membres">
-        <div class="ribbon-track" id="ribbonTrack"></div>
-      </div>
-
-      <figure class="showcase" style="margin-top:22px">
-        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
-             alt="L'app Mobility Club : ta séance du jour prête en 1 clic, un coach vocal pour ajuster ta séance à la voix, et le suivi de ta progression sur 5 zones de mobilité." />
-        <figcaption>L'app que tu utilises chaque jour.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ═══ 6. CE QUE TU OBTIENS ══════════════════════════════════════════════ -->
-  <section>
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow">Ce que tu obtiens</span>
+        <span class="eyebrow"><span class="idx">04</span> Ce que tu obtiens</span>
         <h2>Un an d'accès complet, dès aujourd'hui.</h2>
       </div>
       <!-- COPY : le détail de l'inclus -->
@@ -429,17 +495,51 @@ body.lance #prevente{display:none}
     </div>
   </section>
 
+  <!-- ═══ 6. LA PREUVE ══════════════════════════════════════════════════════
+       Déplacée juste avant le prix : la preuve doit être le dernier argument
+       lu avant la décision, pas un bloc perdu au milieu de la page. -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">05</span> La preuve</span>
+        <h2>Ils y sont déjà.</h2>
+      </div>
+      <div class="proof-row">
+        <div class="proof-cell"><div class="n" data-membres>320</div><div class="l">membres</div></div>
+        <div class="proof-cell"><div class="n">2,5</div><div class="l">ans de méthode</div></div>
+        <div class="proof-cell"><div class="n">5</div><div class="l">zones mesurées</div></div>
+      </div>
+      <!-- COPY : témoignages — retours membres réels, ne pas inventer -->
+      <div class="avis-grid">
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En peu de temps, plus aucune douleur pendant mes matchs de padel. Les routines sont redoutablement efficaces. »</p><div class="avis-who">Marie · membre</div></div>
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie. »</p><div class="avis-who">Camille · membre</div></div>
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg. »</p><div class="avis-who">Guillaume · membre</div></div>
+      </div>
+    </div>
+
+    <!-- Bandeau d'avis défilant — même mécanisme que le manifeste (ruban marquee).
+         Différencié des 3 avis ci-dessus : plein écran, labellisé, texte plus petit. -->
+    <div class="ribbon-wrap">
+      <div class="ribbon-lab">51 retours de membres · défilement continu</div>
+      <div class="ribbon" id="ribbon" aria-label="Retours de membres">
+        <div class="ribbon-track" id="ribbonTrack"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══ 7. LE PRIX ════════════════════════════════════════════════════════ -->
   <section id="prix">
     <div class="wrap">
-      <div class="sec-head" style="text-align:center">
-        <span class="eyebrow">Le prix</span>
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">06</span> Le prix</span>
         <h2>Le tarif monte à chaque palier.</h2>
       </div>
+    </div>
 
+    <div class="offer-wrap">
       <div class="offer-card">
         <span class="badge">Palier actuel</span>
-        <div class="offer-price" style="margin-top:16px"><span class="cur">€</span><span data-prix>120</span></div>
+        <div class="offer-price"><span class="cur">€</span><span data-prix>120</span></div>
         <p class="offer-what"><b>1 an d'accès complet</b> au Mobility Club</p>
         <p class="offer-anchor" data-next-wrap>Passe à <b style="color:var(--accent-green)"><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres.</p>
 
@@ -448,14 +548,16 @@ body.lance #prevente{display:none}
 
         <div class="reassure">
           <span><b>Paiement sécurisé</b> · PayPal</span>
-          <span><b>Accès dès le 1<sup>er</sup> août</b></span>
-          <span><b>Tarif bloqué</b> · 1 an</span>
+          <span><b>Accès dès le 1<sup>er</sup> août</b> · tu es prioritaire</span>
+          <span><b>Tarif bloqué</b> · 1 an, sans reconduction</span>
         </div>
-
-        <p class="after">À partir du <b>1<sup>er</sup> août</b>, l'adhésion passe à <b><span data-apres-mois>24</span>&nbsp;€/mois ou <span data-apres-an>225</span>&nbsp;€/an</b>. Le tarif de prévente ne reviendra pas.</p>
       </div>
 
-      <div class="guarantee">
+      <p class="after">À partir du <b>1<sup>er</sup> août</b>, l'adhésion passe à <b><span data-apres-mois>24</span>&nbsp;€/mois ou <span data-apres-an>225</span>&nbsp;€/an</b>. Le tarif de prévente ne reviendra pas.</p>
+    </div>
+
+    <div class="guarantee">
+      <div class="guarantee-in">
         <div class="g-k">Garantie progression</div>
         <!-- COPY : garantie -->
         <p>Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.</p>
@@ -467,7 +569,7 @@ body.lance #prevente{display:none}
   <section>
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">Objections</span>
+        <span class="eyebrow"><span class="idx">07</span> Objections</span>
         <h2>Ce que tu te demandes.</h2>
       </div>
       <!-- COPY : FAQ — 6 objections -->
@@ -502,17 +604,28 @@ body.lance #prevente{display:none}
 
   <!-- ═══ 9. CTA FINAL ══════════════════════════════════════════════════════ -->
   <section>
-    <div class="wrap" style="text-align:center">
+    <div class="wrap final">
       <!-- COPY : dernière relance -->
-      <h2 style="font-family:var(--font-display); font-weight:800; font-size:clamp(24px,4vw,38px); letter-spacing:-0.025em; line-height:1.1; text-wrap:balance">Le prix ne redescendra pas.</h2>
-      <p class="sec-lead" style="margin-inline:auto">Un an d'accès complet à <b><span data-prix>120</span>&nbsp;€</b> aujourd'hui. <span data-next-inline><span data-prix-suivant>130</span>&nbsp;€ aux 10 prochains membres, puis</span> <span data-apres-an>225</span>&nbsp;€/an à partir du 1<sup>er</sup> août.</p>
+      <h2>Le prix ne redescendra pas.</h2>
+      <p class="sec-lead">Un an d'accès complet à <b><span data-prix>120</span>&nbsp;€</b> aujourd'hui. <span data-next-inline><span data-prix-suivant>130</span>&nbsp;€ aux 10 prochains membres, puis</span> <span data-apres-an>225</span>&nbsp;€/an à partir du 1<sup>er</sup> août.</p>
       <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club —&nbsp;<span data-prix>120</span>&nbsp;€ →</a>
       <p class="cta-note">Paiement unique · en une fois ou en 4× sans frais</p>
 
-      <p class="disclaimer" style="margin-inline:auto; text-align:left">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
+      <p class="disclaimer">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
     </div>
   </section>
 </main>
+
+<!-- Barre collante mobile — insérée hors <main> pour rester au-dessus du flux. -->
+<div class="sticky-cta" id="stickyCta">
+  <div class="sticky-inner">
+    <div class="sticky-price">
+      <span class="sticky-lab">Un an d'accès · aujourd'hui</span>
+      <span class="sticky-n"><span class="cur">€</span><span data-prix>120</span></span>
+    </div>
+    <a class="cta" data-lien-paiement href="#prix">Rejoindre →</a>
+  </div>
+</div>
 
 <!-- ═══ ÉTAT POST-LANCEMENT (LANCEMENT_OUVERT = true) ═══════════════════════ -->
 <section id="apres-lancement">
@@ -524,6 +637,18 @@ body.lance #prevente{display:none}
 </section>
 
 <footer>© 2026 Mobility Club</footer>
+
+<style>
+/* État post-lancement (1er août) — regroupé ici, hors du flux principal */
+#apres-lancement{display:none; min-height:70vh; align-items:center; justify-content:center; text-align:center; padding:60px 0; border-top:none}
+#apres-lancement.on{display:flex}
+.over-inner{max-width:36ch}
+.over-inner h1{font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5vw,46px); letter-spacing:-0.025em; line-height:1.08}
+.over-inner p{margin-top:16px; font-size:15px; color:var(--text-secondary); line-height:1.65}
+.over-cta{display:inline-flex; align-items:center; gap:9px; margin-top:26px; min-height:52px; padding:13px 26px; border-radius:11px; border:1px solid var(--accent-green); color:var(--accent-green); font-weight:700; font-size:15px; transition:background .25s var(--ease)}
+.over-cta:hover{background:var(--accent-green-dim); color:var(--accent-green)}
+body.lance #prevente, body.lance .sticky-cta, body.lance .hero-3d, body.lance .hero-veil{display:none}
+</style>
 
 <script>
 (function(){
@@ -561,7 +686,7 @@ body.lance #prevente{display:none}
     var wi = document.querySelectorAll('[data-next-inline]');   // au milieu d'une phrase : on retire
     for (var l=0;l<wi.length;l++) wi[l].textContent = 'Puis';
     for (var j=0;j<w.length;j++){
-      w[j].innerHTML = 'Dernier palier avant l\'ouverture — ensuite ' + C.APRES_AN + ' €/an.';
+      w[j].innerHTML = 'Dernier palier avant l\'ouverture — ensuite ' + C.APRES_AN + ' €/an.';
     }
   }
 
@@ -720,25 +845,73 @@ body.lance #prevente{display:none}
     });
   })();
 
-  /* ── Révélation au scroll ────────────────────────────────────────────────
-     La classe .rv est posée par JS : si le script casse, rien n'est masqué. */
+  /* ── Révélation au scroll, GRADUÉE ───────────────────────────────────────
+     Deux registres : .rv (titres, déclarations, carte prix) monte franchement,
+     .rv-soft (cartes, items de liste) se fond avec un léger décalage.
+     Les classes sont posées par JS : si le script casse, rien n'est masqué. */
   if (!reduce && 'IntersectionObserver' in window){
-    var sel = '.sec-head, .problem, .sec-lead, .stack, .diff, .proof-row, .avis-grid, .ribbon, .showcase, .offer-card, .guarantee, .faq';
-    var els = document.querySelectorAll(sel);
+    var strong = document.querySelectorAll('.sec-head, .problem, .problem-lead, .offer-card, .showcase, .final h2, .final .sec-lead');
+    var soft   = document.querySelectorAll('.stack-item, .diff, .proof-cell, .avis, .guarantee-in, .faq, .ribbon-wrap, .after');
+    var els = [];
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
     }, { rootMargin: '0px 0px -8% 0px' });
-    for (var r=0;r<els.length;r++){ els[r].classList.add('rv'); io.observe(els[r]); }
+    for (var r=0;r<strong.length;r++){ strong[r].classList.add('rv'); els.push(strong[r]); io.observe(strong[r]); }
+    for (var s=0;s<soft.length;s++){
+      soft[s].classList.add('rv-soft');
+      // stagger local : le décalage se remet à zéro à chaque groupe de frères
+      var sibs = soft[s].parentNode ? soft[s].parentNode.children : [];
+      var pos = 0; for (var q=0;q<sibs.length;q++){ if (sibs[q] === soft[s]) { pos = q; break; } }
+      soft[s].style.setProperty('--d', Math.min(pos,5) * 55 + 'ms');
+      els.push(soft[s]); io.observe(soft[s]);
+    }
 
     /* FILET DE SÉCURITÉ — .rv masque le contenu (opacity:0). Si l'observer ne
        tire jamais (onglet ouvert en arrière-plan, navigateur exotique, bug),
        la page de vente serait VIDE. Au bout de 2 s sans une seule révélation,
        on affiche tout : on perd l'effet, jamais le contenu. */
     setTimeout(function(){
-      if (document.querySelector('.rv.in')) return;      // l'observer fonctionne
+      if (document.querySelector('.rv.in, .rv-soft.in')) return;   // l'observer fonctionne
       for (var f=0;f<els.length;f++) els[f].classList.add('in');
     }, 2000);
   }
+
+  /* ── BARRE CTA COLLANTE (mobile) ─────────────────────────────────────────
+     Visible entre la fin du hero et la section prix. Elle disparaît là où le
+     vrai bouton est à l'écran : jamais deux CTA concurrents au même moment. */
+  (function(){
+    var bar = document.getElementById('stickyCta');
+    var hero = document.querySelector('.hero');
+    var prixSec = document.getElementById('prix');
+    if (!bar || !hero) return;
+    var afterHero = false, inPrix = false;
+    function apply(){ bar.classList.toggle('on', afterHero && !inPrix); }
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){ afterHero = !e[0].isIntersecting; apply(); },
+        { rootMargin: '-40px 0px 0px 0px' }).observe(hero);
+      if (prixSec) new IntersectionObserver(function(e){ inPrix = e[0].isIntersecting; apply(); },
+        { rootMargin: '0px 0px -25% 0px' }).observe(prixSec);
+    } else {
+      addEventListener('scroll', function(){
+        afterHero = scrollY > hero.offsetHeight * 0.9; apply();
+      }, { passive:true });
+    }
+  })();
+
+  /* ── Plaque de verre : inclinaison au pointeur (souris uniquement) ────────
+     Jamais au doigt : sur mobile le tilt volerait le geste de scroll. */
+  (function(){
+    var card = document.getElementById('palier');
+    if (!card || reduce) return;
+    var host = card.parentNode;
+    host.addEventListener('pointermove', function(e){
+      if (e.pointerType !== 'mouse') return;
+      var r = card.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      card.style.transform = 'perspective(900px) rotateY(' + (x * 5).toFixed(2) + 'deg) rotateX(' + (-y * 4).toFixed(2) + 'deg)';
+    }, { passive:true });
+    host.addEventListener('pointerleave', function(){ card.style.transform = ''; }, { passive:true });
+  })();
 
   /* ── Tracking (même collecteur que les autres pages) ─────────────────────── */
   var URL='/.netlify/functions/track-site-event';
@@ -753,6 +926,8 @@ body.lance #prevente{display:none}
      Reprise de la scène du manifeste, allégée pour une page de conversion :
      l'environnement est GÉNÉRÉ (RoomEnvironment) au lieu du HDRI de 1,5 Mo.
      Chargée en module différé : le prix, la jauge et le CTA s'affichent avant.
+     DÉCORATIVE ET DISCRÈTE : opacité max 0,50 desktop / 0,22 mobile, plus un
+     voile radial (.hero-veil) qui l'éteint derrière la colonne de texte.
      Se coupe d'elle-même si reduced-motion, pas de WebGL2, écran tactile lent
      ou CDN injoignable — la page reste entière sans elle. ══════════════════ -->
 <script type="module">
@@ -800,7 +975,7 @@ body.lance #prevente{display:none}
 
   const spine = new THREE.Group(); scene.add(spine);
   let isMobile = innerWidth < 720;
-  spine.position.x = isMobile ? 2.4 : 2.1;
+  spine.position.x = isMobile ? 2.4 : 2.35;
 
   const coreMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color:0x38d6a4 }));
   spine.add(coreMesh);
@@ -809,7 +984,7 @@ body.lance #prevente{display:none}
     const r=g.createRadialGradient(128,128,0,128,128,128);
     r.addColorStop(0,'rgba(62,207,160,.9)'); r.addColorStop(.4,'rgba(62,207,160,.25)'); r.addColorStop(1,'rgba(62,207,160,0)');
     g.fillStyle=r; g.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); })();
-  const halo = new THREE.Mesh(new THREE.PlaneGeometry(9,9), new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0.3 }));
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(9,9), new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0.22 }));
   halo.position.set(1.4,0,-3); scene.add(halo);
 
   const N = 24, UP = new THREE.Vector3(0,1,0), tmp = new THREE.Vector3(), dummy = new THREE.Object3D(), _q = new THREE.Quaternion();
@@ -860,13 +1035,13 @@ body.lance #prevente{display:none}
 
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.5, 1.25));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.24, 0.5, 1.3));
   composer.addPass(new OutputPass());
 
   addEventListener('resize', ()=>{
     camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
-    isMobile = innerWidth < 720; spine.position.x = isMobile ? 2.4 : 2.1;
+    isMobile = innerWidth < 720; spine.position.x = isMobile ? 2.4 : 2.35;
   }, { passive:true });
 
   // scroll → la colonne se vrille puis se dissout quand le hero sort de l'écran
@@ -885,7 +1060,8 @@ body.lance #prevente{display:none}
     if (intro < 1) intro = Math.min(1, intro + dt*0.8);
     coil += (target-coil) * Math.min(1, dt*3.2);
     px += (tx-px) * Math.min(1, dt*3); py += (ty-py) * Math.min(1, dt*3);
-    const op = intro * fade * (isMobile ? 0.42 : 0.9);
+    // op : la 3D reste un fond. Elle ne doit jamais rivaliser avec le prix.
+    const op = intro * fade * (isMobile ? 0.22 : 0.50);
     canvas.style.opacity = op.toFixed(3);
     if (op < 0.01 || document.hidden){ requestAnimationFrame(animate); return; }   // rendu en pause hors-vue
     if (Math.abs(coil-lastCoil) > 0.0015){ updateSpine(coil); lastCoil = coil; }
