@@ -58,6 +58,13 @@ window.MC_OFFRE = {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
 
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
 <!-- Beacon trafic (visite unique/jour, anonyme) — même mécanisme que les autres pages. -->
 <script>(function(){try{var k='mcv_prevente_'+new Date().toISOString().slice(0,10);if(localStorage.getItem(k))return;localStorage.setItem(k,'1');fetch('https://dashboardmobilityclub.netlify.app/.netlify/functions/traffic-beacon?site=prevente',{method:'POST',keepalive:true,cache:'no-store',mode:'no-cors'}).catch(function(){});}catch(e){}})();</script>
 
@@ -115,6 +122,60 @@ section{padding:clamp(34px,6vh,56px) 0; border-top:1px solid var(--border-subtle
 .palier-next{margin-top:12px; font-size:13.5px; color:var(--text-secondary); line-height:1.55}
 .palier-next b{color:var(--text-primary)}
 .palier-cap{margin-top:12px; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary)}
+
+/* ── Canvas 3D du hero (colonne vertébrale) ────────────────────────────────
+   Fixe derrière le contenu, jamais cliquable, opacité pilotée par le scroll.
+   Se charge APRÈS le premier paint : le prix et le CTA n'attendent jamais. */
+.hero-3d{position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0; transition:opacity .8s var(--ease)}
+main, header, footer, #apres-lancement{position:relative; z-index:1}
+.hero .wrap{position:relative; z-index:2}
+
+/* ── JAUGE DE PALIERS ──────────────────────────────────────────────────────
+   L'échelle des PRIX (120 · 130 · 140 · 150), pas un compteur de places :
+   elle ne révèle jamais combien de membres ont rejoint. */
+.scale{margin-top:20px; padding-top:4px}
+.scale-grid{position:relative; display:grid; align-items:start}
+.scale-rail{position:absolute; top:5px; height:2px; background:var(--border-active); border-radius:2px}
+.scale-fill{position:absolute; top:5px; height:2px; width:0; border-radius:2px;
+  background:linear-gradient(90deg,rgba(62,207,160,0.35),var(--accent-green));
+  box-shadow:0 0 12px rgba(62,207,160,0.55); transition:width 1.3s var(--ease) .25s}
+.scale-step{position:relative; display:flex; flex-direction:column; align-items:center; gap:9px}
+.scale-dot{width:12px; height:12px; border-radius:50%; background:var(--bg-surface); border:2px solid var(--border-active);
+  transition:background .45s var(--ease), border-color .45s var(--ease), transform .45s var(--ease)}
+.scale-val{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--text-tertiary); font-variant-numeric:tabular-nums; transition:color .45s var(--ease)}
+.scale-step.is-past .scale-dot{border-color:rgba(62,207,160,0.55); background:rgba(62,207,160,0.55)}
+.scale-step.is-past .scale-val{color:var(--text-secondary); text-decoration:line-through}
+.scale-step.is-now .scale-dot{background:var(--accent-green); border-color:var(--accent-green); transform:scale(1.35); animation:scaleBeat 2.6s var(--ease) infinite}
+.scale-step.is-now .scale-val{color:var(--accent-green); font-weight:700}
+@keyframes scaleBeat{0%,100%{box-shadow:0 0 0 0 rgba(62,207,160,0.45)}55%{box-shadow:0 0 0 9px rgba(62,207,160,0)}}
+.scale-tags{display:flex; justify-content:space-between; margin-top:11px; font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary)}
+.scale-tags .here{color:var(--accent-green)}
+.scale-note{margin-top:14px; font-size:13.5px; color:var(--text-secondary); line-height:1.55}
+.scale-note b{color:var(--text-primary)}
+
+/* Prix animé : le chiffre compte à l'arrivée */
+.palier-prix .n{font-variant-numeric:tabular-nums}
+
+/* ── BANDEAU D'AVIS (repris du manifeste) ──────────────────────────────────── */
+.ribbon{position:relative; overflow:hidden; padding:8px 0; margin-top:20px;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ribbon-track{display:flex; gap:12px; width:max-content; will-change:transform}
+.ribbon-track.anim{animation:marquee var(--dur,150s) linear infinite}
+.ribbon:hover .ribbon-track.anim, .ribbon.paused .ribbon-track.anim{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ribbon-card{flex:0 0 clamp(216px,58vw,264px); background:var(--bg-surface); border:1px solid var(--border-active);
+  border-radius:13px; padding:14px 16px; display:flex; flex-direction:column; gap:9px; min-height:104px;
+  transition:border-color .25s var(--ease), transform .25s var(--ease)}
+.ribbon-card:hover{transform:translateY(-4px); border-color:rgba(62,207,160,0.4)}
+.ribbon-stars{color:var(--accent-green); font-size:10px; letter-spacing:2px; line-height:1}
+.ribbon-body{font-size:12.5px; line-height:1.5; color:var(--text-secondary);
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+.ribbon-who{font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:var(--text-tertiary); margin-top:auto}
+
+/* ── Motion : révélation au scroll ─────────────────────────────────────────── */
+.rv{opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease)}
+.rv.in{opacity:1; transform:none}
 
 /* Stack numéroté */
 .stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
@@ -204,10 +265,17 @@ body.lance #prevente{display:none}
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important; transition:none !important}
   html{scroll-behavior:auto}
+  /* sans transition, .rv resterait invisible et le ruban ne défilerait jamais */
+  .rv{opacity:1 !important; transform:none !important}
+  .ribbon-track{flex-wrap:wrap; width:auto}
+  .ribbon{-webkit-mask:none; mask:none}
+  .hero-3d{display:none}
 }
 </style>
 </head>
 <body>
+
+<canvas class="hero-3d" id="hero3d" aria-hidden="true"></canvas>
 
 <header>
   <div class="wrap header-inner">
@@ -231,13 +299,27 @@ body.lance #prevente{display:none}
 
       <p class="hero-proof"><b data-membres>320</b> membres · méthode terrain</p>
 
-      <!-- Bloc palier : prix actuel + prix suivant. PAS de jauge, PAS de compteur. -->
+      <!-- Bloc palier + jauge des PALIERS DE PRIX.
+           Aucune jauge de places, aucun compteur de membres : l'échelle montre
+           où en est le PRIX (120 → 150), jamais combien de places restent. -->
       <div class="palier">
         <div class="palier-row">
-          <span class="palier-prix"><span class="cur">€</span><span data-prix>120</span></span>
+          <span class="palier-prix"><span class="cur">€</span><span class="n" data-prix-anim>120</span></span>
           <span class="palier-unit">l'année · accès complet</span>
         </div>
-        <p class="palier-next" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres.</p>
+
+        <div class="scale" id="scale" aria-label="Échelle des paliers de prix">
+          <div class="scale-grid" id="scaleGrid">
+            <div class="scale-rail" id="scaleRail"></div>
+            <div class="scale-fill" id="scaleFill"></div>
+          </div>
+          <div class="scale-tags">
+            <span class="here">▲ tu es ici</span>
+            <span>prix au lancement ▲</span>
+          </div>
+        </div>
+
+        <p class="scale-note" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres. <b>Le prix ne redescend jamais.</b></p>
         <p class="palier-cap">Paiement en une fois ou en 4× sans frais.</p>
       </div>
 
@@ -313,6 +395,11 @@ body.lance #prevente{display:none}
         <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie. »</p><div class="avis-who">Camille · membre</div></div>
         <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg. »</p><div class="avis-who">Guillaume · membre</div></div>
       </div>
+      <!-- Bandeau d'avis défilant — même mécanisme que le manifeste (ruban marquee). -->
+      <div class="ribbon" id="ribbon" aria-label="Retours de membres">
+        <div class="ribbon-track" id="ribbonTrack"></div>
+      </div>
+
       <figure class="showcase" style="margin-top:22px">
         <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
              alt="L'app Mobility Club : ta séance du jour prête en 1 clic, un coach vocal pour ajuster ta séance à la voix, et le suivi de ta progression sur 5 zones de mobilité." />
@@ -495,12 +582,318 @@ body.lance #prevente{display:none}
   }
   if (!lien && window.console) console.warn('[MC] Aucun lien PayPal pour le palier ' + prix + ' € — CTA désactivé. Renseigner MC_OFFRE.PALIERS[' + prix + '].');
 
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── JAUGE DE PALIERS ────────────────────────────────────────────────────
+     Construite depuis MC_OFFRE.PALIERS : ajouter un palier suffit à l'étendre.
+     Elle situe le PRIX sur son échelle — elle ne dit rien du nombre de membres. */
+  (function(){
+    var grid = document.getElementById('scaleGrid');
+    if (!grid) return;
+    var vals = Object.keys(C.PALIERS).map(Number).sort(function(a,b){ return a-b; });
+    if (vals.length < 2) return;
+    grid.style.gridTemplateColumns = 'repeat(' + vals.length + ',1fr)';
+
+    var half = 100 / vals.length / 2;                 // demi-colonne = centre du 1er point
+    var rail = document.getElementById('scaleRail');
+    var fill = document.getElementById('scaleFill');
+    rail.style.left = fill.style.left = half + '%';
+    rail.style.right = half + '%';
+
+    var html = '';
+    for (var i=0;i<vals.length;i++){
+      var cls = vals[i] < prix ? 'is-past' : (vals[i] === prix ? 'is-now' : '');
+      html += '<div class="scale-step ' + cls + '"><span class="scale-dot"></span><span class="scale-val">' + vals[i] + ' €</span></div>';
+    }
+    grid.insertAdjacentHTML('beforeend', html);
+
+    var idx = vals.indexOf(prix); if (idx < 0) idx = 0;
+    var span = 100 - 2*half;                          // largeur utile entre 1er et dernier point
+    var target = (span * idx / (vals.length - 1)) + '%';
+    // setTimeout et non requestAnimationFrame : rAF est gelé dans un onglet
+    // d'arrière-plan (ouverture depuis un mail), la jauge resterait vide.
+    if (reduce) fill.style.width = target;
+    else setTimeout(function(){ fill.style.width = target; }, 80);
+  })();
+
+  /* ── Le prix compte à l'arrivée ──────────────────────────────────────────── */
+  (function(){
+    var el = document.querySelector('[data-prix-anim]');
+    if (!el) return;
+    el.textContent = prix;                             // le vrai prix, tout de suite
+    if (reduce || document.hidden) return;             // onglet en fond : on n'anime pas
+
+    /* Filet de sécurité : rAF est gelé dans un onglet d'arrière-plan. Sans ça,
+       le compteur se figerait sur une valeur intermédiaire et la page
+       afficherait un prix FAUX (ex. 75 € au lieu de 120 €). */
+    function lock(){ el.textContent = prix; }
+    document.addEventListener('visibilitychange', function(){ if (document.hidden) lock(); });
+    var safety = setTimeout(lock, 2500);
+
+    var from = Math.max(0, prix - 45), t0 = null, DUR = 900;
+    el.textContent = from;
+    requestAnimationFrame(function step(now){
+      if (t0 === null) t0 = now;
+      var p = Math.min(1, (now - t0) / DUR);
+      var e = 1 - Math.pow(1 - p, 3);                  // ease-out cubique
+      el.textContent = Math.round(from + (prix - from) * e);
+      if (p < 1) requestAnimationFrame(step);
+      else { clearTimeout(safety); lock(); }
+    });
+  })();
+
+  /* ── BANDEAU D'AVIS — retours membres réels, jamais inventés ─────────────── */
+  (function(){
+    var track = document.getElementById('ribbonTrack');
+    if (!track) return;
+    var A = [
+    {w:"Lisa",t:"Ce soir, première séance sans douleur. Après presque 5 ans à me limiter et à avoir mal dès que je marchais plus de 500 m, je repousse mes limites de plus en plus."},
+    {w:"Henry",t:"En plein WOD : « tiens, je n'ai même pas mis mes genouillères ». Depuis des mois je les mettais par peur que mes genoux lâchent. Là, sans y penser, je les ai laissées. Et ça ne fait qu'un mois."},
+    {w:"Mickael",t:"Plus aucune douleur lombaire, et j'ai repris la course cette semaine."},
+    {w:"Julien",t:"Grâce au Mobility Fondation, j'ai enlevé une douleur de hanche que je traînais depuis deux ans."},
+    {w:"François",t:"Après 5 jours de routines, une vraie diminution des douleurs à l'épaule et au coude."},
+    {w:"Marie",t:"En peu de temps, plus aucune douleur pendant mes matchs de padel. Les RACs et les routines sont redoutablement efficaces."},
+    {w:"David",t:"Avec la mobilité, on récupère bien plus vite. Épaule blessée : 23 jours et c'est réglé, là où ça aurait pris des mois."},
+    {w:"Antoine",t:"Grosse différence aux hanches : le pincement a largement diminué, je ne le sens presque plus. J'ai gagné en souplesse et en amplitude."},
+    {w:"Nicolas",t:"J'utilise la routine sur mes warm-ups, sur recommandation de mon kiné. J'en ressors sans douleur, et je commence à prendre en amplitude."},
+    {w:"Camille",t:"Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie."},
+    {w:"Maxime",t:"J'arrive presque à m'accroupir jusqu'au sol et à tenir la position. Il y a un mois, c'était impossible."},
+    {w:"Laura",t:"Le Mobility Club m'a rendue plus forte sur mes articulations problématiques et a débloqué ma mobilité générale. Plus flexible, plus mobile, plus résiliente."},
+    {w:"Léa",t:"Niveau épaules, j'ai débloqué une nouvelle mobilité sans douleur. Et je tiens enfin un deep squat pieds serrés."},
+    {w:"Alice",t:"Je ne peux plus m'en passer : je me sens beaucoup plus libre et plus souple dans mes mouvements."},
+    {w:"Hugo",t:"En fin de séance, un squat complet sans aide, sans douleur ni difficulté — ce qui était impossible avant. Grosse, grosse satisfaction."},
+    {w:"Romain",t:"Blessé au genou et à la cheville, je cherchais à tout remobiliser. Vu la banque d'exercices ici, j'ai trouvé mon bonheur. Vraiment surpris du travail."},
+    {w:"Clément",t:"J'ai gagné de l'amplitude sur mon squat, et un bien meilleur alignement du bassin quand je travaille le grand écart."},
+    {w:"Sarah",t:"Mes épaules commencent à se débloquer, je le ressens autant au JJB qu'à la musculation."},
+    {w:"Guillaume",t:"En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg."},
+    {w:"Pauline",t:"Squat lourd : un PR plutôt facile et surtout 0 douleur. Reprise de la course : des foulées vraiment souples."},
+    {w:"Vincent",t:"3 semaines de mobilité et je me sens tellement à l'aise que j'ai passé mon PR au snatch aujourd'hui."},
+    {w:"Manon",t:"Grâce aux rotations, aucune gêne en chin-ups — le coude, d'habitude — ni en front lever."},
+    {w:"Thomas",t:"RAC + PAILs/RAILs genoux : de super sensations de « libération » sur mes squats lourds, et bien plus de facilité sur mes sauts."},
+    {w:"Baptiste",t:"4 entraînements par semaine et je progresse encore : environ 106 kg au deadlift, et plus aucune douleur au dos ni aux genoux."},
+    {w:"Émilie",t:"15-20 min de mobilité avant ma séance, ça a vraiment tout changé dans mes entraînements."},
+    {w:"Lucas",t:"La séance épaule m'a permis de relancer des balles bien plus efficacement, et sans douleur."},
+    {w:"Cyril",t:"Je suis allé faire une séance de CrossFit. Tu n'imagines pas ma satisfaction quand la coach a dit que j'avais une bonne mobilité."},
+    {w:"Valentin",t:"Coach sportif à Paris, spécialisé dans le mouvement, j'étais curieux de la méthode de Damien. Parce que oui, les coachs aussi se font coacher."},
+    {w:"Chloé",t:"Fracture du scaphoïde il y a 3 ans. Vu mes progrès sur les chevilles, je sais que c'est possible — ça me motive à continuer."},
+    {w:"Geoffroy",t:"Content d'avoir franchi le pas : j'ai le sentiment de faire du bien à mon corps et de mieux gérer les blessures."},
+    {w:"Adrien",t:"Un accompagnement au top : de l'écoute, des conseils personnalisés, des routines adaptées, et le tout dans la bonne humeur. Que demander de plus ?"},
+    {w:"Karin",t:"On adore : tous les outils réunis au même endroit, assemblés et enseignés intelligemment pour se réparer ou performer."},
+    {w:"Julie",t:"J'avais peur que les séances soient trop longues. L'appel avec Damien m'a rassuré : on adapte la mobilité à sa vie, pas l'inverse."},
+    {w:"Théo",t:"Routine poignet suivie en entier — très fier. Grosse progression après une première séance où je n'avais même pas pu terminer les exercices."},
+    {w:"Alexandre",t:"En trois semaines : plus de fluidité, moins de tensions, une meilleure conscience corporelle. Et fini les réveils raide comme un balai."},
+    {w:"Caroline",t:"Même dans ma posture de tous les jours, je ressens le changement."},
+    {w:"Mathilde",t:"15 min avant la séance et j'ai les jambes moins lourdes, moins de charge sur les lombaires. Un vrai bien-être."},
+    {w:"Éloïse",t:"Le plus beau, c'est de se sentir bien dans son corps et dans sa tête, au quotidien."},
+    {w:"Quentin",t:"Sentir la différence, et surtout n'avoir aucune douleur : c'est un vrai plus dans ma pratique au quotidien."},
+    {w:"Céline",t:"Format parfait : c'est quasiment tout ce que j'utilise, parce que sinon « pas le temps ». Et toutes les articulations y passent."},
+    {w:"Benjamin",t:"J'ai pris goût à commencer ma journée par le breathwork puis les hanches — ça éveille tous les sens pour bien démarrer."},
+    {w:"Anaïs",t:"Appli super intuitive : la vidéo qui correspond à l'exercice, les consignes de temps, le timer. Top de chez top."},
+    {w:"Victor",t:"Un mois au club : la mobilité fait enfin partie de mon quotidien, je comprends mieux mon corps et mes douleurs. Ma plus grosse progression : les rotations de genou. T'as créé quelque chose de grand."},
+    {w:"Éloïse",t:"En 6 mois, j'ai grandi. Mes chevilles vont de mieux en mieux, mes douleurs musculaires ont disparu — en plus du foot à haut niveau. Et un meilleur squat en muscu."},
+    {w:"Fabien",t:"Une infiltration m'avait laissé une épaule faible. Elle est redevenue forte et stable, je n'ai quasiment plus jamais mal. Meilleur investissement de temps que j'ai fait."},
+    {w:"Élodie",t:"Un pote m'a lancé « waouh, tu descends bas sur tes squats ». Il y a 8 mois, j'en étais incapable sans avoir mal au dos. Le boulot sur les hanches est démentiel."},
+    {w:"Rémi",t:"En 1 mois : gain de mobilité et moins de douleurs aux hanches. Là où j'avais mal après chaque squat, je sors d'une compétition de CrossFit tout neuf."},
+    {w:"Audrey",t:"En une semaine : plus aucune douleur en muscu, plus de raideur au réveil, et de bien meilleurs squats. Juste en bougeant correctement."},
+    {w:"Éloïse",t:"Après 3 mois : quasiment plus de douleur malgré le sport de haut niveau. Ce matin, je suis allée courir… pour le plaisir. 20 min par jour, des bienfaits de fou."},
+    {w:"Loïc",t:"Depuis le club : bien moins de douleurs même en pratique intensive, chevilles plus mobiles, hanches plus fortes. 15 min par jour, 4 à 5 fois par semaine."},
+    {w:"Margaux",t:"Bras plus stable en natation, squat sans douleur de hanche, plus d'amplitude au deadlift — et je peux bouger n'importe comment sans réveiller mon dos."}
+    ];
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    var html = '';
+    for (var i=0;i<A.length;i++){
+      html += '<article class="ribbon-card"><div class="ribbon-stars" aria-hidden="true">★★★★★</div>'
+            + '<p class="ribbon-body">' + esc(A[i].t) + '</p>'
+            + '<div class="ribbon-who">' + esc(A[i].w) + ' · membre</div></article>';
+    }
+    track.innerHTML = html + html;                     // doublé : le marquee boucle à -50%
+    if (!reduce){
+      track.classList.add('anim');
+      track.style.setProperty('--dur', Math.max(120, A.length * 6) + 's');
+    }
+    var rb = document.getElementById('ribbon');
+    rb.addEventListener('pointerdown', function(){ rb.classList.add('paused'); });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      rb.addEventListener(ev, function(){ rb.classList.remove('paused'); });
+    });
+  })();
+
+  /* ── Révélation au scroll ────────────────────────────────────────────────
+     La classe .rv est posée par JS : si le script casse, rien n'est masqué. */
+  if (!reduce && 'IntersectionObserver' in window){
+    var sel = '.sec-head, .problem, .sec-lead, .stack, .diff, .proof-row, .avis-grid, .ribbon, .showcase, .offer-card, .guarantee, .faq';
+    var els = document.querySelectorAll(sel);
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    for (var r=0;r<els.length;r++){ els[r].classList.add('rv'); io.observe(els[r]); }
+
+    /* FILET DE SÉCURITÉ — .rv masque le contenu (opacity:0). Si l'observer ne
+       tire jamais (onglet ouvert en arrière-plan, navigateur exotique, bug),
+       la page de vente serait VIDE. Au bout de 2 s sans une seule révélation,
+       on affiche tout : on perd l'effet, jamais le contenu. */
+    setTimeout(function(){
+      if (document.querySelector('.rv.in')) return;      // l'observer fonctionne
+      for (var f=0;f<els.length;f++) els[f].classList.add('in');
+    }, 2000);
+  }
+
   /* ── Tracking (même collecteur que les autres pages) ─────────────────────── */
   var URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
   function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/prevente',lang:'fr',palier:prix},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
   track('page_view');
   document.addEventListener('click',function(e){ var p=e.target.closest('[data-plan]'); if(p)track('plan_clicked',{plan:p.getAttribute('data-plan')}); },{passive:true});
+})();
+</script>
+
+<!-- ═══ HERO 3D — colonne vertébrale instanciée ═══════════════════════════════
+     Reprise de la scène du manifeste, allégée pour une page de conversion :
+     l'environnement est GÉNÉRÉ (RoomEnvironment) au lieu du HDRI de 1,5 Mo.
+     Chargée en module différé : le prix, la jauge et le CTA s'affichent avant.
+     Se coupe d'elle-même si reduced-motion, pas de WebGL2, écran tactile lent
+     ou CDN injoignable — la page reste entière sans elle. ══════════════════ -->
+<script type="module">
+(async () => {
+  const canvas = document.getElementById('hero3d');
+  if (!canvas || (window.MC_OFFRE && window.MC_OFFRE.LANCEMENT_OUVERT)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const glok = (()=>{ try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; } })();
+  if (!glok) return;
+  if (navigator.deviceMemory && navigator.deviceMemory <= 2) return;   // vieux mobiles : on s'abstient
+
+  let THREE, GLTFLoader, RoomEnvironment, EffectComposer, RenderPass, UnrealBloomPass, OutputPass;
+  try {
+    THREE = await import('three');
+    ({ GLTFLoader }      = await import('three/addons/loaders/GLTFLoader.js'));
+    ({ RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'));
+    ({ EffectComposer }  = await import('three/addons/postprocessing/EffectComposer.js'));
+    ({ RenderPass }      = await import('three/addons/postprocessing/RenderPass.js'));
+    ({ UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js'));
+    ({ OutputPass }      = await import('three/addons/postprocessing/OutputPass.js'));
+  } catch(e){ return; }                                               // CDN indispo → dégradation propre
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.1, 100);
+  camera.position.set(0.6, 0.2, 8.6);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const key  = new THREE.DirectionalLight(0xfff3e2, 2.3); key.position.set(5,7,7);   scene.add(key);
+  const rim  = new THREE.DirectionalLight(0x3ECFA0, 2.8); rim.position.set(-6,2,-4); scene.add(rim);
+  const fill3 = new THREE.DirectionalLight(0xbfd0ff, 0.6); fill3.position.set(-3,-2,6); scene.add(fill3);
+  scene.add(new THREE.AmbientLight(0x2a3a3a, 0.45));
+
+  const boneMat = new THREE.MeshPhysicalMaterial({
+    color:0xDED3BC, roughness:0.62, metalness:0.0, clearcoat:0.25, clearcoatRoughness:0.7,
+    sheen:0.3, sheenColor:new THREE.Color(0x9fe9cf), emissive:0x0e0c08, emissiveIntensity:0.15, envMapIntensity:1.15
+  });
+
+  const spine = new THREE.Group(); scene.add(spine);
+  let isMobile = innerWidth < 720;
+  spine.position.x = isMobile ? 2.4 : 2.1;
+
+  const coreMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color:0x38d6a4 }));
+  spine.add(coreMesh);
+
+  const glowTex = (()=>{ const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d');
+    const r=g.createRadialGradient(128,128,0,128,128,128);
+    r.addColorStop(0,'rgba(62,207,160,.9)'); r.addColorStop(.4,'rgba(62,207,160,.25)'); r.addColorStop(1,'rgba(62,207,160,0)');
+    g.fillStyle=r; g.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); })();
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(9,9), new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:0.3 }));
+  halo.position.set(1.4,0,-3); scene.add(halo);
+
+  const N = 24, UP = new THREE.Vector3(0,1,0), tmp = new THREE.Vector3(), dummy = new THREE.Object3D(), _q = new THREE.Quaternion();
+  let inst = null, VSCALE = 1;
+
+  function buildPoints(coil){
+    const pts = [];
+    for (let i=0;i<N;i++){
+      const t = i/(N-1);
+      const sBend = Math.sin(t*Math.PI*1.6 - 0.3) * 0.55 * (1 - coil*0.65);
+      const ang = t*1.15*Math.PI*2*coil + coil*0.4;
+      const rad = coil*0.9*Math.sin(t*Math.PI);
+      pts.push(new THREE.Vector3(Math.cos(ang)*rad + sBend, (t-0.5)*7.2*(1-coil*0.26), Math.sin(ang)*rad));
+    }
+    return pts;
+  }
+  function updateSpine(coil){
+    if (!inst) return;
+    const pts = buildPoints(coil);
+    for (let i=0;i<N;i++){
+      const t = i/(N-1);
+      const a = pts[Math.max(0,i-1)], b = pts[Math.min(N-1,i+1)];
+      tmp.copy(b).sub(a); if (tmp.lengthSq() < 1e-9) tmp.set(0,1,0); tmp.normalize();
+      dummy.position.copy(pts[i]);
+      dummy.quaternion.setFromUnitVectors(UP, tmp);
+      _q.setFromAxisAngle(tmp, coil*t*1.3); dummy.quaternion.premultiply(_q);
+      dummy.scale.setScalar(VSCALE * THREE.MathUtils.lerp(0.78, 1.12, Math.sin(t*Math.PI)));
+      dummy.updateMatrix(); inst.setMatrixAt(i, dummy.matrix);
+    }
+    inst.instanceMatrix.needsUpdate = true;
+    coreMesh.geometry.dispose();
+    coreMesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.022, 10, false);
+  }
+
+  new GLTFLoader().load('assets/3d/vertebra.glb', (g)=>{
+    let mesh = null; g.scene.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
+    if (!mesh) return;
+    const geo = mesh.geometry.clone();
+    geo.rotateX(-Math.PI/2); geo.center(); geo.computeVertexNormals(); geo.computeBoundingBox();
+    const size = new THREE.Vector3(); geo.boundingBox.getSize(size);
+    VSCALE = 0.34 / size.y;
+    inst = new THREE.InstancedMesh(geo, boneMat, N); inst.frustumCulled = false;
+    spine.add(inst); updateSpine(0);
+    // Premier rendu hors rAF : dans un onglet ouvert en arrière-plan (cas courant
+    // depuis un mail), rAF est gelé — l'image est prête dès le retour de l'onglet.
+    try { composer.render(); } catch(e){}
+  });
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.5, 1.25));
+  composer.addPass(new OutputPass());
+
+  addEventListener('resize', ()=>{
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+    isMobile = innerWidth < 720; spine.position.x = isMobile ? 2.4 : 2.1;
+  }, { passive:true });
+
+  // scroll → la colonne se vrille puis se dissout quand le hero sort de l'écran
+  let target=0, coil=0, fade=1, intro=0, px=0, py=0, tx=0, ty=0;
+  addEventListener('pointermove', e => { tx = e.clientX/innerWidth - 0.5; ty = e.clientY/innerHeight - 0.5; }, { passive:true });
+  function onScroll(){
+    const vh = innerHeight;
+    target = Math.min(1, scrollY/(vh*0.9));
+    fade = Math.max(0, Math.min(1, (vh*1.1 - scrollY)/(vh*0.4)));
+  }
+  addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+  let lastCoil=-1, t0=performance.now();
+  requestAnimationFrame(function animate(now){
+    const dt = Math.min(0.05, (now-t0)/1000); t0 = now;
+    if (intro < 1) intro = Math.min(1, intro + dt*0.8);
+    coil += (target-coil) * Math.min(1, dt*3.2);
+    px += (tx-px) * Math.min(1, dt*3); py += (ty-py) * Math.min(1, dt*3);
+    const op = intro * fade * (isMobile ? 0.42 : 0.9);
+    canvas.style.opacity = op.toFixed(3);
+    if (op < 0.01 || document.hidden){ requestAnimationFrame(animate); return; }   // rendu en pause hors-vue
+    if (Math.abs(coil-lastCoil) > 0.0015){ updateSpine(coil); lastCoil = coil; }
+    spine.rotation.y = 0.32 + coil*0.9 + px*0.45;
+    spine.rotation.x = -0.05 + py*0.14;
+    camera.position.x = 0.6 + px*0.8; camera.position.y = 0.2 - py*0.5; camera.position.z = 8.6 + coil*2.6;
+    camera.lookAt(1.1, 0, 0);
+    composer.render();
+    requestAnimationFrame(animate);
+  });
 })();
 </script>
 </body>
