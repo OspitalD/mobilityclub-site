@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     MODE D'EMPLOI — 5 LIGNES
+
+     1. CHANGER LE PRIX ......... PRIX_ACTUEL ci-dessous (120 → 130 → 140 → 150).
+                                  Toute la page se met à jour, y compris le lien.
+     2. CHAQUE PALIER A SON LIEN  Le montant est fixé CÔTÉ PAYPAL, jamais ici.
+                                  Un palier sans lien = bouton désactivé (voulu).
+     3. LE 1ER AOÛT ............. DEUX gestes, jamais un seul :
+                                  a) LANCEMENT_OUVERT = true (écran « prévente terminée »)
+                                  b) SUPPRIMER les 2 redirects de netlify.toml
+                                  Sans (b), le bouton de cet écran renvoie vers
+                                  /devenir-membre qui reboucle ici → boucle.
+     4. NE JAMAIS ............... écrire un prix en dur dans le HTML : utiliser
+                                  data-prix / data-prix-suivant / data-lien-paiement.
+     5. APRÈS MODIF ............. recharger la page, vérifier le prix du bouton
+                                  ET le montant affiché par PayPal au checkout.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+window.MC_OFFRE = {
+
+  /* ► LE SEUL CHIFFRE À CHANGER ◄ */
+  PRIX_ACTUEL: 120,
+
+  /* Un lien de paiement PayPal par palier (paiement unique, 4× sans frais inclus).
+     ⚠️ Le montant vit dans PayPal, pas ici. Coller le lien du bon montant.        */
+  PALIERS: {
+    120: '',   // TODO Damien — lien PayPal 120 €
+    130: '',   // TODO Damien — lien PayPal 130 €
+    140: '',   // TODO Damien — lien PayPal 140 €
+    150: 'https://www.paypal.com/ncp/payment/UKQXVL9FQ6HHN'   // existe déjà
+  },
+
+  PAS: 10,              // +10 € tous les 10 nouveaux membres
+  PLAFOND: 150,         // prix au moment du lancement
+  APRES_MOIS: 24,       // à partir du 1er août
+  APRES_AN: 225,        // à partir du 1er août
+  MEMBRES: 320,         // chiffre réel — ne jamais arrondir vers le haut
+
+  LANCEMENT_OUVERT: false   // ► passer à true le 1er août ◄
+};
+</script>
+
+<title>Prévente de lancement — Mobility Club</title>
+<meta name="description" content="Un an d'accès au Mobility Club à tarif de prévente, avant l'ouverture de l'app le 1er août. Le prix monte de 10 € tous les 10 membres." />
+
+<meta property="og:title" content="Prévente de lancement — Mobility Club" />
+<meta property="og:description" content="Un an d'accès au Mobility Club avant l'ouverture de l'app le 1er août. Le prix monte à chaque palier." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Beacon trafic (visite unique/jour, anonyme) — même mécanisme que les autres pages. -->
+<script>(function(){try{var k='mcv_prevente_'+new Date().toISOString().slice(0,10);if(localStorage.getItem(k))return;localStorage.setItem(k,'1');fetch('https://dashboardmobilityclub.netlify.app/.netlify/functions/traffic-beacon?site=prevente',{method:'POST',keepalive:true,cache:'no-store',mode:'no-cors'}).catch(function(){});}catch(e){}})();</script>
+
+<style>
+:root{
+  --bg-primary:#0D0F0E; --bg-surface:#111412;
+  --border-subtle:rgba(255,255,255,0.04); --border-active:#1A1E1C;
+  --accent-green:#3ECFA0; --accent-green-dim:rgba(62,207,160,0.14);
+  --accent-bronze:#CD8032;                 /* diagnostic / retest */
+  --accent-violet:#B990E0;                 /* video coaching UNIQUEMENT */
+  --accent-gold:#E8A020;
+  --text-primary:#F5F5F3; --text-secondary:#7A7C7A; --text-tertiary:#4A4D4B;
+  --font-sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --font-display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --maxw:820px; --gutter:clamp(20px,5vw,48px); --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary); line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter)}
+.eyebrow{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary)}
+strong,b{font-weight:600}
+
+header{position:sticky; top:0; z-index:30; background:rgba(13,15,14,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--border-subtle)}
+.header-inner{display:flex; align-items:center; justify-content:space-between; height:60px}
+.wordmark{display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px; letter-spacing:0.4px}
+.wordmark .dot{width:8px; height:8px; border-radius:50%; background:var(--accent-gold)}
+.back{font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); transition:color .3s}
+.back:hover{color:var(--text-primary)}
+
+section{padding:clamp(34px,6vh,56px) 0; border-top:1px solid var(--border-subtle)}
+.sec-head{margin-bottom:24px}
+.sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,34px); letter-spacing:-0.02em; line-height:1.15; margin-top:10px; text-wrap:balance}
+.sec-lead{margin-top:14px; font-size:15px; color:var(--text-secondary); line-height:1.62; max-width:58ch}
+.sec-lead b{color:var(--text-primary)}
+
+/* HERO */
+.hero{padding:clamp(40px,7vh,80px) 0 clamp(30px,5vh,48px); border-top:none}
+.badge{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.3); background:rgba(232,160,32,0.06); border-radius:100px; padding:6px 13px}
+.hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(32px,5.6vw,56px); line-height:1.04; letter-spacing:-0.03em; margin-top:20px; text-wrap:balance}
+.hero h1 .em{color:var(--accent-green)}
+.hero .sub{margin-top:20px; font-size:clamp(15px,1.7vw,18px); line-height:1.62; color:var(--text-secondary); max-width:54ch}
+.hero .sub strong{color:var(--text-primary)}
+.hero-proof{margin-top:18px; font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)}
+.hero-proof b{color:var(--text-primary)}
+
+/* BLOC PALIER — prix actuel + prix suivant. Aucune jauge, aucun compteur. */
+.palier{margin-top:clamp(26px,4vh,36px); padding:20px 22px; background:linear-gradient(180deg,rgba(62,207,160,0.07),transparent 70%),var(--bg-surface); border:1px solid rgba(62,207,160,0.25); border-radius:14px}
+.palier-row{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap}
+.palier-prix{font-family:var(--font-display); font-weight:800; font-size:clamp(38px,6.5vw,54px); line-height:1; color:var(--accent-green)}
+.palier-prix .cur{font-size:0.5em; vertical-align:top; margin-right:2px}
+.palier-unit{font-family:var(--font-mono); font-size:12px; color:var(--text-secondary); letter-spacing:0.3px}
+.palier-next{margin-top:12px; font-size:13.5px; color:var(--text-secondary); line-height:1.55}
+.palier-next b{color:var(--text-primary)}
+.palier-cap{margin-top:12px; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary)}
+
+/* Stack numéroté */
+.stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
+.stack-item{background:var(--bg-primary); padding:clamp(16px,2.2vw,22px); display:flex; gap:14px; align-items:flex-start}
+.stack-n{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--accent-green); flex:0 0 auto; padding-top:3px}
+.stack-n.bronze{color:var(--accent-bronze)}
+.stack-n.violet{color:var(--accent-violet)}
+.stack-item h3{font-size:15px; font-weight:600; margin-bottom:4px}
+.stack-item p{font-size:13.5px; color:var(--text-secondary); line-height:1.55}
+
+/* Problème */
+.problem{font-family:var(--font-display); font-weight:700; font-size:clamp(20px,3.2vw,30px); line-height:1.3; letter-spacing:-0.02em; text-wrap:balance}
+.problem .soft{color:var(--text-secondary)}
+.problem .warn{color:var(--accent-bronze); font-style:italic}
+
+/* Différence */
+.diff-grid{display:grid; gap:14px; margin-top:6px}
+.diff{padding:18px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px}
+.diff-k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green); margin-bottom:8px}
+.diff h3{font-size:15.5px; font-weight:600; margin-bottom:6px}
+.diff p{font-size:13.5px; color:var(--text-secondary); line-height:1.58}
+
+/* Vitrine */
+.showcase img{display:block; width:100%; height:auto; border-radius:16px; border:1px solid var(--border-subtle)}
+.showcase figcaption{margin-top:12px; font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); text-align:center}
+
+/* Preuve / avis */
+.proof-row{display:flex; gap:26px; flex-wrap:wrap; margin-bottom:22px}
+.proof-cell .n{font-family:var(--font-mono); font-weight:700; font-size:clamp(24px,4vw,32px); color:var(--text-primary); font-variant-numeric:tabular-nums}
+.proof-cell .l{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin-top:4px}
+.avis-grid{display:grid; gap:14px}
+.avis{padding:18px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px}
+.avis-q{font-size:14.5px; line-height:1.6; color:var(--text-primary)}
+.avis-who{margin-top:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.3px; color:var(--accent-green)}
+.avis-stars{color:var(--accent-gold); font-size:12px; letter-spacing:2px; margin-bottom:9px}
+
+/* Offre / CTA */
+.offer-card{text-align:center; padding:clamp(26px,4vw,40px) clamp(20px,3vw,32px); background:linear-gradient(180deg,rgba(62,207,160,0.06),transparent 60%),var(--bg-surface); border:1px solid rgba(62,207,160,0.35); border-radius:18px}
+.offer-price{font-family:var(--font-display); font-weight:800; font-size:clamp(44px,8vw,68px); line-height:1; color:var(--text-primary)}
+.offer-price .cur{font-size:0.5em; vertical-align:top}
+.offer-what{font-size:15px; color:var(--text-secondary); margin-top:8px}
+.offer-what b{color:var(--text-primary)}
+.offer-anchor{margin-top:10px; font-size:13px; color:var(--text-tertiary)}
+.cta{display:inline-flex; align-items:center; justify-content:center; gap:10px; margin-top:22px; min-height:56px; padding:14px 32px; border-radius:10px; background:var(--accent-green); color:var(--bg-primary); font-weight:700; font-size:16px; text-align:center; transition:transform .2s var(--ease), box-shadow .25s var(--ease)}
+.cta:hover{transform:translateY(-2px); box-shadow:0 16px 40px -14px rgba(62,207,160,0.6)}
+.cta.is-off{background:var(--border-active); color:var(--text-secondary); cursor:not-allowed; pointer-events:none; box-shadow:none; transform:none}
+.cta-note{margin-top:14px; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)}
+.reassure{display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:22px; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)}
+.reassure b{color:var(--text-primary); font-weight:600}
+.after{margin-top:18px; padding:14px 16px; border:1px dashed var(--border-active); border-radius:10px; font-size:13px; color:var(--text-secondary); line-height:1.6}
+.after b{color:var(--text-primary)}
+
+/* Garantie */
+.guarantee{margin-top:20px; padding:18px 20px; background:var(--bg-surface); border:1px solid rgba(62,207,160,0.22); border-radius:12px}
+.guarantee .g-k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green); margin-bottom:8px}
+.guarantee p{font-size:13.5px; color:var(--text-secondary); line-height:1.6}
+.guarantee b{color:var(--text-primary)}
+
+/* FAQ */
+.faq{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
+.faq details{background:var(--bg-primary)}
+.faq summary{list-style:none; cursor:pointer; padding:17px clamp(16px,2.2vw,22px); font-size:14.5px; font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:14px; transition:color .25s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--accent-green)}
+.faq summary::after{content:'+'; font-family:var(--font-mono); font-size:17px; color:var(--accent-green); flex:0 0 auto; transition:transform .25s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .a{padding:0 clamp(16px,2.2vw,22px) 19px; font-size:13.5px; color:var(--text-secondary); line-height:1.62; max-width:64ch}
+.faq .a b{color:var(--text-primary)}
+
+.disclaimer{margin-top:30px; padding-left:14px; border-left:2px solid var(--border-active); font-size:12px; line-height:1.6; color:var(--text-secondary); max-width:60ch}
+footer{padding:32px 0; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); text-align:center}
+
+/* État post-lancement (1er août) */
+#apres-lancement{display:none; min-height:70vh; align-items:center; justify-content:center; text-align:center; padding:60px 0; border-top:none}
+#apres-lancement.on{display:flex}
+.over-inner{max-width:36ch}
+.over-inner h1{font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5vw,46px); letter-spacing:-0.02em; line-height:1.08}
+.over-inner p{margin-top:16px; font-size:15px; color:var(--text-secondary); line-height:1.6}
+.over-cta{display:inline-flex; align-items:center; gap:9px; margin-top:24px; min-height:50px; padding:12px 26px; border-radius:9px; border:1px solid var(--accent-green); color:var(--accent-green); font-weight:700; font-size:15px; transition:background .25s var(--ease)}
+.over-cta:hover{background:var(--accent-green-dim)}
+body.lance #prevente{display:none}
+
+@media (max-width:560px){
+  .stack-item{flex-direction:column; gap:10px}
+  .proof-row{gap:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a href="/" class="wordmark"><span class="dot"></span>MOBILITY&nbsp;CLUB</a>
+    <a href="/" class="back">← Le manifeste</a>
+  </div>
+</header>
+
+<main id="prevente">
+
+  <!-- ═══ 1. HERO ═══════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="badge">Prévente · jusqu'au 1er août</span>
+
+      <!-- COPY : titre du hero -->
+      <h1>Un an pour garder<br><span class="em">tes articulations jeunes.</span></h1>
+
+      <!-- COPY : sous-titre du hero -->
+      <p class="sub">Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong> L'app ouvre le 1<sup>er</sup> août. Jusque-là, l'année est au tarif de prévente.</p>
+
+      <p class="hero-proof"><b data-membres>320</b> membres · méthode terrain</p>
+
+      <!-- Bloc palier : prix actuel + prix suivant. PAS de jauge, PAS de compteur. -->
+      <div class="palier">
+        <div class="palier-row">
+          <span class="palier-prix"><span class="cur">€</span><span data-prix>120</span></span>
+          <span class="palier-unit">l'année · accès complet</span>
+        </div>
+        <p class="palier-next" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres.</p>
+        <p class="palier-cap">Paiement en une fois ou en 4× sans frais.</p>
+      </div>
+
+      <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club — <span data-prix>120</span>&nbsp;€ →</a>
+    </div>
+  </section>
+
+  <!-- ═══ 2. LE PROBLÈME ════════════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Le problème</span>
+      <!-- COPY : le problème — la dette articulaire -->
+      <p class="problem" style="margin-top:14px">Tu sais que la mobilité compte. <span class="soft">Mais les apps te prescrivent la même routine qu'à tout le monde.</span> Alors tu abandonnes en <span class="warn">trois semaines.</span></p>
+      <p class="sec-lead">Pendant ce temps, l'amplitude que tu ne travailles pas, tu la perds — doucement, sans rien sentir. C'est une dette : elle ne fait pas mal aujourd'hui, elle se paie plus tard, en raideur, en compensations, en gestes que tu évites sans t'en rendre compte.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 3. CE QUE C'EST CONCRÈTEMENT ══════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Concrètement</span>
+        <h2>Tu ouvres. Tout est prêt.</h2>
+      </div>
+      <!-- COPY : les 4 étapes de la boucle -->
+      <div class="stack">
+        <div class="stack-item"><span class="stack-n bronze">01</span><div><h3>Le diagnostic</h3><p>Tu testes tes amplitudes sur 5 zones. On sait où tu en es — chiffres à l'appui, pas au ressenti.</p></div></div>
+        <div class="stack-item"><span class="stack-n">02</span><div><h3>Ton programme</h3><p>Le club lit ton sport, ton corps et ta semaine, puis décide de ta séance. Personne n'a le même.</p></div></div>
+        <div class="stack-item"><span class="stack-n">03</span><div><h3>Deux taps</h3><p>Tu ouvres, la séance du jour est déjà là. Tu lances. Tu bouges. C'est tout — ~8 minutes.</p></div></div>
+        <div class="stack-item"><span class="stack-n bronze">04</span><div><h3>Le retest</h3><p>Tous les mois, tu refais le diagnostic. Tu vois ton amplitude gagner du terrain, ou pas — et le programme s'ajuste.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. POURQUOI C'EST DIFFÉRENT ═══════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">La différence</span>
+        <h2>Un programme, pas une playlist d'exercices.</h2>
+      </div>
+      <!-- COPY : les 2 différences structurelles -->
+      <div class="diff-grid">
+        <div class="diff">
+          <div class="diff-k">Prérequis articulaires par sport</div>
+          <h3>Ton sport a des exigences précises. Le club les connaît.</h3>
+          <p>28 sports référencés, chacun avec ses prérequis d'amplitude. Un coureur n'a pas besoin des mêmes hanches qu'un grimpeur. Le club part de ce que ton sport demande, le compare à ce que ton corps donne, et travaille l'écart.</p>
+        </div>
+        <div class="diff">
+          <div class="diff-k">Progression programmée</div>
+          <h3>Tu progresses parce que la charge monte.</h3>
+          <p>La plupart des apps te resservent la même routine jusqu'à l'ennui. Ici, chaque exercice a une progression : l'amplitude, la charge et le temps sous tension augmentent quand tes retests montrent que tu es prêt. C'est ce qui fait la différence entre s'entretenir et progresser.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5. LA PREUVE ══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">La preuve</span>
+        <h2>Ils y sont déjà.</h2>
+      </div>
+      <div class="proof-row">
+        <div class="proof-cell"><div class="n" data-membres>320</div><div class="l">membres</div></div>
+        <div class="proof-cell"><div class="n">2,5</div><div class="l">ans de méthode</div></div>
+        <div class="proof-cell"><div class="n">5</div><div class="l">zones mesurées</div></div>
+      </div>
+      <!-- COPY : témoignages — retours membres réels, ne pas inventer -->
+      <div class="avis-grid">
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En peu de temps, plus aucune douleur pendant mes matchs de padel. Les routines sont redoutablement efficaces. »</p><div class="avis-who">Marie · membre</div></div>
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« Après deux semaines, j'arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie. »</p><div class="avis-who">Camille · membre</div></div>
+        <div class="avis"><div class="avis-stars">★★★★★</div><p class="avis-q">« En 3 mois : je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg. »</p><div class="avis-who">Guillaume · membre</div></div>
+      </div>
+      <figure class="showcase" style="margin-top:22px">
+        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
+             alt="L'app Mobility Club : ta séance du jour prête en 1 clic, un coach vocal pour ajuster ta séance à la voix, et le suivi de ta progression sur 5 zones de mobilité." />
+        <figcaption>L'app que tu utilises chaque jour.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══ 6. CE QUE TU OBTIENS ══════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Ce que tu obtiens</span>
+        <h2>Un an d'accès complet, dès aujourd'hui.</h2>
+      </div>
+      <!-- COPY : le détail de l'inclus -->
+      <div class="stack">
+        <div class="stack-item"><span class="stack-n">01</span><div><h3>Ton programme quotidien, pendant 1 an</h3><p>Séances de ~8 min décidées pour toi, adaptées à ton sport, ton corps et ton emploi du temps.</p></div></div>
+        <div class="stack-item"><span class="stack-n bronze">02</span><div><h3>Diagnostic + retests mensuels</h3><p>Cinq zones mesurées, ta progression suivie dans le temps. Le programme se recale sur tes résultats.</p></div></div>
+        <div class="stack-item"><span class="stack-n">03</span><div><h3>Le coach vocal</h3><p>Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent.</p></div></div>
+        <div class="stack-item"><span class="stack-n violet">04</span><div><h3>La correction de mouvement</h3><p>Tu filmes ton geste, tu l'envoies. Damien te répond : une vraie correction humaine, pas un algorithme.</p></div></div>
+        <div class="stack-item"><span class="stack-n">05</span><div><h3>La librairie d'exercices</h3><p>Toutes les zones, tous les niveaux, avec les vidéos et les fiches d'exécution.</p></div></div>
+        <div class="stack-item"><span class="stack-n">06</span><div><h3>L'app dès son ouverture le 1<sup>er</sup> août</h3><p>Tu es prioritaire au lancement, et tu bloques ton tarif pour l'année.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7. LE PRIX ════════════════════════════════════════════════════════ -->
+  <section id="prix">
+    <div class="wrap">
+      <div class="sec-head" style="text-align:center">
+        <span class="eyebrow">Le prix</span>
+        <h2>Le tarif monte à chaque palier.</h2>
+      </div>
+
+      <div class="offer-card">
+        <span class="badge">Palier actuel</span>
+        <div class="offer-price" style="margin-top:16px"><span class="cur">€</span><span data-prix>120</span></div>
+        <p class="offer-what"><b>1 an d'accès complet</b> au Mobility Club</p>
+        <p class="offer-anchor" data-next-wrap>Passe à <b style="color:var(--accent-green)"><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres.</p>
+
+        <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club — <span data-prix>120</span>&nbsp;€ →</a>
+        <p class="cta-note">Paiement unique · en une fois ou en 4× sans frais · accès 1 an</p>
+
+        <div class="reassure">
+          <span><b>Paiement sécurisé</b> · PayPal</span>
+          <span><b>Accès dès le 1<sup>er</sup> août</b></span>
+          <span><b>Tarif bloqué</b> · 1 an</span>
+        </div>
+
+        <p class="after">À partir du <b>1<sup>er</sup> août</b>, l'adhésion passe à <b><span data-apres-mois>24</span>&nbsp;€/mois ou <span data-apres-an>225</span>&nbsp;€/an</b>. Le tarif de prévente ne reviendra pas.</p>
+      </div>
+
+      <div class="guarantee">
+        <div class="g-k">Garantie progression</div>
+        <!-- COPY : garantie -->
+        <p>Suis tes séances 60 jours et refais ton diagnostic. Si ton score n'a pas progressé, <b>ton mois suivant est offert.</b> On peut le promettre parce qu'on le mesure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8. OBJECTIONS / FAQ ═══════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Objections</span>
+        <h2>Ce que tu te demandes.</h2>
+      </div>
+      <!-- COPY : FAQ — 6 objections -->
+      <div class="faq">
+        <details>
+          <summary>Pourquoi le prix monte ?</summary>
+          <div class="a">Parce que ceux qui s'engagent avant l'ouverture prennent un pari sur le club. Le tarif démarre à <span data-prix-depart>120</span>&nbsp;€ et monte de <span data-pas>10</span>&nbsp;€ tous les 10 nouveaux membres, jusqu'à <span data-plafond>150</span>&nbsp;€ — le prix au moment du lancement. Plus tu arrives tôt, moins tu paies. C'est mis à jour à la main, pas par un compteur qui te met la pression.</div>
+        </details>
+        <details>
+          <summary>Et si je n'ai que 10 minutes par jour ?</summary>
+          <div class="a">C'est exactement le format. Les séances font <b>~8 minutes</b>. Le club est construit pour tenir dans une vraie journée, pas pour la remplir. Et si un jour tu n'as pas ce temps-là, tu le dis au coach vocal et la séance se raccourcit.</div>
+        </details>
+        <details>
+          <summary>Je ne suis pas souple du tout. C'est pour moi ?</summary>
+          <div class="a">Oui — c'est même le point de départ le plus utile, parce qu'on part de mesures. Le diagnostic situe tes amplitudes, et le programme travaille <b>ton</b> écart, pas celui d'un modèle. Personne ne suit le même programme.</div>
+        </details>
+        <details>
+          <summary>J'ai une douleur ou une blessure en cours.</summary>
+          <div class="a">Tu peux la signaler : le club adapte la zone concernée et t'oriente vers un professionnel de santé quand c'est ce qu'il faut faire. Mobility Club est un outil de bien-être et de prévention — <b>il ne remplace ni un diagnostic, ni un traitement médical.</b></div>
+        </details>
+        <details>
+          <summary>Qu'est-ce qui se passe au bout d'un an ?</summary>
+          <div class="a">Tu as accès pendant 12 mois. À l'échéance, tu choisis de continuer au tarif en vigueur, ou pas. <b>Aucun prélèvement automatique</b> : c'est un paiement unique, pas un abonnement qui se reconduit dans ton dos.</div>
+        </details>
+        <details>
+          <summary>L'app n'est pas encore ouverte. Je paie pour quoi ?</summary>
+          <div class="a">Pour un an d'accès qui démarre à l'ouverture, le <b>1<sup>er</sup> août</b>. En attendant, tu peux déjà faire ton diagnostic. Si le score ne bouge pas après 60 jours de séances suivies, la garantie progression s'applique.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 9. CTA FINAL ══════════════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap" style="text-align:center">
+      <!-- COPY : dernière relance -->
+      <h2 style="font-family:var(--font-display); font-weight:800; font-size:clamp(24px,4vw,38px); letter-spacing:-0.025em; line-height:1.1; text-wrap:balance">Le prix ne redescendra pas.</h2>
+      <p class="sec-lead" style="margin-inline:auto">Un an d'accès complet à <b><span data-prix>120</span>&nbsp;€</b> aujourd'hui. <span data-next-inline><span data-prix-suivant>130</span>&nbsp;€ aux 10 prochains membres, puis</span> <span data-apres-an>225</span>&nbsp;€/an à partir du 1<sup>er</sup> août.</p>
+      <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club — <span data-prix>120</span>&nbsp;€ →</a>
+      <p class="cta-note">Paiement unique · en une fois ou en 4× sans frais</p>
+
+      <p class="disclaimer" style="margin-inline:auto; text-align:left">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ═══ ÉTAT POST-LANCEMENT (LANCEMENT_OUVERT = true) ═══════════════════════ -->
+<section id="apres-lancement">
+  <div class="wrap over-inner">
+    <h1>La prévente est terminée.</h1>
+    <p>L'app est ouverte. Le tarif de prévente n'est plus disponible — mais tu peux rejoindre le Club dès maintenant.</p>
+    <a class="over-cta" href="/devenir-membre">Devenir membre →</a>
+  </div>
+</section>
+
+<footer>© 2026 Mobility Club</footer>
+
+<script>
+(function(){
+  var C = window.MC_OFFRE;
+
+  /* ── Mode post-lancement : une seule bascule ─────────────────────────────── */
+  if (C.LANCEMENT_OUVERT){
+    document.body.classList.add('lance');
+    document.getElementById('apres-lancement').classList.add('on');
+    return;
+  }
+
+  /* ── Dérivations : le prix suivant se calcule, on ne le saisit jamais ───── */
+  var prix     = C.PRIX_ACTUEL;
+  var suivant  = Math.min(prix + C.PAS, C.PLAFOND);
+  var auPlafond = prix >= C.PLAFOND;
+  var lien     = C.PALIERS[prix] || '';
+
+  function setAll(sel, val){
+    var n = document.querySelectorAll(sel);
+    for (var i=0;i<n.length;i++) n[i].textContent = val;
+  }
+  setAll('[data-prix]', prix);
+  setAll('[data-prix-suivant]', suivant);
+  setAll('[data-apres-mois]', C.APRES_MOIS);
+  setAll('[data-apres-an]', C.APRES_AN);
+  setAll('[data-membres]', C.MEMBRES);
+  setAll('[data-prix-depart]', 120);
+  setAll('[data-pas]', C.PAS);
+  setAll('[data-plafond]', C.PLAFOND);
+
+  /* Au plafond : plus de « passe à X € », on annonce le tarif du 1er août. */
+  if (auPlafond){
+    var w = document.querySelectorAll('[data-next-wrap]');
+    var wi = document.querySelectorAll('[data-next-inline]');   // au milieu d'une phrase : on retire
+    for (var l=0;l<wi.length;l++) wi[l].textContent = 'Puis';
+    for (var j=0;j<w.length;j++){
+      w[j].innerHTML = 'Dernier palier avant l\'ouverture — ensuite ' + C.APRES_AN + ' €/an.';
+    }
+  }
+
+  /* ── Garde-fou : pas de lien = pas de bouton actif ───────────────────────
+     Le montant est fixé côté PayPal. Un CTA branché sur le mauvais lien
+     ferait payer un autre prix que celui affiché : on préfère le désactiver. */
+  var ctas = document.querySelectorAll('[data-lien-paiement]');
+  for (var k=0;k<ctas.length;k++){
+    if (lien){
+      ctas[k].setAttribute('href', lien);
+      ctas[k].setAttribute('target','_blank');
+      ctas[k].setAttribute('rel','noopener');
+      ctas[k].setAttribute('data-plan','prevente_' + prix);
+    } else {
+      ctas[k].classList.add('is-off');
+      ctas[k].removeAttribute('href');
+      ctas[k].textContent = 'Lien de paiement en cours de configuration';
+      ctas[k].setAttribute('aria-disabled','true');
+    }
+  }
+  if (!lien && window.console) console.warn('[MC] Aucun lien PayPal pour le palier ' + prix + ' € — CTA désactivé. Renseigner MC_OFFRE.PALIERS[' + prix + '].');
+
+  /* ── Tracking (même collecteur que les autres pages) ─────────────────────── */
+  var URL='/.netlify/functions/track-site-event';
+  function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
+  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/prevente',lang:'fr',palier:prix},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+  track('page_view');
+  document.addEventListener('click',function(e){ var p=e.target.closest('[data-plan]'); if(p)track('plan_clicked',{plan:p.getAttribute('data-plan')}); },{passive:true});
+})();
+</script>
+</body>
+</html>

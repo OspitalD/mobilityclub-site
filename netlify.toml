@@ -9,6 +9,23 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# ── Prévente de lancement (jusqu'au 1er août) ──────────────────────────────
+# Une seule porte d'entrée pendant la fenêtre de prévente : les anciennes pages
+# de vente affichaient d'autres prix (150 € / 175 €/an), on les fait converger.
+# ⚠️ 302 et NON 301 : le 301 est mis en cache par les navigateurs, la redirection
+# survivrait au 1er août. À SUPPRIMER le 1er août pour rouvrir /devenir-membre.
+[[redirects]]
+  from = "/offre-flash"
+  to = "/prevente"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/devenir-membre"
+  to = "/prevente"
+  status = 302
+  force = true
+
 # En-têtes de sécurité de base (site statique, aucune donnée sensible)
 [[headers]]
   for = "/*"
