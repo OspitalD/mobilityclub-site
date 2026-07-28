@@ -240,6 +240,24 @@ main, header, footer, #apres-lancement{position:relative; z-index:1}
 .showcase-frame::after{content:''; position:absolute; inset:0; border-radius:22px; pointer-events:none;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .showcase img{display:block; width:100%; height:auto; border-radius:14px; border:1px solid var(--border-active)}
+
+/* Façade vidéo : l'iframe YouTube n'est injectée qu'au clic */
+.demo-facade{display:block; position:relative; width:100%; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; overflow:hidden; -webkit-tap-highlight-color:transparent}
+.demo-facade img{transition:transform .6s var(--ease), filter .4s var(--ease)}
+.demo-facade:hover img, .demo-facade:focus-visible img{transform:scale(1.015); filter:brightness(1.06)}
+.demo-facade:focus-visible{outline:2px solid var(--accent-green); outline-offset:3px}
+.demo-play{position:absolute; top:50%; left:50%; width:clamp(58px,9vw,76px); height:clamp(58px,9vw,76px); transform:translate(-50%,-50%);
+  border-radius:50%; background:rgba(62,207,160,0.95); box-shadow:0 18px 44px -14px rgba(0,0,0,0.8), 0 0 0 0 rgba(62,207,160,0.5);
+  display:grid; place-items:center; animation:demoPulse 3s var(--ease) infinite; transition:transform .3s var(--ease)}
+.demo-play::after{content:''; width:0; height:0; margin-left:5px; border-style:solid; border-width:11px 0 11px 18px; border-color:transparent transparent transparent #0D0F0E}
+.demo-facade:hover .demo-play{transform:translate(-50%,-50%) scale(1.08)}
+@keyframes demoPulse{0%,100%{box-shadow:0 18px 44px -14px rgba(0,0,0,0.8), 0 0 0 0 rgba(62,207,160,0.45)}60%{box-shadow:0 18px 44px -14px rgba(0,0,0,0.8), 0 0 0 18px rgba(62,207,160,0)}}
+.demo-tag{position:absolute; left:14px; bottom:14px; font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.6px;
+  color:var(--text-primary); background:rgba(13,15,14,0.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:6px 12px}
+.demo-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; border:1px solid var(--border-active); background:#000}
+.demo-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+.showcase figcaption a{color:var(--accent-green); text-decoration:underline; text-underline-offset:3px}
 .showcase figcaption{margin-top:14px; display:flex; align-items:center; justify-content:center; gap:10px;
   font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary)}
 
@@ -450,13 +468,25 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
 
     <!-- Vitrine remontée ici : l'image répond directement à « tout est prêt »,
          au lieu d'arriver en fin de section preuve où elle passait inaperçue. -->
+    <!-- Démo vidéo — façade cliquable : rien n'est demandé à YouTube tant que
+         personne ne clique (sinon ~1 Mo et des cookies tiers au chargement).
+         Le poster est hébergé ici, pas sur i.ytimg.com : zéro requête tierce.
+         Sans JS, le lien de la légende reste opérationnel. -->
     <div class="wrap-wide showcase">
       <figure>
         <div class="showcase-frame">
-          <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
-               alt="L'app Mobility Club : ta séance du jour prête en 1 clic, un coach vocal pour ajuster ta séance à la voix, et le suivi de ta progression sur 5 zones de mobilité." />
+          <button class="demo-facade" id="demoFacade" type="button"
+                  data-yt="ixyVpR7hLx4"
+                  aria-label="Lire la démo : Damien utilise l'app, écran filmé">
+            <img src="assets/app/demo-poster.jpg" width="1280" height="720" loading="lazy"
+                 alt="Damien utilise l'app Mobility Club : l'écran du calendrier, où l'on glisse ses sports de la semaine et où la mobilité se cale automatiquement." />
+            <span class="demo-play" aria-hidden="true"></span>
+            <span class="demo-tag">Voir l'app en vrai</span>
+          </button>
         </div>
-        <figcaption>L'app que tu utilises chaque jour</figcaption>
+        <figcaption>L'app filmée en direct ·
+          <a href="https://www.youtube.com/watch?v=ixyVpR7hLx4" target="_blank" rel="noopener">voir sur YouTube</a>
+        </figcaption>
       </figure>
     </div>
   </section>
@@ -888,6 +918,29 @@ body.lance #prevente, body.lance .sticky-cta, body.lance .hero-3d, body.lance .h
       for (var f=0;f<els.length;f++) els[f].classList.add('in');
     }, 2000);
   }
+
+  /* ── DÉMO VIDÉO : l'iframe n'existe qu'après le clic ─────────────────────
+     Avant le clic : une image locale, rien de YouTube. Après : le lecteur en
+     domaine nocookie, lancé automatiquement puisque le geste est explicite. */
+  (function(){
+    var f = document.getElementById('demoFacade');
+    if (!f) return;
+    f.addEventListener('click', function(){
+      var id = f.getAttribute('data-yt');
+      if (!id) return;
+      var box = document.createElement('div');
+      box.className = 'demo-frame';
+      var ifr = document.createElement('iframe');
+      ifr.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      ifr.title = "Démo de l'app Mobility Club";
+      ifr.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; web-share';
+      ifr.referrerPolicy = 'strict-origin-when-cross-origin';
+      ifr.setAttribute('allowfullscreen', '');
+      box.appendChild(ifr);
+      f.parentNode.replaceChild(box, f);
+      if (typeof track === 'function') track('demo_played', { video: id });
+    });
+  })();
 
   /* ── BARRE CTA COLLANTE (mobile) ─────────────────────────────────────────
      Visible entre la fin du hero et la section prix. Elle disparaît là où le
