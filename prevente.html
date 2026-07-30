@@ -241,6 +241,14 @@ main, header, footer, #apres-lancement{position:relative; z-index:1}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .showcase img{display:block; width:100%; height:auto; border-radius:14px; border:1px solid var(--border-active)}
 
+#demo, #prix, #palier{scroll-margin-top:80px}
+/* CTA du hero : mène à la démo, pas au paiement — il ne doit donc pas avoir
+   le poids visuel du bouton d'achat, qui reste le seul plein. */
+/* .cta.cta-ghost et non .cta-ghost : .cta est déclaré plus bas et l'emporterait
+   à spécificité égale — le bouton resterait vert plein. */
+.cta.cta-ghost{background:transparent; color:var(--accent-green); border:1px solid rgba(62,207,160,0.45); box-shadow:none}
+.cta.cta-ghost:hover{background:rgba(62,207,160,0.1); border-color:var(--accent-green); box-shadow:none; transform:translateY(-2px)}
+
 /* Façade vidéo : l'iframe YouTube n'est injectée qu'au clic */
 .demo-facade{display:block; position:relative; width:100%; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; overflow:hidden; -webkit-tap-highlight-color:transparent}
 .demo-facade img{transition:transform .6s var(--ease), filter .4s var(--ease)}
@@ -401,40 +409,11 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
       <!-- COPY : sous-titre du hero -->
       <p class="sub">Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong> L'app ouvre le 1<sup>er</sup> août. Jusque-là, l'année est au tarif de prévente.</p>
 
-      <!-- Bloc palier + jauge des PALIERS DE PRIX.
-           Aucune jauge de places, aucun compteur de membres : l'échelle montre
-           où en est le PRIX (120 → 150), jamais combien de places restent. -->
-      <div class="palier" id="palier">
-        <span class="palier-sweep" aria-hidden="true"></span>
-        <div class="palier-top">
-          <div>
-            <div class="palier-lab">Tarif de prévente · palier actuel</div>
-            <div class="palier-prix"><span class="cur">€</span><span class="n" data-prix-anim>120</span></div>
-            <!-- Équivalent mensuel : dérivé du palier, jamais écrit en dur.
-                 « sur l'année » est obligatoire — l'offre est un paiement
-                 unique, pas un abonnement de 10 €/mois. -->
-            <div class="palier-eq">soit <b><span data-prix-mois>10</span>&nbsp;€/mois</b> sur l'année, au lieu de <span data-apres-mois>24</span>&nbsp;€/mois</div>
-          </div>
-          <div class="palier-unit"><b>1 an d'accès complet</b><br>paiement unique · 4× sans frais</div>
-        </div>
-
-        <div class="palier-bottom">
-          <div class="scale" id="scale" aria-label="Échelle des paliers de prix">
-            <div class="scale-grid" id="scaleGrid">
-              <div class="scale-rail" id="scaleRail"></div>
-              <div class="scale-fill" id="scaleFill"></div>
-            </div>
-            <div class="scale-tags">
-              <span class="here">▲ tu es ici</span>
-              <span>prix au lancement ▲</span>
-            </div>
-          </div>
-          <p class="scale-note" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres. <b>Le prix ne redescend jamais.</b></p>
-        </div>
-      </div>
-
+      <!-- Le prix n'apparaît PAS ici : il est annoncé après la démo, une fois
+           que le produit a été montré. Le CTA du hero mène donc à la vidéo,
+           pas au paiement — on ne demande rien avant d'avoir donné à voir. -->
       <div class="hero-cta-row">
-        <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club —&nbsp;<span data-prix>120</span>&nbsp;€ →</a>
+        <a class="cta cta-ghost" href="#demo">Voir l'app en vrai →</a>
         <p class="hero-proof"><b data-membres>320</b> membres <span class="sep">·</span> méthode terrain <span class="sep">·</span> 2,5 ans</p>
       </div>
     </div>
@@ -472,7 +451,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
          personne ne clique (sinon ~1 Mo et des cookies tiers au chargement).
          Le poster est hébergé ici, pas sur i.ytimg.com : zéro requête tierce.
          Sans JS, le lien de la légende reste opérationnel. -->
-    <div class="wrap-wide showcase">
+    <div class="wrap-wide showcase" id="demo">
       <figure>
         <div class="showcase-frame">
           <button class="demo-facade" id="demoFacade" type="button"
@@ -488,6 +467,45 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
           <a href="https://www.youtube.com/watch?v=ixyVpR7hLx4" target="_blank" rel="noopener">voir sur YouTube</a>
         </figcaption>
       </figure>
+    </div>
+
+    <!-- ANNONCE DU PRIX — délibérément placée APRÈS la démo : on montre le
+         produit avant d'annoncer son tarif. Le hero n'affiche aucun prix.
+         Bloc palier + jauge des PALIERS DE PRIX : l'échelle situe le PRIX
+         (120 → 150), jamais combien de places restent. -->
+    <div class="wrap">
+      <div class="palier" id="palier">
+        <span class="palier-sweep" aria-hidden="true"></span>
+        <div class="palier-top">
+          <div>
+            <div class="palier-lab">Tarif de prévente · palier actuel</div>
+            <div class="palier-prix"><span class="cur">€</span><span class="n" data-prix-anim>120</span></div>
+            <!-- Équivalent mensuel : dérivé du palier, jamais écrit en dur.
+                 « sur l'année » est obligatoire — l'offre est un paiement
+                 unique, pas un abonnement de 10 €/mois. -->
+            <div class="palier-eq">soit <b><span data-prix-mois>10</span>&nbsp;€/mois</b> sur l'année, au lieu de <span data-apres-mois>24</span>&nbsp;€/mois</div>
+          </div>
+          <div class="palier-unit"><b>1 an d'accès complet</b><br>paiement unique · 4× sans frais</div>
+        </div>
+
+        <div class="palier-bottom">
+          <div class="scale" id="scale" aria-label="Échelle des paliers de prix">
+            <div class="scale-grid" id="scaleGrid">
+              <div class="scale-rail" id="scaleRail"></div>
+              <div class="scale-fill" id="scaleFill"></div>
+            </div>
+            <div class="scale-tags">
+              <span class="here">▲ tu es ici</span>
+              <span>prix au lancement ▲</span>
+            </div>
+          </div>
+          <p class="scale-note" data-next-wrap>Passe à <b><span data-prix-suivant>130</span>&nbsp;€</b> aux 10 prochains membres. <b>Le prix ne redescend jamais.</b></p>
+        </div>
+      </div>
+
+      <div class="hero-cta-row">
+        <a class="cta" data-lien-paiement href="#prix">Rejoindre le Club —&nbsp;<span data-prix>120</span>&nbsp;€ →</a>
+      </div>
     </div>
   </section>
 
@@ -947,7 +965,10 @@ body.lance #prevente, body.lance .sticky-cta, body.lance .hero-3d, body.lance .h
      vrai bouton est à l'écran : jamais deux CTA concurrents au même moment. */
   (function(){
     var bar = document.getElementById('stickyCta');
-    var hero = document.querySelector('.hero');
+    /* Ancrée sur le bloc palier, PAS sur le hero : la barre affiche le prix,
+       elle ne doit donc pas apparaître avant que le prix ait été annoncé
+       — c'est-à-dire pas avant que la démo ait été dépassée. */
+    var hero = document.getElementById('palier') || document.querySelector('.hero');
     var prixSec = document.getElementById('prix');
     if (!bar || !hero) return;
     var afterHero = false, inPrix = false;
