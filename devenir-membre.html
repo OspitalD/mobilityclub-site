@@ -23,9 +23,13 @@
 <script>
 window.MC_TARIFS = {
 
-  /* ── MENSUEL — essai gratuit puis abonnement, le tout géré par Skool ────── */
+  /* ── MENSUEL — essai gratuit puis abonnement, le tout géré par Skool ──────
+     ⚠️ Skool ne facture qu'en DOLLARS : on affiche donc la devise réellement
+     débitée. Annoncer un montant en euros ici ferait diverger la page de la
+     carte bancaire du membre — c'est la faute qu'on s'interdit sur ce site.  */
   ESSAI_JOURS:  7,
-  PRIX_MOIS:    20,     // ⚠️ doit correspondre EXACTEMENT au réglage Skool
+  PRIX_MOIS:    25,     // ⚠️ doit correspondre EXACTEMENT au réglage Skool
+  DEVISE_MOIS:  '$',
   LIEN_MENSUEL: 'https://www.skool.com/mobility-club/about',
 
   /* ── ANNUEL — paiement UNIQUE PayPal, aucune reconduction ───────────────── */
@@ -254,10 +258,10 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
         <a class="plan" data-lien-mensuel target="_blank" rel="noopener" data-plan="essai_skool"
            aria-label="Démarrer l'essai gratuit, puis 20€ par mois">
           <span class="plan-tag trial"><span data-essai-jours>7</span> jours offerts</span>
-          <span class="plan-price"><span data-prix-mois>20</span>€<span class="per">/mois</span></span>
-          <span class="plan-sub">Essai gratuit de <span data-essai-jours>7</span> jours, puis <span data-prix-mois>20</span>&nbsp;€/mois. Sans engagement — tu arrêtes quand tu veux.</span>
+          <span class="plan-price"><span data-prix-mois>25</span><span data-devise-mois>$</span><span class="per">/mois</span></span>
+          <span class="plan-sub">Essai gratuit de <span data-essai-jours>7</span> jours, puis <span data-prix-mois>25</span>&nbsp;<span data-devise-mois>$</span>/mois. Sans engagement — tu arrêtes quand tu veux.</span>
           <span class="plan-cta">Démarrer l'essai gratuit →</span>
-          <span class="plan-note">Essai et abonnement gérés sur Skool</span>
+          <span class="plan-note">Facturé en dollars par Skool</span>
         </a>
 
         <!-- ANNUEL — paiement UNIQUE PayPal, aucune reconduction. -->
@@ -304,6 +308,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
 
   setAll('[data-essai-jours]',  T.ESSAI_JOURS);
   setAll('[data-prix-mois]',    T.PRIX_MOIS);
+  setAll('[data-devise-mois]',  T.DEVISE_MOIS);
   setAll('[data-prix-an]',      T.PRIX_AN);
   setAll('[data-fois]',         T.FOIS);
   setAll('[data-prix-an-mois]', eur(T.PRIX_AN / 12));
