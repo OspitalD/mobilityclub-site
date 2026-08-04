@@ -138,6 +138,10 @@ section{padding:clamp(34px,6vh,60px) 0; border-top:1px solid var(--border-subtle
 /* Offre / prix */
 .offer-terms{max-width:56ch; margin:28px auto 0; padding:15px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; text-align:center; font-size:13.5px; line-height:1.62; color:var(--text-secondary)}
 .offer-terms b{color:var(--text-primary); font-weight:600}
+.offer-fx{max-width:58ch; margin:14px auto 0; text-align:center; font-size:11.5px; line-height:1.55; color:var(--text-tertiary)}
+/* !important : ces blocs ne doivent pas réapparaître si une règle de display
+   passe après. Un équivalent en euros affiché sans taux serait un chiffre faux. */
+[hidden]{display:none !important}
 .plans{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:24px}
 .plan{position:relative; flex:0 1 300px; display:flex; flex-direction:column; gap:10px; padding:24px 22px; border-radius:14px; border:1px solid var(--border-active); background:var(--bg-surface); transition:transform .25s var(--ease), border-color .25s var(--ease)}
 .plan:hover{transform:translateY(-3px); border-color:rgba(62,207,160,0.4)}
@@ -261,7 +265,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
           <span class="plan-price"><span data-prix-mois>25</span><span data-devise-mois>$</span><span class="per">/mois</span></span>
           <span class="plan-sub">Essai gratuit de <span data-essai-jours>7</span> jours, puis <span data-prix-mois>25</span>&nbsp;<span data-devise-mois>$</span>/mois. Sans engagement — tu arrêtes quand tu veux.</span>
           <span class="plan-cta">Démarrer l'essai gratuit →</span>
-          <span class="plan-note">Facturé en dollars par Skool</span>
+          <span class="plan-note">Facturé en dollars par Skool<span data-equiv hidden> · ≈ <span data-equiv-eur></span> €</span></span>
         </a>
 
         <!-- ANNUEL — paiement UNIQUE PayPal, aucune reconduction. -->
@@ -275,6 +279,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
         </a>
       </div>
       <p class="offer-terms"><b>L'annuel te donne un an d'accès, sans engagement de renouvellement</b> — c'est un paiement unique, rien ne se reconduit tout seul à l'échéance. Tu reprends une année si tu le décides, jamais par défaut.</p>
+      <p class="offer-fx" data-equiv hidden>Le mensuel est facturé en dollars par Skool. L'équivalent en euros est indicatif, calculé au taux du jour (<span data-equiv-date></span>) : ta banque appliquera le sien le jour du prélèvement.</p>
       <div class="reassure">
         <span><b>Paiement sécurisé</b> · PayPal</span>
         <span><b>Annuel</b> · aucune reconduction</span>
@@ -323,6 +328,22 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
     if (cartes[i][1]) { el.setAttribute('href', cartes[i][1]); }
     else { el.classList.add('off'); el.removeAttribute('href'); el.setAttribute('aria-disabled','true'); }
   }
+
+  /* ── Équivalent en euros du mensuel — INDICATIF ──────────────────────────
+     Skool débite en dollars. On affiche un ordre de grandeur en euros, mais
+     seulement si le taux du jour arrive vraiment : pas de taux ⇒ pas de chiffre.
+     Une page silencieuse reste juste ; une page qui invente un montant, non.
+     Arrondi VERS LE HAUT — on n'annonce jamais moins que ce qui sera débité. */
+  fetch('/.netlify/functions/taux-change', { cache: 'no-store' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if (!d || !(d.rate > 0)) return;
+      setAll('[data-equiv-eur]', Math.ceil(T.PRIX_MOIS * d.rate));
+      setAll('[data-equiv-date]', d.date || 'taux BCE');
+      var z = document.querySelectorAll('[data-equiv]');
+      for (var k=0;k<z.length;k++) z[k].hidden = false;
+    })
+    .catch(function(){ /* muet : l'euro reste caché, le prix en dollars suffit */ });
 })();
 </script>
 
