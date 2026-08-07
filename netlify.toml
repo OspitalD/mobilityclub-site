@@ -18,6 +18,21 @@
 # sans survivre dans le cache des navigateurs — ne jamais y remettre un 301.)
 # /offre-flash s'auto-détruit sur sa propre DEADLINE et pointe déjà ici.
 
+# ── Offre de retour (anciens membres) : hors index ────────────────────────────
+# /retour-au-club ne doit pas être trouvable par quelqu'un qui vient de payer le
+# tarif normal. La page porte déjà <meta name="robots" content="noindex,nofollow">
+# ; l'en-tête HTTP fait la même chose pour les robots qui ne lisent pas le HTML
+# (et pour l'aperçu des liens). Aucune autre page du site n'y renvoie.
+[[headers]]
+  for = "/retour-au-club"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/retour-au-club.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
 # En-têtes de sécurité de base (site statique, aucune donnée sensible)
 [[headers]]
   for = "/*"

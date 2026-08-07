@@ -23,6 +23,11 @@
 //   PAYPAL_CLIENT_SECRET   idem (SECRET)
 //   PAYPAL_WEBHOOK_ID      id du webhook créé dans cette même app
 //   PAYPAL_MONTANT_ANNUEL  optionnel, défaut « 197.00 »
+//   PAYPAL_MONTANTS_ACCEPTES  optionnel, liste séparée par des virgules — sert
+//                          aux campagnes à tarif différent (ex. « 197.00,100.00 »
+//                          pendant l'offre de retour). Prime sur la variable
+//                          ci-dessus. À REMETTRE À « 197.00 » quand la campagne
+//                          se termine.
 //   PAYPAL_DEVISE          optionnel, défaut « EUR »
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
 
@@ -53,9 +58,27 @@ export const memeMontant = (a, b) => {
   return x !== null && x === y;
 };
 
+// Les montants qui ouvrent un accès. UN SEUL par défaut (l'annuel) : le filtre
+// existe parce que le même compte PayPal encaisse aussi la librairie du Timer
+// (9/14/17 €) — élargir la liste sans raison rouvrirait ce trou.
+//
+// Une campagne à tarif différent (ex. l'offre de retour des anciens membres,
+// /retour-au-club) se déclare ici SANS toucher au code :
+//   PAYPAL_MONTANTS_ACCEPTES = "197.00,100.00"
+// Sans cette variable, le comportement est exactement celui d'avant : 197,00 €
+// seul. Retirer un montant de la liste referme la porte immédiatement — c'est
+// ce qu'il faut faire quand une campagne se termine.
+export const montantsAttendus = (env = process.env) =>
+  String(env.PAYPAL_MONTANTS_ACCEPTES || env.PAYPAL_MONTANT_ANNUEL || '197.00')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
 // Ce qu'on accepte de provisionner. Renvoie une RAISON en cas de refus : c'est
 // elle qu'on retrouvera dans les logs le jour où un membre dira « j'ai payé et
 // je n'ai rien reçu ».
+// `attendu.montants` (liste) ou `attendu.montant` (valeur unique) : les deux
+// écritures sont acceptées, la liste l'emporte.
 export const decider = (evenement, attendu) => {
   const type = evenement?.event_type;
   if (type !== 'PAYMENT.CAPTURE.COMPLETED') return { ok: false, raison: `type_ignore:${type}` };
@@ -63,9 +86,10 @@ export const decider = (evenement, attendu) => {
   const r = evenement.resource || {};
   const montant = r.amount?.value;
   const devise = r.amount?.currency_code;
+  const acceptes = Array.isArray(attendu?.montants) ? attendu.montants : [attendu?.montant];
 
   if (devise !== attendu.devise) return { ok: false, raison: `devise:${devise}` };
-  if (!memeMontant(montant, attendu.montant)) return { ok: false, raison: `montant:${montant}` };
+  if (!acceptes.some((a) => memeMontant(montant, a))) return { ok: false, raison: `montant:${montant}` };
   if (!r.id) return { ok: false, raison: 'capture_sans_id' };
 
   return { ok: true, captureId: r.id, orderId: r.supplementary_data?.related_ids?.order_id || null };
@@ -180,8 +204,11 @@ export const handler = async (req) => {
     return json(401, { error: 'signature_invalide' });
   }
 
+  // Paiement en 4× (PayPal Pay Later) : PayPal règle le marchand en UNE fois,
+  // la capture porte donc le montant total (100,00 €) et non 25,00 €. Rien de
+  // spécial à prévoir ici — à confirmer sur la première vraie transaction.
   const attendu = {
-    montant: process.env.PAYPAL_MONTANT_ANNUEL || '197.00',
+    montants: montantsAttendus(),
     devise: process.env.PAYPAL_DEVISE || 'EUR',
   };
   const verdict = decider(evenement, attendu);

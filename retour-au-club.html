@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE DE RETOUR — ANCIENS MEMBRES.  MODE D'EMPLOI — 6 LIGNES
+
+     1. LA DATE DE FIN ......... MC_RETOUR.FIN ci-dessous. UNE seule ligne à
+                                 changer. Format : 'AAAA-MM-JJTHH:MM:SS+02:00'
+                                 (+02:00 = heure de France en été, +01:00 en
+                                 hiver). Date FIXE, identique pour tout le
+                                 monde : jamais de compte à rebours par
+                                 visiteur, jamais de réinitialisation.
+     2. QUAND LA DATE PASSE .... la page bascule seule sur « offre terminée »
+                                 et renvoie vers /devenir-membre au tarif
+                                 normal. Rien d'autre à faire ICI.
+     3. MAIS AUSSI ............. ⚠️ DÉSACTIVER LE LIEN PAYPAL dans PayPal le
+                                 jour où l'offre ferme. Le JS masque la page ;
+                                 il n'empêche pas un lien déjà copié d'être
+                                 payé. Le seul verrou dur est côté PayPal.
+     4. LE LIEN DE PAIEMENT .... MC_RETOUR.LIEN. Le montant vit DANS PayPal,
+                                 jamais ici. Lien vide = bouton éteint (voulu) :
+                                 mieux vaut un bouton mort qu'un bouton qui
+                                 facture autre chose que le prix affiché.
+     5. LA CAPTURE DE RÉMI ..... MC_RETOUR.CAPTURE = chemin de l'image. Vide =
+                                 le cadre n'est pas affiché du tout (la citation
+                                 reste). Aucune image cassée possible.
+     6. AUCUN PRIX EN DUR ...... utiliser data-prix / data-prix-normal /
+                                 data-prix-4x / data-appels. Les dérivés se
+                                 calculent (100 → « 4 × 25 € »).
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+window.MC_RETOUR = {
+
+  /* ► LA SEULE LIGNE À CHANGER POUR PROLONGER OU FERMER L'OFFRE ◄
+     48 h fermes. Heure de France (+02:00 en été, +01:00 en hiver). */
+  FIN: '2026-08-09T20:00:00+02:00',
+
+  /* ── Prix ────────────────────────────────────────────────────────────────
+     PRIX est ce qu'on AFFICHE. Le montant réellement débité vit dans PayPal.
+     Les deux doivent coïncider — le vérifier au checkout après toute modif.  */
+  PRIX:        100,     // l'offre de retour, 12 mois d'accès
+  PRIX_NORMAL: 197,     // le tarif public d'un an (cf. /devenir-membre)
+  FOIS:        4,       // paiement en 4× sans frais proposé par PayPal
+
+  /* Vérifié le 2026-08-07 sur la page PayPal : « Mobility Club - L'app (1an)
+     Offre Ancien Membre », total 100,00 € EUR, option « Payer en plusieurs
+     fois » proposée. Un lien VIDE éteint tous les boutons de la page —
+     garde-fou volontaire, même mécanisme que /prevente : mieux vaut un bouton
+     mort qu'un bouton qui facture autre chose que le prix affiché à côté. */
+  LIEN: 'https://www.paypal.com/ncp/payment/PUYUVHYUDN3KL',
+
+  /* Bonus : appel de 15 min, les N premiers seulement. */
+  APPELS: 15,
+
+  /* Capture du message de Rémi. Vide = cadre non affiché, citation conservée. */
+  CAPTURE: '',
+  CAPTURE_ALT: "Capture du message de Rémi : après son abonnement GOWOD, il compare ses deux auto-évaluations et constate 13 % de gain sur les hanches en 2 semaines de Mobility Club, contre 4 % en 300 jours de GOWOD."
+};
+</script>
+
+<title>Reprendre là où tu t'étais arrêté — Mobility Club</title>
+<meta name="description" content="Offre de retour réservée aux anciens membres du Mobility Club. 12 mois d'accès à l'app, 48 heures." />
+<meta property="og:title" content="Reprendre là où tu t'étais arrêté — Mobility Club" />
+<meta property="og:description" content="Le club est devenu une app. Offre de retour, 48 heures, réservée aux anciens membres." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Beacon trafic (visite unique/jour, anonyme) — même mécanisme que les autres pages. -->
+<script>(function(){try{var k='mcv_retour_'+new Date().toISOString().slice(0,10);if(localStorage.getItem(k))return;localStorage.setItem(k,'1');fetch('https://dashboardmobilityclub.netlify.app/.netlify/functions/traffic-beacon?site=retour-au-club',{method:'POST',keepalive:true,cache:'no-store',mode:'no-cors'}).catch(function(){});}catch(e){}})();</script>
+
+<style>
+/* ══ Design system — repris à l'identique de /prevente ═══════════════════════ */
+:root{
+  --bg-primary:#0D0F0E; --bg-surface:#111412; --bg-raised:#151815;
+  --border-subtle:rgba(255,255,255,0.05); --border-active:#1D211E;
+  --accent-green:#3ECFA0; --accent-green-dim:rgba(62,207,160,0.14);
+  --accent-bronze:#CD8032;
+  --accent-gold:#E8A020;
+  --accent-red:#E05A4A;                    /* urgence UNIQUEMENT (compte à rebours) */
+  --text-primary:#F5F5F3; --text-secondary:#7A7C7A; --text-tertiary:#4A4D4B;
+  --font-sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --font-display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --maxw:760px; --maxw-wide:1080px; --gutter:clamp(20px,5vw,48px);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary); line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden; text-wrap:pretty}
+a{color:var(--accent-green);text-decoration:none}
+a:hover{color:#66dcb6}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter)}
+.wrap-wide{max-width:var(--maxw-wide); margin:0 auto; padding-inline:var(--gutter)}
+strong,b{font-weight:600}
+
+.eyebrow{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--text-tertiary)}
+.eyebrow::before{content:''; width:22px; height:1px; background:var(--border-active); flex:0 0 auto}
+.eyebrow .idx{color:var(--accent-green); opacity:.55}
+
+header{position:sticky; top:0; z-index:30; background:rgba(13,15,14,0.82); backdrop-filter:blur(14px) saturate(1.2); -webkit-backdrop-filter:blur(14px) saturate(1.2); border-bottom:1px solid var(--border-subtle)}
+.header-inner{display:flex; align-items:center; justify-content:space-between; height:58px; max-width:var(--maxw-wide); margin:0 auto; padding-inline:var(--gutter)}
+.wordmark{display:flex; align-items:center; gap:9px; font-weight:700; font-size:13px; letter-spacing:0.6px; color:var(--text-primary)}
+.wordmark:hover{color:var(--text-primary)}
+.wordmark .dot{width:7px; height:7px; border-radius:50%; background:var(--accent-gold); box-shadow:0 0 12px rgba(232,160,32,.55)}
+.back{font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); transition:color .3s}
+.back:hover{color:var(--text-primary)}
+
+section{padding:clamp(56px,9vh,104px) 0; border-top:1px solid var(--border-subtle)}
+.sec-head{margin-bottom:clamp(26px,4vh,38px)}
+.sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(25px,3.6vw,40px); letter-spacing:-0.025em; line-height:1.12; margin-top:14px; text-wrap:balance}
+.sec-lead{margin-top:16px; font-size:15.5px; color:var(--text-secondary); line-height:1.66; max-width:56ch}
+.sec-lead b{color:var(--text-primary)}
+
+/* ═══ HERO ═════════════════════════════════════════════════════════════════ */
+.hero{padding:clamp(38px,8vh,88px) 0 clamp(44px,8vh,88px); border-top:none}
+.badge{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:10.5px; font-weight:700; letter-spacing:1.1px; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.28); background:rgba(232,160,32,0.05); border-radius:100px; padding:6px 13px}
+.badge .pulse{width:7px; height:7px; border-radius:50%; background:var(--accent-red); animation:pulse 1.8s var(--ease) infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,90,74,0.5)}55%{box-shadow:0 0 0 7px rgba(224,90,74,0)}}
+.hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(33px,6.2vw,60px); line-height:1.04; letter-spacing:-0.035em; margin-top:22px; text-wrap:balance}
+.hero h1 .em{color:var(--accent-green)}
+
+/* Le paragraphe du hero est le cœur de la page : c'est lui qui dit « je sais
+   pourquoi tu es parti ». Traité comme une déclaration, pas comme un chapô. */
+.hero-say{margin-top:22px; padding-left:18px; border-left:1px solid var(--border-active); max-width:52ch}
+.hero-say p{font-size:clamp(15.5px,1.7vw,18px); line-height:1.66; color:var(--text-secondary)}
+.hero-say p + p{margin-top:16px}
+.hero-say .punch{color:var(--text-primary); font-weight:600}
+
+/* ── Compte à rebours ────────────────────────────────────────────────────────
+   Date FIXE (MC_RETOUR.FIN), la même pour tous les visiteurs. Aucun cookie,
+   aucune logique par visiteur : l'échéance annoncée dans l'email doit être
+   exactement celle qu'affiche la page. */
+.countdown{margin-top:clamp(26px,4vh,36px)}
+.cd-label{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-red); margin-bottom:12px}
+.cd-grid{display:flex; gap:10px; flex-wrap:wrap}
+.cd-cell{flex:1 1 0; min-width:70px; max-width:110px; text-align:center; padding:14px 10px; background:var(--bg-surface); border:1px solid var(--border-active); border-radius:12px}
+.cd-num{font-family:var(--font-mono); font-weight:700; font-size:clamp(24px,4.4vw,32px); line-height:1; color:var(--text-primary); font-variant-numeric:tabular-nums}
+.cd-unit{font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); margin-top:8px}
+.cd-date{margin-top:12px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-secondary)}
+.cd-date b{color:var(--text-primary)}
+/* Sans JS (ou avant le 1er tick), on n'affiche jamais « --:--:-- » tout seul :
+   la ligne de date en dessous porte l'information à elle seule. */
+
+.hero-cta-row{margin-top:clamp(20px,3vh,28px); display:flex; flex-direction:column; align-items:flex-start; gap:14px}
+
+/* ── Motion gradué — identique à /prevente ────────────────────────────────── */
+.rv{opacity:0; transform:translateY(22px); transition:opacity .8s var(--ease), transform .8s var(--ease)}
+.rv-soft{opacity:0; transform:translateY(10px); transition:opacity .55s var(--ease) var(--d,0ms), transform .55s var(--ease) var(--d,0ms)}
+.rv.in, .rv-soft.in{opacity:1; transform:none}
+
+/* Stack numéroté */
+.stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
+.stack-item{background:var(--bg-primary); padding:clamp(17px,2.4vw,24px); display:grid; grid-template-columns:34px 1fr; gap:14px; align-items:start; transition:background .3s var(--ease)}
+.stack-item:hover{background:var(--bg-surface)}
+.stack-n{font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--accent-green); padding-top:3px; letter-spacing:0.5px}
+.stack-n.bronze{color:var(--accent-bronze)}
+.stack-item h3{font-size:15.5px; font-weight:600; margin-bottom:5px; letter-spacing:-0.01em}
+.stack-item p{font-size:13.5px; color:var(--text-secondary); line-height:1.6; max-width:58ch}
+/* Ligne et non pilule : à 390px le libellé passe sur 2 lignes, et une pilule
+   à 2 lignes pleine largeur ressemble à un bouton mort. */
+.stack-item .worth{display:block; margin-top:10px; padding-top:9px; border-top:1px solid var(--border-subtle);
+  font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.6px; color:var(--accent-bronze)}
+
+/* Récit « ce qui a changé » — déclarations, pas des cartes */
+.told{display:grid; gap:clamp(22px,3.4vh,30px); margin-top:clamp(4px,1vh,10px)}
+.told p{font-size:clamp(15px,1.7vw,17px); line-height:1.7; color:var(--text-secondary); max-width:54ch}
+.told p b{color:var(--text-primary)}
+.told .lead{font-family:var(--font-display); font-weight:700; font-size:clamp(21px,3.4vw,32px); line-height:1.2; letter-spacing:-0.028em; color:var(--text-primary); max-width:20ch; text-wrap:balance}
+.told .said{font-style:italic; color:var(--text-primary)}
+
+/* Vitrine / démo — reprise de /prevente */
+.showcase{margin-top:clamp(30px,5vh,48px)}
+.showcase-frame{position:relative; padding:clamp(10px,1.6vw,18px); border-radius:22px; border:1px solid var(--border-subtle);
+  background:linear-gradient(180deg,rgba(62,207,160,0.06),rgba(255,255,255,0.01) 40%),var(--bg-surface)}
+.showcase img{display:block; width:100%; height:auto; border-radius:14px; border:1px solid var(--border-active)}
+.demo-facade{display:block; position:relative; width:100%; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; overflow:hidden; -webkit-tap-highlight-color:transparent}
+.demo-facade img{transition:transform .6s var(--ease), filter .4s var(--ease)}
+.demo-facade:hover img, .demo-facade:focus-visible img{transform:scale(1.015); filter:brightness(1.06)}
+.demo-facade:focus-visible{outline:2px solid var(--accent-green); outline-offset:3px}
+.demo-play{position:absolute; top:50%; left:50%; width:clamp(58px,9vw,76px); height:clamp(58px,9vw,76px); transform:translate(-50%,-50%);
+  border-radius:50%; background:rgba(62,207,160,0.95); box-shadow:0 18px 44px -14px rgba(0,0,0,0.8);
+  display:grid; place-items:center; animation:demoPulse 3s var(--ease) infinite; transition:transform .3s var(--ease)}
+.demo-play::after{content:''; width:0; height:0; margin-left:5px; border-style:solid; border-width:11px 0 11px 18px; border-color:transparent transparent transparent #0D0F0E}
+.demo-facade:hover .demo-play{transform:translate(-50%,-50%) scale(1.08)}
+@keyframes demoPulse{0%,100%{box-shadow:0 18px 44px -14px rgba(0,0,0,0.8), 0 0 0 0 rgba(62,207,160,0.45)}60%{box-shadow:0 18px 44px -14px rgba(0,0,0,0.8), 0 0 0 18px rgba(62,207,160,0)}}
+.demo-tag{position:absolute; left:14px; bottom:14px; font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:0.6px;
+  color:var(--text-primary); background:rgba(13,15,14,0.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.12); border-radius:100px; padding:6px 12px}
+.demo-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; border:1px solid var(--border-active); background:#000}
+.demo-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+.showcase figcaption{margin-top:14px; display:flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary)}
+.showcase figcaption a{color:var(--accent-green); text-decoration:underline; text-underline-offset:3px}
+
+/* ═══ LA PREUVE — RÉMI ══════════════════════════════════════════════════════
+   Section la plus lourde de la page pour cette audience : beaucoup ont pu
+   tester GOWOD après avoir quitté le club. Traitement plein cadre, contraste
+   marqué, la citation en grand — la capture est la pièce à conviction. */
+#preuve{background:radial-gradient(90% 60% at 50% 0%, rgba(62,207,160,0.07), rgba(62,207,160,0) 70%),var(--bg-surface); border-top:1px solid rgba(62,207,160,0.16)}
+.remi{display:grid; gap:clamp(20px,3vw,28px); margin-top:clamp(8px,2vh,16px)}
+.remi-quote{position:relative; padding:clamp(24px,3.4vw,34px); background:var(--bg-primary); border:1px solid rgba(62,207,160,0.28); border-radius:18px; box-shadow:0 44px 100px -60px rgba(62,207,160,0.45)}
+.remi-quote p{font-size:clamp(15px,1.9vw,17.5px); line-height:1.7; color:var(--text-secondary)}
+.remi-quote p + p{margin-top:15px}
+.remi-quote .hit{color:var(--text-primary); font-weight:600}
+.remi-quote .hit b{color:var(--accent-green); font-weight:700}
+.remi-who{margin-top:18px; padding-top:16px; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-green)}
+/* Les deux nombres, mis face à face — c'est l'argument, pas une décoration. */
+.versus{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:clamp(10px,2.4vw,22px); margin-top:clamp(22px,3.4vh,30px);
+  padding:clamp(18px,2.6vw,26px); border:1px solid var(--border-subtle); border-radius:16px; background:var(--bg-primary)}
+.versus-cell{text-align:center; min-width:0}
+.versus-n{font-family:var(--font-mono); font-weight:700; font-size:clamp(30px,7vw,52px); line-height:1; letter-spacing:-0.04em; font-variant-numeric:tabular-nums}
+/* Le « % » à la taille d'un signe, pas d'un chiffre : à 52px un « %» plein
+   pèse autant que le nombre et l'écart 13/4 ne se lit plus d'un coup d'œil. */
+.versus-n .pc{font-size:0.44em; margin-left:2px; letter-spacing:0; vertical-align:0.42em}
+.versus-cell.win .versus-n{color:var(--accent-green)}
+.versus-cell.lose .versus-n{color:var(--text-tertiary)}
+.versus-k{margin-top:10px; font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.1px; text-transform:uppercase; color:var(--text-tertiary); line-height:1.5}
+.versus-cell.win .versus-k{color:var(--text-secondary)}
+.versus-sep{font-family:var(--font-mono); font-size:11px; letter-spacing:1px; color:var(--text-tertiary); text-transform:uppercase}
+.remi-kicker{margin-top:clamp(20px,3vh,28px); font-family:var(--font-display); font-weight:700; font-size:clamp(19px,3vw,28px); line-height:1.24; letter-spacing:-0.025em; text-wrap:balance; max-width:26ch}
+.remi-kicker b{color:var(--accent-green)}
+/* Cadre de la capture : seulement rendu si MC_RETOUR.CAPTURE est renseigné. */
+.capture-frame{padding:clamp(10px,1.6vw,16px); border-radius:18px; border:1px solid var(--border-subtle); background:var(--bg-primary)}
+.capture-frame img{display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--border-active)}
+.capture-cap{margin-top:12px; font-family:var(--font-mono); font-size:10px; letter-spacing:1.1px; text-transform:uppercase; color:var(--text-tertiary); text-align:center}
+
+/* ── Bonus appel ───────────────────────────────────────────────────────────── */
+.bonus{margin-top:clamp(18px,2.6vh,24px); padding:clamp(20px,2.8vw,26px); border:1px solid rgba(232,160,32,0.28); border-radius:16px;
+  background:linear-gradient(180deg,rgba(232,160,32,0.07),transparent 65%),var(--bg-raised)}
+.bonus-k{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--accent-gold); margin-bottom:11px}
+.bonus h3{font-family:var(--font-display); font-weight:700; font-size:clamp(18px,2.4vw,23px); letter-spacing:-0.02em; line-height:1.25}
+.bonus p{margin-top:10px; font-size:14px; color:var(--text-secondary); line-height:1.65; max-width:52ch}
+.bonus p b{color:var(--text-primary)}
+
+/* ── Garantie — pleine largeur, elle porte le risque ──────────────────────── */
+.guarantee-in{padding:clamp(22px,3vw,30px); border:1px solid rgba(62,207,160,0.24); border-radius:16px; background:var(--bg-raised)}
+.g-k{font-family:var(--font-mono); font-size:9.5px; letter-spacing:1.3px; text-transform:uppercase; color:var(--accent-green); margin-bottom:12px}
+.guarantee-in p{font-size:14.5px; color:var(--text-secondary); line-height:1.7; max-width:56ch}
+.guarantee-in p + p{margin-top:14px}
+.guarantee-in b{color:var(--text-primary)}
+.guarantee-in .why{margin-top:16px; padding-top:14px; border-top:1px solid var(--border-subtle); font-size:13.5px; color:var(--text-secondary)}
+
+/* ═══ LE PRIX ══════════════════════════════════════════════════════════════ */
+#prix{border-top:1px solid rgba(62,207,160,0.16); padding:clamp(66px,11vh,132px) 0;
+  background:radial-gradient(90% 60% at 50% 0%, rgba(62,207,160,0.075), rgba(62,207,160,0) 70%),var(--bg-surface)}
+#prix .sec-head{text-align:center}
+#prix .eyebrow{justify-content:center}
+#prix .eyebrow::after{content:''; width:22px; height:1px; background:var(--border-active)}
+.offer-wrap{max-width:520px; margin:0 auto; padding-inline:var(--gutter)}
+.offer-card{text-align:center; padding:clamp(28px,4vw,40px) clamp(20px,3vw,32px); background:var(--bg-primary);
+  border:1px solid rgba(62,207,160,0.32); border-radius:20px; box-shadow:0 50px 110px -60px rgba(62,207,160,0.5)}
+.offer-was{font-size:13.5px; color:var(--text-secondary); margin-top:18px}
+.offer-was s{color:var(--text-tertiary)}
+.offer-price{display:flex; align-items:flex-start; justify-content:center; gap:2px; margin-top:8px;
+  font-family:var(--font-mono); font-weight:700; font-size:clamp(56px,12vw,82px); line-height:.9; letter-spacing:-0.05em; color:var(--text-primary)}
+.offer-price .cur{font-size:0.42em; line-height:1.15; color:var(--accent-green)}
+.offer-price span[data-prix]{font-variant-numeric:tabular-nums}
+.offer-what{font-size:15px; color:var(--text-secondary); margin-top:14px}
+.offer-what b{color:var(--text-primary)}
+.offer-eq{margin-top:10px; font-family:var(--font-mono); font-size:12.5px; line-height:1.6; color:var(--text-secondary)}
+.offer-eq b{color:var(--accent-green); font-weight:700}
+.cta{display:inline-flex; align-items:center; justify-content:center; gap:0; min-height:58px; padding:15px 26px; border-radius:12px;
+  background:var(--accent-green); color:var(--bg-primary); font-weight:700; font-size:15.5px; letter-spacing:-0.01em; text-align:center;
+  transition:transform .2s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease)}
+.cta:hover{color:var(--bg-primary); background:#4ddcae; transform:translateY(-2px); box-shadow:0 18px 44px -14px rgba(62,207,160,0.65)}
+.cta:active{transform:translateY(0)}
+.cta.is-off{background:var(--border-active); color:var(--text-secondary); cursor:not-allowed; pointer-events:none; box-shadow:none; transform:none; font-size:13.5px; font-weight:600}
+.cta.cta-ghost{background:transparent; color:var(--accent-green); border:1px solid rgba(62,207,160,0.45); box-shadow:none}
+.cta.cta-ghost:hover{background:rgba(62,207,160,0.1); border-color:var(--accent-green); box-shadow:none; transform:translateY(-2px)}
+.offer-card .cta{margin-top:24px; width:100%}
+.cta-note{margin-top:14px; font-family:var(--font-mono); font-size:10.5px; line-height:1.6; color:var(--text-secondary)}
+.deadline-line{margin-top:18px; padding:12px 14px; border:1px solid rgba(224,90,74,0.3); background:rgba(224,90,74,0.06); border-radius:11px;
+  font-family:var(--font-mono); font-size:11.5px; line-height:1.6; color:var(--text-secondary)}
+.deadline-line b{color:var(--text-primary)}
+.reassure{display:grid; gap:9px; margin-top:22px; padding-top:20px; border-top:1px solid var(--border-subtle);
+  font-family:var(--font-mono); font-size:10.5px; color:var(--text-secondary); text-align:left}
+.reassure span{display:flex; gap:9px; align-items:baseline}
+.reassure span::before{content:'—'; color:var(--accent-green); flex:0 0 auto}
+.reassure b{color:var(--text-primary); font-weight:600}
+
+/* Clôture */
+.final{text-align:center}
+.final h2{font-family:var(--font-display); font-weight:800; font-size:clamp(25px,4.4vw,42px); letter-spacing:-0.03em; line-height:1.1; text-wrap:balance}
+.sign{margin-top:clamp(24px,3.6vh,34px); display:flex; flex-direction:column; align-items:center; gap:12px}
+/* La photo est prise en salle, très sombre : à 52px sur fond #0D0F0E elle
+   disparaissait en rond noir. On l'agrandit, on la remonte sur le visage et on
+   l'éclaircit — sinon la signature de la lettre ne signe rien. */
+.sign img{width:66px; height:66px; border-radius:50%; object-fit:cover; object-position:50% 32%;
+  border:1px solid rgba(62,207,160,0.28); filter:brightness(1.45) contrast(1.04)}
+.sign span{font-family:var(--font-mono); font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary)}
+.close-say{margin:clamp(18px,3vh,26px) auto 0; max-width:50ch; text-align:left; padding-left:18px; border-left:1px solid var(--border-active)}
+.close-say p{font-size:15px; line-height:1.7; color:var(--text-secondary)}
+.close-say p + p{margin-top:15px}
+.close-say b{color:var(--text-primary)}
+.disclaimer{margin-top:clamp(32px,5vh,46px); padding-left:16px; border-left:1px solid var(--border-active); font-size:12.5px; line-height:1.65; color:var(--text-secondary); max-width:58ch; text-align:left; margin-inline:auto}
+footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:10.5px; letter-spacing:1px; color:var(--text-tertiary); text-align:center}
+
+/* ── Barre CTA collante (mobile) ─────────────────────────────────────────── */
+.sticky-cta{position:fixed; left:0; right:0; bottom:0; z-index:40; padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+  background:rgba(13,15,14,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--border-active);
+  transform:translateY(115%); transition:transform .45s var(--ease); will-change:transform}
+.sticky-cta.on{transform:none}
+.sticky-inner{display:flex; align-items:center; justify-content:space-between; gap:14px; max-width:var(--maxw); margin:0 auto}
+.sticky-price{display:flex; flex-direction:column; gap:2px; min-width:0}
+.sticky-lab{font-family:var(--font-mono); font-size:9px; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-tertiary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sticky-n{font-family:var(--font-mono); font-weight:700; font-size:21px; line-height:1; letter-spacing:-0.03em; color:var(--accent-green); font-variant-numeric:tabular-nums}
+.sticky-n .cur{font-size:0.6em; opacity:.85}
+.sticky-cta .cta{min-height:46px; padding:11px 18px; font-size:14px; border-radius:10px; flex:0 0 auto}
+@media (min-width:721px){ .sticky-cta{display:none} }
+
+/* Deux colonnes UNIQUEMENT quand la capture existe (classe posée par le JS).
+   Sans elle, le cadre est absent : une grille 2 colonnes laisserait un trou
+   à droite de la citation. */
+@media (min-width:721px){
+  .remi.has-capture{grid-template-columns:1.1fr 0.9fr; align-items:start}
+  .remi.has-capture .capture-frame{position:sticky; top:78px}
+}
+@media (max-width:520px){
+  .versus{grid-template-columns:1fr; gap:16px}
+  .versus-sep{text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+  html{scroll-behavior:auto}
+  /* sans transition, .rv resterait invisible : on neutralise le masquage */
+  .rv, .rv-soft{opacity:1 !important; transform:none !important}
+  .sticky-cta.on{transform:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="wordmark"><span class="dot"></span>MOBILITY&nbsp;CLUB</a>
+    <a href="/" class="back">← Le manifeste</a>
+  </div>
+</header>
+
+<main id="offre-retour">
+
+  <!-- ═══ 1. HERO ═══════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="badge"><span class="pulse"></span>Anciens membres · 48 heures</span>
+
+      <!-- COPY : titre du hero -->
+      <h1>Tu as arrêté.<br><span class="em">Je crois savoir pourquoi.</span></h1>
+
+      <div class="hero-say">
+        <p>Il fallait ouvrir Skool, chercher quelle séance faire, se rappeler à quelle semaine tu en étais. Cinq minutes de réflexion avant même de commencer — et souvent, on refermait sans rien faire.</p>
+        <p class="punch">Ce n'était pas toi le problème. C'était la façon dont je l'avais construit.</p>
+      </div>
+
+      <div class="countdown" id="countdown" hidden>
+        <div class="cd-label">Cette offre se ferme dans</div>
+        <div class="cd-grid">
+          <div class="cd-cell"><div class="cd-num" id="cd-h">--</div><div class="cd-unit">Heures</div></div>
+          <div class="cd-cell"><div class="cd-num" id="cd-m">--</div><div class="cd-unit">Minutes</div></div>
+          <div class="cd-cell"><div class="cd-num" id="cd-s">--</div><div class="cd-unit">Secondes</div></div>
+        </div>
+        <p class="cd-date">Jusqu'au <b data-fin-texte>—</b>.</p>
+      </div>
+
+      <div class="hero-cta-row">
+        <a class="cta cta-ghost" href="#demo">Voir ce que c'est devenu →</a>
+      </div>
+    </div>
+
+    <!-- Démo vidéo — façade cliquable : rien n'est demandé à YouTube tant que
+         personne ne clique. Poster hébergé ici, zéro requête tierce au chargement.
+         Sans JS, le lien de la légende reste opérationnel. -->
+    <div class="wrap-wide showcase" id="demo">
+      <figure>
+        <div class="showcase-frame">
+          <button class="demo-facade" id="demoFacade" type="button"
+                  data-yt="ixyVpR7hLx4"
+                  aria-label="Lire la démo : Damien utilise l'app, écran filmé">
+            <img src="assets/app/demo-poster.jpg" width="1280" height="720"
+                 alt="Damien utilise l'app Mobility Club : l'écran du calendrier, où l'on glisse ses sports de la semaine et où la mobilité se cale automatiquement." />
+            <span class="demo-play" aria-hidden="true"></span>
+            <span class="demo-tag">Voir l'app en vrai</span>
+          </button>
+        </div>
+        <figcaption>L'app filmée en direct ·
+          <a href="https://www.youtube.com/watch?v=ixyVpR7hLx4" target="_blank" rel="noopener">voir sur YouTube</a>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══ 2. CE QUI A CHANGÉ ════════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">01</span> Ce qui a changé</span>
+        <h2>Le club est devenu une app.</h2>
+      </div>
+      <!-- COPY : le récit du changement -->
+      <div class="told">
+        <p>Tu fais un bilan articulaire — chaque articulation testée séparément : ce que tu atteins, ce que tu contrôles vraiment, à gauche comme à droite.</p>
+        <p>Ton programme en sort. Construit pour tes articulations, ton sport, ton métier et ta semaine. <b>Il évolue chaque semaine.</b></p>
+        <p class="lead">Puis tu ouvres et tu fais.</p>
+        <p>Deux taps. Une pour ouvrir, une pour lancer. Chaque exercice a sa vidéo et son chrono.</p>
+        <p>Et si quelque chose ne va pas, tu parles. <span class="said">« Enlève cet exercice, j'ai mal au genou. »</span> C'est fait.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3. LA PREUVE ══════════════════════════════════════════════════════
+       Placée haut dans la page : pour cette audience, c'est l'argument le plus
+       lourd — beaucoup ont pu tester GOWOD après avoir quitté le club. -->
+  <section id="preuve">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">02</span> La preuve</span>
+        <h2>Il a comparé. Avec leur propre outil de mesure.</h2>
+      </div>
+
+      <div class="remi" id="remi">
+        <blockquote class="remi-quote">
+          <!-- COPY : témoignage de Rémi — retour membre RÉEL, ne rien inventer,
+               ne pas retoucher les chiffres (13 % / 4 % / 300 jours). -->
+          <p>« Étant arrivé à la fin de mon abonnement GOWOD, je me suis dit : faisons une dernière fois l'auto-évaluation GOWOD pour comparer.</p>
+          <p class="hit">Bilan : en 2 semaines de Mobility Club j'ai gagné <b>13 % de points de performance</b> sur mes hanches, alors qu'en 300 jours de GOWOD je n'avais progressé que de <b>4 %</b>.</p>
+          <p>GOWOD est une bonne appli pour commencer, mais ton taf lui met une vitesse, je t'avoue. »</p>
+          <div class="remi-who">Rémi · membre</div>
+        </blockquote>
+
+        <!-- La capture n'est insérée que si MC_RETOUR.CAPTURE est renseigné. -->
+        <figure class="capture-frame" id="captureFrame" hidden>
+          <img id="captureImg" src="" alt="" loading="lazy" />
+          <figcaption class="capture-cap">Le message de Rémi</figcaption>
+        </figure>
+      </div>
+
+      <div class="versus">
+        <div class="versus-cell win">
+          <div class="versus-n">13<span class="pc">%</span></div>
+          <div class="versus-k">en 2 semaines<br>de Mobility Club</div>
+        </div>
+        <div class="versus-sep">contre</div>
+        <div class="versus-cell lose">
+          <div class="versus-n">4<span class="pc">%</span></div>
+          <div class="versus-k">en 300 jours<br>de GOWOD</div>
+        </div>
+      </div>
+
+      <p class="remi-kicker">Deux semaines contre trois cents jours. Et c'est <b>leur</b> outil de mesure qui le dit.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 4. CE QUE TU OBTIENS ══════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">03</span> Ce que tu obtiens</span>
+        <h2>Douze mois d'accès complet.</h2>
+      </div>
+      <!-- COPY : le détail de l'inclus -->
+      <div class="stack">
+        <div class="stack-item"><span class="stack-n bronze">01</span><div><h3>Ton bilan articulaire complet</h3><p>Chaque articulation testée séparément — ce que tu atteins, ce que tu contrôles, à gauche comme à droite.</p><span class="worth">un professionnel te le facture ~100&nbsp;€</span></div></div>
+        <div class="stack-item"><span class="stack-n">02</span><div><h3>Ton programme personnalisé</h3><p>Construit pour tes articulations, ton sport, ton métier et ta semaine. Il évolue chaque semaine.</p></div></div>
+        <div class="stack-item"><span class="stack-n bronze">03</span><div><h3>Le retest mensuel</h3><p>Tu refais le bilan chaque mois. Tu vois ce qui bouge, chiffré — et le programme se recale dessus.</p></div></div>
+        <div class="stack-item"><span class="stack-n">04</span><div><h3>Deux taps pour lancer</h3><p>Une pour ouvrir, une pour lancer. Vidéo et chrono sur chaque exercice.</p></div></div>
+        <div class="stack-item"><span class="stack-n">05</span><div><h3>Le pilotage à la voix</h3><p>Une douleur, pas le temps, un imprévu ? Tu le dis à voix haute — ta séance s'adapte.</p></div></div>
+        <div class="stack-item"><span class="stack-n">06</span><div><h3>Et moi derrière</h3><p>Tu te filmes, je corrige. Une vraie correction humaine, pas un algorithme.</p></div></div>
+      </div>
+
+      <div class="bonus">
+        <div class="bonus-k">En bonus, parce que tu reviens</div>
+        <h3>Un appel de 15 minutes avec moi</h3>
+        <p>Pour lancer ton programme correctement, dès le départ. <b>Les <span data-appels>15</span> premiers seulement</b> — après, je ne pourrai plus suivre.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5. LA GARANTIE ════════════════════════════════════════════════════
+       ⚠️ La condition des 70 % suppose que l'app compare séances complétées et
+       séances programmées. Voir la note remontée à Damien avant publication. -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">04</span> La garantie</span>
+        <h2>Tu vas faire deux retests en deux mois.</h2>
+      </div>
+      <div class="guarantee-in">
+        <div class="g-k">Garantie progression</div>
+        <!-- COPY : garantie -->
+        <p>Si ton score articulaire n'a pas progressé au bout de ces deux mois — et que tu as complété <b>au moins 70&nbsp;% de tes séances programmées</b> — je prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</p>
+        <p class="why">Je peux le promettre parce que je mesure. Personne d'autre sur ce marché ne peut le faire.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 6. LE PRIX ════════════════════════════════════════════════════════ -->
+  <section id="prix">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="idx">05</span> Le prix</span>
+        <h2>Parce que tu as déjà fait confiance au club une fois.</h2>
+      </div>
+    </div>
+
+    <div class="offer-wrap">
+      <div class="offer-card">
+        <p class="offer-was">Le tarif normal est de <s><span data-prix-normal>197</span>&nbsp;€ pour un an</s>. Pour toi&nbsp;:</p>
+        <div class="offer-price"><span class="cur">€</span><span data-prix>100</span></div>
+        <p class="offer-what"><b>12 mois d'accès</b> au Mobility Club</p>
+        <p class="offer-eq">payable en <b><span data-fois>4</span> × <span data-prix-4x>25</span>&nbsp;€</b> si tu préfères</p>
+
+        <a class="cta" data-lien-paiement href="#prix">Reprendre là où je m'étais arrêté →</a>
+        <p class="cta-note">Paiement unique · en une fois ou en <span data-fois>4</span>× sans frais · accès 12 mois</p>
+
+        <p class="deadline-line">⏱ <b>Cette offre est valable 48 heures</b>, jusqu'au <b data-fin-texte>—</b>. Après, le tarif normal reprend.</p>
+
+        <div class="reassure">
+          <span><b>Paiement sécurisé</b> · PayPal</span>
+          <span><b>Sans reconduction</b> · paiement unique</span>
+          <span><b>Garantie progression</b> · prolongation gratuite</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7. CLÔTURE ════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="wrap final">
+      <!-- COPY : clôture -->
+      <h2>Je crois que cette fois, c'est différent.</h2>
+
+      <div class="close-say">
+        <p>Tu as arrêté une fois. C'est légitime — ce que je proposais demandait trop d'efforts pour ce que ça rendait.</p>
+        <p><b>J'ai passé deux mois à supprimer exactement ça.</b></p>
+        <p>Si ça ne marche toujours pas pour toi, tu me le diras et j'apprendrai quelque chose. Mais je crois que cette fois, c'est différent.</p>
+      </div>
+
+      <div class="sign">
+        <img src="assets/brand/damien.jpg" width="52" height="52" alt="" loading="lazy" />
+        <span>Damien</span>
+      </div>
+
+      <div class="hero-cta-row" style="align-items:center; margin-top:clamp(26px,4vh,36px)">
+        <a class="cta" data-lien-paiement href="#prix">Reprendre là où je m'étais arrêté →</a>
+        <p class="cta-note"><span data-prix>100</span>&nbsp;€ · 12 mois · en une fois ou en <span data-fois>4</span>× sans frais</p>
+      </div>
+
+      <p class="disclaimer">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Barre collante mobile — hors <main> pour rester au-dessus du flux. -->
+<div class="sticky-cta" id="stickyCta">
+  <div class="sticky-inner">
+    <div class="sticky-price">
+      <span class="sticky-lab">12 mois · offre de retour</span>
+      <span class="sticky-n"><span class="cur">€</span><span data-prix>100</span></span>
+    </div>
+    <a class="cta" data-lien-paiement href="#prix">Je reprends →</a>
+  </div>
+</div>
+
+<!-- ═══ ÉTAT EXPIRÉ (après MC_RETOUR.FIN) ═══════════════════════════════════ -->
+<section id="offre-terminee">
+  <div class="wrap over-inner">
+    <h1>L'offre de retour est terminée.</h1>
+    <p>Les 48 heures sont passées et le tarif normal a repris — <b><span data-prix-normal>197</span>&nbsp;€ pour un an</b>. Tu peux toujours rejoindre le Club.</p>
+    <a class="over-cta" href="/devenir-membre">Devenir membre →</a>
+  </div>
+</section>
+
+<footer>© 2026 Mobility Club</footer>
+
+<style>
+/* État expiré — regroupé ici, hors du flux principal */
+#offre-terminee{display:none; min-height:70vh; align-items:center; justify-content:center; text-align:center; padding:60px 0; border-top:none}
+#offre-terminee.on{display:flex}
+.over-inner{max-width:38ch}
+.over-inner h1{font-family:var(--font-display); font-weight:800; font-size:clamp(28px,5vw,44px); letter-spacing:-0.025em; line-height:1.1}
+.over-inner p{margin-top:16px; font-size:15px; color:var(--text-secondary); line-height:1.65}
+.over-inner p b{color:var(--text-primary)}
+.over-cta{display:inline-flex; align-items:center; gap:9px; margin-top:26px; min-height:52px; padding:13px 26px; border-radius:11px; border:1px solid var(--accent-green); color:var(--accent-green); font-weight:700; font-size:15px; transition:background .25s var(--ease)}
+.over-cta:hover{background:var(--accent-green-dim); color:var(--accent-green)}
+body.termine #offre-retour, body.termine .sticky-cta{display:none}
+</style>
+
+<script>
+(function(){
+  var C = window.MC_RETOUR;
+  var FIN = Date.parse(C.FIN);
+
+  function setAll(sel, val){
+    var n = document.querySelectorAll(sel);
+    for (var i=0;i<n.length;i++) n[i].textContent = val;
+  }
+
+  /* ── La date de fin, écrite en toutes lettres ────────────────────────────
+     Dérivée de MC_RETOUR.FIN : impossible qu'elle diverge du compte à rebours.
+     Affichée à l'heure de PARIS (et non celle du visiteur) — l'échéance
+     annoncée dans l'email doit être la même pour tout le monde. */
+  var finTexte = '—';
+  if (isFinite(FIN)){
+    try {
+      finTexte = new Intl.DateTimeFormat('fr-FR', {
+        weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit',
+        timeZone:'Europe/Paris'
+      }).format(new Date(FIN)).replace(':', 'h');
+    } catch(e){
+      finTexte = new Date(FIN).toLocaleString('fr-FR');
+    }
+  }
+  setAll('[data-fin-texte]', finTexte);
+
+  /* ── L'offre est-elle encore ouverte ? ───────────────────────────────────
+     Une date illisible (faute de frappe dans MC_RETOUR.FIN) est traitée comme
+     EXPIRÉE, jamais comme ouverte : on préfère fermer à tort que vendre après
+     l'échéance annoncée. */
+  function expiree(){ return !isFinite(FIN) || Date.now() >= FIN; }
+
+  var over = document.getElementById('offre-terminee');
+  function fermer(){
+    document.body.classList.add('termine');
+    over.classList.add('on');
+  }
+  if (expiree()){
+    if (!isFinite(FIN) && window.console) console.error('[MC] MC_RETOUR.FIN illisible : « ' + C.FIN +' ». Page fermée par sécurité.');
+    fermer();
+    return;                                  // rien d'autre ne s'exécute
+  }
+
+  /* La page ÉCRIT « 48 heures » en toutes lettres (badge, ligne d'échéance).
+     Si MC_RETOUR.FIN s'en éloigne, la page ment. On ne corrige pas tout seul —
+     la date est une décision — mais on le dit fort dans la console. */
+  (function(){
+    var h = (FIN - Date.now()) / 3600000;
+    if (h > 52 && window.console) console.warn('[MC] MC_RETOUR.FIN est à ' + Math.round(h) + ' h : la page annonce « 48 heures ». Rapprocher la date, ou changer le texte du badge et de la ligne d\'échéance.');
+  })();
+
+  /* ── Prix et dérivés — aucun chiffre écrit en dur dans le HTML ──────────── */
+  var prix = C.PRIX, fois = C.FOIS || 4;
+  setAll('[data-prix]', prix);
+  setAll('[data-prix-normal]', C.PRIX_NORMAL);
+  setAll('[data-appels]', C.APPELS);
+  setAll('[data-fois]', fois);
+  /* 100 → « 25 » ; un montant non divisible → « 25,50 » (virgule française). */
+  setAll('[data-prix-4x]', (Math.round(prix / fois * 100) / 100).toFixed(2).replace(/\.00$/, '').replace('.', ','));
+
+  /* ── Garde-fou : pas de lien = pas de bouton actif ───────────────────────
+     Le montant est fixé côté PayPal. Un CTA branché sur le mauvais lien ferait
+     payer autre chose que le prix affiché : on préfère le désactiver. */
+  var lien = C.LIEN || '';
+  var ctas = document.querySelectorAll('[data-lien-paiement]');
+  for (var k=0;k<ctas.length;k++){
+    if (lien){
+      ctas[k].setAttribute('href', lien);
+      ctas[k].setAttribute('target','_blank');
+      ctas[k].setAttribute('rel','noopener');
+      ctas[k].setAttribute('data-plan','retour_' + prix);
+    } else {
+      ctas[k].classList.add('is-off');
+      ctas[k].removeAttribute('href');
+      ctas[k].textContent = 'Lien de paiement en cours de configuration';
+      ctas[k].setAttribute('aria-disabled','true');
+    }
+  }
+  if (!lien){
+    /* Sans lien, la barre collante n'a plus rien à proposer : son libellé de
+       repli déborderait la barre. On la retire plutôt que de l'afficher cassée. */
+    var bar0 = document.getElementById('stickyCta');
+    if (bar0) bar0.remove();
+    if (window.console) console.warn('[MC] Aucun lien PayPal pour l\'offre de retour — CTA désactivés. Renseigner MC_RETOUR.LIEN (montant ' + prix + ' € EUR).');
+  }
+
+  /* ── La capture de Rémi — insérée seulement si elle existe ───────────────
+     Vide = le cadre n'est jamais rendu. Aucune image cassée possible sur la
+     section qui porte l'argument le plus lourd de la page. */
+  (function(){
+    var frame = document.getElementById('captureFrame');
+    var img = document.getElementById('captureImg');
+    var remi = document.getElementById('remi');
+    if (!frame || !img || !C.CAPTURE) return;
+    /* Fichier introuvable → on retire le cadre ET la mise en 2 colonnes :
+       jamais d'icône d'image cassée sur la section la plus lourde de la page. */
+    img.addEventListener('error', function(){
+      frame.hidden = true;
+      if (remi) remi.classList.remove('has-capture');
+    });
+    img.src = C.CAPTURE;
+    img.alt = C.CAPTURE_ALT || '';
+    frame.hidden = false;
+    if (remi) remi.classList.add('has-capture');
+  })();
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── COMPTE À REBOURS ────────────────────────────────────────────────────
+     Date FIXE, la même pour tous. Aucun cookie, aucune logique par visiteur,
+     aucune réinitialisation possible. Quand elle passe, la page se ferme.
+     ⚠️ Ce JS masque la page ; il n'empêche pas un lien PayPal déjà copié
+     d'être payé — le verrou dur est la désactivation du lien côté PayPal. */
+  (function(){
+    var box = document.getElementById('countdown');
+    var h = document.getElementById('cd-h'), m = document.getElementById('cd-m'), s = document.getElementById('cd-s');
+    if (!box || !h) return;
+    box.hidden = false;
+    function pad(n){ return (n<10?'0':'')+n; }
+    var timer = null;
+    function tick(){
+      var diff = FIN - Date.now();
+      if (diff <= 0){ if (timer) clearInterval(timer); fermer(); return; }
+      var sec = Math.floor(diff/1000);
+      h.textContent = pad(Math.floor(sec/3600));
+      m.textContent = pad(Math.floor(sec%3600/60));
+      s.textContent = pad(sec%60);
+    }
+    tick();
+    timer = setInterval(tick, 1000);
+    /* setInterval est ralenti dans un onglet d'arrière-plan (ouverture depuis
+       un mail) : on recale au retour plutôt que d'afficher un temps figé. */
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) tick(); });
+  })();
+
+  /* ── Révélation au scroll ────────────────────────────────────────────────
+     Les classes sont posées par JS : si le script casse, rien n'est masqué. */
+  if (!reduce && 'IntersectionObserver' in window){
+    var strong = document.querySelectorAll('.sec-head, .hero-say, .offer-card, .showcase, .remi-quote, .remi-kicker, .final h2, .close-say');
+    var soft   = document.querySelectorAll('.stack-item, .told p, .versus, .guarantee-in, .bonus, .capture-frame');
+    var els = [];
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    for (var r=0;r<strong.length;r++){ strong[r].classList.add('rv'); els.push(strong[r]); io.observe(strong[r]); }
+    for (var q=0;q<soft.length;q++){
+      soft[q].classList.add('rv-soft');
+      var sibs = soft[q].parentNode ? soft[q].parentNode.children : [];
+      var pos = 0; for (var z=0;z<sibs.length;z++){ if (sibs[z] === soft[q]) { pos = z; break; } }
+      soft[q].style.setProperty('--d', Math.min(pos,5) * 55 + 'ms');
+      els.push(soft[q]); io.observe(soft[q]);
+    }
+    /* FILET DE SÉCURITÉ — .rv masque le contenu (opacity:0). Si l'observer ne
+       tire jamais (onglet ouvert en arrière-plan depuis un mail, navigateur
+       exotique), la page de vente serait VIDE. Au bout de 2 s sans une seule
+       révélation, on affiche tout : on perd l'effet, jamais le contenu. */
+    setTimeout(function(){
+      if (document.querySelector('.rv.in, .rv-soft.in')) return;
+      for (var f=0;f<els.length;f++) els[f].classList.add('in');
+    }, 2000);
+  }
+
+  /* ── DÉMO VIDÉO : l'iframe n'existe qu'après le clic ─────────────────────── */
+  (function(){
+    var f = document.getElementById('demoFacade');
+    if (!f) return;
+    f.addEventListener('click', function(){
+      var id = f.getAttribute('data-yt');
+      if (!id) return;
+      var box = document.createElement('div');
+      box.className = 'demo-frame';
+      var ifr = document.createElement('iframe');
+      ifr.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      ifr.title = "Démo de l'app Mobility Club";
+      ifr.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; web-share';
+      ifr.referrerPolicy = 'strict-origin-when-cross-origin';
+      ifr.setAttribute('allowfullscreen', '');
+      box.appendChild(ifr);
+      f.parentNode.replaceChild(box, f);
+      track('demo_played', { video: id });
+    });
+  })();
+
+  /* ── BARRE CTA COLLANTE (mobile) ─────────────────────────────────────────
+     Visible entre la fin du hero et la section prix : jamais deux CTA
+     concurrents à l'écran au même moment. */
+  (function(){
+    var bar = document.getElementById('stickyCta');
+    var hero = document.querySelector('.hero');
+    /* Les DEUX zones qui portent déjà un bouton plein : la section prix et la
+       clôture. La barre s'efface sur l'une comme sur l'autre — sinon le membre
+       voit deux CTA concurrents au même moment, dont un tronqué. */
+    var zones = [document.getElementById('prix'), document.querySelector('.final')].filter(Boolean);
+    if (!bar || !hero) return;
+    var afterHero = false, dansZone = zones.map(function(){ return false; });
+    function apply(){
+      var chevauche = dansZone.some(function(v){ return v; });
+      bar.classList.toggle('on', afterHero && !chevauche);
+    }
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){ afterHero = !e[0].isIntersecting; apply(); },
+        { rootMargin: '-40px 0px 0px 0px' }).observe(hero);
+      zones.forEach(function(z, i){
+        new IntersectionObserver(function(e){ dansZone[i] = e[0].isIntersecting; apply(); },
+          { rootMargin: '0px 0px -25% 0px' }).observe(z);
+      });
+    } else {
+      addEventListener('scroll', function(){
+        afterHero = scrollY > hero.offsetHeight * 0.9; apply();
+      }, { passive:true });
+    }
+  })();
+
+  /* ── Tracking (même collecteur que les autres pages) ─────────────────────── */
+  var URL='/.netlify/functions/track-site-event';
+  function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
+  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/retour-au-club',lang:'fr',offre:'retour_'+prix},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+  track('page_view');
+  document.addEventListener('click',function(e){ var p=e.target.closest('[data-plan]'); if(p)track('plan_clicked',{plan:p.getAttribute('data-plan')}); },{passive:true});
+})();
+</script>
+</body>
+</html>

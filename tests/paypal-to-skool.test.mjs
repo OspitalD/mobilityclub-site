@@ -14,7 +14,7 @@ mock.module('@netlify/blobs', {
   },
 });
 
-const { handler, decider, memeMontant, emailValide } = await import(
+const { handler, decider, memeMontant, emailValide, montantsAttendus } = await import(
   '../netlify/functions/paypal-to-skool.js'
 );
 
@@ -85,6 +85,35 @@ test('decider : seule une capture de 197 € EUR passe', () => {
   assert.equal(
     decider({ event_type: 'CHECKOUT.ORDER.APPROVED', resource: {} }, att).raison,
     'type_ignore:CHECKOUT.ORDER.APPROVED'
+  );
+});
+
+test('decider : une liste de montants ouvre la campagne SANS ouvrir la librairie', () => {
+  // Offre de retour des anciens membres : 100 € accepté EN PLUS de l'annuel.
+  const att = { montants: ['197.00', '100.00'], devise: 'EUR' };
+  assert.ok(decider(capture('197.00'), att).ok);
+  assert.ok(decider(capture('100.00'), att).ok);
+  assert.ok(decider(capture('100'), att).ok);          // même montant, autre écriture
+  // Le garde-fou tient : la librairie du Timer reste dehors.
+  assert.equal(decider(capture('9.00'), att).raison, 'montant:9.00');
+  assert.equal(decider(capture('14.00'), att).raison, 'montant:14.00');
+  assert.equal(decider(capture('17.00'), att).raison, 'montant:17.00');
+  assert.equal(decider(capture('100.00', 'USD'), att).raison, 'devise:USD');
+});
+
+test('montantsAttendus : défaut inchangé, campagne opt-in, PAYPAL_MONTANTS_ACCEPTES prime', () => {
+  // Aucune variable → exactement le comportement d'avant.
+  assert.deepEqual(montantsAttendus({}), ['197.00']);
+  assert.deepEqual(montantsAttendus({ PAYPAL_MONTANT_ANNUEL: '210.00' }), ['210.00']);
+  // Campagne ouverte : liste, espaces tolérés.
+  assert.deepEqual(
+    montantsAttendus({ PAYPAL_MONTANTS_ACCEPTES: '197.00, 100.00' }),
+    ['197.00', '100.00']
+  );
+  // La liste prime sur l'ancienne variable.
+  assert.deepEqual(
+    montantsAttendus({ PAYPAL_MONTANTS_ACCEPTES: '100.00', PAYPAL_MONTANT_ANNUEL: '197.00' }),
+    ['100.00']
   );
 });
 
