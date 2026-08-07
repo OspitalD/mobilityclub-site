@@ -64,7 +64,7 @@ window.MC_RETOUR = {
   SEANCES_MIN_SEMAINE: 2,
 
   /* Capture du message de Rémi. Vide = cadre non affiché, citation conservée. */
-  CAPTURE: '',
+  CAPTURE: 'assets/app/remi-gowod.jpg',
   CAPTURE_ALT: "Capture du message de Rémi : après son abonnement GOWOD, il compare ses deux auto-évaluations et constate 13 % de gain sur les hanches en 2 semaines de Mobility Club, contre 4 % en 300 jours de GOWOD."
 };
 </script>
@@ -237,6 +237,7 @@ section{padding:clamp(56px,9vh,104px) 0; border-top:1px solid var(--border-subtl
 .capture-frame{padding:clamp(10px,1.6vw,16px); border-radius:18px; border:1px solid var(--border-subtle); background:var(--bg-primary)}
 .capture-frame img{display:block; width:100%; height:auto; border-radius:12px; border:1px solid var(--border-active)}
 .capture-cap{margin-top:12px; font-family:var(--font-mono); font-size:10px; letter-spacing:1.1px; text-transform:uppercase; color:var(--text-tertiary); text-align:center}
+.capture-cap a{color:var(--accent-green); text-decoration:underline; text-underline-offset:3px}
 
 /* ── Bonus appel ───────────────────────────────────────────────────────────── */
 .bonus{margin-top:clamp(18px,2.6vh,24px); padding:clamp(20px,2.8vw,26px); border:1px solid rgba(232,160,32,0.28); border-radius:16px;
@@ -327,7 +328,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
    Sans elle, le cadre est absent : une grille 2 colonnes laisserait un trou
    à droite de la citation. */
 @media (min-width:721px){
-  .remi.has-capture{grid-template-columns:1.1fr 0.9fr; align-items:start}
+  .remi.has-capture{grid-template-columns:1fr 1fr; align-items:start}
   .remi.has-capture .capture-frame{position:sticky; top:78px}
 }
 @media (max-width:520px){
@@ -432,6 +433,12 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
         <h2>Il a comparé. Avec leur propre outil de mesure.</h2>
       </div>
 
+    </div>
+
+    <!-- Le duo citation + capture sort de la colonne de 760 px : à 250 px de
+         large le texte de la capture était illisible, donc elle ne prouvait
+         plus rien. Même écart de largeur que la vitrine vidéo du hero. -->
+    <div class="wrap-wide">
       <div class="remi" id="remi">
         <blockquote class="remi-quote">
           <!-- COPY : témoignage de Rémi — retour membre RÉEL, ne rien inventer,
@@ -444,11 +451,16 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
 
         <!-- La capture n'est insérée que si MC_RETOUR.CAPTURE est renseigné. -->
         <figure class="capture-frame" id="captureFrame" hidden>
-          <img id="captureImg" src="" alt="" loading="lazy" />
-          <figcaption class="capture-cap">Le message de Rémi</figcaption>
+          <!-- width/height posés en dur : la source est fixée par le JS, donc sans
+               eux le navigateur ne connaît le ratio qu'au chargement de l'image
+               et la section preuve saute au moment où elle arrive. -->
+          <img id="captureImg" src="" alt="" width="800" height="732" loading="lazy" />
+          <figcaption class="capture-cap">Le message de Rémi · <a href="assets/app/remi-gowod.jpg" target="_blank" rel="noopener">voir en grand</a></figcaption>
         </figure>
       </div>
+    </div>
 
+    <div class="wrap">
       <div class="versus">
         <div class="versus-cell win">
           <div class="versus-n">13<span class="pc">%</span></div>
