@@ -28,9 +28,9 @@
      5. LA CAPTURE DE RÉMI ..... MC_RETOUR.CAPTURE = chemin de l'image. Vide =
                                  le cadre n'est pas affiché du tout (la citation
                                  reste). Aucune image cassée possible.
-     6. AUCUN PRIX EN DUR ...... utiliser data-prix / data-prix-normal /
-                                 data-prix-4x / data-appels. Les dérivés se
-                                 calculent (100 → « 4 × 25 € »).
+     6. AUCUN CHIFFRE EN DUR ... utiliser data-prix / data-prix-normal /
+                                 data-prix-4x / data-appels / data-seances-min.
+                                 Les dérivés se calculent (100 → « 4 × 25 € »).
      ══════════════════════════════════════════════════════════════════════════ -->
 <script>
 window.MC_RETOUR = {
@@ -55,6 +55,13 @@ window.MC_RETOUR = {
 
   /* Bonus : appel de 15 min, les N premiers seulement. */
   APPELS: 15,
+
+  /* Seuil de la garantie : nombre minimum de séances par semaine à avoir faites
+     pour que la prolongation gratuite s'applique. 2 = le plancher que l'algo
+     prescrit (un membre à 1 priorité n'a que 2 séances/semaine au programme) :
+     la garantie ne demande donc jamais plus que le programme. Se prouve sur
+     `practice.history`, en JOURS distincts. Voir le pavé de la section 5. */
+  SEANCES_MIN_SEMAINE: 2,
 
   /* Capture du message de Rémi. Vide = cadre non affiché, citation conservée. */
   CAPTURE: '',
@@ -484,8 +491,31 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
   </section>
 
   <!-- ═══ 5. LA GARANTIE ════════════════════════════════════════════════════
-       ⚠️ La condition des 70 % suppose que l'app compare séances complétées et
-       séances programmées. Voir la note remontée à Damien avant publication. -->
+       LA CONDITION EST ADOSSÉE À CE QUI SE COMPTE DÉJÀ, ET RIEN D'AUTRE.
+
+       Elle disait « 70 % de tes séances programmées ». Invérifiable : le
+       dénominateur n'existe nulle part. `admin-beta-list-users.js` écrit
+       `sessions_total = 60` EN DUR dès qu'un programme existe, et
+       `program.sessions_completed` est noté peu fiable dans le code du
+       dashboard lui-même. Promettre sur un chiffre qu'on ne sait pas produire,
+       c'est se retrouver sans réponse le jour où un membre conteste.
+
+       Ce qui se compte vraiment : `practice.history`, la liste des DATES de
+       séances, écrite à chaque complétion (src/main.jsx, applySessionCompletion),
+       mergée en union côté serveur. C'est la source de vérité du streak, et
+       elle est alimentée en production — contrairement au store
+       `dashboard_sessions`, resté vide du lancement au correctif #330.
+
+       POURQUOI 2 ET PAS 3 : l'algo prescrit 2, 3 ou 4 séances/semaine selon le
+       nombre de priorités du diagnostic (lib/algo/frequency-distributor.js).
+       Un membre à une seule priorité n'en a que 2 au programme — lui en
+       demander 3 le disqualifierait d'office. 2 est le plancher que le club
+       prescrit : la garantie ne demande jamais plus que le programme.
+
+       ⚠️ history stocke au plus UNE date par jour calendaire : « 2 séances par
+       semaine » se prouve donc comme 2 JOURS distincts par semaine. Deux
+       séances le même jour comptent pour une. Le dire ainsi si un membre
+       conteste. Le seuil se change dans MC_RETOUR.SEANCES_MIN_SEMAINE. -->
   <section>
     <div class="wrap">
       <div class="sec-head">
@@ -495,7 +525,7 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
       <div class="guarantee-in">
         <div class="g-k">Garantie progression</div>
         <!-- COPY : garantie -->
-        <p>Si ton score articulaire n'a pas progressé au bout de ces deux mois — et que tu as complété <b>au moins 70&nbsp;% de tes séances programmées</b> — je prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</p>
+        <p>Si ton score articulaire n'a pas progressé au bout de ces deux mois — et que tu as fait <b>au moins <span data-seances-min>2</span> séances par semaine</b> sur cette période — je prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</p>
         <p class="why">Je peux le promettre parce que je mesure. Personne d'autre sur ce marché ne peut le faire.</p>
       </div>
     </div>
@@ -650,6 +680,7 @@ body.termine #offre-retour, body.termine .sticky-cta{display:none}
   setAll('[data-prix]', prix);
   setAll('[data-prix-normal]', C.PRIX_NORMAL);
   setAll('[data-appels]', C.APPELS);
+  setAll('[data-seances-min]', C.SEANCES_MIN_SEMAINE);
   setAll('[data-fois]', fois);
   /* 100 → « 25 » ; un montant non divisible → « 25,50 » (virgule française). */
   setAll('[data-prix-4x]', (Math.round(prix / fois * 100) / 100).toFixed(2).replace(/\.00$/, '').replace('.', ','));
