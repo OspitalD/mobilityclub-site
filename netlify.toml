@@ -33,6 +33,27 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow, noarchive"
 
+# ── Filet : les autres formulations de l'URL ──────────────────────────────────
+# Le mail parti aux anciens membres le 2026-08-07 pointait vers une URL qui
+# n'existait pas encore (la page n'était pas publiée) : 2 jours de lien mort.
+# On ne peut pas rappeler un mail, donc toutes les formulations plausibles du
+# lien atterrissent ici. 302 et jamais 301 : un 301 se grave dans le cache des
+# navigateurs et survivrait à la fermeture de la campagne.
+[[redirects]]
+  from = "/retour"
+  to = "/retour-au-club"
+  status = 302
+
+[[redirects]]
+  from = "/anciens-membres"
+  to = "/retour-au-club"
+  status = 302
+
+[[redirects]]
+  from = "/retour-club"
+  to = "/retour-au-club"
+  status = 302
+
 # En-têtes de sécurité de base (site statique, aucune donnée sensible)
 [[headers]]
   for = "/*"
