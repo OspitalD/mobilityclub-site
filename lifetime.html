@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<script>
+window.MC_LIFETIME = {
+  TOTAL: 40,
+  TIER_SIZE: 20,
+  PRICE_1: 199,
+  PRICE_2: 249,
+  // Vérifié le 2026-09-01 : « Accès à vie au Mobility Club Saison 2 », 199,00 € EUR.
+  LINK_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
+  // BLOQUANT pour le second lot : checkout PayPal 249 € encore manquant.
+  LINK_249: '',
+  STOCK_ENDPOINT: '/.netlify/functions/lifetime-stock',
+  POLL_MS: 10000
+};
+</script>
+
+<title>40 Lifetime Tickets — Mobility Club</title>
+<meta name="description" content="40 tickets Lifetime Mobility Club. Les 20 premiers à 199 €, les 20 suivants à 249 €. Un paiement, l’accès au cœur du Club à vie." />
+<meta property="og:title" content="40 Lifetime Tickets — Mobility Club" />
+<meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.mobilityclub.co/lifetime" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --bg:#0D0F0E;
+  --surface:#111412;
+  --surface-2:#161A17;
+  --line:rgba(255,255,255,.075);
+  --line-strong:#2B332F;
+  --mint:#3ECFA0;
+  --mint-wash:rgba(62,207,160,.11);
+  --text:#F5F5F3;
+  --muted:#8C908D;
+  --quiet:#555B57;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --space-xs:4px;
+  --space-sm:8px;
+  --space-md:12px;
+  --space-lg:16px;
+  --space-xl:24px;
+  --space-2xl:32px;
+  --space-3xl:48px;
+  --space-4xl:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{min-width:320px;background:var(--bg)}
+body{
+  min-width:320px;min-height:100svh;overflow-x:hidden;background:var(--bg);color:var(--text);
+  font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  position:fixed;inset:0;z-index:10;pointer-events:none;content:"";opacity:.026;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E")
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.page{width:min(100%,1280px);min-height:100svh;margin-inline:auto;padding-inline:clamp(20px,5vw,72px)}
+
+/* Header */
+.topbar{height:64px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-xl);border-bottom:1px solid var(--line)}
+.wordmark{display:inline-flex;min-height:44px;align-items:center;gap:9px;font-size:13px;font-weight:700;letter-spacing:.4px}
+.wordmark-dot{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.live-stock{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font:500 9px/1.4 var(--mono);letter-spacing:.65px;text-transform:uppercase}
+.live-stock::before{width:6px;height:6px;border-radius:50%;background:var(--mint);content:"";box-shadow:0 0 12px rgba(62,207,160,.7)}
+
+/* Above the fold */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,.78fr);gap:clamp(40px,7vw,104px);align-items:center;padding-block:clamp(40px,7vw,88px)}
+.copy{display:grid;gap:var(--space-xl);align-content:center}
+.eyebrow{font:600 10px/1.4 var(--mono);letter-spacing:1.35px;text-transform:uppercase;color:var(--mint)}
+.copy h1{max-width:9.2ch;font:800 clamp(50px,8vw,100px)/.91 var(--display);letter-spacing:-.057em;text-wrap:balance}
+.copy h1 span{color:var(--mint)}
+.lede{max-width:51ch;color:var(--muted);font-size:clamp(15px,1.5vw,18px);line-height:1.7}
+.lede strong{color:var(--text);font-weight:600}
+.proof-line{display:flex;flex-wrap:wrap;gap:var(--space-md) var(--space-xl);font:500 9.5px/1.5 var(--mono);letter-spacing:.4px;text-transform:uppercase;color:var(--quiet)}
+.proof-line b{color:var(--text);font-weight:600}
+
+/* The ticket machine — one signature animation */
+.machine{position:relative;display:grid;place-items:center;min-height:520px;isolation:isolate;contain:layout paint}
+.machine::before{position:absolute;inset:8% 3%;z-index:-2;border-radius:50%;content:"";background:rgba(62,207,160,.05);filter:blur(46px)}
+.ticket-stack{position:relative;width:min(100%,440px);height:410px}
+.ghost-ticket,.ticket{position:absolute;inset:0;border:1px solid var(--line-strong);border-radius:18px;background:var(--surface)}
+.ghost-ticket.one{transform:translate(16px,16px);opacity:.48}
+.ghost-ticket.two{transform:translate(8px,8px);opacity:.7}
+.ticket{z-index:3;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;border-color:rgba(62,207,160,.42);transform-origin:72% 50%;will-change:transform,opacity}
+.ticket-head,.ticket-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-lg);padding:18px 20px;font:600 9px/1.45 var(--mono);letter-spacing:.75px;text-transform:uppercase}
+.ticket-head{border-bottom:1px dashed var(--line-strong);color:var(--muted)}
+.ticket-head b{color:var(--mint);font-weight:600}
+.ticket-foot{border-top:1px dashed var(--line-strong);color:var(--quiet)}
+.ticket-foot b{color:var(--text);font-weight:600}
+.ticket-body{position:relative;display:grid;align-content:space-between;gap:var(--space-xl);padding:28px 24px 26px}
+.ticket-body::before,.ticket-body::after{position:absolute;left:-10px;width:18px;height:18px;border:1px solid var(--line-strong);border-radius:50%;background:var(--bg);content:""}
+.ticket-body::before{top:-10px}.ticket-body::after{bottom:-10px}
+.ticket-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-lg)}
+.ticket-tier{font:600 9px/1.45 var(--mono);letter-spacing:.7px;text-transform:uppercase;color:var(--quiet)}
+.ticket-tier b{display:block;margin-top:5px;color:var(--text);font:700 15px/1.2 var(--display);letter-spacing:-.015em;text-transform:none}
+.ticket-price{font:700 44px/.95 var(--display);letter-spacing:-.045em;color:var(--text)}
+.ticket-price span{color:var(--mint)}
+.take-state{display:grid;gap:var(--space-md)}
+.take-label{font:600 9px/1.45 var(--mono);letter-spacing:.7px;text-transform:uppercase;color:var(--mint)}
+.take-count{display:flex;align-items:baseline;gap:10px;font:800 clamp(62px,10vw,96px)/.8 var(--display);letter-spacing:-.06em}
+.take-count .denom{font:600 21px/1 var(--mono);letter-spacing:-.04em;color:var(--quiet)}
+.take-message{min-height:42px;color:var(--muted);font-size:13px;line-height:1.55}
+.take-message strong{color:var(--text);font-weight:600}
+.slots{display:grid;grid-template-columns:repeat(20,1fr);gap:4px}
+.slot{height:4px;border-radius:99px;background:var(--line-strong);transition:background .28s var(--ease-out),transform .28s var(--ease-out)}
+.slot.taken{background:var(--mint);transform:scaleY(1.7)}
+.ticket.is-taking{animation:ticket-taken 480ms var(--ease-out) both}
+.ticket.is-arriving{animation:ticket-arrive 460ms var(--ease-out) both}
+@keyframes ticket-taken{
+  0%{transform:translate3d(0,0,0) rotate(0);opacity:1}
+  72%{transform:translate3d(-18%,4%,0) rotate(-4deg);opacity:1}
+  100%{transform:translate3d(-52%,10%,0) rotate(-7deg);opacity:0}
+}
+@keyframes ticket-arrive{
+  0%{transform:translate3d(9%,0,0);opacity:0}
+  100%{transform:translate3d(0,0,0);opacity:1}
+}
+
+/* Action */
+.action{position:absolute;left:50%;bottom:0;z-index:5;width:min(100%,390px);transform:translateX(-50%)}
+.buy{display:flex;min-height:56px;align-items:center;justify-content:center;border-radius:9px;background:var(--mint);color:var(--bg);font-size:15px;font-weight:700;transition:transform .18s var(--ease-out),filter .18s var(--ease-out)}
+.buy:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.buy:active{transform:translateY(0) scale(.985)}
+.buy:focus-visible,.wordmark:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+.buy.off{pointer-events:none;background:var(--line-strong);color:var(--quiet)}
+.action-note{margin-top:10px;color:var(--quiet);font:500 9px/1.5 var(--mono);letter-spacing:.45px;text-align:center;text-transform:uppercase}
+.action-note b{color:var(--text);font-weight:600}
+
+/* Short confidence strip */
+.confidence{display:grid;grid-template-columns:1fr 1fr 1fr;border-block:1px solid var(--line)}
+.confidence-item{display:grid;gap:var(--space-sm);padding:22px 20px;border-inline-end:1px solid var(--line)}
+.confidence-item:last-child{border-inline-end:0}
+.confidence-item span{font:600 9px/1.45 var(--mono);letter-spacing:.75px;text-transform:uppercase;color:var(--mint)}
+.confidence-item p{color:var(--muted);font-size:12.5px;line-height:1.55}
+.confidence-item strong{color:var(--text);font-weight:600}
+
+/* Minimal details */
+.details{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-lg);padding-block:var(--space-2xl) var(--space-4xl)}
+details{border-bottom:1px solid var(--line)}
+summary{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-lg);cursor:pointer;list-style:none;font-size:13px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--mint);font:500 17px/1 var(--mono)}
+details[open] summary::after{content:"×"}
+.detail-copy{padding:0 30px 18px 0;color:var(--muted);font-size:12px;line-height:1.65}
+.legal{grid-column:1/-1;color:var(--quiet);font-size:10.5px;line-height:1.6;text-align:center}
+
+.mobile-action{display:none}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:var(--space-3xl);padding-bottom:var(--space-4xl)}
+  .copy h1{max-width:10ch}
+  .machine{min-height:500px}
+}
+@media (max-width:600px){
+  body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+  .page{padding-inline:20px}
+  .topbar{height:60px}
+  .live-stock{max-width:15ch;text-align:right}
+  .hero{padding-block:var(--space-2xl) var(--space-3xl);gap:var(--space-2xl)}
+  .copy{gap:var(--space-lg)}
+  .copy h1{font-size:clamp(47px,15vw,68px)}
+  .proof-line{display:grid;gap:var(--space-xs)}
+  .machine{min-height:445px}
+  .ticket-stack{height:360px}
+  .ticket-head,.ticket-foot{padding:14px 16px;font-size:8px}
+  .ticket-body{padding:22px 18px 20px}
+  .ticket-price{font-size:38px}
+  .take-count{font-size:68px}
+  .action{display:none}
+  .confidence{grid-template-columns:1fr}
+  .confidence-item{border-inline-end:0;border-bottom:1px solid var(--line)}
+  .confidence-item:last-child{border-bottom:0}
+  .details{grid-template-columns:1fr;padding-bottom:var(--space-2xl)}
+  .legal{grid-column:auto}
+  .mobile-action{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:auto 1fr;gap:var(--space-md);align-items:center;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line-strong);background:rgba(13,15,14,.96);backdrop-filter:blur(14px)}
+  .mobile-price{font:700 23px/1 var(--display);letter-spacing:-.035em}
+  .mobile-price span{color:var(--mint)}
+  .mobile-price small{display:block;margin-top:4px;color:var(--quiet);font:500 8px/1.2 var(--mono);letter-spacing:.4px;text-transform:uppercase}
+  .mobile-action .buy{min-height:48px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .ticket{will-change:auto}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
+    <span class="live-stock" data-live-stock>Stock réel en connexion</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="copy">
+        <span class="eyebrow">Lifetime Pass · saison 2</span>
+        <h1>40 tickets.<br><span>Pas un de plus.</span></h1>
+        <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
+        <div class="proof-line">
+          <span><b>11 personnes</b> l’ont fait il y a un an</span>
+          <span><b>20 tickets</b> à 199 €</span>
+          <span><b>20 tickets</b> à 249 €</span>
+        </div>
+      </div>
+
+      <div class="machine" aria-live="polite">
+        <div class="ticket-stack">
+          <div class="ghost-ticket one" aria-hidden="true"></div>
+          <div class="ghost-ticket two" aria-hidden="true"></div>
+          <article class="ticket" data-ticket>
+            <header class="ticket-head"><span>Mobility Club</span><b>Lifetime ticket</b><span data-serial>MC—01</span></header>
+            <div class="ticket-body">
+              <div class="ticket-meta">
+                <div class="ticket-tier">Lot actuel<b data-tier-name>Les 20 premiers</b></div>
+                <div class="ticket-price"><span>€</span><b data-price>199</b></div>
+              </div>
+              <div class="take-state">
+                <span class="take-label" data-take-label>Le ticket 01 t’attend</span>
+                <div class="take-count"><span data-tier-sold>00</span><span class="denom">/ 20</span></div>
+                <p class="take-message" data-take-message>Le compteur avance uniquement quand un paiement PayPal est réellement validé.</p>
+              </div>
+              <div class="slots" data-slots aria-label="Tickets pris dans le lot actuel"></div>
+            </div>
+            <footer class="ticket-foot"><span>Paiement unique</span><b data-remaining>40 pass restants</b><span>Aucun abonnement</span></footer>
+          </article>
+        </div>
+        <div class="action">
+          <a class="buy off" data-buy data-plan="lifetime_loading" aria-disabled="true">Vérification du ticket…</a>
+          <p class="action-note"><b>Accès au cœur du Club à vie</b> · stock vérifié</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="confidence" aria-label="Ce que couvre le Lifetime Pass">
+      <div class="confidence-item"><span>01 · Tu mesures</span><p><strong>Bilan articulaire</strong> puis nouveaux bilans quand ton corps change.</p></div>
+      <div class="confidence-item"><span>02 · Le Club décide</span><p><strong>Séances personnalisées</strong> selon tes besoins, ton sport et ta semaine.</p></div>
+      <div class="confidence-item"><span>03 · Tu recommences</span><p><strong>Progression mesurée</strong>, nouveaux besoins, nouvelle boucle.</p></div>
+    </section>
+
+    <section class="details">
+      <details>
+        <summary>Qu’est-ce qui est inclus à vie ?</summary>
+        <p class="detail-copy">Le cœur de Mobility Club : app membre, bilans, retests, séances personnalisées, programmes, exercices et évolutions normales du produit principal.</p>
+      </details>
+      <details>
+        <summary>Qu’est-ce qui n’est pas inclus ?</summary>
+        <p class="detail-copy">Coaching individuel, produits physiques, future offre Pro, nouvelles verticales autonomes et produits premium indépendants.</p>
+      </details>
+      <p class="legal">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical.</p>
+    </section>
+  </main>
+</div>
+
+<div class="mobile-action">
+  <div class="mobile-price"><span>€</span><b data-price>199</b><small>une fois</small></div>
+  <a class="buy off" data-buy data-plan="lifetime_loading" aria-disabled="true">Prendre mon ticket →</a>
+</div>
+
+<script>
+(function(){
+  var C=window.MC_LIFETIME||{};
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var currentSold=null;
+  var animating=false;
+  var queue=[];
+
+  function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+  function all(sel){return document.querySelectorAll(sel);}
+  function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
+  function slots(count){
+    var root=document.querySelector('[data-slots]');
+    if(!root.children.length){for(var i=0;i<C.TIER_SIZE;i++){var s=document.createElement('span');s.className='slot';root.appendChild(s);}}
+    var list=root.children;for(var j=0;j<list.length;j++)list[j].classList.toggle('taken',j<count);
+  }
+  function disable(label,plan){
+    var buys=all('[data-buy]');for(var i=0;i<buys.length;i++){
+      buys[i].textContent=label;buys[i].classList.add('off');buys[i].removeAttribute('href');
+      buys[i].setAttribute('aria-disabled','true');buys[i].setAttribute('data-plan',plan||'lifetime_unavailable');
+    }
+  }
+  function enable(link,price,tier){
+    if(!link){disable('Checkout '+price+' € bientôt disponible','lifetime_missing_checkout_'+price);return;}
+    var buys=all('[data-buy]');for(var i=0;i<buys.length;i++){
+      buys[i].textContent='Prendre mon ticket →';buys[i].classList.remove('off');buys[i].href=link;
+      buys[i].target='_blank';buys[i].rel='noopener';buys[i].removeAttribute('aria-disabled');
+      buys[i].setAttribute('data-plan','lifetime_'+price+'_tier_'+tier);
+    }
+  }
+  function stateFor(sold){
+    var safe=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
+    var soldOut=safe>=C.TOTAL;
+    var tier=safe<C.TIER_SIZE?1:2;
+    var tierSold=tier===1?safe:Math.min(C.TIER_SIZE,safe-C.TIER_SIZE);
+    return {sold:safe,soldOut:soldOut,tier:tier,tierSold:tierSold,remaining:Math.max(0,C.TOTAL-safe),price:tier===1?C.PRICE_1:C.PRICE_2,link:tier===1?C.LINK_199:C.LINK_249};
+  }
+  function render(sold,message){
+    var s=stateFor(sold);
+    text('[data-price]',s.price);
+    text('[data-tier-sold]',pad(s.tierSold));
+    text('[data-tier-name]',s.tier===1?'Les 20 premiers':'Les 20 derniers');
+    text('[data-serial]','MC—'+pad(Math.min(C.TIER_SIZE,s.tierSold+1)));
+    text('[data-remaining]',s.remaining+' pass restant'+(s.remaining>1?'s':''));
+    slots(s.tierSold);
+    if(s.soldOut){
+      text('[data-take-label]','Les 40 tickets sont partis');
+      text('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');
+      disable('Les 40 tickets sont partis','lifetime_sold_out');
+    }else{
+      text('[data-take-label]','Le ticket '+pad(s.tierSold+1)+' t’attend');
+      text('[data-take-message]',message||('Il reste '+(C.TIER_SIZE-s.tierSold)+' ticket'+(C.TIER_SIZE-s.tierSold>1?'s':'')+' dans ce lot à '+s.price+' €.'));
+      enable(s.link,s.price,s.tier);
+    }
+    text('[data-live-stock]',s.remaining?s.remaining+' Lifetime Pass disponibles':'Offre complète');
+  }
+  function animateOne(nextSold){
+    if(reduced){render(nextSold);return Promise.resolve();}
+    var ticket=document.querySelector('[data-ticket]');
+    animating=true;
+    text('[data-take-label]','Ticket '+pad(stateFor(nextSold).tierSold||20)+'/20 pris');
+    text('[data-take-message]','Un paiement vient d’être validé. Le stock réel se met à jour.');
+    ticket.classList.remove('is-arriving');ticket.classList.add('is-taking');
+    return new Promise(function(resolve){
+      window.setTimeout(function(){
+        render(nextSold,'Le prochain ticket est disponible maintenant.');
+        ticket.classList.remove('is-taking');void ticket.offsetWidth;ticket.classList.add('is-arriving');
+        window.setTimeout(function(){ticket.classList.remove('is-arriving');animating=false;resolve();},470);
+      },490);
+    });
+  }
+  function drain(){
+    if(animating||!queue.length)return;
+    var next=queue.shift();animateOne(next).then(drain);
+  }
+  function update(sold,initial){
+    sold=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
+    if(currentSold===null){
+      currentSold=sold;
+      if(initial&&sold>0&&!reduced){
+        var start=Math.max(0,sold-2);render(start);
+        for(var n=start+1;n<=sold;n++)queue.push(n);
+        drain();
+      }else render(sold);
+      return;
+    }
+    if(sold>currentSold){for(var i=currentSold+1;i<=sold;i++)queue.push(i);currentSold=sold;drain();}
+    else if(sold<currentSold){currentSold=sold;render(sold);}
+  }
+  function load(initial){
+    fetch(C.STOCK_ENDPOINT,{cache:'no-store'})
+      .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
+      .then(function(data){if(!data||data.live!==true)throw new Error('stock invalide');update(data.sold,initial);})
+      .catch(function(){
+        if(currentSold===null){text('[data-live-stock]','Stock momentanément indisponible');text('[data-take-label]','Vérification impossible');text('[data-take-message]','Actualise la page pour récupérer le stock réel.');disable('Actualise pour vérifier le ticket','lifetime_stock_unavailable');}
+      });
+  }
+
+  slots(0);load(true);window.setInterval(function(){load(false);},C.POLL_MS);
+
+  var URL='/.netlify/functions/track-site-event';
+  function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
+  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/lifetime',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+  track('page_view');
+  document.addEventListener('click',function(e){var plan=e.target.closest('[data-plan]');if(plan&&!plan.classList.contains('off'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});},{passive:true});
+})();
+</script>
+</body>
+</html>
