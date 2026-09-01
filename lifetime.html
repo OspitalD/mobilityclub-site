@@ -87,55 +87,59 @@ button{font:inherit}
 .proof-line{display:flex;flex-wrap:wrap;gap:var(--space-md) var(--space-xl);font:500 9.5px/1.5 var(--mono);letter-spacing:.4px;text-transform:uppercase;color:var(--quiet)}
 .proof-line b{color:var(--text);font-weight:600}
 
-/* The ticket machine — one signature animation */
-.machine{position:relative;display:grid;place-items:center;min-height:520px;isolation:isolate;contain:layout paint}
+/* The ticket board — one signature interaction */
+.machine{position:relative;display:grid;place-items:center;align-content:center;gap:var(--space-xl);min-height:540px;isolation:isolate;contain:layout paint}
 .machine::before{position:absolute;inset:8% 3%;z-index:-2;border-radius:50%;content:"";background:rgba(62,207,160,.05);filter:blur(46px)}
-.ticket-stack{position:relative;width:min(100%,440px);height:410px}
-.ghost-ticket,.ticket{position:absolute;inset:0;border:1px solid var(--line-strong);border-radius:18px;background:var(--surface)}
-.ghost-ticket.one{transform:translate(16px,16px);opacity:.48}
-.ghost-ticket.two{transform:translate(8px,8px);opacity:.7}
-.ticket{z-index:3;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;border-color:rgba(62,207,160,.42);transform-origin:72% 50%;will-change:transform,opacity}
-.ticket-head,.ticket-foot{display:flex;align-items:center;justify-content:space-between;gap:var(--space-lg);padding:18px 20px;font:600 9px/1.45 var(--mono);letter-spacing:.75px;text-transform:uppercase}
-.ticket-head{border-bottom:1px dashed var(--line-strong);color:var(--muted)}
-.ticket-head b{color:var(--mint);font-weight:600}
-.ticket-foot{border-top:1px dashed var(--line-strong);color:var(--quiet)}
-.ticket-foot b{color:var(--text);font-weight:600}
-.ticket-body{position:relative;display:grid;align-content:space-between;gap:var(--space-xl);padding:28px 24px 26px}
-.ticket-body::before,.ticket-body::after{position:absolute;left:-10px;width:18px;height:18px;border:1px solid var(--line-strong);border-radius:50%;background:var(--bg);content:""}
-.ticket-body::before{top:-10px}.ticket-body::after{bottom:-10px}
-.ticket-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-lg)}
-.ticket-tier{font:600 9px/1.45 var(--mono);letter-spacing:.7px;text-transform:uppercase;color:var(--quiet)}
-.ticket-tier b{display:block;margin-top:5px;color:var(--text);font:700 15px/1.2 var(--display);letter-spacing:-.015em;text-transform:none}
-.ticket-price{font:700 44px/.95 var(--display);letter-spacing:-.045em;color:var(--text)}
-.ticket-price span{color:var(--mint)}
-.take-state{display:grid;gap:var(--space-md)}
+.ticket-board{width:min(100%,460px);display:grid;gap:var(--space-lg)}
+.board-head{display:flex;align-items:end;justify-content:space-between;gap:var(--space-lg);padding-bottom:var(--space-md);border-bottom:1px solid var(--line)}
+.board-tier{font:600 9px/1.45 var(--mono);letter-spacing:.75px;text-transform:uppercase;color:var(--quiet)}
+.board-tier b{display:block;margin-top:4px;color:var(--text);font:700 16px/1.2 var(--display);letter-spacing:-.02em;text-transform:none}
+.board-price{font:700 34px/.9 var(--display);letter-spacing:-.045em;color:var(--text)}
+.board-price span{color:var(--mint)}
+.board-remaining{max-width:16ch;color:var(--muted);font:500 9px/1.5 var(--mono);letter-spacing:.55px;text-align:right;text-transform:uppercase}
+.ticket-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.mini-ticket{
+  position:relative;min-width:0;aspect-ratio:.84;display:grid;grid-template-rows:auto 1fr auto;gap:3px;
+  padding:8px 7px 7px;overflow:hidden;border:1px solid var(--line-strong);border-radius:5px;
+  background:var(--surface);color:var(--text);text-align:left;transform-origin:50% 65%;
+  transition:border-color .2s var(--ease-out),background .2s var(--ease-out),opacity .2s var(--ease-out),transform .2s var(--ease-out);
+}
+.mini-ticket::before,.mini-ticket::after{position:absolute;right:-5px;width:9px;height:9px;border:1px solid var(--line-strong);border-radius:50%;background:var(--bg);content:""}
+.mini-ticket::before{top:24%}.mini-ticket::after{bottom:24%}
+.mini-ticket-kicker,.mini-ticket-code,.mini-ticket-status{font:600 6px/1.35 var(--mono);letter-spacing:.55px;text-transform:uppercase}
+.mini-ticket-kicker,.mini-ticket-code{color:var(--quiet)}
+.mini-ticket-no{align-self:center;font:800 clamp(24px,3.2vw,38px)/.85 var(--display);letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.mini-ticket-status{padding-top:5px;border-top:1px dashed var(--line-strong);color:var(--quiet);white-space:nowrap}
+.mini-ticket.is-taken{opacity:.36;background:#0F1110}
+.mini-ticket.is-taken .mini-ticket-no{color:var(--quiet)}
+.mini-ticket.is-next{cursor:pointer;border-color:rgba(62,207,160,.62);background:var(--mint-wash)}
+.mini-ticket.is-next .mini-ticket-kicker,.mini-ticket.is-next .mini-ticket-status{color:var(--mint)}
+.mini-ticket.is-next:hover{transform:translateY(-3px);border-color:var(--mint)}
+.mini-ticket.is-next:active{transform:translateY(0) scale(.96)}
+.mini-ticket.is-queued{opacity:.58}
+.mini-ticket.is-selected{border-color:var(--mint);background:rgba(62,207,160,.15);transform:translateY(-3px) rotate(-1deg)}
+.mini-ticket:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.ticket-stamp{position:absolute;left:50%;top:50%;z-index:3;padding:2px 4px;border:1.5px solid currentColor;color:var(--quiet);font:700 7px/1 var(--mono);letter-spacing:.7px;text-transform:uppercase;opacity:0;transform:translate(-50%,-50%) rotate(-10deg)}
+.mini-ticket.is-taken .ticket-stamp{opacity:1}
+.mini-ticket.is-selected .ticket-stamp{color:var(--mint);opacity:1}
+.mini-ticket.is-claiming .ticket-stamp,.mini-ticket.is-confirming .ticket-stamp{animation:ticket-stamp 420ms var(--ease-out) both}
+@keyframes ticket-stamp{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-18deg) scale(1.8)}
+  100%{opacity:1;transform:translate(-50%,-50%) rotate(-10deg) scale(1)}
+}
+.board-status{min-height:62px;display:grid;align-content:start;gap:6px;padding-top:var(--space-sm);border-top:1px solid var(--line)}
 .take-label{font:600 9px/1.45 var(--mono);letter-spacing:.7px;text-transform:uppercase;color:var(--mint)}
-.take-count{display:flex;align-items:baseline;gap:10px;font:800 clamp(62px,10vw,96px)/.8 var(--display);letter-spacing:-.06em}
-.take-count .denom{font:600 21px/1 var(--mono);letter-spacing:-.04em;color:var(--quiet)}
-.take-message{min-height:42px;color:var(--muted);font-size:13px;line-height:1.55}
+.take-message{color:var(--muted);font-size:12px;line-height:1.55}
 .take-message strong{color:var(--text);font-weight:600}
-.slots{display:grid;grid-template-columns:repeat(20,1fr);gap:4px}
-.slot{height:4px;border-radius:99px;background:var(--line-strong);transition:background .28s var(--ease-out),transform .28s var(--ease-out)}
-.slot.taken{background:var(--mint);transform:scaleY(1.7)}
-.ticket.is-taking{animation:ticket-taken 480ms var(--ease-out) both}
-.ticket.is-arriving{animation:ticket-arrive 460ms var(--ease-out) both}
-@keyframes ticket-taken{
-  0%{transform:translate3d(0,0,0) rotate(0);opacity:1}
-  72%{transform:translate3d(-18%,4%,0) rotate(-4deg);opacity:1}
-  100%{transform:translate3d(-52%,10%,0) rotate(-7deg);opacity:0}
-}
-@keyframes ticket-arrive{
-  0%{transform:translate3d(9%,0,0);opacity:0}
-  100%{transform:translate3d(0,0,0);opacity:1}
-}
 
 /* Action */
-.action{position:absolute;left:50%;bottom:0;z-index:5;width:min(100%,390px);transform:translateX(-50%)}
-.buy{display:flex;min-height:56px;align-items:center;justify-content:center;border-radius:9px;background:var(--mint);color:var(--bg);font-size:15px;font-weight:700;transition:transform .18s var(--ease-out),filter .18s var(--ease-out)}
+.action{z-index:5;width:min(100%,390px)}
+.buy{width:100%;display:flex;min-height:56px;align-items:center;justify-content:center;border:0;border-radius:9px;background:var(--mint);color:var(--bg);font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:transform .18s var(--ease-out),filter .18s var(--ease-out)}
 .buy:hover{transform:translateY(-2px);filter:brightness(1.06)}
 .buy:active{transform:translateY(0) scale(.985)}
 .buy:focus-visible,.wordmark:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:4px}
 .buy.off{pointer-events:none;background:var(--line-strong);color:var(--quiet)}
+.buy.is-hidden{display:none}
 .action-note{margin-top:10px;color:var(--quiet);font:500 9px/1.5 var(--mono);letter-spacing:.45px;text-align:center;text-transform:uppercase}
 .action-note b{color:var(--text);font-weight:600}
 
@@ -162,7 +166,7 @@ details[open] summary::after{content:"×"}
 @media (max-width:900px){
   .hero{grid-template-columns:1fr;gap:var(--space-3xl);padding-bottom:var(--space-4xl)}
   .copy h1{max-width:10ch}
-  .machine{min-height:500px}
+  .machine{min-height:0}
 }
 @media (max-width:600px){
   body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
@@ -173,12 +177,12 @@ details[open] summary::after{content:"×"}
   .copy{gap:var(--space-lg)}
   .copy h1{font-size:clamp(47px,15vw,68px)}
   .proof-line{display:grid;gap:var(--space-xs)}
-  .machine{min-height:445px}
-  .ticket-stack{height:360px}
-  .ticket-head,.ticket-foot{padding:14px 16px;font-size:8px}
-  .ticket-body{padding:22px 18px 20px}
-  .ticket-price{font-size:38px}
-  .take-count{font-size:68px}
+  .machine{gap:var(--space-lg)}
+  .ticket-board{gap:var(--space-md)}
+  .ticket-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .mini-ticket{padding:7px 6px 6px}
+  .mini-ticket-no{font-size:clamp(25px,9vw,34px)}
+  .board-status{min-height:58px}
   .action{display:none}
   .confidence{grid-template-columns:1fr}
   .confidence-item{border-inline-end:0;border-bottom:1px solid var(--line)}
@@ -218,29 +222,22 @@ details[open] summary::after{content:"×"}
       </div>
 
       <div class="machine" aria-live="polite">
-        <div class="ticket-stack">
-          <div class="ghost-ticket one" aria-hidden="true"></div>
-          <div class="ghost-ticket two" aria-hidden="true"></div>
-          <article class="ticket" data-ticket>
-            <header class="ticket-head"><span>Mobility Club</span><b>Lifetime ticket</b><span data-serial>MC—01</span></header>
-            <div class="ticket-body">
-              <div class="ticket-meta">
-                <div class="ticket-tier">Lot actuel<b data-tier-name>Les 20 premiers</b></div>
-                <div class="ticket-price"><span>€</span><b data-price>199</b></div>
-              </div>
-              <div class="take-state">
-                <span class="take-label" data-take-label>Le ticket 01 t’attend</span>
-                <div class="take-count"><span data-tier-sold>00</span><span class="denom">/ 20</span></div>
-                <p class="take-message" data-take-message>Le compteur avance uniquement quand un paiement PayPal est réellement validé.</p>
-              </div>
-              <div class="slots" data-slots aria-label="Tickets pris dans le lot actuel"></div>
-            </div>
-            <footer class="ticket-foot"><span>Paiement unique</span><b data-remaining>40 pass restants</b><span>Aucun abonnement</span></footer>
-          </article>
+        <div class="ticket-board">
+          <header class="board-head">
+            <div class="board-tier">Lot actuel<b data-tier-name>Les 20 premiers</b></div>
+            <div class="board-price"><span>€</span><b data-price>199</b></div>
+            <div class="board-remaining" data-remaining>40 pass restants</div>
+          </header>
+          <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
+          <div class="board-status">
+            <span class="take-label" data-take-label>Le ticket 01 t’attend</span>
+            <p class="take-message" data-take-message>Clique sur le ticket en cours. Ta place est sécurisée uniquement après validation du paiement.</p>
+          </div>
         </div>
         <div class="action">
-          <a class="buy off" data-buy data-plan="lifetime_loading" aria-disabled="true">Vérification du ticket…</a>
-          <p class="action-note"><b>Accès au cœur du Club à vie</b> · stock vérifié</p>
+          <button class="buy off" type="button" data-claim disabled>Vérification des tickets…</button>
+          <a class="buy is-hidden" data-pay data-plan="lifetime_loading">Payer mon Lifetime Pass →</a>
+          <p class="action-note" data-action-note><b>Accès au cœur du Club à vie</b> · stock vérifié</p>
         </div>
       </div>
     </section>
@@ -267,7 +264,8 @@ details[open] summary::after{content:"×"}
 
 <div class="mobile-action">
   <div class="mobile-price"><span>€</span><b data-price>199</b><small>une fois</small></div>
-  <a class="buy off" data-buy data-plan="lifetime_loading" aria-disabled="true">Prendre mon ticket →</a>
+  <button class="buy off" type="button" data-claim disabled>Vérification…</button>
+  <a class="buy is-hidden" data-pay data-plan="lifetime_loading">Payer →</a>
 </div>
 
 <script>
@@ -275,31 +273,15 @@ details[open] summary::after{content:"×"}
   var C=window.MC_LIFETIME||{};
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var currentSold=null;
+  var selected=null;
+  var selectedTier=null;
   var animating=false;
   var queue=[];
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
   function all(sel){return document.querySelectorAll(sel);}
   function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
-  function slots(count){
-    var root=document.querySelector('[data-slots]');
-    if(!root.children.length){for(var i=0;i<C.TIER_SIZE;i++){var s=document.createElement('span');s.className='slot';root.appendChild(s);}}
-    var list=root.children;for(var j=0;j<list.length;j++)list[j].classList.toggle('taken',j<count);
-  }
-  function disable(label,plan){
-    var buys=all('[data-buy]');for(var i=0;i<buys.length;i++){
-      buys[i].textContent=label;buys[i].classList.add('off');buys[i].removeAttribute('href');
-      buys[i].setAttribute('aria-disabled','true');buys[i].setAttribute('data-plan',plan||'lifetime_unavailable');
-    }
-  }
-  function enable(link,price,tier){
-    if(!link){disable('Checkout '+price+' € bientôt disponible','lifetime_missing_checkout_'+price);return;}
-    var buys=all('[data-buy]');for(var i=0;i<buys.length;i++){
-      buys[i].textContent='Prendre mon ticket →';buys[i].classList.remove('off');buys[i].href=link;
-      buys[i].target='_blank';buys[i].rel='noopener';buys[i].removeAttribute('aria-disabled');
-      buys[i].setAttribute('data-plan','lifetime_'+price+'_tier_'+tier);
-    }
-  }
+  function setVisible(sel,show){var els=all(sel);for(var i=0;i<els.length;i++)els[i].classList.toggle('is-hidden',!show);}
   function stateFor(sold){
     var safe=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
     var soldOut=safe>=C.TOTAL;
@@ -307,38 +289,96 @@ details[open] summary::after{content:"×"}
     var tierSold=tier===1?safe:Math.min(C.TIER_SIZE,safe-C.TIER_SIZE);
     return {sold:safe,soldOut:soldOut,tier:tier,tierSold:tierSold,remaining:Math.max(0,C.TOTAL-safe),price:tier===1?C.PRICE_1:C.PRICE_2,link:tier===1?C.LINK_199:C.LINK_249};
   }
+
+  function buildTickets(){
+    var root=document.querySelector('[data-ticket-grid]');
+    for(var i=1;i<=C.TIER_SIZE;i++){
+      var button=document.createElement('button');
+      button.type='button';button.className='mini-ticket is-queued';button.setAttribute('data-ticket-number',i);
+      button.innerHTML='<span class="mini-ticket-kicker">MC Lifetime</span><strong class="mini-ticket-no">'+pad(i)+'</strong><span class="mini-ticket-code">LT—'+pad(i)+'</span><span class="mini-ticket-status">En attente</span><span class="ticket-stamp" aria-hidden="true"></span>';
+      button.addEventListener('click',function(){choose(Number(this.getAttribute('data-ticket-number')));});
+      root.appendChild(button);
+    }
+  }
+  function ticket(number){return document.querySelector('[data-ticket-number="'+number+'"]');}
+  function renderTickets(s){
+    var cells=all('[data-ticket-number]');
+    for(var i=0;i<cells.length;i++){
+      var number=i+1,cell=cells[i],status=cell.querySelector('.mini-ticket-status'),stamp=cell.querySelector('.ticket-stamp');
+      cell.className='mini-ticket';cell.disabled=true;cell.removeAttribute('aria-pressed');
+      if(number<=s.tierSold){cell.classList.add('is-taken');status.textContent='Pris';stamp.textContent='Pris';}
+      else if(number===s.tierSold+1&&!s.soldOut){
+        cell.classList.add(selected===number&&selectedTier===s.tier?'is-selected':'is-next');
+        cell.disabled=!s.link;status.textContent=selected===number&&selectedTier===s.tier?'Choisi':'À prendre';stamp.textContent=selected===number&&selectedTier===s.tier?'Choisi':'';
+        if(selected===number&&selectedTier===s.tier)cell.setAttribute('aria-pressed','true');
+      }else{cell.classList.add('is-queued');status.textContent=s.soldOut?'Clos':'À venir';stamp.textContent='';}
+      cell.setAttribute('aria-label','Ticket '+pad(number)+' — '+status.textContent.toLowerCase());
+    }
+  }
+  function disableActions(label){
+    setVisible('[data-claim]',true);setVisible('[data-pay]',false);
+    var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){claims[i].textContent=label;claims[i].disabled=true;claims[i].classList.add('off');}
+  }
+  function updateActions(s){
+    if(s.soldOut){disableActions('Les 40 tickets sont partis');return;}
+    if(!s.link){disableActions('Paiement '+s.price+' € bientôt disponible');return;}
+    var hasSelection=selected===s.tierSold+1&&selectedTier===s.tier;
+    setVisible('[data-claim]',!hasSelection);setVisible('[data-pay]',hasSelection);
+    if(!hasSelection){
+      var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){
+        claims[i].textContent='Prendre le ticket '+pad(s.tierSold+1)+' →';claims[i].disabled=false;claims[i].classList.remove('off');
+      }
+      return;
+    }
+    var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
+      pays[j].textContent='Payer '+s.price+' € →';pays[j].href=s.link;pays[j].target='_blank';pays[j].rel='noopener';
+      pays[j].setAttribute('data-plan','lifetime_'+s.price+'_tier_'+s.tier+'_ticket_'+pad(selected));
+    }
+  }
   function render(sold,message){
     var s=stateFor(sold);
+    if(selected!==null&&(selectedTier!==s.tier||selected<=s.tierSold||s.soldOut)){selected=null;selectedTier=null;}
     text('[data-price]',s.price);
-    text('[data-tier-sold]',pad(s.tierSold));
     text('[data-tier-name]',s.tier===1?'Les 20 premiers':'Les 20 derniers');
-    text('[data-serial]','MC—'+pad(Math.min(C.TIER_SIZE,s.tierSold+1)));
     text('[data-remaining]',s.remaining+' pass restant'+(s.remaining>1?'s':''));
-    slots(s.tierSold);
+    renderTickets(s);
     if(s.soldOut){
       text('[data-take-label]','Les 40 tickets sont partis');
       text('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');
-      disable('Les 40 tickets sont partis','lifetime_sold_out');
+      text('[data-action-note]','Offre complète · retour à l’abonnement');
+    }else if(selected===s.tierSold+1&&selectedTier===s.tier){
+      text('[data-take-label]','Ticket '+pad(selected)+' pré-sélectionné');
+      text('[data-take-message]','Le clic ne réserve pas la place. Seul le paiement la sécurise.');
+      text('[data-action-note]','Ticket '+pad(selected)+' · paiement unique · stock vérifié');
     }else{
       text('[data-take-label]','Le ticket '+pad(s.tierSold+1)+' t’attend');
-      text('[data-take-message]',message||('Il reste '+(C.TIER_SIZE-s.tierSold)+' ticket'+(C.TIER_SIZE-s.tierSold>1?'s':'')+' dans ce lot à '+s.price+' €.'));
-      enable(s.link,s.price,s.tier);
+      text('[data-take-message]',message||'Clique sur le ticket en cours. Ta place est sécurisée uniquement après validation du paiement.');
+      text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
+    updateActions(s);
     text('[data-live-stock]',s.remaining?s.remaining+' Lifetime Pass disponibles':'Offre complète');
+  }
+  function choose(number){
+    if(currentSold===null)return;
+    var s=stateFor(currentSold);
+    if(s.soldOut||!s.link||number!==s.tierSold+1)return;
+    selected=number;selectedTier=s.tier;render(currentSold);
+    var cell=ticket(number);if(cell&&!reduced){cell.classList.add('is-claiming');window.setTimeout(function(){cell.classList.remove('is-claiming');},430);}
+    track('ticket_selected',{ticket:pad(number),tier:s.tier,price:s.price});
   }
   function animateOne(nextSold){
     if(reduced){render(nextSold);return Promise.resolve();}
-    var ticket=document.querySelector('[data-ticket]');
+    var before=stateFor(nextSold-1),cell;
     animating=true;
-    text('[data-take-label]','Ticket '+pad(stateFor(nextSold).tierSold||20)+'/20 pris');
-    text('[data-take-message]','Un paiement vient d’être validé. Le stock réel se met à jour.');
-    ticket.classList.remove('is-arriving');ticket.classList.add('is-taking');
+    selected=null;selectedTier=null;render(nextSold-1);
+    cell=ticket(before.tierSold+1);
+    if(cell){cell.classList.remove('is-next');cell.classList.add('is-confirming');cell.querySelector('.ticket-stamp').textContent='Pris';}
+    text('[data-take-label]','Ticket '+pad(before.tierSold+1)+' pris');
+    text('[data-take-message]','Un paiement PayPal vient d’être validé. Le stock réel se met à jour.');
     return new Promise(function(resolve){
       window.setTimeout(function(){
-        render(nextSold,'Le prochain ticket est disponible maintenant.');
-        ticket.classList.remove('is-taking');void ticket.offsetWidth;ticket.classList.add('is-arriving');
-        window.setTimeout(function(){ticket.classList.remove('is-arriving');animating=false;resolve();},470);
-      },490);
+        render(nextSold,'Le prochain ticket est disponible maintenant.');animating=false;resolve();
+      },560);
     });
   }
   function drain(){
@@ -347,15 +387,7 @@ details[open] summary::after{content:"×"}
   }
   function update(sold,initial){
     sold=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
-    if(currentSold===null){
-      currentSold=sold;
-      if(initial&&sold>0&&!reduced){
-        var start=Math.max(0,sold-2);render(start);
-        for(var n=start+1;n<=sold;n++)queue.push(n);
-        drain();
-      }else render(sold);
-      return;
-    }
+    if(currentSold===null){currentSold=sold;render(sold);return;}
     if(sold>currentSold){for(var i=currentSold+1;i<=sold;i++)queue.push(i);currentSold=sold;drain();}
     else if(sold<currentSold){currentSold=sold;render(sold);}
   }
@@ -364,17 +396,19 @@ details[open] summary::after{content:"×"}
       .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
       .then(function(data){if(!data||data.live!==true)throw new Error('stock invalide');update(data.sold,initial);})
       .catch(function(){
-        if(currentSold===null){text('[data-live-stock]','Stock momentanément indisponible');text('[data-take-label]','Vérification impossible');text('[data-take-message]','Actualise la page pour récupérer le stock réel.');disable('Actualise pour vérifier le ticket','lifetime_stock_unavailable');}
+        if(currentSold===null){text('[data-live-stock]','Stock momentanément indisponible');text('[data-take-label]','Vérification impossible');text('[data-take-message]','Actualise la page pour récupérer le stock réel.');disableActions('Actualise pour vérifier les tickets');}
       });
   }
 
-  slots(0);load(true);window.setInterval(function(){load(false);},C.POLL_MS);
+  buildTickets();
+  var claims=all('[data-claim]');for(var i=0;i<claims.length;i++)claims[i].addEventListener('click',function(){if(currentSold!==null)choose(stateFor(currentSold).tierSold+1);});
+  load(true);window.setInterval(function(){load(false);},C.POLL_MS);
 
   var URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
   function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/lifetime',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
   track('page_view');
-  document.addEventListener('click',function(e){var plan=e.target.closest('[data-plan]');if(plan&&!plan.classList.contains('off'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});},{passive:true});
+  document.addEventListener('click',function(e){var plan=e.target.closest('[data-pay]');if(plan&&!plan.classList.contains('is-hidden'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});},{passive:true});
 })();
 </script>
 </body>
