@@ -10,12 +10,9 @@ window.MC_LIFETIME = {
   TIER_SIZE: 20,
   PRICE_1: 199,
   PRICE_2: 249,
-  // Vérifié le 2026-09-01 : « Accès à vie au Mobility Club Saison 2 », 199,00 € EUR.
-  LINK_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
-  // BLOQUANT pour le second lot : checkout PayPal 249 € encore manquant.
-  LINK_249: '',
-  STOCK_ENDPOINT: '/.netlify/functions/lifetime-stock',
-  POLL_MS: 10000
+  STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
+  CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
+  POLL_MS: 8000
 };
 </script>
 
@@ -112,15 +109,16 @@ button{font:inherit}
 .mini-ticket-status{padding-top:5px;border-top:1px dashed var(--line-strong);color:var(--quiet);white-space:nowrap}
 .mini-ticket.is-taken{opacity:.36;background:#0F1110}
 .mini-ticket.is-taken .mini-ticket-no{color:var(--quiet)}
-.mini-ticket.is-next{cursor:pointer;border-color:rgba(62,207,160,.62);background:var(--mint-wash)}
-.mini-ticket.is-next .mini-ticket-kicker,.mini-ticket.is-next .mini-ticket-status{color:var(--mint)}
-.mini-ticket.is-next:hover{transform:translateY(-3px);border-color:var(--mint)}
-.mini-ticket.is-next:active{transform:translateY(0) scale(.96)}
-.mini-ticket.is-queued{opacity:.58}
+.mini-ticket.is-available{cursor:pointer}
+.mini-ticket.is-available:hover{transform:translateY(-3px);border-color:rgba(62,207,160,.62);background:var(--mint-wash)}
+.mini-ticket.is-available:active{transform:translateY(0) scale(.96)}
+.mini-ticket.is-reserved{opacity:.5;background:#0F1110}
+.mini-ticket.is-reserved .mini-ticket-status{color:var(--muted)}
 .mini-ticket.is-selected{border-color:var(--mint);background:rgba(62,207,160,.15);transform:translateY(-3px) rotate(-1deg)}
+.mini-ticket.is-selected .mini-ticket-kicker,.mini-ticket.is-selected .mini-ticket-status{color:var(--mint)}
 .mini-ticket:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .ticket-stamp{position:absolute;left:50%;top:50%;z-index:3;padding:2px 4px;border:1.5px solid currentColor;color:var(--quiet);font:700 7px/1 var(--mono);letter-spacing:.7px;text-transform:uppercase;opacity:0;transform:translate(-50%,-50%) rotate(-10deg)}
-.mini-ticket.is-taken .ticket-stamp{opacity:1}
+.mini-ticket.is-taken .ticket-stamp,.mini-ticket.is-reserved .ticket-stamp{opacity:1}
 .mini-ticket.is-selected .ticket-stamp{color:var(--mint);opacity:1}
 .mini-ticket.is-claiming .ticket-stamp,.mini-ticket.is-confirming .ticket-stamp{animation:ticket-stamp 420ms var(--ease-out) both}
 @keyframes ticket-stamp{
@@ -139,6 +137,7 @@ button{font:inherit}
 .buy:active{transform:translateY(0) scale(.985)}
 .buy:focus-visible,.wordmark:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:4px}
 .buy.off{pointer-events:none;background:var(--line-strong);color:var(--quiet)}
+.buy.is-loading{pointer-events:none;filter:saturate(.35);cursor:wait}
 .buy.is-hidden{display:none}
 .action-note{margin-top:10px;color:var(--quiet);font:500 9px/1.5 var(--mono);letter-spacing:.45px;text-align:center;text-transform:uppercase}
 .action-note b{color:var(--text);font-weight:600}
@@ -230,13 +229,13 @@ details[open] summary::after{content:"×"}
           </header>
           <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
           <div class="board-status">
-            <span class="take-label" data-take-label>Le ticket 01 t’attend</span>
-            <p class="take-message" data-take-message>Clique sur le ticket en cours. Ta place est sécurisée uniquement après validation du paiement.</p>
+            <span class="take-label" data-take-label>Choisis ton numéro</span>
+            <p class="take-message" data-take-message>Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.</p>
           </div>
         </div>
         <div class="action">
           <button class="buy off" type="button" data-claim disabled>Vérification des tickets…</button>
-          <a class="buy is-hidden" data-pay data-plan="lifetime_loading">Payer mon Lifetime Pass →</a>
+          <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
           <p class="action-note" data-action-note><b>Accès au cœur du Club à vie</b> · stock vérifié</p>
         </div>
       </div>
@@ -265,53 +264,51 @@ details[open] summary::after{content:"×"}
 <div class="mobile-action">
   <div class="mobile-price"><span>€</span><b data-price>199</b><small>une fois</small></div>
   <button class="buy off" type="button" data-claim disabled>Vérification…</button>
-  <a class="buy is-hidden" data-pay data-plan="lifetime_loading">Payer →</a>
+  <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
 </div>
 
 <script>
 (function(){
   var C=window.MC_LIFETIME||{};
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var currentSold=null;
+  var current=null;
   var selected=null;
-  var selectedTier=null;
-  var animating=false;
-  var queue=[];
+  var checkoutBusy=false;
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
   function all(sel){return document.querySelectorAll(sel);}
   function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function setVisible(sel,show){var els=all(sel);for(var i=0;i<els.length;i++)els[i].classList.toggle('is-hidden',!show);}
-  function stateFor(sold){
-    var safe=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
-    var soldOut=safe>=C.TOTAL;
-    var tier=safe<C.TIER_SIZE?1:2;
-    var tierSold=tier===1?safe:Math.min(C.TIER_SIZE,safe-C.TIER_SIZE);
-    return {sold:safe,soldOut:soldOut,tier:tier,tierSold:tierSold,remaining:Math.max(0,C.TOTAL-safe),price:tier===1?C.PRICE_1:C.PRICE_2,link:tier===1?C.LINK_199:C.LINK_249};
-  }
 
   function buildTickets(){
     var root=document.querySelector('[data-ticket-grid]');
     for(var i=1;i<=C.TIER_SIZE;i++){
       var button=document.createElement('button');
-      button.type='button';button.className='mini-ticket is-queued';button.setAttribute('data-ticket-number',i);
-      button.innerHTML='<span class="mini-ticket-kicker">MC Lifetime</span><strong class="mini-ticket-no">'+pad(i)+'</strong><span class="mini-ticket-code">LT—'+pad(i)+'</span><span class="mini-ticket-status">En attente</span><span class="ticket-stamp" aria-hidden="true"></span>';
+      button.type='button';button.className='mini-ticket';button.disabled=true;button.setAttribute('data-ticket-number',i);
+      button.innerHTML='<span class="mini-ticket-kicker">MC Lifetime</span><strong class="mini-ticket-no">'+pad(i)+'</strong><span class="mini-ticket-code">LT—'+pad(i)+'</span><span class="mini-ticket-status">Vérification</span><span class="ticket-stamp" aria-hidden="true"></span>';
       button.addEventListener('click',function(){choose(Number(this.getAttribute('data-ticket-number')));});
       root.appendChild(button);
     }
   }
   function ticket(number){return document.querySelector('[data-ticket-number="'+number+'"]');}
-  function renderTickets(s){
+  function statusOf(number){
+    if(!current||!Array.isArray(current.tickets))return null;
+    for(var i=0;i<current.tickets.length;i++)if(Number(current.tickets[i].number)===Number(number))return current.tickets[i].status;
+    return null;
+  }
+  function renderTickets(data){
     var cells=all('[data-ticket-number]');
     for(var i=0;i<cells.length;i++){
-      var number=i+1,cell=cells[i],status=cell.querySelector('.mini-ticket-status'),stamp=cell.querySelector('.ticket-stamp');
+      var number=i+1,cell=cells[i],state=data.tickets&&data.tickets[i]?data.tickets[i].status:'unavailable';
+      var status=cell.querySelector('.mini-ticket-status'),stamp=cell.querySelector('.ticket-stamp');
       cell.className='mini-ticket';cell.disabled=true;cell.removeAttribute('aria-pressed');
-      if(number<=s.tierSold){cell.classList.add('is-taken');status.textContent='Pris';stamp.textContent='Pris';}
-      else if(number===s.tierSold+1&&!s.soldOut){
-        cell.classList.add(selected===number&&selectedTier===s.tier?'is-selected':'is-next');
-        cell.disabled=!s.link;status.textContent=selected===number&&selectedTier===s.tier?'Choisi':'À prendre';stamp.textContent=selected===number&&selectedTier===s.tier?'Choisi':'';
-        if(selected===number&&selectedTier===s.tier)cell.setAttribute('aria-pressed','true');
-      }else{cell.classList.add('is-queued');status.textContent=s.soldOut?'Clos':'À venir';stamp.textContent='';}
+      if(state==='sold'){cell.classList.add('is-taken');status.textContent='Pris';stamp.textContent='Pris';}
+      else if(state==='reserved'){cell.classList.add('is-reserved');status.textContent='En cours';stamp.textContent='En cours';}
+      else if(state==='available'&&!data.sold_out){
+        cell.classList.add(selected===number?'is-selected':'is-available');cell.disabled=checkoutBusy;
+        status.textContent=selected===number?'Choisi':'Libre';stamp.textContent=selected===number?'Choisi':'';
+        if(selected===number)cell.setAttribute('aria-pressed','true');
+      }else{status.textContent='Clos';stamp.textContent='';}
       cell.setAttribute('aria-label','Ticket '+pad(number)+' — '+status.textContent.toLowerCase());
     }
   }
@@ -319,96 +316,110 @@ details[open] summary::after{content:"×"}
     setVisible('[data-claim]',true);setVisible('[data-pay]',false);
     var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){claims[i].textContent=label;claims[i].disabled=true;claims[i].classList.add('off');}
   }
-  function updateActions(s){
-    if(s.soldOut){disableActions('Les 40 tickets sont partis');return;}
-    if(!s.link){disableActions('Paiement '+s.price+' € bientôt disponible');return;}
-    var hasSelection=selected===s.tierSold+1&&selectedTier===s.tier;
-    setVisible('[data-claim]',!hasSelection);setVisible('[data-pay]',hasSelection);
-    if(!hasSelection){
-      var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){
-        claims[i].textContent='Prendre le ticket '+pad(s.tierSold+1)+' →';claims[i].disabled=false;claims[i].classList.remove('off');
-      }
-      return;
-    }
+  function updateActions(data){
+    if(data.sold_out){disableActions('Les 40 tickets sont partis');return;}
+    if(selected===null){disableActions('Choisis un ticket libre');return;}
+    setVisible('[data-claim]',false);setVisible('[data-pay]',true);
     var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
-      pays[j].textContent='Payer '+s.price+' € →';pays[j].href=s.link;pays[j].target='_blank';pays[j].rel='noopener';
-      pays[j].setAttribute('data-plan','lifetime_'+s.price+'_tier_'+s.tier+'_ticket_'+pad(selected));
+      pays[j].textContent=checkoutBusy?'Réservation du ticket…':'Réserver le '+pad(selected)+' · '+data.price+' € →';
+      pays[j].disabled=checkoutBusy;pays[j].classList.toggle('is-loading',checkoutBusy);
+      pays[j].setAttribute('data-plan','lifetime_'+data.price+'_tier_'+data.tier+'_ticket_'+pad(selected));
     }
   }
-  function render(sold,message){
-    var s=stateFor(sold);
-    if(selected!==null&&(selectedTier!==s.tier||selected<=s.tierSold||s.soldOut)){selected=null;selectedTier=null;}
-    text('[data-price]',s.price);
-    text('[data-tier-name]',s.tier===1?'Les 20 premiers':'Les 20 derniers');
-    text('[data-remaining]',s.remaining+' pass restant'+(s.remaining>1?'s':''));
-    renderTickets(s);
-    if(s.soldOut){
+  function render(data,message){
+    if(selected!==null&&statusOf(selected)!=='available')selected=null;
+    text('[data-price]',data.price);
+    text('[data-tier-name]',data.tier===1?'Les 20 premiers':'Les 20 derniers');
+    text('[data-remaining]',data.remaining+' pass restant'+(data.remaining>1?'s':''));
+    renderTickets(data);
+    if(data.sold_out){
       text('[data-take-label]','Les 40 tickets sont partis');
       text('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');
       text('[data-action-note]','Offre complète · retour à l’abonnement');
-    }else if(selected===s.tierSold+1&&selectedTier===s.tier){
+    }else if(message){
+      text('[data-take-label]',message.label);text('[data-take-message]',message.body);
+      text('[data-action-note]','Stock PayPal vérifié · aucun ticket fantôme');
+    }else if(selected!==null){
       text('[data-take-label]','Ticket '+pad(selected)+' pré-sélectionné');
-      text('[data-take-message]','Le clic ne réserve pas la place. Seul le paiement la sécurise.');
+      text('[data-take-message]','Valide maintenant : le serveur le bloquera 10 minutes pendant ton paiement.');
       text('[data-action-note]','Ticket '+pad(selected)+' · paiement unique · stock vérifié');
     }else{
-      text('[data-take-label]','Le ticket '+pad(s.tierSold+1)+' t’attend');
-      text('[data-take-message]',message||'Clique sur le ticket en cours. Ta place est sécurisée uniquement après validation du paiement.');
+      text('[data-take-label]','Choisis ton numéro');
+      text('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');
       text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
-    updateActions(s);
-    text('[data-live-stock]',s.remaining?s.remaining+' Lifetime Pass disponibles':'Offre complète');
+    updateActions(data);
+    text('[data-live-stock]',data.remaining?data.remaining+' Lifetime Pass disponibles':'Offre complète');
   }
   function choose(number){
-    if(currentSold===null)return;
-    var s=stateFor(currentSold);
-    if(s.soldOut||!s.link||number!==s.tierSold+1)return;
-    selected=number;selectedTier=s.tier;render(currentSold);
+    if(!current||checkoutBusy||statusOf(number)!=='available')return;
+    selected=number;render(current);
     var cell=ticket(number);if(cell&&!reduced){cell.classList.add('is-claiming');window.setTimeout(function(){cell.classList.remove('is-claiming');},430);}
-    track('ticket_selected',{ticket:pad(number),tier:s.tier,price:s.price});
+    track('ticket_selected',{ticket:pad(number),tier:current.tier,price:current.price});
   }
-  function animateOne(nextSold){
-    if(reduced){render(nextSold);return Promise.resolve();}
-    var before=stateFor(nextSold-1),cell;
-    animating=true;
-    selected=null;selectedTier=null;render(nextSold-1);
-    cell=ticket(before.tierSold+1);
-    if(cell){cell.classList.remove('is-next');cell.classList.add('is-confirming');cell.querySelector('.ticket-stamp').textContent='Pris';}
-    text('[data-take-label]','Ticket '+pad(before.tierSold+1)+' pris');
-    text('[data-take-message]','Un paiement PayPal vient d’être validé. Le stock réel se met à jour.');
-    return new Promise(function(resolve){
-      window.setTimeout(function(){
-        render(nextSold,'Le prochain ticket est disponible maintenant.');animating=false;resolve();
-      },560);
+  function load(message){
+    return fetch(C.STOCK_ENDPOINT,{cache:'no-store'})
+      .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
+      .then(function(data){
+        if(!data||data.live!==true||!Array.isArray(data.tickets))throw new Error('stock invalide');
+        var previous=current;current=data;render(current,message);
+        if(previous&&previous.tier===current.tier&&!reduced){
+          for(var i=0;i<current.tickets.length;i++)if(previous.tickets[i]&&previous.tickets[i].status!=='sold'&&current.tickets[i].status==='sold'){
+            var cell=ticket(current.tickets[i].number);if(cell)cell.classList.add('is-confirming');
+          }
+        }
+        return data;
+      })
+      .catch(function(){
+        if(current===null){text('[data-live-stock]','Stock momentanément indisponible');text('[data-take-label]','Vérification impossible');text('[data-take-message]','Actualise la page pour récupérer le stock réel.');disableActions('Actualise pour vérifier les tickets');}
+      });
+  }
+  function checkoutRequest(body){
+    return fetch(C.CHECKOUT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(response){return response.json().catch(function(){return {};}).then(function(data){return {ok:response.ok,status:response.status,data:data};});});
+  }
+  function startCheckout(){
+    if(!current||selected===null||checkoutBusy||statusOf(selected)!=='available')return;
+    var choice=selected,tier=current.tier,price=current.price;
+    checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
+    checkoutRequest({action:'create',ticket:choice}).then(function(result){
+      if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}
+      if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
+      track('checkout_started',{ticket:pad(choice),tier:tier,price:price});
+      window.location.assign(result.data.approve_url);
+    }).catch(function(){
+      checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans un instant.'});
     });
   }
-  function drain(){
-    if(animating||!queue.length)return;
-    var next=queue.shift();animateOne(next).then(drain);
-  }
-  function update(sold,initial){
-    sold=Math.max(0,Math.min(C.TOTAL,Number(sold)||0));
-    if(currentSold===null){currentSold=sold;render(sold);return;}
-    if(sold>currentSold){for(var i=currentSold+1;i<=sold;i++)queue.push(i);currentSold=sold;drain();}
-    else if(sold<currentSold){currentSold=sold;render(sold);}
-  }
-  function load(initial){
-    fetch(C.STOCK_ENDPOINT,{cache:'no-store'})
-      .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
-      .then(function(data){if(!data||data.live!==true)throw new Error('stock invalide');update(data.sold,initial);})
-      .catch(function(){
-        if(currentSold===null){text('[data-live-stock]','Stock momentanément indisponible');text('[data-take-label]','Vérification impossible');text('[data-take-message]','Actualise la page pour récupérer le stock réel.');disableActions('Actualise pour vérifier les tickets');}
-      });
+  function cleanUrl(){window.history.replaceState({},'',window.location.pathname);}
+  function handlePaypalReturn(){
+    var params=new URLSearchParams(window.location.search),mode=params.get('paypal');
+    if(mode!=='return'&&mode!=='cancel')return Promise.resolve();
+    var payload={tier:Number(params.get('tier')),ticket:Number(params.get('ticket')),reservation:params.get('reservation')};
+    if(mode==='cancel'){
+      payload.action='release';cleanUrl();
+      return checkoutRequest(payload).catch(function(){}).then(function(){return load({label:'Paiement annulé',body:'Le ticket a été remis en vente.'});});
+    }
+    payload.action='capture';payload.order_id=params.get('token');checkoutBusy=true;
+    if(current)render(current,{label:'Validation du paiement…',body:'PayPal confirme ton ticket. Ne ferme pas cette page.'});
+    return checkoutRequest(payload).then(function(result){
+      if(!result.ok)throw new Error(result.data.error||'capture');
+      checkoutBusy=false;selected=null;cleanUrl();track('purchase_confirmed',{ticket:pad(payload.ticket),tier:payload.tier});
+      return load({label:'Ticket '+pad(payload.ticket)+' confirmé',body:'Paiement validé. Ton accès au Club arrive par email.'});
+    }).catch(function(){
+      checkoutBusy=false;cleanUrl();
+      if(current)render(current,{label:'Paiement à vérifier',body:'Ne recommence pas le paiement. Contacte-nous pour vérifier la transaction PayPal.'});
+    });
   }
 
   buildTickets();
-  var claims=all('[data-claim]');for(var i=0;i<claims.length;i++)claims[i].addEventListener('click',function(){if(currentSold!==null)choose(stateFor(currentSold).tierSold+1);});
-  load(true);window.setInterval(function(){load(false);},C.POLL_MS);
+  var pays=all('[data-pay]');for(var i=0;i<pays.length;i++)pays[i].addEventListener('click',startCheckout);
+  load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 
-  var URL='/.netlify/functions/track-site-event';
+  var TRACK_URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
-  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/lifetime',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/lifetime',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(TRACK_URL,new Blob([b],{type:'application/json'}));}else{fetch(TRACK_URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
   track('page_view');
-  document.addEventListener('click',function(e){var plan=e.target.closest('[data-pay]');if(plan&&!plan.classList.contains('is-hidden'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});},{passive:true});
 })();
 </script>
 </body>

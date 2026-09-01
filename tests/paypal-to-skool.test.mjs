@@ -41,12 +41,13 @@ const HEADERS = {
   'paypal-transmission-time': '2026-08-04T14:00:00Z',
 };
 
-const capture = (montant = '197.00', devise = 'EUR', id = 'CAP-1') => ({
+const capture = (montant = '197.00', devise = 'EUR', id = 'CAP-1', customId = null) => ({
   id: 'WH-1',
   event_type: 'PAYMENT.CAPTURE.COMPLETED',
   resource: {
     id,
     amount: { value: montant, currency_code: devise },
+    ...(customId ? { custom_id: customId } : {}),
     supplementary_data: { related_ids: { order_id: 'ORD-1' } },
   },
 });
@@ -192,6 +193,20 @@ test('capture Lifetime signée → vente réelle comptée une seule fois par cap
   assert.deepEqual([...lifetimeBlobs.keys()].sort(), ['199/CAP-LIFE-199', '249/CAP-LIFE-249']);
   assert.equal(lifetimeBlobs.size, 2);
   assert.equal(appelsSkool.length, 2, 'une invitation par capture Lifetime unique');
+});
+
+test('capture Lifetime numérotée → le webhook conserve le custom_id', async () => {
+  vider();
+  brancherFetch();
+  const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
+  const customId = 'MC-LIFE-2026-T1-07-11111111-2222-4333-8444-555555555555';
+
+  await appeler(capture('199.00', 'EUR', 'CAP-NUMBERED', customId));
+
+  if (avant == null) delete process.env.PAYPAL_MONTANTS_ACCEPTES;
+  else process.env.PAYPAL_MONTANTS_ACCEPTES = avant;
+  assert.equal(lifetimeBlobs.get('199/CAP-NUMBERED').custom_id, customId);
 });
 
 test('Skool en panne → 500 (PayPal réessaiera) et RIEN n’est marqué fait', async () => {

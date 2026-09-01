@@ -42,7 +42,7 @@ export const MONTANTS_LIFETIME = ['199.00', '249.00'];
 export const estMontantLifetime = (montant) =>
   MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));
 
-const tracerVenteLifetime = async (captureId, montant, eventId) => {
+const tracerVenteLifetime = async (captureId, montant, eventId, customId) => {
   if (!estMontantLifetime(montant)) return;
   const prix = Number(String(montant).replace(',', '.')).toFixed(0);
   const key = `${prix}/${encodeURIComponent(captureId)}`;
@@ -53,6 +53,7 @@ const tracerVenteLifetime = async (captureId, montant, eventId) => {
     prix,
     capture_id: captureId,
     event_id: eventId || null,
+    custom_id: customId || null,
     paid_at: new Date().toISOString(),
   });
 };
@@ -250,7 +251,8 @@ export const handler = async (req) => {
     await tracerVenteLifetime(
       verdict.captureId,
       evenement.resource?.amount?.value,
-      evenement.id
+      evenement.id,
+      evenement.resource?.custom_id
     );
   } catch (err) {
     console.error('[paypal-to-skool] stock lifetime non écrit:', err?.message);
