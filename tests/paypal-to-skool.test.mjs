@@ -5,18 +5,27 @@ import assert from 'node:assert/strict';
 
 // ── Mock du store Blobs (mémoire) ────────────────────────────────────────────
 const blobs = new Map();
+const lifetimeBlobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
-    getStore: () => ({
-      get: async (k) => (blobs.has(k) ? blobs.get(k) : null),
-      setJSON: async (k, v) => void blobs.set(k, v),
-    }),
+    getStore: (name) => {
+      const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : blobs;
+      return {
+        get: async (k) => (target.has(k) ? target.get(k) : null),
+        setJSON: async (k, v) => void target.set(k, v),
+      };
+    },
   },
 });
 
-const { handler, decider, memeMontant, emailValide, montantsAttendus } = await import(
+const { handler, decider, memeMontant, emailValide, montantsAttendus, estMontantLifetime } = await import(
   '../netlify/functions/paypal-to-skool.js'
 );
+
+const vider = () => {
+  blobs.clear();
+  lifetimeBlobs.clear();
+};
 
 const SKOOL = 'https://api2.skool.com/groups/mobility-club/webhooks/SECRET-DE-TEST';
 process.env.SKOOL_INVITE_WEBHOOK = SKOOL;
@@ -70,6 +79,12 @@ test('memeMontant : « 197 », « 197.0 », « 197.00 » sont le même montant',
   for (const v of ['196.99', '1970', '', null, 'abc']) assert.ok(!memeMontant(v, '197.00'), String(v));
 });
 
+test('estMontantLifetime : seuls les deux paliers 199 € et 249 € alimentent le stock', () => {
+  assert.ok(estMontantLifetime('199'));
+  assert.ok(estMontantLifetime('249.00'));
+  for (const v of ['100.00', '197.00', '9.00', null]) assert.ok(!estMontantLifetime(v), String(v));
+});
+
 test('emailValide rejette ce qui ne partirait nulle part', () => {
   assert.ok(emailValide('a@b.co'));
   for (const v of ['', 'a@b', 'pas-un-email', null, 'a b@c.fr', 'x'.repeat(250) + '@b.co'])
@@ -119,7 +134,7 @@ test('montantsAttendus : défaut inchangé, campagne opt-in, PAYPAL_MONTANTS_ACC
 
 // ── Câblage complet ──────────────────────────────────────────────────────────
 test('paiement légitime → une invitation Skool, avec le bon email', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 200);
@@ -128,7 +143,7 @@ test('paiement légitime → une invitation Skool, avec le bon email', async () 
 });
 
 test('SIGNATURE INVALIDE → 401, aucune invitation', async () => {
-  blobs.clear();
+  vider();
   brancherFetch({ signature: 'FAILURE' });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 401);
@@ -136,7 +151,7 @@ test('SIGNATURE INVALIDE → 401, aucune invitation', async () => {
 });
 
 test('en-têtes de signature absents → refusé, aucune invitation', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   const rep = await appeler(capture(), {});
   assert.equal(rep.statusCode, 401);
@@ -144,7 +159,7 @@ test('en-têtes de signature absents → refusé, aucune invitation', async () =
 });
 
 test('achat Timer à 9 € → 200 ignoré, aucune invitation', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   const rep = await appeler(capture('9.00'));
   assert.equal(rep.statusCode, 200);
@@ -153,7 +168,7 @@ test('achat Timer à 9 € → 200 ignoré, aucune invitation', async () => {
 });
 
 test('PayPal réémet le même webhook → une seule invitation', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   await appeler(capture());
   await appeler(capture());
@@ -161,8 +176,26 @@ test('PayPal réémet le même webhook → une seule invitation', async () => {
   assert.equal(appelsSkool.length, 1, 'la capture ne doit être honorée qu’une fois');
 });
 
+test('capture Lifetime signée → vente réelle comptée une seule fois par capture', async () => {
+  vider();
+  brancherFetch();
+  const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
+
+  await appeler(capture('199.00', 'EUR', 'CAP-LIFE-199'));
+  await appeler(capture('199.00', 'EUR', 'CAP-LIFE-199'));
+  await appeler(capture('249.00', 'EUR', 'CAP-LIFE-249'));
+
+  if (avant == null) delete process.env.PAYPAL_MONTANTS_ACCEPTES;
+  else process.env.PAYPAL_MONTANTS_ACCEPTES = avant;
+
+  assert.deepEqual([...lifetimeBlobs.keys()].sort(), ['199/CAP-LIFE-199', '249/CAP-LIFE-249']);
+  assert.equal(lifetimeBlobs.size, 2);
+  assert.equal(appelsSkool.length, 2, 'une invitation par capture Lifetime unique');
+});
+
 test('Skool en panne → 500 (PayPal réessaiera) et RIEN n’est marqué fait', async () => {
-  blobs.clear();
+  vider();
   brancherFetch({ skoolOk: false });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 500);
@@ -176,7 +209,7 @@ test('Skool en panne → 500 (PayPal réessaiera) et RIEN n’est marqué fait',
 });
 
 test('email introuvable → 500, aucune invitation, aucune trace', async () => {
-  blobs.clear();
+  vider();
   brancherFetch({ email: 'pas-un-email' });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 500);
@@ -185,7 +218,7 @@ test('email introuvable → 500, aucune invitation, aucune trace', async () => {
 });
 
 test('variable d’environnement manquante → 500, aucun appel réseau', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   const garde = process.env.SKOOL_INVITE_WEBHOOK;
   delete process.env.SKOOL_INVITE_WEBHOOK;
@@ -203,7 +236,7 @@ test('GET → 405 (le webhook n’est pas une page)', async () => {
 });
 
 test('le secret Skool ne fuit jamais dans la réponse HTTP', async () => {
-  blobs.clear();
+  vider();
   brancherFetch();
   const reps = [
     await appeler(capture()),

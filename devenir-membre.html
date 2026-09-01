@@ -2,181 +2,242 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     MODE D'EMPLOI — 4 LIGNES
+<!--
+  LIFETIME PASS · OPÉRATION RENTRÉE 2026
 
-     1. TOUT SE CHANGE ICI ......... window.MC_TARIFS ci-dessous, nulle part
-                                     ailleurs. La page s'écrit à partir de lui.
-     2. LE MONTANT N'EST JAMAIS ICI  Le mensuel est facturé par SKOOL, l'annuel
-                                     par PAYPAL. Cette page ne fait que
-                                     l'AFFICHER — la changer ne change pas d'un
-                                     centime ce que le client paie.
-     3. UN LIEN VIDE = CTA ÉTEINT .. garde-fou volontaire : mieux vaut un bouton
-                                     mort qu'un bouton qui facture autre chose
-                                     que le prix affiché à côté.
-     4. AUCUN PRIX EN DUR .......... utiliser data-prix-mois / data-prix-an /
-                                     data-prix-an-mois / data-prix-an-4x /
-                                     data-essai-jours. Les dérivés se calculent.
-     ══════════════════════════════════════════════════════════════════════════ -->
+  Les montants affichés ici doivent correspondre EXACTEMENT aux boutons PayPal.
+  Un lien vide désactive le CTA : la page ne redirige jamais vers un autre prix.
+  Le stock public vient de /.netlify/functions/lifetime-stock, alimenté uniquement
+  par les captures PayPal signées dans paypal-to-skool.js.
+-->
 <script>
-window.MC_TARIFS = {
+window.MC_LIFETIME = {
+  TOTAL: 40,
+  PREMIER_PALIER: 20,
+  PRIX_1: 199,
+  PRIX_2: 249,
 
-  /* ── MENSUEL — essai gratuit puis abonnement, le tout géré par Skool ──────
-     ⚠️ Skool ne facture qu'en DOLLARS : on affiche donc la devise réellement
-     débitée. Annoncer un montant en euros ici ferait diverger la page de la
-     carte bancaire du membre — c'est la faute qu'on s'interdit sur ce site.  */
-  ESSAI_JOURS:  7,
-  PRIX_MOIS:    25,     // ⚠️ doit correspondre EXACTEMENT au réglage Skool
-  DEVISE_MOIS:  '$',
-  LIEN_MENSUEL: 'https://www.skool.com/mobility-club/about',
+  // BLOQUANT AVANT PRODUCTION : créer puis vérifier les deux checkouts PayPal.
+  LIEN_199: '',
+  LIEN_249: '',
 
-  /* ── ANNUEL — paiement UNIQUE PayPal, aucune reconduction ───────────────── */
-  PRIX_AN:      197,    // ⚠️ le montant vit dans PayPal, pas ici
-  FOIS:         4,      // paiement en 4× sans frais proposé par PayPal
-  // Vérifié le 2026-08-04 : « Mobility Club - L'app (1an) », amount 197.00, EUR.
-  LIEN_ANNUEL:  'https://www.paypal.com/ncp/payment/NNXDUCW3GS4UQ'
+  STOCK_ENDPOINT: '/.netlify/functions/lifetime-stock'
 };
 </script>
 
-<title>Devenir membre — Mobility Club</title>
-<meta name="description" content="Rejoins le Club qui garde tes articulations jeunes. Un entraînement articulaire personnalisé, ~8 min/jour, décidées pour toi. Essai gratuit de 7 jours, ou un an d'accès en paiement unique." />
-
-<!-- Open Graph -->
-<meta property="og:title" content="Devenir membre — Mobility Club" />
-<meta property="og:description" content="Le Club qui garde tes articulations jeunes. ~8 min/jour, décidées pour toi. Essai gratuit 7 jours · garantie progression." />
+<title>Lifetime Pass — Mobility Club</title>
+<meta name="description" content="40 Lifetime Pass Mobility Club. Un paiement unique, le cœur de Mobility Club à vie. Les 20 premiers à 199 €, les 20 suivants à 249 €." />
+<meta name="robots" content="index,follow" />
+<meta property="og:title" content="Lifetime Pass — Mobility Club" />
+<meta property="og:description" content="Tu paies Mobility Club une fois. Tu le gardes à vie. 40 pass, puis retour à l’abonnement." />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.mobilityclub.co/devenir-membre" />
 
-<!-- Fonts (mêmes que le manifeste) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-
-<!-- Beacon trafic (visite unique/jour, anonyme) — même mécanisme que le manifeste. -->
-<script>(function(){try{var k='mcv_membre_'+new Date().toISOString().slice(0,10);if(localStorage.getItem(k))return;localStorage.setItem(k,'1');fetch('https://dashboardmobilityclub.netlify.app/.netlify/functions/traffic-beacon?site=devenir-membre',{method:'POST',keepalive:true,cache:'no-store',mode:'no-cors'}).catch(function(){});}catch(e){}})();</script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 
 <style>
 :root{
-  --bg-primary:#0D0F0E; --bg-surface:#111412;
-  --border-subtle:rgba(255,255,255,0.04); --border-active:#1A1E1C; --hair:rgba(255,255,255,0.07);
-  --accent-green:#3ECFA0; --accent-green-dim:rgba(62,207,160,0.14); --accent-gold:#E8A020;
-  --text-primary:#F5F5F3; --text-secondary:#7A7C7A; --text-tertiary:#4A4D4B;
-  --font-sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
-  --font-display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,monospace;
-  --maxw:820px; --gutter:clamp(20px,5vw,48px); --ease:cubic-bezier(0.22,1,0.36,1);
+  --bg:#0D0F0E;
+  --surface:#111412;
+  --surface-strong:#151916;
+  --border:rgba(255,255,255,.07);
+  --border-strong:#28302C;
+  --mint:#3ECFA0;
+  --mint-soft:rgba(62,207,160,.12);
+  --gold:#E8A020;
+  --red:#E05A4A;
+  --text:#F5F5F3;
+  --muted:#929592;
+  --quiet:#5C615E;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --display:'Bricolage Grotesque','Plus Jakarta Sans',ui-sans-serif,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --max:1120px;
+  --measure:720px;
+  --gutter:clamp(20px,5vw,56px);
+  --ease:cubic-bezier(.22,1,.36,1);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
 body{
-  font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary);
-  line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  min-width:320px;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 84% 6%,rgba(62,207,160,.055),transparent 30rem),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  position:fixed;inset:0;z-index:100;pointer-events:none;content:"";opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E")
 }
 a{color:inherit;text-decoration:none}
-.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter)}
-.eyebrow{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green)}
-.eyebrow.muted{color:var(--text-tertiary)}
-strong,b{font-weight:600}
+button{font:inherit}
+.wrap{width:min(100%,var(--max));margin-inline:auto;padding-inline:var(--gutter)}
+.narrow{width:min(100%,var(--measure));margin-inline:auto}
+.eyebrow{font:600 10px/1.4 var(--mono);letter-spacing:1.45px;text-transform:uppercase;color:var(--mint)}
+.eyebrow.quiet{color:var(--quiet)}
+.section{padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--border)}
+.section-head{display:grid;gap:12px;margin-bottom:clamp(30px,4.5vw,52px)}
+.section-head h2{font:700 clamp(30px,5vw,58px)/1.02 var(--display);letter-spacing:-.035em;text-wrap:balance}
+.section-head p{max-width:62ch;color:var(--muted);font-size:clamp(14px,1.6vw,17px);line-height:1.7}
 
 /* Header */
-header{position:sticky; top:0; z-index:30; background:rgba(13,15,14,0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border-subtle)}
-.header-inner{display:flex; align-items:center; justify-content:space-between; height:60px}
-.wordmark{display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px; letter-spacing:0.4px}
-.wordmark .dot{width:8px; height:8px; border-radius:50%; background:var(--accent-green)}
-.back{font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); transition:color .3s}
-.back:hover{color:var(--text-primary)}
+header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
+.header-inner{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.wordmark{display:inline-flex;min-height:44px;align-items:center;gap:9px;font-size:13px;font-weight:700;letter-spacing:.45px}
+.wordmark-dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 18px rgba(62,207,160,.65)}
+.header-note{font:500 10px/1.4 var(--mono);letter-spacing:.5px;text-transform:uppercase;color:var(--quiet)}
 
-/* Hero offre */
-.hero{padding:clamp(48px,9vh,96px) 0 clamp(32px,5vh,52px)}
-.hero h1{
-  font-family:var(--font-display); font-weight:800; font-size:clamp(34px,6vw,60px);
-  line-height:1.03; letter-spacing:-0.03em; margin-top:18px; text-wrap:balance;
+/* Hero */
+.hero{padding-block:clamp(38px,7vw,88px) clamp(56px,8vw,104px)}
+.hero-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.72fr);gap:clamp(36px,7vw,92px);align-items:center}
+.hero-copy{display:grid;gap:22px}
+.hero h1{font:800 clamp(43px,7vw,84px)/.94 var(--display);letter-spacing:-.052em;text-wrap:balance}
+.hero h1 .mint{display:block;color:var(--mint)}
+.hero-sub{max-width:55ch;color:var(--muted);font-size:clamp(15px,1.5vw,18px);line-height:1.7}
+.hero-sub strong{color:var(--text);font-weight:600}
+.hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;color:var(--quiet);font:500 10px/1.5 var(--mono);letter-spacing:.35px;text-transform:uppercase}
+.hero-proof b{color:var(--text);font-weight:600}
+
+/* Offre au-dessus de la ligne de flottaison */
+.offer-card{position:relative;padding:clamp(24px,3vw,34px);border:1px solid rgba(62,207,160,.34);border-radius:18px;background:var(--surface);overflow:hidden}
+.offer-card::before{position:absolute;left:0;right:0;top:0;height:2px;content:"";background:var(--mint)}
+.stock-line{display:flex;justify-content:space-between;gap:16px;align-items:center;color:var(--muted);font:500 10px/1.45 var(--mono);letter-spacing:.6px;text-transform:uppercase}
+.live{display:inline-flex;align-items:center;gap:7px;color:var(--mint)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
+.stock-meter{height:4px;margin-top:14px;border-radius:999px;background:var(--border-strong);overflow:hidden}
+.stock-meter-fill{width:0;height:100%;background:var(--mint);transition:width .65s var(--ease)}
+.price-kicker{margin-top:26px;color:var(--muted);font-size:13px}
+.price{display:flex;align-items:flex-start;gap:5px;margin-top:3px;font:700 clamp(54px,7vw,76px)/.95 var(--display);letter-spacing:-.045em}
+.price-currency{padding-top:7px;color:var(--mint);font-size:.42em}
+.price-once{align-self:flex-end;padding-bottom:8px;color:var(--quiet);font:500 11px/1.3 var(--mono);letter-spacing:.2px}
+.tier-copy{min-height:43px;margin-top:12px;color:var(--muted);font-size:13px;line-height:1.55}
+.tier-copy strong{color:var(--text)}
+.primary-cta{display:flex;min-height:54px;margin-top:22px;align-items:center;justify-content:center;gap:10px;border:0;border-radius:9px;background:var(--mint);color:var(--bg);font-size:15px;font-weight:700;cursor:pointer;transition:transform .22s var(--ease),filter .22s var(--ease)}
+.primary-cta:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.primary-cta:focus-visible,.faq-q:focus-visible,.wordmark:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+.primary-cta.is-disabled{background:var(--border-strong);color:var(--quiet);pointer-events:none;cursor:not-allowed}
+.offer-fine{display:flex;justify-content:center;gap:7px;margin-top:13px;color:var(--quiet);font:500 9.5px/1.5 var(--mono);text-align:center;text-transform:uppercase;letter-spacing:.45px}
+.offer-fine b{color:var(--text);font-weight:600}
+.tier-rail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.tier{padding:11px 12px;border:1px solid var(--border);border-radius:9px;color:var(--quiet);font:500 9.5px/1.5 var(--mono);letter-spacing:.35px;text-transform:uppercase}
+.tier b{display:block;color:var(--text);font-size:11px}
+.tier.active{border-color:rgba(62,207,160,.32);background:var(--mint-soft);color:var(--mint)}
+.tier.active b{color:var(--mint)}
+.tier.done{opacity:.55}
+
+/* Preuve il y a un an */
+.year-proof{display:grid;grid-template-columns:minmax(180px,.42fr) minmax(0,1fr);gap:clamp(24px,5vw,66px);align-items:start}
+.year-stat{padding-block:12px}
+.year-stat strong{display:block;font:800 clamp(82px,12vw,148px)/.8 var(--display);letter-spacing:-.06em;color:var(--mint)}
+.year-stat span{display:block;margin-top:20px;font:600 10px/1.5 var(--mono);letter-spacing:1.15px;text-transform:uppercase;color:var(--muted)}
+.year-story{display:grid;gap:22px;padding-top:6px}
+.year-story p{color:var(--muted);font-size:clamp(16px,2vw,21px);line-height:1.65}
+.year-story p strong{color:var(--text);font-weight:600}
+.timeline{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-top:12px;padding:19px 20px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.timeline-date{font:600 10px/1.4 var(--mono);letter-spacing:.8px;text-transform:uppercase;color:var(--mint)}
+.timeline-copy{margin-top:6px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.timeline-arrow{color:var(--quiet);font-family:var(--mono)}
+
+/* Boucle produit */
+.loop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-block:1px solid var(--border)}
+.loop-step{position:relative;display:grid;align-content:start;gap:13px;min-height:196px;padding:24px 18px;border-inline-end:1px solid var(--border)}
+.loop-step:last-child{border-inline-end:0}
+.loop-n{font:600 10px/1.4 var(--mono);color:var(--mint)}
+.loop-step h3{font:700 16px/1.25 var(--display);letter-spacing:-.015em}
+.loop-step p{color:var(--muted);font-size:12px;line-height:1.6}
+.loop-step::after{position:absolute;right:-8px;top:31px;z-index:2;content:"→";color:var(--quiet);font:500 12px/1 var(--mono);background:var(--bg);padding:3px}
+.loop-step:last-child::after{content:"↻";right:14px;color:var(--mint);background:transparent}
+.showcase{margin-top:clamp(34px,5vw,58px)}
+.showcase img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:16px}
+.showcase figcaption{margin-top:12px;color:var(--quiet);font:500 9px/1.5 var(--mono);letter-spacing:.7px;text-transform:uppercase}
+
+/* Inclus / exclus */
+.scope{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
+.scope-col{padding:clamp(24px,4vw,42px)}
+.scope-col+.scope-col{border-inline-start:1px solid var(--border)}
+.scope-title{display:flex;align-items:center;gap:10px;margin-bottom:22px;font:700 20px/1.2 var(--display)}
+.scope-title .mark{display:grid;width:24px;height:24px;border-radius:50%;place-items:center;background:var(--mint-soft);color:var(--mint);font:600 12px/1 var(--mono)}
+.scope-col.excluded .scope-title .mark{background:rgba(224,90,74,.09);color:var(--red)}
+.scope-list{list-style:none;display:grid;gap:0}
+.scope-list li{padding-block:13px;border-top:1px solid var(--border);color:var(--muted);font-size:13.5px;line-height:1.55}
+.scope-list li strong{color:var(--text);font-weight:600}
+
+/* Closing offer */
+.closing{text-align:center}
+.closing h2{max-width:14ch;margin-inline:auto;font:800 clamp(40px,7vw,76px)/.95 var(--display);letter-spacing:-.05em;text-wrap:balance}
+.closing h2 span{color:var(--mint)}
+.closing-sub{max-width:56ch;margin:24px auto 0;color:var(--muted);font-size:15px;line-height:1.7}
+.closing-box{width:min(100%,520px);margin:34px auto 0;padding:26px;border:1px solid rgba(62,207,160,.32);border-radius:16px;background:var(--surface);text-align:left}
+.closing-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.closing-price{font:700 48px/1 var(--display);letter-spacing:-.04em}
+.closing-price span{color:var(--mint)}
+.closing-stock{color:var(--muted);font:500 10px/1.5 var(--mono);text-align:right;text-transform:uppercase;letter-spacing:.35px}
+
+/* FAQ */
+.faq{border-top:1px solid var(--border)}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:22px;padding:22px 0;border:0;background:transparent;color:var(--text);text-align:left;font-size:15px;font-weight:600;cursor:pointer}
+.faq-q::after{content:"+";flex:0 0 auto;color:var(--mint);font:500 20px/1 var(--mono);transition:transform .25s var(--ease)}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s var(--ease)}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+.faq-a-inner{overflow:hidden}
+.faq-a p{max-width:67ch;padding:0 42px 22px 0;color:var(--muted);font-size:13.5px;line-height:1.7}
+
+/* Footer + sticky mobile */
+.disclaimer{padding:18px 20px;border:1px solid var(--border);border-radius:10px;color:var(--quiet);font-size:11.5px;line-height:1.65}
+footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));border-top:1px solid var(--border);color:var(--quiet);font:500 10px/1.5 var(--mono);text-align:center}
+.mobile-buy{display:none}
+
+@media (max-width:900px){
+  .hero-layout{grid-template-columns:1fr;gap:38px}
+  .hero-copy{max-width:760px}
+  .offer-card{width:min(100%,580px)}
+  .loop{grid-template-columns:repeat(2,1fr)}
+  .loop-step:nth-child(2){border-inline-end:0}
+  .loop-step:nth-child(n+3){border-top:1px solid var(--border)}
+  .loop-step:last-child{grid-column:1/-1;min-height:auto}
 }
-.hero h1 .em{color:var(--accent-green)}
-.hero .sub{margin-top:22px; font-size:clamp(15px,1.7vw,18px); line-height:1.62; color:var(--text-secondary); max-width:52ch}
-.hero .sub strong{color:var(--text-primary)}
-.hero-proof{margin-top:20px; font-family:var(--font-mono); font-size:12px; color:var(--text-secondary)}
-.hero-proof b{color:var(--text-primary)}
-
-section{padding:clamp(34px,6vh,60px) 0; border-top:1px solid var(--border-subtle)}
-.sec-head{margin-bottom:26px}
-.sec-head h2{font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,34px); letter-spacing:-0.02em; line-height:1.15; margin-top:10px}
-
-/* Vitrine produit — capture des écrans de l'app */
-.showcase{margin:0 0 clamp(26px,4vh,42px)}
-.showcase img{display:block; width:100%; height:auto; border-radius:16px; border:1px solid var(--border-subtle)}
-
-/* Ce que tu obtiens — stack de valeur */
-.stack{display:grid; gap:1px; background:var(--border-subtle); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden}
-.stack-item{background:var(--bg-primary); padding:clamp(18px,2.4vw,24px); display:flex; gap:16px; align-items:flex-start}
-.stack-n{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--accent-green); flex:0 0 auto; padding-top:3px}
-.stack-item h3{font-size:15.5px; font-weight:600; margin-bottom:5px}
-.stack-item p{font-size:13.5px; color:var(--text-secondary); line-height:1.6}
-
-/* Preuve */
-.proof-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px}
-.proof-stat{background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; padding:18px 16px; text-align:center}
-.proof-stat .v{font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,30px); color:var(--text-primary)}
-.proof-stat .k{font-family:var(--font-mono); font-size:10px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-tertiary); margin-top:6px}
-.retest{margin-top:4px; padding:16px 18px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; max-width:48ch}
-.retest-tag{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:12px}
-.retest-row{display:flex; gap:12px; align-items:baseline; font-size:14px; line-height:1.55}
-.retest-row+.retest-row{margin-top:9px; padding-top:9px; border-top:1px solid var(--border-subtle)}
-.retest-when{flex:0 0 auto; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--text-tertiary); min-width:9.5ch}
-.retest-row.now .retest-when{color:var(--accent-gold)}
-.retest-what{color:var(--text-secondary)}
-.retest-row.now .retest-what{color:var(--text-primary)}
-.retest-row.now .retest-what b{color:var(--accent-gold); font-weight:700}
-
-/* Garantie */
-.guarantee{padding:20px 22px; background:var(--bg-surface); border:1px solid rgba(232,160,32,0.22); border-radius:14px; display:flex; gap:16px; align-items:flex-start}
-.guarantee-badge{flex:0 0 auto; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent-gold); border:1px solid rgba(232,160,32,0.3); border-radius:100px; padding:6px 12px; margin-top:2px}
-.guarantee-txt{font-size:14.5px; line-height:1.6; color:var(--text-secondary)}
-.guarantee-txt b{color:var(--text-primary); font-weight:600}
-
-/* Offre / prix */
-.offer-terms{max-width:56ch; margin:28px auto 0; padding:15px 20px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; text-align:center; font-size:13.5px; line-height:1.62; color:var(--text-secondary)}
-.offer-terms b{color:var(--text-primary); font-weight:600}
-.offer-fx{max-width:58ch; margin:14px auto 0; text-align:center; font-size:11.5px; line-height:1.55; color:var(--text-tertiary)}
-/* !important : ces blocs ne doivent pas réapparaître si une règle de display
-   passe après. Un équivalent en euros affiché sans taux serait un chiffre faux. */
-[hidden]{display:none !important}
-.plans{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:24px}
-.plan{position:relative; flex:0 1 300px; display:flex; flex-direction:column; gap:10px; padding:24px 22px; border-radius:14px; border:1px solid var(--border-active); background:var(--bg-surface); transition:transform .25s var(--ease), border-color .25s var(--ease)}
-.plan:hover{transform:translateY(-3px); border-color:rgba(62,207,160,0.4)}
-.plan.feat{border-color:rgba(62,207,160,0.4); background:linear-gradient(180deg,rgba(62,207,160,0.06),transparent 58%),var(--bg-surface)}
-.plan-tag{position:absolute; top:-11px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:var(--bg-primary); background:var(--accent-green); border-radius:100px; padding:4px 12px}
-.plan-price{font-family:var(--font-display); font-weight:700; font-size:34px}
-.plan-price .per{font-family:var(--font-sans); font-size:15px; font-weight:500; color:var(--text-secondary)}
-/* flex-grow : les deux sous-titres n'ont pas le même nombre de lignes, on veut
-   quand même les deux boutons alignés sur la même ligne d'horizon. */
-.plan-sub{font-size:12.5px; color:var(--text-secondary); flex-grow:1}
-.plan-cta{margin-top:6px; display:inline-flex; align-items:center; justify-content:center; gap:9px; height:50px; border-radius:9px; font-weight:700; font-size:15px; transition:transform .25s var(--ease), box-shadow .25s var(--ease)}
-.plan:not(.feat) .plan-cta{border:1px solid var(--accent-green); color:var(--accent-green)}
-.plan:not(.feat):hover .plan-cta{background:rgba(62,207,160,0.08)}
-.plan.feat .plan-cta{background:var(--accent-green); color:var(--bg-primary)}
-.plan.feat:hover .plan-cta{box-shadow:0 14px 34px -12px rgba(62,207,160,0.55)}
-.plan-tag.trial{background:var(--accent-gold)}
-.plan-note{font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.3px; color:var(--text-tertiary); text-align:center}
-/* Lien de paiement manquant : la carte s'éteint au lieu de pointer ailleurs. */
-.plan.off{opacity:.45; pointer-events:none; transform:none}
-.plan.off .plan-cta{background:none; border:1px solid var(--border-active); color:var(--text-tertiary); box-shadow:none}
-.reassure{display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-top:26px; font-family:var(--font-mono); font-size:11px; color:var(--text-secondary)}
-.reassure span b{color:var(--text-primary); font-weight:600}
-
-/* Secondaire + disclaimer */
-.secondary{text-align:center; margin-top:6px}
-.secondary a{font-size:13.5px; color:var(--text-secondary); border-bottom:1px solid var(--border-active); padding-bottom:2px; transition:color .3s}
-.secondary a:hover{color:var(--accent-green)}
-.disclaimer{margin-top:30px; padding-left:14px; border-left:2px solid var(--border-active); font-size:12px; line-height:1.6; color:var(--text-secondary); max-width:60ch}
-footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:11px; color:var(--text-tertiary); text-align:center}
-
-@media (max-width:560px){
-  .proof-grid{grid-template-columns:1fr}
-  .stack-item, .guarantee{flex-direction:column; gap:10px}
-  .plans{flex-direction:column; align-items:stretch}
-  .plan{flex-basis:auto}
+@media (max-width:640px){
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .header-note{display:none}
+  .hero{padding-top:30px}
+  .hero h1{font-size:clamp(42px,13vw,64px)}
+  .hero-proof{display:grid;gap:5px}
+  .offer-card{padding:22px 18px}
+  .stock-line{align-items:flex-start;flex-direction:column;gap:5px}
+  .tier-rail{grid-template-columns:1fr}
+  .year-proof{grid-template-columns:1fr;gap:20px}
+  .year-stat strong{font-size:104px}
+  .timeline{grid-template-columns:1fr;gap:12px}
+  .timeline-arrow{transform:rotate(90deg);transform-origin:center;width:max-content}
+  .loop{grid-template-columns:1fr}
+  .loop-step,.loop-step:nth-child(2){min-height:auto;border-inline-end:0;border-top:1px solid var(--border)}
+  .loop-step:first-child{border-top:0}
+  .loop-step:last-child{grid-column:auto}
+  .loop-step::after{content:"↓";right:18px;top:auto;bottom:-9px}
+  .loop-step:last-child::after{content:"↻";right:18px;top:24px;bottom:auto}
+  .scope{grid-template-columns:1fr}
+  .scope-col+.scope-col{border-inline-start:0;border-top:1px solid var(--border)}
+  .closing-row{align-items:flex-start;flex-direction:column;gap:9px}
+  .closing-stock{text-align:left}
+  .mobile-buy{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border-strong);background:rgba(13,15,14,.96);backdrop-filter:blur(14px)}
+  .mobile-buy-price{font:700 24px/1 var(--display);letter-spacing:-.03em}
+  .mobile-buy-price small{display:block;margin-top:4px;color:var(--quiet);font:500 8px/1.2 var(--mono);letter-spacing:.35px;text-transform:uppercase}
+  .mobile-buy .primary-cta{min-height:48px;margin:0;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 </style>
 </head>
@@ -184,179 +245,265 @@ footer{padding:34px 0; border-top:1px solid var(--border-subtle); font-family:va
 
 <header>
   <div class="wrap header-inner">
-    <a href="/" class="wordmark"><span class="dot"></span>MOBILITY&nbsp;CLUB</a>
-    <a href="/" class="back">← Le manifeste</a>
+    <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
+    <span class="header-note">Opération rentrée · 40 pass maximum</span>
   </div>
 </header>
 
 <main>
-  <!-- HERO OFFRE -->
-  <section class="hero" style="border-top:none">
-    <div class="wrap">
-      <span class="eyebrow">Devenir membre</span>
-      <h1>Rejoins le Club qui garde<br><span class="em">tes articulations jeunes.</span></h1>
-      <p class="sub">Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong> Tu ouvres, tu bouges, tu progresses.</p>
-      <p class="hero-proof"><b>330 membres</b> · méthode terrain · garantie progression</p>
+  <section class="hero">
+    <div class="wrap hero-layout">
+      <div class="hero-copy">
+        <span class="eyebrow">Lifetime Pass · rentrée 2026</span>
+        <h1>Tu paies une fois.<span class="mint">Tu le gardes à vie.</span></h1>
+        <p class="hero-sub">Le cœur de Mobility Club, sans abonnement mensuel ni annuel. Ton bilan, tes besoins, tes séances et les évolutions normales du produit — <strong>un seul paiement, puis tu continues.</strong></p>
+        <div class="hero-proof">
+          <span><b>40 pass</b> maximum</span>
+          <span><b>11 acheteurs</b> il y a un an</span>
+          <span><b>0 renouvellement</b> automatique</span>
+        </div>
+      </div>
+
+      <aside class="offer-card" aria-label="Offre Lifetime Pass">
+        <div class="stock-line">
+          <span class="live"><span class="live-dot"></span><span data-stock-status>Vérification du stock réel…</span></span>
+          <span data-stock-count>40 pass maximum</span>
+        </div>
+        <div class="stock-meter" role="progressbar" aria-label="Lifetime Pass vendus" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0"><div class="stock-meter-fill" data-stock-fill></div></div>
+        <p class="price-kicker" data-price-kicker>Tarif du premier palier</p>
+        <div class="price"><span class="price-currency">€</span><span data-current-price>199</span><span class="price-once">une fois</span></div>
+        <p class="tier-copy" data-tier-copy>Les 20 premiers sont à 199 €, puis les 20 suivants passent à 249 €.</p>
+        <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification du tarif…</a>
+        <p class="offer-fine"><b>Paiement unique</b> · aucun abonnement</p>
+        <div class="tier-rail" aria-label="Paliers de prix">
+          <div class="tier active" data-tier="1"><b>Pass 01 → 20 · 199 €</b>Premier palier</div>
+          <div class="tier" data-tier="2"><b>Pass 21 → 40 · 249 €</b>Dernier palier</div>
+        </div>
+      </aside>
     </div>
   </section>
 
-  <!-- CE QUE TU OBTIENS -->
-  <section>
+  <section class="section" id="preuve">
     <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow muted">Ce que tu obtiens</span>
-        <h2>Un produit façonné pour toi, pas pour tout le monde.</h2>
+      <div class="section-head">
+        <span class="eyebrow quiet">Il y a exactement un an</span>
+        <h2>11 personnes ont pris le pari.</h2>
+      </div>
+      <div class="year-proof">
+        <div class="year-stat"><strong>11</strong><span>Lifetime Pass vendus<br>en septembre 2025</span></div>
+        <div class="year-story">
+          <p>Elles ont payé une fois. Puis, pendant douze mois, elles ont continué à recevoir les nouveaux programmes, les nouveaux exercices, les nouveaux systèmes et les évolutions du Club — <strong>sans repayer.</strong></p>
+          <p>Avec le recul, c’était probablement la meilleure offre que Mobility Club ait proposée. Aujourd’hui, elle revient une fois, avec une limite que tu peux vérifier en direct.</p>
+          <div class="timeline" aria-label="Évolution du Lifetime Pass sur un an">
+            <div><div class="timeline-date">Septembre 2025</div><div class="timeline-copy">Un paiement. L’accès commence.</div></div>
+            <span class="timeline-arrow">→</span>
+            <div><div class="timeline-date">Septembre 2026</div><div class="timeline-copy">Un an d’évolutions reçues. Aucun nouvel abonnement.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="fonctionnement">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow quiet">Pas un programme figé</span>
+        <h2>Le système qui continue avec ton corps.</h2>
+        <p>Ton besoin d’aujourd’hui ne sera pas forcément celui de l’année prochaine. Mobility Club referme la boucle à chaque fois.</p>
+      </div>
+      <div class="loop" aria-label="Fonctionnement de Mobility Club">
+        <article class="loop-step"><span class="loop-n">01</span><h3>Bilan articulaire</h3><p>Tu mesures où en sont réellement tes articulations.</p></article>
+        <article class="loop-step"><span class="loop-n">02</span><h3>Tes besoins</h3><p>Le Club identifie les zones à travailler en priorité.</p></article>
+        <article class="loop-step"><span class="loop-n">03</span><h3>Séances personnalisées</h3><p>Tu ouvres. La bonne séance est déjà décidée pour toi.</p></article>
+        <article class="loop-step"><span class="loop-n">04</span><h3>Progression</h3><p>Tu suis tes séances et tu fais avancer tes amplitudes.</p></article>
+        <article class="loop-step"><span class="loop-n">05</span><h3>Nouveau bilan</h3><p>Tu re-mesures. Le système repart depuis tes nouveaux besoins.</p></article>
       </div>
       <figure class="showcase">
-        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy"
-             alt="L'app Mobility Club : ta séance du jour prête en 1 clic (3 exercices, 9 min), un coach vocal pour ajuster ta séance à la voix (« raccourcis ma séance à 10 min »), et le suivi de ta progression sur 5 zones de mobilité avec retest automatique." />
-      </figure>
-      <div class="stack">
-        <div class="stack-item"><span class="stack-n">01</span><div><h3>Ta séance du jour, déjà décidée</h3><p>Le club lit ton sport, ton corps et ta semaine, et te sert la bonne séance. Prête en 1 clic — tu ouvres, tu bouges.</p></div></div>
-        <div class="stack-item"><span class="stack-n">02</span><div><h3>Un coach vocal pour tout piloter</h3><p>« Raccourcis ma séance à 10 min », « décale à jeudi » — tu parles, l'app ajuste. Et un retour vidéo du coach sur ton exécution.</p></div></div>
-        <div class="stack-item"><span class="stack-n">03</span><div><h3>Ta progression, mesurée</h3><p>Ton diagnostic de départ, puis des retests automatiques. Tu vois ton amplitude gagner du terrain sur 5 zones, chiffres à l'appui.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PREUVE -->
-  <section>
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow muted">Preuve, pas promesse</span>
-        <h2>Ce qui change, une fois dedans.</h2>
-      </div>
-      <div class="proof-grid">
-        <div class="proof-stat"><div class="v">330</div><div class="k">Membres</div></div>
-        <div class="proof-stat"><div class="v">~8 min</div><div class="k">Par jour</div></div>
-        <div class="proof-stat"><div class="v">Mesuré</div><div class="k">Retest J+30/60/90</div></div>
-      </div>
-      <figure class="retest">
-        <figcaption class="retest-tag">Exemple · à quoi ressemble un retest</figcaption>
-        <div class="retest-row then"><span class="retest-when">Il y a 3 mois</span><span class="retest-what">ta cheville bloquait dès que tu descendais en squat.</span></div>
-        <div class="retest-row now"><span class="retest-when">Aujourd'hui</span><span class="retest-what"><b>+22%</b> d'amplitude en dorsiflexion — re-mesurée au même test.</span></div>
+        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy" alt="L’application Mobility Club : séance du jour, coach vocal et suivi de progression articulaire." />
+        <figcaption>Le produit en vrai · séance du jour · ajustement · progression</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- GARANTIE -->
-  <section>
+  <section class="section" id="perimetre">
     <div class="wrap">
-      <div class="guarantee">
-        <span class="guarantee-badge">Garantie progression</span>
-        <span class="guarantee-txt">Fais tes séances pendant 90 jours. Si ton score articulaire n'a pas progressé au retest, <b>on prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</b> On peut le promettre parce qu'on le mesure.</span>
+      <div class="section-head">
+        <span class="eyebrow quiet">Le contrat, clairement</span>
+        <h2>À vie ne veut pas dire « tout, pour toujours ».</h2>
+        <p>Tu achètes le cœur de Mobility Club et ses évolutions normales. Les futurs produits indépendants gardent leur propre valeur.</p>
+      </div>
+      <div class="scope">
+        <div class="scope-col included">
+          <h3 class="scope-title"><span class="mark">✓</span>Inclus dans ton pass</h3>
+          <ul class="scope-list">
+            <li><strong>L’app Mobility Club</strong> et l’accès membre au cœur du produit.</li>
+            <li><strong>Bilans articulaires et retests</strong> pour mesurer tes besoins dans le temps.</li>
+            <li><strong>Séances personnalisées</strong> générées selon ton corps, ton sport et ta semaine.</li>
+            <li><strong>Programmes, systèmes et exercices</strong> intégrés au cœur du Club.</li>
+            <li><strong>Évolutions normales</strong> et améliorations continues du produit principal.</li>
+          </ul>
+        </div>
+        <div class="scope-col excluded">
+          <h3 class="scope-title"><span class="mark">×</span>Pas inclus</h3>
+          <ul class="scope-list">
+            <li><strong>Coaching individuel</strong> ou accompagnement humain 1:1.</li>
+            <li><strong>Produits physiques</strong> actuels ou futurs.</li>
+            <li><strong>Future offre Pro</strong> destinée aux professionnels.</li>
+            <li><strong>Produits premium indépendants</strong> lancés en dehors du cœur Mobility Club.</li>
+            <li><strong>Nouvelles verticales autonomes</strong> qui ne sont pas une évolution normale du Club.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- OFFRE / PRIX -->
-  <section id="offre">
+  <section class="section closing" id="offre">
     <div class="wrap">
-      <div class="sec-head" style="text-align:center">
-        <span class="eyebrow">L'offre</span>
-        <h2>Deviens membre aujourd'hui.</h2>
-      </div>
-      <div class="plans">
-
-        <!-- MENSUEL — essai gratuit puis abonnement, facturés par Skool. -->
-        <a class="plan" data-lien-mensuel target="_blank" rel="noopener" data-plan="essai_skool"
-           aria-label="Démarrer l'essai gratuit, puis 20€ par mois">
-          <span class="plan-tag trial"><span data-essai-jours>7</span> jours offerts</span>
-          <span class="plan-price"><span data-prix-mois>25</span><span data-devise-mois>$</span><span class="per">/mois</span></span>
-          <span class="plan-sub">Essai gratuit de <span data-essai-jours>7</span> jours, puis <span data-prix-mois>25</span>&nbsp;<span data-devise-mois>$</span>/mois. Sans engagement — tu arrêtes quand tu veux.</span>
-          <span class="plan-cta">Démarrer l'essai gratuit →</span>
-          <span class="plan-note">Facturé en dollars par Skool<span data-equiv hidden> · ≈ <span data-equiv-eur></span> €</span></span>
-        </a>
-
-        <!-- ANNUEL — paiement UNIQUE PayPal, aucune reconduction. -->
-        <a class="plan feat" data-lien-annuel target="_blank" rel="noopener" data-plan="annuel_197"
-           aria-label="Prendre l'année — 197€ en une fois ou en 4 fois">
-          <span class="plan-tag">Recommandé</span>
-          <span class="plan-price"><span data-prix-an>197</span>€<span class="per">/an</span></span>
-          <span class="plan-sub">Soit <span data-prix-an-mois>16,42</span>&nbsp;€/mois — en une fois ou en <span data-fois>4</span>× <span data-prix-an-4x>49,25</span>&nbsp;€ sans frais.</span>
-          <span class="plan-cta">Prendre l'année →</span>
-          <span class="plan-note">Paiement unique · PayPal</span>
-        </a>
-      </div>
-      <p class="offer-terms"><b>L'annuel te donne un an d'accès, sans engagement de renouvellement</b> — c'est un paiement unique, rien ne se reconduit tout seul à l'échéance. Tu reprends une année si tu le décides, jamais par défaut.</p>
-      <p class="offer-fx" data-equiv hidden>Le mensuel est facturé en dollars par Skool. L'équivalent en euros est indicatif, calculé au taux du jour (<span data-equiv-date></span>) : ta banque appliquera le sien le jour du prélèvement.</p>
-      <div class="reassure">
-        <span><b>Paiement sécurisé</b> · PayPal</span>
-        <span><b>Annuel</b> · aucune reconduction</span>
-        <span><b>Mensuel</b> · résiliable à tout moment</span>
+      <span class="eyebrow">40 pass. Puis terminé.</span>
+      <h2>Le calcul ne se répétera <span>probablement pas.</span></h2>
+      <p class="closing-sub">Une fois les 40 Lifetime Pass partis, Mobility Club revient uniquement à l’abonnement. Les premiers sont avantagés parce qu’ils prennent la décision les premiers.</p>
+      <div class="closing-box">
+        <div class="closing-row">
+          <div class="closing-price"><span>€</span><b data-current-price>199</b></div>
+          <div class="closing-stock" data-closing-stock>Stock réel en cours de vérification</div>
+        </div>
+        <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification du tarif…</a>
+        <p class="offer-fine"><b>Accès à vie au cœur du Club</b> · paiement unique</p>
       </div>
     </div>
   </section>
 
-  <!-- SECONDAIRE : diagnostic gratuit -->
-  <section>
-    <div class="wrap secondary">
-      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:10px">Pas encore prêt à t'engager ?</p>
-      <a href="https://diagnostic.mobilityclub.co/" target="_blank" rel="noopener" data-secondary="diagnostic">Commence par le diagnostic gratuit — mesure où tu en es →</a>
-      <p class="disclaimer" style="margin-inline:auto;text-align:left">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
+  <section class="section" id="faq">
+    <div class="wrap narrow">
+      <div class="section-head">
+        <span class="eyebrow quiet">FAQ</span>
+        <h2>Les réponses avant de sortir la carte.</h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">« Accès à vie », ça veut dire quoi exactement ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Tu conserves l’accès au cœur de Mobility Club sans nouvel abonnement, tant que Mobility Club existe et continue d’exploiter ce produit. Le périmètre inclus est détaillé juste au-dessus.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Est-ce un programme mobilité figé ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Non. Ton bilan identifie tes besoins, tes séances s’y adaptent, tu progresses, puis tu refais un bilan. C’est cette boucle — et ses évolutions normales — que tu gardes.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Dois-je repayer pour les prochaines évolutions ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Non pour les améliorations normales du cœur Mobility Club. Une future offre Pro, un produit physique, du coaching individuel ou un produit premium indépendant ne sont pas inclus.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Comment le tarif change-t-il ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Les 20 premières ventes sont à 199 €. Dès que le vingtième paiement est enregistré, la page passe au second palier : 249 € pour les 20 derniers pass. Le stock affiché vient des paiements PayPal validés.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il après les 40 ventes ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass ferme et Mobility Club redevient accessible uniquement via son offre d’abonnement normale.</p></div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Comment vais-je recevoir mon accès ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Après validation du paiement PayPal, l’invitation est envoyée automatiquement à l’adresse email utilisée pendant le paiement. Utilise donc une adresse à laquelle tu as accès.</p></div></div>
+        </div>
+      </div>
+      <p class="disclaimer" style="margin-top:32px">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical. En cas de douleur ou de pathologie, consulte un professionnel de santé.</p>
     </div>
   </section>
 </main>
 
-<footer>© 2026 Mobility Club</footer>
+<footer>© 2026 Mobility Club · Lifetime Pass rentrée</footer>
 
-<!-- Tarifs : window.MC_TARIFS (en tête de page) alimente TOUS les affichages ET
-     les deux liens de paiement. Les dérivés (équivalent mensuel, montant du 4×)
-     se calculent — on ne les saisit jamais, sinon ils divergent du prix réel. -->
+<div class="mobile-buy" aria-label="Acheter le Lifetime Pass">
+  <div class="mobile-buy-price"><span data-current-price>199</span> €<small>paiement unique</small></div>
+  <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification…</a>
+</div>
+
 <script>
 (function(){
-  var T = window.MC_TARIFS || {};
+  var C = window.MC_LIFETIME || {};
 
-  /* Format français : virgule décimale, pas de « ,00 » inutile. */
-  function eur(n){ return (Math.round(n*100)/100).toFixed(2).replace(/\.00$/,'').replace('.',','); }
-  function setAll(sel, val){ var n=document.querySelectorAll(sel); for(var i=0;i<n.length;i++) n[i].textContent = val; }
+  function all(sel){ return document.querySelectorAll(sel); }
+  function setText(sel,value){ var els=all(sel); for(var i=0;i<els.length;i++) els[i].textContent=value; }
+  function setTierVisual(tier){
+    var one=document.querySelector('[data-tier="1"]');
+    var two=document.querySelector('[data-tier="2"]');
+    one.classList.toggle('active',tier===1); one.classList.toggle('done',tier>1);
+    two.classList.toggle('active',tier===2); two.classList.toggle('done',tier>2);
+  }
+  function disableCtas(label,plan){
+    var ctas=all('[data-buy-cta]');
+    for(var i=0;i<ctas.length;i++){
+      ctas[i].textContent=label; ctas[i].classList.add('is-disabled');
+      ctas[i].removeAttribute('href'); ctas[i].setAttribute('aria-disabled','true');
+      ctas[i].setAttribute('data-plan',plan||'lifetime_unavailable');
+    }
+  }
+  function enableCtas(url,price,tier){
+    if(!url){ disableCtas('Paiement bientôt disponible','lifetime_missing_checkout_'+price); return; }
+    var ctas=all('[data-buy-cta]');
+    for(var i=0;i<ctas.length;i++){
+      ctas[i].textContent='Prendre mon Lifetime Pass →'; ctas[i].classList.remove('is-disabled');
+      ctas[i].href=url; ctas[i].target='_blank'; ctas[i].rel='noopener';
+      ctas[i].removeAttribute('aria-disabled'); ctas[i].setAttribute('data-plan','lifetime_'+price+'_tier_'+tier);
+    }
+  }
+  function render(data){
+    var sold=Math.max(0,Math.min(Number(data.sold)||0,C.TOTAL));
+    var remaining=Math.max(0,C.TOTAL-sold);
+    var tier=remaining===0?3:(sold<C.PREMIER_PALIER?1:2);
+    var price=tier===1?C.PRIX_1:C.PRIX_2;
+    var link=tier===1?C.LIEN_199:C.LIEN_249;
 
-  setAll('[data-essai-jours]',  T.ESSAI_JOURS);
-  setAll('[data-prix-mois]',    T.PRIX_MOIS);
-  setAll('[data-devise-mois]',  T.DEVISE_MOIS);
-  setAll('[data-prix-an]',      T.PRIX_AN);
-  setAll('[data-fois]',         T.FOIS);
-  setAll('[data-prix-an-mois]', eur(T.PRIX_AN / 12));
-  setAll('[data-prix-an-4x]',   eur(T.PRIX_AN / T.FOIS));
+    setText('[data-current-price]',price);
+    setText('[data-stock-count]',sold+' / '+C.TOTAL+' partis');
+    setText('[data-stock-status]',remaining?remaining+' pass encore disponibles':'Les 40 pass sont partis');
+    setText('[data-closing-stock]',remaining?remaining+' pass restants · stock réel':'Offre terminée');
+    document.querySelector('[data-stock-fill]').style.width=((sold/C.TOTAL)*100)+'%';
+    document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);
+    setTierVisual(tier);
 
-  /* Lien manquant : on ÉTEINT la carte. Jamais de repli vers une autre URL —
-     un bouton qui facture un autre montant que celui affiché est pire qu'un
-     bouton mort. (Même garde-fou que les paliers de la prévente.) */
-  var cartes = [['[data-lien-mensuel]', T.LIEN_MENSUEL], ['[data-lien-annuel]', T.LIEN_ANNUEL]];
-  for (var i=0;i<cartes.length;i++){
-    var el = document.querySelector(cartes[i][0]); if (!el) continue;
-    if (cartes[i][1]) { el.setAttribute('href', cartes[i][1]); }
-    else { el.classList.add('off'); el.removeAttribute('href'); el.setAttribute('aria-disabled','true'); }
+    if(tier===1){
+      var firstLeft=Math.max(0,C.PREMIER_PALIER-sold);
+      setText('[data-price-kicker]','Tarif actuel · premier palier');
+      setText('[data-tier-copy]',firstLeft+' place'+(firstLeft>1?'s':'')+' encore à '+C.PRIX_1+' €, puis le tarif passe à '+C.PRIX_2+' €.');
+      enableCtas(link,price,tier);
+    }else if(tier===2){
+      setText('[data-price-kicker]','Tarif actuel · dernier palier');
+      setText('[data-tier-copy]','Le premier palier est parti. Il reste '+remaining+' Lifetime Pass à '+C.PRIX_2+' €.');
+      enableCtas(link,price,tier);
+    }else{
+      setText('[data-price-kicker]','Offre terminée');
+      setText('[data-tier-copy]','Les 40 Lifetime Pass ont été vendus. Mobility Club revient à l’abonnement.');
+      disableCtas('Les 40 pass sont partis','lifetime_sold_out');
+    }
   }
 
-  /* ── Équivalent en euros du mensuel — INDICATIF ──────────────────────────
-     Skool débite en dollars. On affiche un ordre de grandeur en euros, mais
-     seulement si le taux du jour arrive vraiment : pas de taux ⇒ pas de chiffre.
-     Une page silencieuse reste juste ; une page qui invente un montant, non.
-     Arrondi VERS LE HAUT — on n'annonce jamais moins que ce qui sera débité. */
-  fetch('/.netlify/functions/taux-change', { cache: 'no-store' })
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){
-      if (!d || !(d.rate > 0)) return;
-      setAll('[data-equiv-eur]', Math.ceil(T.PRIX_MOIS * d.rate));
-      setAll('[data-equiv-date]', d.date || 'taux BCE');
-      var z = document.querySelectorAll('[data-equiv]');
-      for (var k=0;k<z.length;k++) z[k].hidden = false;
-    })
-    .catch(function(){ /* muet : l'euro reste caché, le prix en dollars suffit */ });
-})();
-</script>
+  fetch(C.STOCK_ENDPOINT,{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
+    .then(function(data){if(!data||data.live!==true)throw new Error('stock invalide');render(data);})
+    .catch(function(){
+      setText('[data-stock-status]','Stock momentanément indisponible');
+      setText('[data-stock-count]','40 pass maximum');
+      setText('[data-closing-stock]','Actualise la page pour vérifier le tarif');
+      disableCtas('Actualise pour vérifier le tarif','lifetime_stock_unavailable');
+    });
 
-<!-- Tracking : mesure la conversion de la page offre (même collecteur que le manifeste). -->
-<script>
-(function(){
+  var faq=all('.faq-q');
+  for(var i=0;i<faq.length;i++){
+    faq[i].addEventListener('click',function(){
+      var item=this.closest('.faq-item'); var open=!item.classList.contains('open');
+      item.classList.toggle('open',open); this.setAttribute('aria-expanded',String(open));
+    });
+  }
+
+  /* Tracking first-party : page_view + clic checkout. La conversion encaissée
+     est comptée côté serveur par le webhook PayPal, jamais déduite du clic. */
   var URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
   function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/devenir-membre',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
   track('page_view');
   document.addEventListener('click',function(e){
-    var plan=e.target.closest('[data-plan]'); if(plan)track('plan_clicked',{plan:plan.getAttribute('data-plan')});
-    var sec=e.target.closest('[data-secondary]'); if(sec)track('cta_clicked',{cta:'secondary_'+sec.getAttribute('data-secondary')});
+    var plan=e.target.closest('[data-plan]');
+    if(plan&&!plan.classList.contains('is-disabled'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});
   },{passive:true});
 })();
 </script>

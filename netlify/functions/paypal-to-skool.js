@@ -33,6 +33,30 @@
 
 import { getStore } from '@netlify/blobs';
 
+// Les deux montants de la campagne Lifetime. Ils restent séparés de
+// PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
+// campagne est ouverte, tandis que cette liste décide quelles captures doivent
+// alimenter le compteur public des 40 places.
+export const MONTANTS_LIFETIME = ['199.00', '249.00'];
+
+export const estMontantLifetime = (montant) =>
+  MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));
+
+const tracerVenteLifetime = async (captureId, montant, eventId) => {
+  if (!estMontantLifetime(montant)) return;
+  const prix = Number(String(montant).replace(',', '.')).toFixed(0);
+  const key = `${prix}/${encodeURIComponent(captureId)}`;
+
+  // La clé contient l'id de capture : réémissions PayPal et retries réécrivent
+  // la même entrée, sans gonfler artificiellement le stock vendu.
+  await getStore('lifetime_pass_2026').setJSON(key, {
+    prix,
+    capture_id: captureId,
+    event_id: eventId || null,
+    paid_at: new Date().toISOString(),
+  });
+};
+
 const api = () =>
   process.env.PAYPAL_ENV === 'sandbox'
     ? 'https://api-m.sandbox.paypal.com'
@@ -217,6 +241,20 @@ export const handler = async (req) => {
     // Un 500 ferait boucler PayPal sur chaque vente du Timer.
     console.log('[paypal-to-skool] ignoré —', verdict.raison);
     return json(200, { ok: true, ignore: verdict.raison });
+  }
+
+  // Le stock représente les paiements réellement capturés, pas les clics ni
+  // même la réussite de l'invitation Skool. On l'écrit donc dès que PayPal a
+  // signé une capture acceptée. Une panne renvoie 500 pour provoquer un retry.
+  try {
+    await tracerVenteLifetime(
+      verdict.captureId,
+      evenement.resource?.amount?.value,
+      evenement.id
+    );
+  } catch (err) {
+    console.error('[paypal-to-skool] stock lifetime non écrit:', err?.message);
+    return json(500, { error: 'lifetime_stock_failed' });
   }
 
   const store = getStore('skool_invites');
