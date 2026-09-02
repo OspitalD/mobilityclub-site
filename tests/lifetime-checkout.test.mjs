@@ -33,9 +33,20 @@ mock.module('@netlify/blobs', {
   },
 });
 
-const { handler } = await import('../netlify/functions/lifetime-checkout.js');
+const { default: handler } = await import('../netlify/functions/lifetime-checkout.js');
 
-const call = (body) => handler({ httpMethod: 'POST', body: JSON.stringify(body), headers: {} });
+const call = async (payload) => {
+  const response = await handler(new Request('http://localhost/.netlify/functions/lifetime-checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }));
+  return {
+    statusCode: response.status,
+    headers: Object.fromEntries(response.headers),
+    body: await response.text(),
+  };
+};
 const body = (response) => JSON.parse(response.body);
 
 let orders;

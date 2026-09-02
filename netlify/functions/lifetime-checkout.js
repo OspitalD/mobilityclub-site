@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { connectLambda } from '@netlify/blobs';
 import {
   attacherCommande,
   customIdLifetime,
@@ -202,9 +201,8 @@ const liberer = async (body) => {
   return json(200, { ok: true });
 };
 
-export const handler = async (req) => {
+const handleLegacyRequest = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
-  if (req.blobs) connectLambda(req);
   const required = ['PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET'];
   if (required.some((name) => !process.env[name])) return json(503, { error: 'paypal_not_configured' });
 
@@ -218,4 +216,17 @@ export const handler = async (req) => {
     console.error('[lifetime-checkout] erreur:', err?.message);
     return json(err?.statusCode || 502, { error: 'checkout_failed' });
   }
+};
+
+export default async (request) => {
+  const response = await handleLegacyRequest({
+    httpMethod: request.method,
+    headers: Object.fromEntries(request.headers),
+    body: await request.text(),
+    isBase64Encoded: false,
+  });
+  return new Response(response.body, {
+    status: response.statusCode,
+    headers: response.headers,
+  });
 };
