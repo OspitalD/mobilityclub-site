@@ -1,4 +1,5 @@
 import { lireEtatCampagne } from '../lib/lifetime-ticketing.js';
+import { connectLambda } from '@netlify/blobs';
 
 const json = (statusCode, body) => ({
   statusCode,
@@ -11,6 +12,7 @@ const json = (statusCode, body) => ({
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'GET') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
   try {
     return json(200, await lireEtatCampagne());
   } catch (err) {

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { connectLambda } from '@netlify/blobs';
 import {
   attacherCommande,
   customIdLifetime,
@@ -203,6 +204,7 @@ const liberer = async (body) => {
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
   const required = ['PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET'];
   if (required.some((name) => !process.env[name])) return json(503, { error: 'paypal_not_configured' });
 

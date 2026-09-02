@@ -8,6 +8,7 @@ const blobs = new Map();
 const lifetimeBlobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
+    connectLambda: () => {},
     getStore: (name) => {
       const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : blobs;
       return {

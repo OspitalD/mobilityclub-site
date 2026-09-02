@@ -7,7 +7,7 @@
 // Le préfixe par date rend le dépouillement requêtable par `list({ prefix })`,
 // comme la console coach le fait déjà sur les autres stores.
 
-import { getStore } from '@netlify/blobs';
+import { connectLambda, getStore } from '@netlify/blobs';
 
 // Whitelist stricte : un endpoint public non authentifié n'accepte que ce qu'on
 // a prévu de lire. Tout le reste est rejeté (et non stocké silencieusement).
@@ -51,6 +51,7 @@ const json = (status, body) => ({
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
 
   // Garde-fou taille : le body d'un event légitime pèse quelques centaines d'octets.
   if ((req.body || '').length > 2048) return json(413, { error: 'payload_too_large' });

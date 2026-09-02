@@ -31,7 +31,7 @@
 //   PAYPAL_DEVISE          optionnel, défaut « EUR »
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
 
-import { getStore } from '@netlify/blobs';
+import { connectLambda, getStore } from '@netlify/blobs';
 
 // Les deux montants de la campagne Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
@@ -193,6 +193,7 @@ const inviterSurSkool = async (email) => {
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
 
   const requis = ['SKOOL_INVITE_WEBHOOK', 'PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET', 'PAYPAL_WEBHOOK_ID'];
   const manquantes = requis.filter((v) => !process.env[v]);

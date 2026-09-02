@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 const blobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
+    connectLambda: () => {},
     getStore: () => ({
       get: async (k) => (blobs.has(k) ? blobs.get(k) : null),
       setJSON: async (k, v) => void blobs.set(k, v),

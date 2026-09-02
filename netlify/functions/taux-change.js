@@ -14,7 +14,7 @@
 // taux connu (Blobs) → 503. En 503 la page n'affiche simplement aucun euro :
 // elle reste juste, elle est seulement moins bavarde. Jamais de chiffre inventé.
 
-import { getStore } from '@netlify/blobs';
+import { connectLambda, getStore } from '@netlify/blobs';
 
 const CLE = 'usd-eur';
 const FRAICHEUR_MS = 12 * 60 * 60 * 1000; // au-delà, on retente la source
@@ -72,6 +72,7 @@ const interroger = async () => {
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'GET') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
 
   let store = null;
   try {

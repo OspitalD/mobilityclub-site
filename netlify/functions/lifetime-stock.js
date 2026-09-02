@@ -5,7 +5,7 @@
 // Cette Function ne renvoie que des agrégats. Aucun email ni identifiant PayPal
 // ne quitte le serveur.
 
-import { getStore } from '@netlify/blobs';
+import { connectLambda, getStore } from '@netlify/blobs';
 
 export const TOTAL = 40;
 export const PREMIER_PALIER = 20;
@@ -37,6 +37,7 @@ export const calculerStock = (keys = []) => {
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'GET') return json(405, { error: 'method_not_allowed' });
+  if (req.blobs) connectLambda(req);
 
   try {
     const store = getStore('lifetime_pass_2026');

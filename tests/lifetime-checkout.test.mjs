@@ -10,6 +10,7 @@ const bucket = (name) => {
 
 mock.module('@netlify/blobs', {
   namedExports: {
+    connectLambda: () => {},
     getStore: (name) => {
       const data = bucket(typeof name === 'string' ? name : name.name);
       return {

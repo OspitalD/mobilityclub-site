@@ -6,6 +6,7 @@ let listError = null;
 
 mock.module('@netlify/blobs', {
   namedExports: {
+    connectLambda: () => {},
     getStore: () => ({
       list: async () => {
         if (listError) throw listError;
