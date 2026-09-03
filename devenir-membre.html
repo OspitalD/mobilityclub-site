@@ -15,11 +15,10 @@
 window.MC_LIFETIME = {
   TOTAL: 20,
   PREMIER_PALIER: 20,
-  PRIX_1: 249,
-  PRIX_2: 249,
+  PRIX_1: 199,
+  PRIX_2: 199,
 
-  // L'ancien checkout 199 € reste archivé côté PayPal, mais n'est plus exposé.
-  LIEN_199: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
+  LIEN_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
   LIEN_249: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
 
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
@@ -29,7 +28,7 @@ window.MC_LIFETIME = {
 </script>
 
 <title>Lifetime Pass — Mobility Club</title>
-<meta name="description" content="20 Lifetime Pass Mobility Club à 249 €. Un paiement unique, le cœur de Mobility Club à vie." />
+<meta name="description" content="Les 2 derniers Lifetime Pass Mobility Club à 199 €. Un paiement unique, le cœur de Mobility Club à vie." />
 <meta name="robots" content="index,follow" />
 <meta property="og:title" content="Lifetime Pass — Mobility Club" />
 <meta property="og:description" content="Tu paies Mobility Club une fois. Tu le gardes à vie. 20 pass, puis retour à l’abonnement." />
@@ -317,7 +316,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <p class="hero-sub">Le cœur de Mobility Club, sans abonnement mensuel ni annuel. Ton bilan, tes besoins, tes séances et les évolutions normales du produit — <strong>un seul paiement, puis tu continues.</strong></p>
         <div class="hero-proof">
           <span><b>20 pass</b> maximum</span>
-          <span><b>3 tickets</b> déjà pris</span>
+          <span><b>18 tickets</b> déjà pris · 2 restants</span>
           <span><b>11 acheteurs</b> il y a un an</span>
           <span><b>0 renouvellement</b> automatique</span>
         </div>
@@ -349,12 +348,12 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <div class="ticket-stage" data-ticket-experience aria-hidden="true" hidden data-price-protected>
           <div class="ticket-head">
             <div class="ticket-head-copy">Carnet en cours<b data-tier-name>Tickets 01 → 20</b></div>
-            <div class="ticket-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+            <div class="ticket-price"><span>€</span><b data-price>199</b><small>ou 4× via PayPal</small></div>
           </div>
           <div class="ticket-grid" data-ticket-grid aria-label="Tickets du carnet en cours"></div>
           <div class="ticket-message">
             <b data-take-label>Choisis ton numéro</b>
-            <p data-take-message>Les tickets 01, 02 et 03 sont déjà pris. Les autres numéros libres peuvent être choisis.</p>
+            <p data-take-message>18 tickets sont déjà pris. Choisis l’un des 2 derniers numéros libres.</p>
           </div>
           <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Vérification des tickets…</button>
           <p class="offer-fine"><b>Payable en 4× via PayPal</b> · sous réserve d’éligibilité</p>
@@ -444,7 +443,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
       <p class="closing-sub">Une fois les 20 Lifetime Pass partis, Mobility Club revient uniquement à l’abonnement. Chaque pass est numéroté, nominatif et disponible tant que son ticket reste libre.</p>
       <div class="closing-box" data-price-protected>
         <div class="closing-row">
-          <div class="closing-price"><span>€</span><b data-current-price>249</b><small>ou 4× via PayPal</small></div>
+          <div class="closing-price"><span>€</span><b data-current-price>199</b><small>ou 4× via PayPal</small></div>
           <div class="closing-stock" data-closing-stock>Stock réel en cours de vérification</div>
         </div>
         <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisis d’abord ton ticket</button>
@@ -474,7 +473,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Quel est le tarif du Lifetime Pass ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass coûte 249 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
+          <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass coûte 199 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il après les 20 ventes ?</button>
@@ -493,7 +492,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 <footer>© 2026 Mobility Club · Lifetime Pass rentrée</footer>
 
 <div class="mobile-buy" aria-label="Acheter le Lifetime Pass">
-  <div class="mobile-buy-price"><span data-current-price>249</span> €<small>ou 4× via PayPal</small></div>
+  <div class="mobile-buy-price"><span data-current-price>199</span> €<small>ou 4× via PayPal</small></div>
   <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisir mon ticket</button>
 </div>
 

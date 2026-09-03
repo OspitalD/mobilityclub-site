@@ -94,43 +94,43 @@ beforeEach(() => {
 });
 
 test('choix libre → réservation atomique → ordre PayPal numéroté → capture', async () => {
-  const created = await call({ action: 'create', ticket: 7, return_path: '/devenir-membre' });
+  const created = await call({ action: 'create', ticket: 19, return_path: '/devenir-membre' });
   assert.equal(created.statusCode, 201);
-  assert.equal(body(created).ticket, 7);
+  assert.equal(body(created).ticket, 19);
   assert.match(body(created).approve_url, /ORDER1/);
 
   const inventory = bucket('lifetime_ticket_inventory_2026').get('inventory').data;
-  const reservation = inventory.tiers[1]['07'];
+  const reservation = inventory.tiers[1]['19'];
   assert.equal(reservation.status, 'reserved');
   assert.equal(reservation.order_id, 'ORDER1');
   assert.match(orders.get('ORDER1').payment_source.paypal.experience_context.return_url, /\/devenir-membre\?paypal=return/);
 
-  const duplicate = await call({ action: 'create', ticket: 7 });
+  const duplicate = await call({ action: 'create', ticket: 19 });
   assert.equal(duplicate.statusCode, 409);
   assert.equal(body(duplicate).error, 'ticket_unavailable');
 
   const captured = await call({
     action: 'capture',
     tier: 1,
-    ticket: 7,
+    ticket: 19,
     reservation: reservation.token,
     order_id: 'ORDER1',
   });
   assert.equal(captured.statusCode, 200);
   assert.equal(body(captured).ok, true);
-  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[1]['07'].status, 'sold');
-  assert.equal(orders.get('ORDER1').purchase_units[0].amount.value, '249.00');
-  assert.ok(bucket('lifetime_pass_2026').has('249/CAP-ORDER1'));
+  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[1]['19'].status, 'sold');
+  assert.equal(orders.get('ORDER1').purchase_units[0].amount.value, '199.00');
+  assert.ok(bucket('lifetime_pass_2026').has('199/CAP-ORDER1'));
 });
 
 test('le webhook arrivé avant le retour client ne crée aucun ticket fantôme', async () => {
-  const created = await call({ action: 'create', ticket: 7 });
+  const created = await call({ action: 'create', ticket: 19 });
   const inventory = bucket('lifetime_ticket_inventory_2026').get('inventory').data;
-  const reservation = inventory.tiers[1]['07'];
+  const reservation = inventory.tiers[1]['19'];
   const customId = orders.get('ORDER1').purchase_units[0].custom_id;
 
   // PayPal peut notifier le webhook pendant que la réponse de capture revient.
-  bucket('lifetime_pass_2026').set('249/CAP-ORDER1', {
+  bucket('lifetime_pass_2026').set('199/CAP-ORDER1', {
     data: { capture_id: 'CAP-ORDER1', custom_id: customId },
     etag: 'webhook-first',
   });
@@ -138,7 +138,7 @@ test('le webhook arrivé avant le retour client ne crée aucun ticket fantôme',
   const captured = await call({
     action: 'capture',
     tier: 1,
-    ticket: 7,
+    ticket: 19,
     reservation: reservation.token,
     order_id: 'ORDER1',
   });
@@ -146,10 +146,8 @@ test('le webhook arrivé avant le retour client ne crée aucun ticket fantôme',
   assert.equal(captured.statusCode, 200);
 
   const state = bucket('lifetime_ticket_inventory_2026').get('inventory').data;
-  assert.equal(state.tiers[1]['01'].status, 'sold', 'la première vente pré-ouverture occupe le 01');
-  assert.equal(state.tiers[1]['02'].status, 'sold', 'la seconde vente pré-ouverture occupe le 02');
-  assert.equal(state.tiers[1]['03'].status, 'sold', 'la troisième vente pré-ouverture occupe le 03');
-  assert.equal(state.tiers[1]['07'].status, 'sold');
+  assert.ok(Array.from({ length: 18 }, (_, index) => state.tiers[1][String(index + 1).padStart(2, '0')].status === 'sold').every(Boolean));
+  assert.equal(state.tiers[1]['19'].status, 'sold');
 });
 
 test('au 19e paiement, une seule réservation peut occuper la dernière place du premier carnet', async () => {
@@ -158,7 +156,7 @@ test('au 19e paiement, une seule réservation peut occuper la dernière place du
 
   const last = await call({ action: 'create', ticket: 20 });
   assert.equal(last.statusCode, 201);
-  assert.equal(body(last).price, 249);
+  assert.equal(body(last).price, 199);
 
   const overflow = await call({ action: 'create', ticket: 19 });
   assert.equal(overflow.statusCode, 409);
@@ -166,15 +164,15 @@ test('au 19e paiement, une seule réservation peut occuper la dernière place du
 
 test('un prix absent de la configuration PayPal libère immédiatement le ticket', async () => {
   process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00';
-  const response = await call({ action: 'create', ticket: 4 });
+  const response = await call({ action: 'create', ticket: 19 });
   assert.equal(response.statusCode, 503);
   assert.equal(body(response).error, 'price_not_configured');
-  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[1]['04'], undefined);
+  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[1]['19'], undefined);
 });
 
 test('aucun secret PayPal ne sort dans les erreurs', async () => {
   globalThis.fetch = async () => new Response('nope', { status: 500 });
-  const response = await call({ action: 'create', ticket: 4 });
+  const response = await call({ action: 'create', ticket: 19 });
   assert.equal(response.statusCode, 502);
   assert.ok(!response.body.includes('secret-test'));
 });

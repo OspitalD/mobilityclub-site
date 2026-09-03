@@ -7,13 +7,13 @@ export const RESERVATION_MS = 10 * 60 * 1000;
 const INVENTORY_STORE = 'lifetime_ticket_inventory_2026';
 const INVENTORY_KEY = 'inventory';
 const CAPTURE_STORE = 'lifetime_pass_2026';
-// Trois ventes ont été conclues avant l'ouverture de la page. Elles occupent les
-// tickets 01 à 03 tant que les captures NCP ne les matérialisent pas déjà.
-export const PRELAUNCH_SOLD = { 1: 3, 2: 0 };
+// Dix-huit ventes sont déjà comptabilisées. Elles occupent les tickets 01 à 18
+// tant que les captures NCP ne les matérialisent pas déjà.
+export const PRELAUNCH_SOLD = { 1: 18, 2: 0 };
 
 // Le numéro de carnet reste utile pour l'inventaire, mais le tarif public est
-// désormais unique : chaque nouvelle commande numérotée est créée à 249 €.
-const prixDuPalier = () => 249;
+// désormais unique : les deux derniers tickets sont créés à 199 €.
+const prixDuPalier = () => 199;
 const cleTicket = (ticket) => String(Number(ticket)).padStart(2, '0');
 
 export const ticketValide = (ticket) =>
@@ -123,8 +123,8 @@ const lireCaptures = async () => {
     // toujours être matérialisées dans la grille. Les nouvelles commandes
     // numérotées vivent déjà dans l'inventaire atomique et ne sont pas
     // recomptées ici, même si le webhook PayPal arrive avant le retour client.
-    // Depuis le passage immédiat à 249 €, le montant ne permet plus de savoir
-    // à quel ticket appartient une vente NCP. L'ordre réel des ventes tranche :
+    // Le montant ne suffit pas à savoir à quel ticket appartient une vente NCP.
+    // L'ordre réel des ventes tranche :
     // elles remplissent les 20 numéros dans l'ordre.
     // PRELAUNCH_SOLD est un plancher, pas une vente ajoutée, afin qu'une capture
     // PayPal déjà reçue pour le ticket pré-ouverture ne soit jamais comptée deux fois.

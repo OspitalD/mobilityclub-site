@@ -26,7 +26,7 @@ export const calculerStock = (state = {}) => {
     total: TOTAL,
     sold,
     remaining,
-    tier: remaining === 0 ? 'sold_out' : '249',
+    tier: remaining === 0 ? 'sold_out' : '199',
     first_tier_remaining: Math.max(0, PREMIER_PALIER - sold),
   };
 };
