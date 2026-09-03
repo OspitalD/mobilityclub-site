@@ -34,10 +34,11 @@ test('les captures NCP sans numéro sont matérialisées sans inventer de vente'
   assert.deepEqual(state.tickets.slice(0, 4).map((ticket) => ticket.status), ['sold', 'sold', 'sold', 'available']);
 });
 
-test('20 captures ouvrent le second carnet à 249 €', () => {
+test('20 captures ferment l’unique carnet à 249 €', () => {
   const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 0 });
   const state = etatCampagne(normalized, { 1: 20, 2: 0 });
-  assert.equal(state.tier, 2);
+  assert.equal(state.tier, 1);
   assert.equal(state.price, 249);
-  assert.equal(state.tier_sold, 0);
+  assert.equal(state.tier_sold, 20);
+  assert.equal(state.sold_out, true);
 });

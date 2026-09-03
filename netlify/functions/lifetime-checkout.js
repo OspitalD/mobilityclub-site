@@ -64,7 +64,9 @@ const paypalRequest = async (path, { method = 'POST', body, requestId } = {}) =>
   return { response, data };
 };
 
-const creerCommande = async (reservation) => {
+const cheminRetour = (value) => value === '/devenir-membre' ? '/devenir-membre' : '/lifetime';
+
+const creerCommande = async (reservation, returnPath) => {
   const customId = customIdLifetime(reservation);
   const query = new URLSearchParams({
     paypal: 'return',
@@ -107,8 +109,8 @@ const creerCommande = async (reservation) => {
             landing_page: 'NO_PREFERENCE',
             shipping_preference: 'NO_SHIPPING',
             user_action: 'PAY_NOW',
-            return_url: `${siteOrigin()}/lifetime?${query}`,
-            cancel_url: `${siteOrigin()}/lifetime?${cancelQuery}`,
+            return_url: `${siteOrigin()}${returnPath}?${query}`,
+            cancel_url: `${siteOrigin()}${returnPath}?${cancelQuery}`,
           },
         },
       },
@@ -151,7 +153,7 @@ const creer = async (body) => {
   }
 
   try {
-    const order = await creerCommande(reservation);
+    const order = await creerCommande(reservation, cheminRetour(body.return_path));
     await attacherCommande({ ...reservation, orderId: order.orderId });
     return json(201, {
       ok: true,

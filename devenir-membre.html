@@ -7,32 +7,32 @@
 <!--
   LIFETIME PASS · OPÉRATION RENTRÉE 2026
 
-  Les montants affichés ici doivent correspondre EXACTEMENT aux boutons PayPal.
-  Un lien vide désactive le CTA : la page ne redirige jamais vers un autre prix.
-  Le stock public vient de /.netlify/functions/lifetime-stock, alimenté uniquement
-  par les captures PayPal signées dans paypal-to-skool.js.
+  Le montant affiché ici doit correspondre EXACTEMENT au checkout PayPal.
+  Le stock public vient de /.netlify/functions/lifetime-tickets : captures PayPal,
+  inventaire numéroté et vente conclue avant l'ouverture partagent la même vérité.
 -->
 <script>
 window.MC_LIFETIME = {
-  TOTAL: 40,
+  TOTAL: 20,
   PREMIER_PALIER: 20,
-  PRIX_1: 199,
+  PRIX_1: 249,
   PRIX_2: 249,
 
-  // BLOQUANT AVANT PRODUCTION : créer puis vérifier les deux checkouts PayPal.
-  // Vérifié le 2026-09-01 : « Accès à vie au Mobility Club Saison 2 », 199,00 € EUR.
-  LIEN_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
+  // L'ancien checkout 199 € reste archivé côté PayPal, mais n'est plus exposé.
+  LIEN_199: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
   LIEN_249: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
 
-  STOCK_ENDPOINT: '/.netlify/functions/lifetime-stock'
+  STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
+  CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
+  POLL_MS: 8000
 };
 </script>
 
 <title>Lifetime Pass — Mobility Club</title>
-<meta name="description" content="40 Lifetime Pass Mobility Club. Un paiement unique, le cœur de Mobility Club à vie. Les 20 premiers à 199 €, les 20 suivants à 249 €." />
+<meta name="description" content="20 Lifetime Pass Mobility Club à 249 €. Un paiement unique, le cœur de Mobility Club à vie." />
 <meta name="robots" content="index,follow" />
 <meta property="og:title" content="Lifetime Pass — Mobility Club" />
-<meta property="og:description" content="Tu paies Mobility Club une fois. Tu le gardes à vie. 40 pass, puis retour à l’abonnement." />
+<meta property="og:description" content="Tu paies Mobility Club une fois. Tu le gardes à vie. 20 pass, puis retour à l’abonnement." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mobilityclub.co/devenir-membre" />
 
@@ -135,6 +135,58 @@ header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
 .tier.active b{color:var(--mint)}
 .tier.done{opacity:.55}
 
+/* Billetterie nominative */
+.name-gate{display:grid;gap:22px;margin-top:24px;padding-top:24px;border-top:1px dashed var(--border-strong)}
+.name-gate[hidden],.ticket-stage[hidden]{display:none}
+.name-gate.is-printing{pointer-events:none}
+.name-gate.is-printing::after{position:absolute;inset:0 auto 0 -26%;width:22%;content:"";background:linear-gradient(90deg,transparent,rgba(62,207,160,.18),transparent);filter:blur(5px);animation:print-scan .62s var(--ease) both}
+@keyframes print-scan{from{transform:translateX(0)}to{transform:translateX(600%)}}
+.name-kicker{color:var(--mint);font:600 9px/1.4 var(--mono);letter-spacing:.8px;text-transform:uppercase}
+.name-gate h2{max-width:11ch;font:800 clamp(31px,4vw,44px)/.96 var(--display);letter-spacing:-.045em}
+.name-gate p{color:var(--muted);font-size:12px;line-height:1.6}
+.identity-form{display:grid;gap:13px}
+.identity-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.identity-field{display:grid;gap:6px;color:var(--quiet);font:600 8px/1.4 var(--mono);letter-spacing:.65px;text-transform:uppercase}
+.identity-field input{width:100%;min-width:0;min-height:48px;padding:0 12px;border:1px solid var(--border-strong);border-radius:6px;outline:0;background:var(--surface-strong);color:var(--text);font-family:var(--sans);font-size:16px;font-weight:600;text-transform:none;transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+.identity-field input::placeholder{color:var(--quiet);font-weight:500}
+.identity-field input:focus{border-color:var(--mint);box-shadow:0 0 0 3px var(--mint-soft)}
+.identity-field input[aria-invalid="true"]{border-color:var(--red)}
+.identity-error{min-height:17px;color:#F07B6E;font-size:10.5px;line-height:1.45}
+.identity-submit{display:flex;min-height:52px;align-items:center;justify-content:space-between;padding:0 16px;border:0;border-radius:8px;background:var(--mint);color:var(--bg);font-weight:700;cursor:pointer;transition:transform .2s var(--ease),filter .2s var(--ease)}
+.identity-submit:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.identity-note{display:flex;gap:7px;color:var(--quiet);font-size:9px;line-height:1.5}
+.identity-note b{color:var(--muted);font:600 8px/1.5 var(--mono);letter-spacing:.55px;text-transform:uppercase}
+.ticket-stage{display:grid;gap:15px;margin-top:24px;padding-top:22px;border-top:1px dashed var(--border-strong)}
+.ticket-head{display:flex;align-items:end;justify-content:space-between;gap:16px}
+.ticket-head-copy{color:var(--quiet);font:600 8px/1.45 var(--mono);letter-spacing:.7px;text-transform:uppercase}
+.ticket-head-copy b{display:block;margin-top:4px;color:var(--text);font:700 15px/1.2 var(--display);letter-spacing:-.02em;text-transform:none}
+.ticket-price{font:700 34px/.9 var(--display);letter-spacing:-.045em;text-align:right}.ticket-price span{color:var(--mint)}
+.ticket-price small{display:block;margin-top:7px;color:var(--quiet);font:600 7px/1.3 var(--mono);letter-spacing:.35px;text-transform:uppercase}
+.ticket-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.mini-ticket{position:relative;min-width:0;aspect-ratio:.84;display:grid;grid-template-rows:auto 1fr auto;gap:3px;padding:7px 6px 6px;overflow:hidden;border:1px solid var(--border-strong);border-radius:5px;background:var(--surface-strong);color:var(--text);text-align:left;transform-origin:50% 65%;transition:border-color .2s var(--ease),background .2s var(--ease),opacity .2s var(--ease),transform .2s var(--ease)}
+.mini-ticket::before,.mini-ticket::after{position:absolute;right:-5px;width:9px;height:9px;border:1px solid var(--border-strong);border-radius:50%;background:var(--surface);content:""}.mini-ticket::before{top:24%}.mini-ticket::after{bottom:24%}
+.mini-ticket-kicker,.mini-ticket-code,.mini-ticket-status{min-width:0;overflow:hidden;font:600 5.5px/1.35 var(--mono);letter-spacing:.42px;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}.mini-ticket-kicker,.mini-ticket-code{color:var(--quiet)}
+.mini-ticket-no{align-self:center;font:800 clamp(22px,2.5vw,31px)/.85 var(--display);letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.mini-ticket-status{padding-top:4px;border-top:1px dashed var(--border-strong);color:var(--quiet)}
+.mini-ticket.is-taken{opacity:.34;background:#0F1110}.mini-ticket.is-taken .mini-ticket-no{color:var(--quiet)}
+.mini-ticket.is-available{cursor:pointer}.mini-ticket.is-available:hover{transform:translateY(-3px);border-color:rgba(62,207,160,.62);background:var(--mint-soft)}.mini-ticket.is-available:active{transform:scale(.96)}
+.mini-ticket.is-reserved{opacity:.48;background:#0F1110}
+.mini-ticket.is-selected{border-color:var(--mint);background:rgba(62,207,160,.15);transform:translateY(-3px) rotate(-1deg)}
+.mini-ticket.is-selected .mini-ticket-kicker,.mini-ticket.is-selected .mini-ticket-code,.mini-ticket.is-selected .mini-ticket-status{color:var(--mint)}
+.mini-ticket.is-owned{border-color:var(--mint);background:rgba(62,207,160,.12);opacity:1}
+.ticket-stamp{position:absolute;left:50%;top:50%;z-index:3;padding:2px 3px;border:1.5px solid currentColor;color:var(--quiet);font:700 6px/1 var(--mono);letter-spacing:.45px;text-transform:uppercase;opacity:0;transform:translate(-50%,-50%) rotate(-10deg)}
+.mini-ticket.is-taken .ticket-stamp,.mini-ticket.is-reserved .ticket-stamp,.mini-ticket.is-selected .ticket-stamp{opacity:1}.mini-ticket.is-selected .ticket-stamp{color:var(--mint)}
+@keyframes ticket-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-18deg) scale(1.8)}to{opacity:1;transform:translate(-50%,-50%) rotate(-10deg) scale(1)}}
+.mini-ticket.is-claiming .ticket-stamp,.mini-ticket.is-confirming .ticket-stamp{animation:ticket-stamp .42s var(--ease) both}
+@keyframes ticket-reveal{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ticket-grid.is-revealing .mini-ticket{animation:ticket-reveal .44s var(--ease) both;animation-delay:calc(var(--ticket-index) * 20ms)}
+.ticket-message{min-height:58px;padding-top:11px;border-top:1px solid var(--border)}
+.ticket-message b{display:block;color:var(--mint);font:600 8.5px/1.45 var(--mono);letter-spacing:.65px;text-transform:uppercase}.ticket-message p{margin-top:5px;color:var(--muted);font-size:11.5px;line-height:1.5}
+.primary-cta.is-loading{cursor:wait;filter:saturate(.35)}
+.primary-cta.is-hidden{display:none}
+.identity-locked [data-price-protected]{visibility:hidden;opacity:0;pointer-events:none}
+[data-price-protected]{transition:opacity .35s var(--ease)}
+
 /* Preuve il y a un an */
 .year-proof{display:grid;grid-template-columns:minmax(180px,.42fr) minmax(0,1fr);gap:clamp(24px,5vw,66px);align-items:start}
 .year-stat{padding-block:12px}
@@ -181,6 +233,7 @@ header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
 .closing-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
 .closing-price{font:700 48px/1 var(--display);letter-spacing:-.04em}
 .closing-price span{color:var(--mint)}
+.closing-price small{display:block;margin-top:8px;color:var(--quiet);font:600 8px/1.35 var(--mono);letter-spacing:.4px;text-transform:uppercase}
 .closing-stock{color:var(--muted);font:500 10px/1.5 var(--mono);text-align:right;text-transform:uppercase;letter-spacing:.35px}
 
 /* FAQ */
@@ -215,6 +268,9 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   .hero h1{font-size:clamp(42px,13vw,64px)}
   .hero-proof{display:grid;gap:5px}
   .offer-card{padding:22px 18px}
+  .identity-fields{grid-template-columns:1fr}
+  .ticket-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .mini-ticket-no{font-size:clamp(24px,8.5vw,31px)}
   .stock-line{align-items:flex-start;flex-direction:column;gap:5px}
   .tier-rail{grid-template-columns:1fr}
   .year-proof{grid-template-columns:1fr;gap:20px}
@@ -235,6 +291,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   .mobile-buy-price{font:700 24px/1 var(--display);letter-spacing:-.03em}
   .mobile-buy-price small{display:block;margin-top:4px;color:var(--quiet);font:500 8px/1.2 var(--mono);letter-spacing:.35px;text-transform:uppercase}
   .mobile-buy .primary-cta{min-height:48px;margin:0;font-size:13px}
+  .identity-locked .mobile-buy{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -242,12 +299,12 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 }
 </style>
 </head>
-<body>
+<body class="identity-locked">
 
 <header>
   <div class="wrap header-inner">
     <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
-    <span class="header-note">Opération rentrée · 40 pass maximum</span>
+    <span class="header-note">Opération rentrée · 20 pass maximum</span>
   </div>
 </header>
 
@@ -259,26 +316,48 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <h1>Tu paies une fois.<span class="mint">Tu le gardes à vie.</span></h1>
         <p class="hero-sub">Le cœur de Mobility Club, sans abonnement mensuel ni annuel. Ton bilan, tes besoins, tes séances et les évolutions normales du produit — <strong>un seul paiement, puis tu continues.</strong></p>
         <div class="hero-proof">
-          <span><b>40 pass</b> maximum</span>
+          <span><b>20 pass</b> maximum</span>
+          <span><b>3 tickets</b> déjà pris</span>
           <span><b>11 acheteurs</b> il y a un an</span>
           <span><b>0 renouvellement</b> automatique</span>
         </div>
       </div>
 
-      <aside class="offer-card" aria-label="Offre Lifetime Pass">
+      <aside class="offer-card" id="tickets" aria-label="Choisir son Lifetime Pass">
         <div class="stock-line">
           <span class="live"><span class="live-dot"></span><span data-stock-status>Vérification du stock réel…</span></span>
-          <span data-stock-count>40 pass maximum</span>
+          <span data-stock-count>20 pass maximum</span>
         </div>
-        <div class="stock-meter" role="progressbar" aria-label="Lifetime Pass vendus" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0"><div class="stock-meter-fill" data-stock-fill></div></div>
-        <p class="price-kicker" data-price-kicker>Tarif du premier palier</p>
-        <div class="price"><span class="price-currency">€</span><span data-current-price>199</span><span class="price-once">une fois</span></div>
-        <p class="tier-copy" data-tier-copy>Les 20 premiers sont à 199 €, puis les 20 suivants passent à 249 €.</p>
-        <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification du tarif…</a>
-        <p class="offer-fine"><b>Paiement unique</b> · aucun abonnement</p>
-        <div class="tier-rail" aria-label="Paliers de prix">
-          <div class="tier active" data-tier="1"><b>Pass 01 → 20 · 199 €</b>Premier palier</div>
-          <div class="tier" data-tier="2"><b>Pass 21 → 40 · 249 €</b>Dernier palier</div>
+        <div class="stock-meter" role="progressbar" aria-label="Lifetime Pass vendus" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><div class="stock-meter-fill" data-stock-fill></div></div>
+        <div class="name-gate" data-identity-gate>
+          <span class="name-kicker">Émission nominative · étape 1/2</span>
+          <div>
+            <h2>Comment tu t’appelles&nbsp;?</h2>
+            <p>Ton nom sera imprimé sur le ticket avant d’afficher le tarif et les numéros encore libres.</p>
+          </div>
+          <form class="identity-form" data-identity-form novalidate>
+            <div class="identity-fields">
+              <label class="identity-field">Prénom<input type="text" name="first_name" autocomplete="given-name" placeholder="Ton prénom" maxlength="40" required /></label>
+              <label class="identity-field">Nom<input type="text" name="last_name" autocomplete="family-name" placeholder="Ton nom" maxlength="40" required /></label>
+            </div>
+            <p class="identity-error" data-identity-error role="alert"></p>
+            <button class="identity-submit" type="submit" data-identity-submit><span>Émettre mon ticket</span><span aria-hidden="true">→</span></button>
+          </form>
+          <p class="identity-note"><b>Confidentiel</b><span>Ton nom reste dans ce navigateur. Il n’est ni enregistré dans le stock public, ni envoyé au tracking.</span></p>
+        </div>
+
+        <div class="ticket-stage" data-ticket-experience aria-hidden="true" hidden data-price-protected>
+          <div class="ticket-head">
+            <div class="ticket-head-copy">Carnet en cours<b data-tier-name>Tickets 01 → 20</b></div>
+            <div class="ticket-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+          </div>
+          <div class="ticket-grid" data-ticket-grid aria-label="Tickets du carnet en cours"></div>
+          <div class="ticket-message">
+            <b data-take-label>Choisis ton numéro</b>
+            <p data-take-message>Les tickets 01, 02 et 03 sont déjà pris. Les autres numéros libres peuvent être choisis.</p>
+          </div>
+          <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Vérification des tickets…</button>
+          <p class="offer-fine"><b>Payable en 4× via PayPal</b> · sous réserve d’éligibilité</p>
         </div>
       </aside>
     </div>
@@ -360,16 +439,16 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 
   <section class="section closing" id="offre">
     <div class="wrap">
-      <span class="eyebrow">40 pass. Puis terminé.</span>
+      <span class="eyebrow">20 pass. Puis terminé.</span>
       <h2>Le calcul ne se répétera <span>probablement pas.</span></h2>
-      <p class="closing-sub">Une fois les 40 Lifetime Pass partis, Mobility Club revient uniquement à l’abonnement. Les premiers sont avantagés parce qu’ils prennent la décision les premiers.</p>
-      <div class="closing-box">
+      <p class="closing-sub">Une fois les 20 Lifetime Pass partis, Mobility Club revient uniquement à l’abonnement. Chaque pass est numéroté, nominatif et disponible tant que son ticket reste libre.</p>
+      <div class="closing-box" data-price-protected>
         <div class="closing-row">
-          <div class="closing-price"><span>€</span><b data-current-price>199</b></div>
+          <div class="closing-price"><span>€</span><b data-current-price>249</b><small>ou 4× via PayPal</small></div>
           <div class="closing-stock" data-closing-stock>Stock réel en cours de vérification</div>
         </div>
-        <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification du tarif…</a>
-        <p class="offer-fine"><b>Accès à vie au cœur du Club</b> · paiement unique</p>
+        <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisis d’abord ton ticket</button>
+        <p class="offer-fine"><b>Payable en 4× via PayPal</b> · sous réserve d’éligibilité</p>
       </div>
     </div>
   </section>
@@ -394,11 +473,11 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
           <div class="faq-a"><div class="faq-a-inner"><p>Non pour les améliorations normales du cœur Mobility Club. Une future offre Pro, un produit physique, du coaching individuel ou un produit premium indépendant ne sont pas inclus.</p></div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">Comment le tarif change-t-il ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Les 20 premières ventes sont à 199 €. Dès que le vingtième paiement est enregistré, la page passe au second palier : 249 € pour les 20 derniers pass. Le stock affiché vient des paiements PayPal validés.</p></div></div>
+          <button class="faq-q" type="button" aria-expanded="false">Quel est le tarif du Lifetime Pass ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass coûte 249 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il après les 40 ventes ?</button>
+          <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il après les 20 ventes ?</button>
           <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass ferme et Mobility Club redevient accessible uniquement via son offre d’abonnement normale.</p></div></div>
         </div>
         <div class="faq-item">
@@ -414,79 +493,108 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 <footer>© 2026 Mobility Club · Lifetime Pass rentrée</footer>
 
 <div class="mobile-buy" aria-label="Acheter le Lifetime Pass">
-  <div class="mobile-buy-price"><span data-current-price>199</span> €<small>paiement unique</small></div>
-  <a class="primary-cta is-disabled" data-buy-cta aria-disabled="true" data-plan="lifetime_verification">Vérification…</a>
+  <div class="mobile-buy-price"><span data-current-price>249</span> €<small>ou 4× via PayPal</small></div>
+  <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisir mon ticket</button>
 </div>
 
 <script>
 (function(){
-  var C = window.MC_LIFETIME || {};
+  var C=window.MC_LIFETIME||{};
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current=null,selected=null,checkoutBusy=false,identity=null,confirmedTicket=null;
+  var IDENTITY_KEY='mc_lifetime_identity',CONFIRMED_KEY='mc_lifetime_confirmed_ticket';
 
-  function all(sel){ return document.querySelectorAll(sel); }
-  function setText(sel,value){ var els=all(sel); for(var i=0;i<els.length;i++) els[i].textContent=value; }
-  function setTierVisual(tier){
-    var one=document.querySelector('[data-tier="1"]');
-    var two=document.querySelector('[data-tier="2"]');
-    one.classList.toggle('active',tier===1); one.classList.toggle('done',tier>1);
-    two.classList.toggle('active',tier===2); two.classList.toggle('done',tier>2);
+  function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+  function all(sel){return document.querySelectorAll(sel);}
+  function setText(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
+  function cleanName(value){return String(value||'').trim().replace(/\s+/g,' ').slice(0,40);}
+  function validName(value){return /^[\p{L}\p{M}][\p{L}\p{M}'’ -]{0,39}$/u.test(value);}
+  function fullName(){return identity?identity.first+' '+identity.last:'';}
+  function ticketName(){return identity?identity.first+' '+identity.last.charAt(0).toUpperCase()+'.':'';}
+  function readIdentity(){try{var value=JSON.parse(sessionStorage.getItem(IDENTITY_KEY)||'null');if(value&&validName(value.first)&&validName(value.last))return value;}catch(e){}return null;}
+  function readConfirmed(){try{var value=Number(sessionStorage.getItem(CONFIRMED_KEY));return value>=1&&value<=20?value:null;}catch(e){return null;}}
+
+  function revealExperience(skipMotion){
+    var gate=document.querySelector('[data-identity-gate]'),stage=document.querySelector('[data-ticket-experience]'),grid=document.querySelector('[data-ticket-grid]');
+    if(!gate||!stage||!stage.hidden)return;
+    var finish=function(){
+      gate.hidden=true;gate.setAttribute('aria-hidden','true');stage.hidden=false;stage.setAttribute('aria-hidden','false');document.body.classList.remove('identity-locked');
+      if(current)render(current);
+      if(!skipMotion&&!reduced){
+        stage.animate([{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:500,easing:'cubic-bezier(.22,1,.36,1)',fill:'both'});
+        grid.classList.add('is-revealing');window.setTimeout(function(){grid.classList.remove('is-revealing');},850);
+      }
+    };
+    if(skipMotion||reduced){finish();return;}
+    gate.classList.add('is-printing');var submit=gate.querySelector('[data-identity-submit]');submit.disabled=true;submit.firstElementChild.textContent='Impression en cours…';
+    window.setTimeout(function(){var animation=gate.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-10px) scale(.98)'}],{duration:250,easing:'cubic-bezier(.25,1,.5,1)',fill:'forwards'});animation.finished.then(finish).catch(finish);},430);
   }
-  function disableCtas(label,plan){
-    var ctas=all('[data-buy-cta]');
-    for(var i=0;i<ctas.length;i++){
-      ctas[i].textContent=label; ctas[i].classList.add('is-disabled');
-      ctas[i].removeAttribute('href'); ctas[i].setAttribute('aria-disabled','true');
-      ctas[i].setAttribute('data-plan',plan||'lifetime_unavailable');
+  function submitIdentity(event){
+    event.preventDefault();var form=event.currentTarget;
+    var first=cleanName(form.elements.first_name.value),last=cleanName(form.elements.last_name.value),firstOk=validName(first),lastOk=validName(last);
+    form.elements.first_name.setAttribute('aria-invalid',String(!firstOk));form.elements.last_name.setAttribute('aria-invalid',String(!lastOk));
+    setText('[data-identity-error]',firstOk&&lastOk?'':'Entre un prénom et un nom valides pour émettre le ticket.');
+    if(!firstOk||!lastOk){(firstOk?form.elements.last_name:form.elements.first_name).focus();return;}
+    identity={first:first,last:last};try{sessionStorage.setItem(IDENTITY_KEY,JSON.stringify(identity));}catch(e){}
+    track('identity_completed');revealExperience(false);
+  }
+
+  function buildTickets(){
+    var root=document.querySelector('[data-ticket-grid]');
+    for(var i=1;i<=20;i++){
+      var button=document.createElement('button');button.type='button';button.className='mini-ticket';button.disabled=true;button.setAttribute('data-ticket-number',i);button.style.setProperty('--ticket-index',i-1);
+      button.innerHTML='<span class="mini-ticket-kicker">MC Lifetime</span><strong class="mini-ticket-no">'+pad(i)+'</strong><span class="mini-ticket-code">LT—'+pad(i)+'</span><span class="mini-ticket-status">Vérification</span><span class="ticket-stamp" aria-hidden="true"></span>';
+      button.addEventListener('click',function(){choose(Number(this.getAttribute('data-ticket-number')));});root.appendChild(button);
     }
   }
-  function enableCtas(url,price,tier){
-    if(!url){ disableCtas('Paiement bientôt disponible','lifetime_missing_checkout_'+price); return; }
-    var ctas=all('[data-buy-cta]');
-    for(var i=0;i<ctas.length;i++){
-      ctas[i].textContent='Prendre mon Lifetime Pass →'; ctas[i].classList.remove('is-disabled');
-      ctas[i].href=url; ctas[i].target='_blank'; ctas[i].rel='noopener';
-      ctas[i].removeAttribute('aria-disabled'); ctas[i].setAttribute('data-plan','lifetime_'+price+'_tier_'+tier);
+  function ticket(number){return document.querySelector('[data-ticket-number="'+number+'"]');}
+  function statusOf(number){if(!current||!Array.isArray(current.tickets))return null;for(var i=0;i<current.tickets.length;i++)if(Number(current.tickets[i].number)===Number(number))return current.tickets[i].status;return null;}
+  function renderTickets(data){
+    var cells=all('[data-ticket-number]');
+    for(var i=0;i<cells.length;i++){
+      var number=i+1,cell=cells[i],state=data.tickets&&data.tickets[i]?data.tickets[i].status:'unavailable';
+      var status=cell.querySelector('.mini-ticket-status'),stamp=cell.querySelector('.ticket-stamp'),code=cell.querySelector('.mini-ticket-code');
+      cell.className='mini-ticket';cell.disabled=true;cell.removeAttribute('aria-pressed');code.textContent='LT—'+pad(number);
+      if(state==='sold'&&confirmedTicket===number&&identity){cell.classList.add('is-owned');status.textContent='À toi';stamp.textContent='Confirmé';code.textContent=ticketName();}
+      else if(state==='sold'){cell.classList.add('is-taken');status.textContent='Pris';stamp.textContent='Pris';}
+      else if(state==='reserved'){cell.classList.add('is-reserved');status.textContent='En cours';stamp.textContent='En cours';}
+      else if(state==='available'&&!data.sold_out){cell.classList.add(selected===number?'is-selected':'is-available');cell.disabled=checkoutBusy;status.textContent=selected===number?'Nominatif':'Libre';stamp.textContent=selected===number?'Émis':'';if(selected===number&&identity)code.textContent=ticketName();if(selected===number)cell.setAttribute('aria-pressed','true');}
+      else{status.textContent='Clos';stamp.textContent='';}
+      cell.setAttribute('aria-label','Ticket '+pad(number)+' — '+status.textContent.toLowerCase());
     }
   }
-  function render(data){
-    var sold=Math.max(0,Math.min(Number(data.sold)||0,C.TOTAL));
-    var remaining=Math.max(0,C.TOTAL-sold);
-    var tier=remaining===0?3:(sold<C.PREMIER_PALIER?1:2);
-    var price=tier===1?C.PRIX_1:C.PRIX_2;
-    var link=tier===1?C.LIEN_199:C.LIEN_249;
-
-    setText('[data-current-price]',price);
-    setText('[data-stock-count]',sold+' / '+C.TOTAL+' partis');
-    setText('[data-stock-status]',remaining?remaining+' pass encore disponibles':'Les 40 pass sont partis');
-    setText('[data-closing-stock]',remaining?remaining+' pass restants · stock réel':'Offre terminée');
-    document.querySelector('[data-stock-fill]').style.width=((sold/C.TOTAL)*100)+'%';
-    document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);
-    setTierVisual(tier);
-
-    if(tier===1){
-      var firstLeft=Math.max(0,C.PREMIER_PALIER-sold);
-      setText('[data-price-kicker]','Tarif actuel · premier palier');
-      setText('[data-tier-copy]',firstLeft+' place'+(firstLeft>1?'s':'')+' encore à '+C.PRIX_1+' €, puis le tarif passe à '+C.PRIX_2+' €.');
-      enableCtas(link,price,tier);
-    }else if(tier===2){
-      setText('[data-price-kicker]','Tarif actuel · dernier palier');
-      setText('[data-tier-copy]','Le premier palier est parti. Il reste '+remaining+' Lifetime Pass à '+C.PRIX_2+' €.');
-      enableCtas(link,price,tier);
-    }else{
-      setText('[data-price-kicker]','Offre terminée');
-      setText('[data-tier-copy]','Les 40 Lifetime Pass ont été vendus. Mobility Club revient à l’abonnement.');
-      disableCtas('Les 40 pass sont partis','lifetime_sold_out');
-    }
+  function updateActions(data){
+    var actions=all('[data-ticket-action]'),label=data.sold_out?'Les 20 tickets sont partis':selected===null?'Choisis un ticket libre':checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
+    for(var i=0;i<actions.length;i++){actions[i].textContent=actions[i].closest('.mobile-buy')&&selected!==null&&!checkoutBusy?'Ticket '+pad(selected)+' · '+data.price+' € →':label;actions[i].disabled=data.sold_out||selected===null||checkoutBusy;actions[i].classList.toggle('is-disabled',actions[i].disabled);actions[i].classList.toggle('is-loading',checkoutBusy);actions[i].setAttribute('data-plan',selected===null?'lifetime_choose_ticket':'lifetime_'+data.price+'_tier_'+data.tier+'_ticket_'+pad(selected));}
   }
-
-  fetch(C.STOCK_ENDPOINT,{cache:'no-store'})
-    .then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();})
-    .then(function(data){if(!data||data.live!==true)throw new Error('stock invalide');render(data);})
-    .catch(function(){
-      setText('[data-stock-status]','Stock momentanément indisponible');
-      setText('[data-stock-count]','40 pass maximum');
-      setText('[data-closing-stock]','Actualise la page pour vérifier le tarif');
-      disableCtas('Actualise pour vérifier le tarif','lifetime_stock_unavailable');
-    });
+  function render(data,message){
+    if(selected!==null&&statusOf(selected)!=='available')selected=null;
+    var sold=Math.max(0,Math.min(Number(data.sold)||0,C.TOTAL)),remaining=Math.max(0,C.TOTAL-sold);
+    setText('[data-price]',data.price);setText('[data-current-price]',data.price);setText('[data-tier-name]','Tickets 01 → 20');setText('[data-remaining]',remaining+' pass restant'+(remaining>1?'s':''));
+    setText('[data-stock-count]',sold+' / '+C.TOTAL+' partis');setText('[data-stock-status]',remaining?remaining+' pass encore disponibles':'Les 20 pass sont partis');setText('[data-closing-stock]',remaining?remaining+' pass restants · stock réel':'Offre terminée');
+    document.querySelector('[data-stock-fill]').style.width=((sold/C.TOTAL)*100)+'%';document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);renderTickets(data);
+    if(data.sold_out){setText('[data-take-label]','Les 20 tickets sont partis');setText('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');}
+    else if(message){setText('[data-take-label]',message.label);setText('[data-take-message]',message.body);}
+    else if(selected!==null){setText('[data-take-label]',fullName()+' · ticket '+pad(selected));setText('[data-take-message]','Ton nom est imprimé. Le ticket sera bloqué 10 minutes pendant ton paiement.');}
+    else{setText('[data-take-label]','Choisis ton numéro');setText('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');}
+    updateActions(data);
+  }
+  function choose(number){if(!current||checkoutBusy||statusOf(number)!=='available')return;selected=number;render(current);var cell=ticket(number);if(cell&&!reduced){cell.classList.add('is-claiming');window.setTimeout(function(){cell.classList.remove('is-claiming');},430);}track('ticket_selected',{ticket:pad(number),tier:current.tier,price:current.price});}
+  function load(message){return fetch(C.STOCK_ENDPOINT,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();}).then(function(data){if(!data||data.live!==true||!Array.isArray(data.tickets))throw new Error('stock invalide');var previous=current;current=data;render(current,message);if(previous&&previous.tier===current.tier&&!reduced){for(var i=0;i<current.tickets.length;i++)if(previous.tickets[i]&&previous.tickets[i].status!=='sold'&&current.tickets[i].status==='sold'){var cell=ticket(current.tickets[i].number);if(cell)cell.classList.add('is-confirming');}}return data;}).catch(function(){setText('[data-stock-status]','Stock momentanément indisponible');setText('[data-stock-count]','20 pass maximum');setText('[data-closing-stock]','Actualise la page pour vérifier le stock');var actions=all('[data-ticket-action]');for(var i=0;i<actions.length;i++){actions[i].textContent='Actualise pour vérifier les tickets';actions[i].disabled=true;actions[i].classList.add('is-disabled');}});}
+  function checkoutRequest(body){return fetch(C.CHECKOUT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(response){return response.json().catch(function(){return {};}).then(function(data){return {ok:response.ok,status:response.status,data:data};});});}
+  function startCheckout(){
+    if(!current||selected===null||checkoutBusy||statusOf(selected)!=='available')return;
+    var choice=selected,tier=current.tier,price=current.price;checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
+    checkoutRequest({action:'create',ticket:choice,return_path:'/devenir-membre'}).then(function(result){if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');track('checkout_started',{ticket:pad(choice),tier:tier,price:price});window.location.assign(result.data.approve_url);}).catch(function(){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans un instant.'});});
+  }
+  function cleanUrl(){window.history.replaceState({},'',window.location.pathname);}
+  function handlePaypalReturn(){
+    var params=new URLSearchParams(window.location.search),mode=params.get('paypal');if(mode!=='return'&&mode!=='cancel')return Promise.resolve();
+    var payload={tier:Number(params.get('tier')),ticket:Number(params.get('ticket')),reservation:params.get('reservation')};
+    if(mode==='cancel'){payload.action='release';cleanUrl();return checkoutRequest(payload).catch(function(){}).then(function(){return load({label:'Paiement annulé',body:'Le ticket a été remis en vente.'});});}
+    payload.action='capture';payload.order_id=params.get('token');checkoutBusy=true;if(current)render(current,{label:'Validation du paiement…',body:'PayPal confirme ton ticket. Ne ferme pas cette page.'});
+    return checkoutRequest(payload).then(function(result){if(!result.ok)throw new Error(result.data.error||'capture');checkoutBusy=false;confirmedTicket=payload.ticket;selected=null;try{sessionStorage.setItem(CONFIRMED_KEY,String(confirmedTicket));}catch(e){}cleanUrl();track('purchase_confirmed',{ticket:pad(payload.ticket),tier:payload.tier});return load({label:'Ticket '+pad(payload.ticket)+' confirmé',body:'Paiement validé. Ton accès au Club arrive par email.'});}).catch(function(){checkoutBusy=false;cleanUrl();if(current)render(current,{label:'Paiement à vérifier',body:'Ne recommence pas le paiement. Contacte-nous pour vérifier la transaction PayPal.'});});
+  }
 
   var faq=all('.faq-q');
   for(var i=0;i<faq.length;i++){
@@ -496,16 +604,16 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
     });
   }
 
-  /* Tracking first-party : page_view + clic checkout. La conversion encaissée
-     est comptée côté serveur par le webhook PayPal, jamais déduite du clic. */
   var URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
   function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/devenir-membre',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+
+  buildTickets();
+  var identityForm=document.querySelector('[data-identity-form]');if(identityForm)identityForm.addEventListener('submit',submitIdentity);
+  identity=readIdentity();confirmedTicket=readConfirmed();var paypalMode=new URLSearchParams(window.location.search).get('paypal');if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);
+  var actions=all('[data-ticket-action]');for(var j=0;j<actions.length;j++)actions[j].addEventListener('click',startCheckout);
   track('page_view');
-  document.addEventListener('click',function(e){
-    var plan=e.target.closest('[data-plan]');
-    if(plan&&!plan.classList.contains('is-disabled'))track('plan_clicked',{plan:plan.getAttribute('data-plan')});
-  },{passive:true});
+  load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 })();
 </script>
 </body>

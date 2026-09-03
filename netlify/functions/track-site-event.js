@@ -17,6 +17,10 @@ const EVENTS = new Set([
   'cta_clicked',        // clic sur un CTA (hero, sticky, header)
   'door_clicked',       // clic sur une des 3 portes (diagnostic / timer / club)
   'plan_clicked',       // clic sur un plan payant (PayPal)
+  'ticket_selected',    // numéro Lifetime pré-sélectionné
+  'identity_completed', // carnet nominatif ouvert, sans jamais stocker le nom
+  'checkout_started',   // réservation créée, départ vers PayPal
+  'purchase_confirmed', // capture PayPal confirmée au retour sur le site
 ]);
 
 const VARIANTS = new Set(['vision', 'friction']);
@@ -26,7 +30,7 @@ const MAX_VAL = 64;
 
 // N'accepte que des props scalaires courtes et connues. Pas d'objets imbriqués,
 // pas d'email, pas de texte libre : ce store ne doit jamais devenir un puits à PII.
-const ALLOWED_PROPS = new Set(['cta', 'door', 'plan', 'lang', 'path']);
+const ALLOWED_PROPS = new Set(['cta', 'door', 'plan', 'lang', 'path', 'ticket', 'tier', 'price']);
 
 const sanitize = (props) => {
   if (!props || typeof props !== 'object' || Array.isArray(props)) return {};
