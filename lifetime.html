@@ -6,10 +6,10 @@
 
 <script>
 window.MC_LIFETIME = {
-  TOTAL: 20,
+  TOTAL: 40,
   TIER_SIZE: 20,
   PRICE_1: 199,
-  PRICE_2: 199,
+  PRICE_2: 249,
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
   POLL_MS: 8000
@@ -17,7 +17,7 @@ window.MC_LIFETIME = {
 </script>
 
 <title>20 Lifetime Tickets — Mobility Club</title>
-<meta name="description" content="Les 2 derniers tickets Lifetime Mobility Club à 199 €. Un paiement, l’accès au cœur du Club à vie." />
+<meta name="description" content="Les 20 derniers tickets Lifetime Mobility Club à 249 €. Un paiement, l’accès au cœur du Club à vie." />
 <meta property="og:title" content="20 Lifetime Tickets — Mobility Club" />
 <meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
 <meta property="og:type" content="website" />
@@ -262,13 +262,13 @@ details[open] summary::after{content:"×"}
     <section class="hero">
       <div class="copy">
         <span class="eyebrow">Lifetime Pass · saison 2</span>
-        <h1>20 tickets.<br><span>Pas un de plus.</span></h1>
+        <h1>20 derniers tickets.<br><span>Pas un de plus.</span></h1>
         <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
         <div class="proof-line">
           <span><b>11 personnes</b> l’ont fait il y a un an</span>
-          <span><b>18 tickets</b> déjà attribués · 2 restants</span>
-          <span data-price-reveal><b>199 €</b> paiement unique</span>
-          <span data-price-reveal><b>20 tickets</b> maximum</span>
+          <span><b>20 tickets à 199 €</b> déjà attribués</span>
+          <span data-price-reveal><b>249 €</b> paiement unique</span>
+          <span data-price-reveal><b>20 derniers tickets</b> disponibles</span>
           <span data-price-reveal><b>4× PayPal</b> disponible</span>
         </div>
       </div>
@@ -295,9 +295,9 @@ details[open] summary::after{content:"×"}
         <div class="ticket-experience" data-ticket-experience aria-hidden="true" hidden>
           <div class="ticket-board" data-ticket-board tabindex="-1">
             <header class="board-head">
-              <div class="board-tier">Lot actuel<b data-tier-name>Les 20 tickets</b></div>
-              <div class="board-price"><span>€</span><b data-price>199</b><small>ou 4× via PayPal</small></div>
-              <div class="board-remaining" data-remaining>2 pass restants</div>
+              <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · 249 €</b></div>
+              <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+              <div class="board-remaining" data-remaining>20 pass restants</div>
             </header>
             <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
             <div class="board-status">
@@ -335,7 +335,7 @@ details[open] summary::after{content:"×"}
 </div>
 
 <div class="mobile-action">
-  <div class="mobile-price"><span>€</span><b data-price>199</b><small>ou 4× via PayPal</small></div>
+  <div class="mobile-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
   <button class="buy off" type="button" data-claim disabled>Vérification…</button>
   <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
 </div>
@@ -348,7 +348,7 @@ details[open] summary::after{content:"×"}
   var selected=null;
   var checkoutBusy=false;
   var identity=null;
-  var confirmedTicket=null;
+  var confirmedPass=null;
   var IDENTITY_KEY='mc_lifetime_identity';
   var CONFIRMED_KEY='mc_lifetime_confirmed_ticket';
 
@@ -364,7 +364,7 @@ details[open] summary::after{content:"×"}
     try{var saved=JSON.parse(sessionStorage.getItem(IDENTITY_KEY)||'null');if(saved&&validName(saved.first)&&validName(saved.last))return saved;}catch(e){}
     return null;
   }
-  function readConfirmed(){try{var value=Number(sessionStorage.getItem(CONFIRMED_KEY));return value>=1&&value<=C.TIER_SIZE?value:null;}catch(e){return null;}}
+  function readConfirmed(){try{var value=JSON.parse(sessionStorage.getItem(CONFIRMED_KEY)||'null');return value&&[1,2].indexOf(Number(value.tier))!==-1&&Number(value.ticket)>=1&&Number(value.ticket)<=C.TIER_SIZE?{tier:Number(value.tier),ticket:Number(value.ticket)}:null;}catch(e){return null;}}
   function revealExperience(skipMotion){
     var gate=document.querySelector('[data-identity-gate]');
     var experience=document.querySelector('[data-ticket-experience]');
@@ -429,7 +429,7 @@ details[open] summary::after{content:"×"}
       var status=cell.querySelector('.mini-ticket-status'),stamp=cell.querySelector('.ticket-stamp'),code=cell.querySelector('.mini-ticket-code');
       cell.className='mini-ticket';cell.disabled=true;cell.removeAttribute('aria-pressed');
       code.textContent='LT—'+pad(number);
-      if(state==='sold'&&confirmedTicket===number&&identity){cell.classList.add('is-owned');status.textContent='À toi';stamp.textContent='Confirmé';code.textContent=ticketName();}
+      if(state==='sold'&&confirmedPass&&confirmedPass.tier===Number(data.tier)&&confirmedPass.ticket===number&&identity){cell.classList.add('is-owned');status.textContent='À toi';stamp.textContent='Confirmé';code.textContent=ticketName();}
       else if(state==='sold'){cell.classList.add('is-taken');status.textContent='Pris';stamp.textContent='Pris';}
       else if(state==='reserved'){cell.classList.add('is-reserved');status.textContent='En cours';stamp.textContent='En cours';}
       else if(state==='available'&&!data.sold_out){
@@ -446,7 +446,7 @@ details[open] summary::after{content:"×"}
     var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){claims[i].textContent=label;claims[i].disabled=true;claims[i].classList.add('off');}
   }
   function updateActions(data){
-    if(data.sold_out){disableActions('Les 20 tickets sont partis');return;}
+    if(data.sold_out){disableActions('Les 20 derniers tickets sont partis');return;}
     if(selected===null){disableActions('Choisis un ticket libre');return;}
     setVisible('[data-claim]',false);setVisible('[data-pay]',true);
     var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
@@ -458,11 +458,12 @@ details[open] summary::after{content:"×"}
   function render(data,message){
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
     text('[data-price]',data.price);
-    text('[data-tier-name]','Les 20 tickets');
-    text('[data-remaining]',data.remaining+' pass restant'+(data.remaining>1?'s':''));
+    var tierRemaining=Math.max(0,C.TIER_SIZE-(Number(data.tier_sold)||0));
+    text('[data-tier-name]',Number(data.tier)===2?'Série 02 · 249 €':'Série 01 · 199 €');
+    text('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));
     renderTickets(data);
     if(data.sold_out){
-      text('[data-take-label]','Les 20 tickets sont partis');
+      text('[data-take-label]','Les 20 derniers tickets sont partis');
       text('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');
       text('[data-action-note]','Offre complète · retour à l’abonnement');
     }else if(message){
@@ -478,7 +479,7 @@ details[open] summary::after{content:"×"}
       text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
     updateActions(data);
-    text('[data-live-stock]',data.remaining?data.remaining+' Lifetime Pass disponibles':'Offre complète');
+    text('[data-live-stock]',data.remaining?tierRemaining+' Lifetime Pass à '+data.price+' € disponibles':'Offre complète');
   }
   function choose(number){
     if(!current||checkoutBusy||statusOf(number)!=='available')return;
@@ -533,8 +534,8 @@ details[open] summary::after{content:"×"}
     if(current)render(current,{label:'Validation du paiement…',body:'PayPal confirme ton ticket. Ne ferme pas cette page.'});
     return checkoutRequest(payload).then(function(result){
       if(!result.ok)throw new Error(result.data.error||'capture');
-      checkoutBusy=false;confirmedTicket=payload.ticket;selected=null;
-      try{sessionStorage.setItem(CONFIRMED_KEY,String(confirmedTicket));}catch(e){}
+      checkoutBusy=false;confirmedPass={tier:payload.tier,ticket:payload.ticket};selected=null;
+      try{sessionStorage.setItem(CONFIRMED_KEY,JSON.stringify(confirmedPass));}catch(e){}
       cleanUrl();track('purchase_confirmed',{ticket:pad(payload.ticket),tier:payload.tier});
       return load({label:'Ticket '+pad(payload.ticket)+' confirmé',body:'Paiement validé. Ton accès au Club arrive par email.'});
     }).catch(function(){
@@ -545,7 +546,7 @@ details[open] summary::after{content:"×"}
 
   buildTickets();
   var identityForm=document.querySelector('[data-identity-form]');if(identityForm)identityForm.addEventListener('submit',submitIdentity);
-  identity=readIdentity();confirmedTicket=readConfirmed();
+  identity=readIdentity();confirmedPass=readConfirmed();
   var paypalMode=new URLSearchParams(window.location.search).get('paypal');
   if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);
   var pays=all('[data-pay]');for(var i=0;i<pays.length;i++)pays[i].addEventListener('click',startCheckout);

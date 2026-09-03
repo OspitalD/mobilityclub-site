@@ -5,7 +5,7 @@
 
 import { lireEtatCampagne } from '../lib/lifetime-ticketing.js';
 
-export const TOTAL = 20;
+export const TOTAL = 40;
 export const PREMIER_PALIER = 20;
 
 const json = (statusCode, body) => ({
@@ -26,7 +26,7 @@ export const calculerStock = (state = {}) => {
     total: TOTAL,
     sold,
     remaining,
-    tier: remaining === 0 ? 'sold_out' : '199',
+    tier: remaining === 0 ? 'sold_out' : sold < PREMIER_PALIER ? '199' : '249',
     first_tier_remaining: Math.max(0, PREMIER_PALIER - sold),
   };
 };

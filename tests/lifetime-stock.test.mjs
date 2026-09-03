@@ -26,30 +26,30 @@ const keys = (count, price = 199) =>
 
 const body = (response) => JSON.parse(response.body);
 
-test('un état vide expose immédiatement le tarif unique à 199 €', () => {
+test('un état vide expose le premier palier à 199 € et 40 places', () => {
   assert.deepEqual(calculerStock({ sold: 0 }), {
     live: true,
-    total: 20,
+    total: 40,
     sold: 0,
-    remaining: 20,
+    remaining: 40,
     tier: '199',
     first_tier_remaining: 20,
   });
 });
 
-test('le dernier ticket reste à 199 € puis ferme l’offre', () => {
+test('la 20e vente ouvre le palier à 249 €', () => {
   assert.equal(calculerStock({ sold: 19 }).tier, '199');
   const stock = calculerStock({ sold: 20 });
-  assert.equal(stock.tier, 'sold_out');
+  assert.equal(stock.tier, '249');
   assert.equal(stock.sold, 20);
-  assert.equal(stock.remaining, 0);
+  assert.equal(stock.remaining, 20);
   assert.equal(stock.first_tier_remaining, 0);
 });
 
-test('le stock reste borné à 20 ventes', () => {
+test('le stock reste borné à 40 ventes', () => {
   const stock = calculerStock({ sold: 40 });
   assert.equal(stock.tier, 'sold_out');
-  assert.equal(stock.sold, 20);
+  assert.equal(stock.sold, 40);
   assert.equal(stock.remaining, 0);
 });
 
@@ -60,8 +60,9 @@ test('GET renvoie seulement les agrégats publics', async () => {
   const response = { statusCode: native.status, headers: Object.fromEntries(native.headers), body: await native.text() };
   assert.equal(response.statusCode, 200);
   assert.equal(response.headers['cache-control'], 'no-store');
-  assert.equal(body(response).sold, 18);
-  assert.equal(body(response).remaining, 2);
+  assert.equal(body(response).sold, 20);
+  assert.equal(body(response).remaining, 20);
+  assert.equal(body(response).tier, '249');
   assert.ok(!response.body.includes('CAP-'));
 });
 

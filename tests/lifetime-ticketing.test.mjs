@@ -27,19 +27,23 @@ test('une réservation expirée redevient disponible', () => {
   assert.equal(etatCampagne(normalized, { 1: 0, 2: 0 }).tickets[6].status, 'available');
 });
 
-test('les captures NCP sans numéro sont matérialisées sans inventer de vente', () => {
-  const normalized = normaliserInventaire(inventaireVide(), { 1: 18, 2: 0 });
-  const state = etatCampagne(normalized, { 1: 18, 2: 0 });
-  assert.equal(state.sold, 18);
-  assert.ok(state.tickets.slice(0, 18).every((ticket) => ticket.status === 'sold'));
-  assert.ok(state.tickets.slice(18).every((ticket) => ticket.status === 'available'));
-});
-
-test('20 captures ferment l’unique carnet à 199 €', () => {
+test('les 20 ventes à 199 € ouvrent un second carnet entièrement libre', () => {
   const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 0 });
   const state = etatCampagne(normalized, { 1: 20, 2: 0 });
-  assert.equal(state.tier, 1);
-  assert.equal(state.price, 199);
-  assert.equal(state.tier_sold, 20);
-  assert.equal(state.sold_out, true);
+  assert.equal(state.total, 40);
+  assert.equal(state.sold, 20);
+  assert.equal(state.remaining, 20);
+  assert.equal(state.tier, 2);
+  assert.equal(state.price, 249);
+  assert.ok(state.tickets.every((ticket) => ticket.status === 'available'));
+});
+
+test('une capture à 249 € occupe le premier ticket du second carnet', () => {
+  const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 1 });
+  const state = etatCampagne(normalized, { 1: 20, 2: 1 });
+  assert.equal(state.tier, 2);
+  assert.equal(state.price, 249);
+  assert.equal(state.tier_sold, 1);
+  assert.equal(state.tickets[0].status, 'sold');
+  assert.ok(state.tickets.slice(1).every((ticket) => ticket.status === 'available'));
 });

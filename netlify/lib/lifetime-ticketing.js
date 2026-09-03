@@ -1,19 +1,18 @@
 import { getStore } from '@netlify/blobs';
 
-export const TOTAL = 20;
+export const TOTAL = 40;
 export const TIER_SIZE = 20;
 export const RESERVATION_MS = 10 * 60 * 1000;
 
 const INVENTORY_STORE = 'lifetime_ticket_inventory_2026';
 const INVENTORY_KEY = 'inventory';
 const CAPTURE_STORE = 'lifetime_pass_2026';
-// Dix-huit ventes sont déjà comptabilisées. Elles occupent les tickets 01 à 18
-// tant que les captures NCP ne les matérialisent pas déjà.
-export const PRELAUNCH_SOLD = { 1: 18, 2: 0 };
+// Le premier carnet à 199 € est complet. Ce plancher permet d'ouvrir le second
+// carnet même si certaines ventes historiques n'ont pas encore de capture NCP.
+export const PRELAUNCH_SOLD = { 1: 20, 2: 0 };
 
 // Le numéro de carnet reste utile pour l'inventaire, mais le tarif public est
-// désormais unique : les deux derniers tickets sont créés à 199 €.
-const prixDuPalier = () => 199;
+const prixDuPalier = (tier) => (Number(tier) === 1 ? 199 : 249);
 const cleTicket = (ticket) => String(Number(ticket)).padStart(2, '0');
 
 export const ticketValide = (ticket) =>
@@ -80,7 +79,7 @@ export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }) => {
   };
   const sold = Math.min(TOTAL, soldByTier[1] + soldByTier[2]);
   const soldOut = sold >= TOTAL;
-  const tier = 1;
+  const tier = soldByTier[1] >= TIER_SIZE ? 2 : 1;
   const tickets = Array.from({ length: TIER_SIZE }, (_, index) => {
     const ticket = index + 1;
     const entry = inventory.tiers[tier][cleTicket(ticket)];
@@ -115,21 +114,15 @@ const lireCaptures = async () => {
   );
   const sansNumero = (capture) => !lireCustomIdLifetime(capture.data?.custom_id);
   const capturesNcp = captures.filter(sansNumero);
-  const ventesSansNumero = capturesNcp.filter((capture) =>
-    capture.key.startsWith('199/') || capture.key.startsWith('249/')
-  ).length;
   return {
     // Les anciens liens NCP n'avaient aucun numéro : leurs captures doivent
     // toujours être matérialisées dans la grille. Les nouvelles commandes
     // numérotées vivent déjà dans l'inventaire atomique et ne sont pas
     // recomptées ici, même si le webhook PayPal arrive avant le retour client.
-    // Le montant ne suffit pas à savoir à quel ticket appartient une vente NCP.
-    // L'ordre réel des ventes tranche :
-    // elles remplissent les 20 numéros dans l'ordre.
-    // PRELAUNCH_SOLD est un plancher, pas une vente ajoutée, afin qu'une capture
-    // PayPal déjà reçue pour le ticket pré-ouverture ne soit jamais comptée deux fois.
-    1: Math.max(PRELAUNCH_SOLD[1], Math.min(TIER_SIZE, ventesSansNumero)),
-    2: Math.max(PRELAUNCH_SOLD[2], Math.min(TIER_SIZE, Math.max(0, ventesSansNumero - TIER_SIZE))),
+    // Le montant identifie le carnet des anciens liens NCP. PRELAUNCH_SOLD est
+    // un plancher, pas une vente ajoutée, pour éviter tout double comptage.
+    1: Math.max(PRELAUNCH_SOLD[1], capturesNcp.filter((capture) => capture.key.startsWith('199/')).length),
+    2: Math.max(PRELAUNCH_SOLD[2], capturesNcp.filter((capture) => capture.key.startsWith('249/')).length),
   };
 };
 
