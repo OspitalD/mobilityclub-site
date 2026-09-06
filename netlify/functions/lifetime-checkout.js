@@ -6,6 +6,7 @@ import {
   libererReservation,
   lireReservation,
   reserverTicket,
+  tierValide,
   ticketValide,
 } from '../lib/lifetime-ticketing.js';
 
@@ -171,7 +172,7 @@ const creer = async (body) => {
 
 const capturer = async (body) => {
   const tier = Number(body.tier), ticket = Number(body.ticket);
-  if (![1, 2].includes(tier) || !ticketValide(ticket) || !body.reservation || !body.order_id) {
+  if (!tierValide(tier) || !ticketValide(ticket) || !body.reservation || !body.order_id) {
     return json(400, { error: 'invalid_capture_request' });
   }
   const reservation = await lireReservation({
@@ -198,7 +199,7 @@ const capturer = async (body) => {
 
 const liberer = async (body) => {
   const tier = Number(body.tier), ticket = Number(body.ticket);
-  if (![1, 2].includes(tier) || !ticketValide(ticket) || !body.reservation) return json(400, { error: 'invalid_release_request' });
+  if (!tierValide(tier) || !ticketValide(ticket) || !body.reservation) return json(400, { error: 'invalid_release_request' });
   await libererReservation({ tier, ticket, token: body.reservation });
   return json(200, { ok: true });
 };

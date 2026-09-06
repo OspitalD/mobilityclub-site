@@ -3,10 +3,10 @@
 // Vue agrégée de la même vérité que la grille numérotée. Cette Function ne
 // renvoie aucun email ni identifiant PayPal.
 
-import { lireEtatCampagne } from '../lib/lifetime-ticketing.js';
+import { lireEtatCampagne, TIER_PRICES, TIER_SIZE, TOTAL } from '../lib/lifetime-ticketing.js';
 
-export const TOTAL = 40;
-export const PREMIER_PALIER = 20;
+export { TOTAL };
+export const PREMIER_PALIER = TIER_SIZE;
 
 const json = (statusCode, body) => ({
   statusCode,
@@ -26,7 +26,7 @@ export const calculerStock = (state = {}) => {
     total: TOTAL,
     sold,
     remaining,
-    tier: remaining === 0 ? 'sold_out' : sold < PREMIER_PALIER ? '199' : '249',
+    tier: remaining === 0 ? 'sold_out' : String(TIER_PRICES[Math.min(Math.floor(sold / TIER_SIZE), TIER_PRICES.length - 1)]),
     first_tier_remaining: Math.max(0, PREMIER_PALIER - sold),
   };
 };

@@ -32,12 +32,13 @@
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
 
 import { connectLambda, getStore } from '@netlify/blobs';
+import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 
-// Les deux montants de la campagne Lifetime. Ils restent séparés de
+// Les montants configurés pour les séries Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
 // campagne est ouverte, tandis que cette liste décide quelles captures doivent
-// alimenter le compteur public des 40 places.
-export const MONTANTS_LIFETIME = ['199.00', '249.00'];
+// alimenter le stock public des séries.
+export const MONTANTS_LIFETIME = TIER_PRICES.map((price) => Number(price).toFixed(2));
 
 export const estMontantLifetime = (montant) =>
   MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));

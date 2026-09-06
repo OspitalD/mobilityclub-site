@@ -20,6 +20,10 @@ window.MC_LIFETIME = {
 
   LIEN_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
   LIEN_249: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
+  ESSAI_JOURS: 7,
+  PRIX_MOIS: 25,
+  DEVISE_MOIS: '$',
+  LIEN_MENSUEL: 'https://www.skool.com/mobility-club/about',
 
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
@@ -27,11 +31,11 @@ window.MC_LIFETIME = {
 };
 </script>
 
-<title>Lifetime Pass — Mobility Club</title>
-<meta name="description" content="Les 20 derniers Lifetime Pass Mobility Club à 249 €. Un paiement unique, le cœur de Mobility Club à vie." />
+<title>Devenir membre — Mobility Club</title>
+<meta name="description" content="Rejoins Mobility Club avec 7 jours d’essai gratuit puis 25 $/mois, ou choisis un Lifetime Pass à 249 € en paiement unique." />
 <meta name="robots" content="index,follow" />
-<meta property="og:title" content="Lifetime Pass — Mobility Club" />
-<meta property="og:description" content="Les 20 pass à 199 € sont partis. Les 20 derniers Lifetime Pass sont maintenant à 249 €." />
+<meta property="og:title" content="Devenir membre — Mobility Club" />
+<meta property="og:description" content="Deux façons de rejoindre Mobility Club : 7 jours gratuits puis 25 $/mois, ou un Lifetime Pass à 249 €." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mobilityclub.co/devenir-membre" />
 
@@ -106,6 +110,22 @@ header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
 .hero-sub strong{color:var(--text);font-weight:600}
 .hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;color:var(--quiet);font:500 10px/1.5 var(--mono);letter-spacing:.35px;text-transform:uppercase}
 .hero-proof b{color:var(--text);font-weight:600}
+.access-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.access-choice{position:relative;display:grid;gap:8px;min-height:166px;padding:20px;border:1px solid var(--border-strong);border-radius:12px;background:var(--surface);transition:transform .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease)}
+.access-choice:hover{transform:translateY(-3px);border-color:rgba(62,207,160,.5)}
+.access-choice:focus-visible{outline:2px solid var(--text);outline-offset:4px}
+.access-choice.primary{border-color:transparent;background:var(--mint);color:var(--bg)}
+.access-choice.primary:hover{filter:brightness(1.04)}
+.access-choice-kicker{font:600 8px/1.4 var(--mono);letter-spacing:.7px;text-transform:uppercase;color:var(--mint)}
+.access-choice.primary .access-choice-kicker{color:rgba(13,15,14,.68)}
+.access-choice h2{font:700 20px/1.05 var(--display);letter-spacing:-.025em}
+.access-choice-price{font:800 26px/1 var(--display);letter-spacing:-.035em}
+.price-placeholder{display:none;font-size:18px;line-height:1.15}
+.identity-locked .access-choice .price-placeholder{display:block}
+.identity-locked .hero-proof [data-price-protected],.identity-locked .access-choice [data-price-protected]{display:none}
+.access-choice-detail{color:var(--muted);font-size:11px;line-height:1.5}
+.access-choice.primary .access-choice-detail{color:rgba(13,15,14,.7)}
+.access-choice-action{align-self:end;font-size:12px;font-weight:700}
 
 /* Offre au-dessus de la ligne de flottaison */
 .offer-card{position:relative;padding:clamp(24px,3vw,34px);border:1px solid rgba(62,207,160,.34);border-radius:18px;background:var(--surface);overflow:hidden}
@@ -209,7 +229,17 @@ header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
 .loop-step::after{position:absolute;right:-8px;top:31px;z-index:2;content:"→";color:var(--quiet);font:500 12px/1 var(--mono);background:var(--bg);padding:3px}
 .loop-step:last-child::after{content:"↻";right:14px;color:var(--mint);background:transparent}
 .showcase{margin-top:clamp(34px,5vw,58px)}
-.showcase img{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:16px}
+.demo-video{position:relative;aspect-ratio:16/9;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:#080A09}
+.demo-video-trigger{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;border:0;background:#080A09;color:var(--text);cursor:pointer}
+.demo-video-trigger img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease),filter .5s var(--ease)}
+.demo-video-trigger::after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,transparent 45%,rgba(8,10,9,.78));transition:background .3s var(--ease)}
+.demo-video-trigger:hover img{transform:scale(1.015);filter:brightness(.82)}
+.demo-video-trigger:focus-visible{outline:2px solid var(--text);outline-offset:-5px}
+.demo-video-play{position:absolute;left:50%;top:50%;z-index:2;display:grid;width:clamp(62px,7vw,82px);height:clamp(62px,7vw,82px);border-radius:50%;place-items:center;background:var(--mint);color:var(--bg);font-size:24px;box-shadow:0 16px 48px rgba(0,0,0,.38);transform:translate(-50%,-50%);transition:transform .22s var(--ease),filter .22s var(--ease)}
+.demo-video-trigger:hover .demo-video-play{transform:translate(-50%,-50%) scale(1.06);filter:brightness(1.07)}
+.demo-video-label{position:absolute;left:clamp(16px,3vw,30px);right:clamp(16px,3vw,30px);bottom:clamp(14px,3vw,26px);z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;font:600 10px/1.4 var(--mono);letter-spacing:.75px;text-transform:uppercase}
+.demo-video-label span:last-child{color:var(--mint)}
+.demo-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .showcase figcaption{margin-top:12px;color:var(--quiet);font:500 9px/1.5 var(--mono);letter-spacing:.7px;text-transform:uppercase}
 
 /* Inclus / exclus */
@@ -266,6 +296,8 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   .hero{padding-top:30px}
   .hero h1{font-size:clamp(42px,13vw,64px)}
   .hero-proof{display:grid;gap:5px}
+  .access-choices{grid-template-columns:1fr}
+  .access-choice{min-height:148px}
   .offer-card{padding:22px 18px}
   .identity-fields{grid-template-columns:1fr}
   .ticket-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -303,7 +335,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 <header>
   <div class="wrap header-inner">
     <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
-    <span class="header-note">Opération rentrée · 20 derniers pass</span>
+    <span class="header-note">Deux façons de rejoindre le Club</span>
   </div>
 </header>
 
@@ -311,23 +343,40 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   <section class="hero">
     <div class="wrap hero-layout">
       <div class="hero-copy">
-        <span class="eyebrow">Lifetime Pass · rentrée 2026</span>
-        <h1>Tu paies une fois.<span class="mint">Tu le gardes à vie.</span></h1>
-        <p class="hero-sub">Le cœur de Mobility Club, sans abonnement mensuel ni annuel. Ton bilan, tes besoins, tes séances et les évolutions normales du produit — <strong>un seul paiement, puis tu continues.</strong></p>
+        <span class="eyebrow">Devenir membre</span>
+        <h1>Entre dans le Club.<span class="mint">À ta façon.</span></h1>
+        <p class="hero-sub">Le même Mobility Club, avec deux portes d’entrée. Commence par l’essai gratuit mensuel ou sécurise ton accès à vie avec un ticket nominatif.</p>
         <div class="hero-proof">
+          <span><b>7 jours gratuits</b> avec l’abonnement</span>
           <span><b>20 pass à 199 €</b> déjà pris</span>
-          <span><b>20 derniers</b> maintenant à 249 €</span>
+          <span data-price-protected><b>10/20 pass à 249 €</b> déjà pris</span>
           <span><b>11 acheteurs</b> il y a un an</span>
-          <span><b>0 renouvellement</b> automatique</span>
+        </div>
+        <div class="access-choices" aria-label="Choisir sa formule Mobility Club">
+          <a class="access-choice primary" href="https://www.skool.com/mobility-club/about" target="_blank" rel="noopener" data-access-choice="monthly_trial" data-plan="monthly_trial_25_usd">
+            <span class="access-choice-kicker">Avec abonnement</span>
+            <h2>7 jours gratuits</h2>
+            <strong class="access-choice-price">puis 25 $/mois</strong>
+            <span class="access-choice-detail">Sans engagement · inscription sur Skool</span>
+            <span class="access-choice-action">Démarrer l’essai →</span>
+          </a>
+          <a class="access-choice" href="#tickets" data-access-choice="lifetime_tickets" data-plan="lifetime_tickets_249">
+            <span class="access-choice-kicker">Sans abonnement</span>
+            <h2>Accès à vie</h2>
+            <strong class="access-choice-price price-placeholder">Tarif révélé après ton nom</strong>
+            <strong class="access-choice-price" data-price-protected><span data-current-price>249</span> € une fois</strong>
+            <span class="access-choice-detail"><span data-tier-available>10</span> tickets nominatifs disponibles · payable en 4×</span>
+            <span class="access-choice-action">Choisir mon ticket →</span>
+          </a>
         </div>
       </div>
 
       <aside class="offer-card" id="tickets" aria-label="Choisir son Lifetime Pass">
         <div class="stock-line">
           <span class="live"><span class="live-dot"></span><span data-stock-status>Vérification du stock réel…</span></span>
-          <span data-stock-count>40 pass maximum</span>
+          <span data-stock-count>30 / 40 partis</span>
         </div>
-        <div class="stock-meter" role="progressbar" aria-label="Lifetime Pass vendus" aria-valuemin="0" aria-valuemax="40" aria-valuenow="20"><div class="stock-meter-fill" data-stock-fill></div></div>
+        <div class="stock-meter" role="progressbar" aria-label="Lifetime Pass vendus" aria-valuemin="0" aria-valuemax="40" aria-valuenow="30"><div class="stock-meter-fill" data-stock-fill></div></div>
         <div class="name-gate" data-identity-gate>
           <span class="name-kicker">Émission nominative · étape 1/2</span>
           <div>
@@ -353,7 +402,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
           <div class="ticket-grid" data-ticket-grid aria-label="Tickets du carnet en cours"></div>
           <div class="ticket-message">
             <b data-take-label>Choisis ton numéro</b>
-            <p data-take-message>Les 20 tickets à 199 € sont partis. Choisis ton numéro dans le dernier carnet à 249 €.</p>
+            <p data-take-message>Les 20 tickets à 199 € sont partis. Choisis ton numéro dans la série actuelle à 249 €.</p>
           </div>
           <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Vérification des tickets…</button>
           <p class="offer-fine"><b>Payable en 4× via PayPal</b> · sous réserve d’éligibilité</p>
@@ -398,8 +447,15 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <article class="loop-step"><span class="loop-n">05</span><h3>Nouveau bilan</h3><p>Tu re-mesures. Le système repart depuis tes nouveaux besoins.</p></article>
       </div>
       <figure class="showcase">
-        <img src="assets/app/showcase-membre.jpg" width="1640" height="925" loading="lazy" alt="L’application Mobility Club : séance du jour, coach vocal et suivi de progression articulaire." />
-        <figcaption>Le produit en vrai · séance du jour · ajustement · progression</figcaption>
+        <div class="demo-video" data-demo-video>
+          <button class="demo-video-trigger" type="button" aria-label="Lancer la démonstration vidéo de Mobility Club">
+            <img src="assets/app/demo-poster.jpg" width="1280" height="720" loading="lazy" alt="Aperçu de la démonstration vidéo de Mobility Club." />
+            <span class="demo-video-play" aria-hidden="true">▶</span>
+            <span class="demo-video-label"><span>Mobility Club en situation</span><span>Voir la démo</span></span>
+          </button>
+        </div>
+        <noscript><p><a href="https://youtu.be/OWbtepb1e88" target="_blank" rel="noopener">Voir la démonstration vidéo sur YouTube</a></p></noscript>
+        <figcaption>Le produit en vrai · planification · séance · progression</figcaption>
       </figure>
     </div>
   </section>
@@ -438,9 +494,9 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 
   <section class="section closing" id="offre">
     <div class="wrap">
-      <span class="eyebrow">20 pass. Puis terminé.</span>
-      <h2>Le calcul ne se répétera <span>probablement pas.</span></h2>
-      <p class="closing-sub">Une fois les 20 Lifetime Pass partis, Mobility Club revient uniquement à l’abonnement. Chaque pass est numéroté, nominatif et disponible tant que son ticket reste libre.</p>
+      <span class="eyebrow"><span data-tier-available>10</span> pass à 249 € disponibles</span>
+      <h2>Le prix monte par <span>séries de 20.</span></h2>
+      <p class="closing-sub">Chaque carnet contient 20 Lifetime Pass numérotés et nominatifs. Quand une série est complète, la suivante ouvre à un tarif supérieur.</p>
       <div class="closing-box" data-price-protected>
         <div class="closing-row">
           <div class="closing-price"><span>€</span><b data-current-price>249</b><small>ou 4× via PayPal</small></div>
@@ -473,11 +529,11 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Quel est le tarif du Lifetime Pass ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Le premier carnet de 20 pass à 199 € est complet. Les 20 derniers Lifetime Pass coûtent 249 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
+          <div class="faq-a"><div class="faq-a-inner"><p>Le premier carnet de 20 pass à 199 € est complet. La série actuelle coûte 249 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il après les 20 ventes ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Le Lifetime Pass ferme et Mobility Club redevient accessible uniquement via son offre d’abonnement normale.</p></div></div>
+          <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il quand la série est complète ?</button>
+          <div class="faq-a"><div class="faq-a-inner"><p>Une nouvelle série de 20 Lifetime Pass pourra ouvrir à un tarif supérieur. L’abonnement avec 7 jours d’essai gratuit reste disponible en parallèle sur Skool.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Comment vais-je recevoir mon accès ?</button>
@@ -489,7 +545,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   </section>
 </main>
 
-<footer>© 2026 Mobility Club · Lifetime Pass rentrée</footer>
+<footer>© 2026 Mobility Club · Devenir membre</footer>
 
 <div class="mobile-buy" aria-label="Acheter le Lifetime Pass">
   <div class="mobile-buy-price"><span data-current-price>249</span> €<small>ou 4× via PayPal</small></div>
@@ -511,7 +567,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   function fullName(){return identity?identity.first+' '+identity.last:'';}
   function ticketName(){return identity?identity.first+' '+identity.last.charAt(0).toUpperCase()+'.':'';}
   function readIdentity(){try{var value=JSON.parse(sessionStorage.getItem(IDENTITY_KEY)||'null');if(value&&validName(value.first)&&validName(value.last))return value;}catch(e){}return null;}
-  function readConfirmed(){try{var value=JSON.parse(sessionStorage.getItem(CONFIRMED_KEY)||'null');return value&&[1,2].indexOf(Number(value.tier))!==-1&&Number(value.ticket)>=1&&Number(value.ticket)<=20?{tier:Number(value.tier),ticket:Number(value.ticket)}:null;}catch(e){return null;}}
+  function readConfirmed(){try{var value=JSON.parse(sessionStorage.getItem(CONFIRMED_KEY)||'null'),tier=Number(value&&value.tier),ticket=Number(value&&value.ticket);return Number.isInteger(tier)&&tier>=1&&Number.isInteger(ticket)&&ticket>=1&&ticket<=20?{tier:tier,ticket:ticket}:null;}catch(e){return null;}}
 
   function revealExperience(skipMotion){
     var gate=document.querySelector('[data-identity-gate]'),stage=document.querySelector('[data-ticket-experience]'),grid=document.querySelector('[data-ticket-grid]');
@@ -563,23 +619,23 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
     }
   }
   function updateActions(data){
-    var actions=all('[data-ticket-action]'),label=data.sold_out?'Les 20 derniers tickets sont partis':selected===null?'Choisis un ticket libre':checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
+    var actions=all('[data-ticket-action]'),label=data.sold_out?'Cette série est complète':selected===null?'Choisis un ticket libre':checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
     for(var i=0;i<actions.length;i++){actions[i].textContent=actions[i].closest('.mobile-buy')&&selected!==null&&!checkoutBusy?'Ticket '+pad(selected)+' · '+data.price+' € →':label;actions[i].disabled=data.sold_out||selected===null||checkoutBusy;actions[i].classList.toggle('is-disabled',actions[i].disabled);actions[i].classList.toggle('is-loading',checkoutBusy);actions[i].setAttribute('data-plan',selected===null?'lifetime_choose_ticket':'lifetime_'+data.price+'_tier_'+data.tier+'_ticket_'+pad(selected));}
   }
   function render(data,message){
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
-    var sold=Math.max(0,Math.min(Number(data.sold)||0,C.TOTAL)),remaining=Math.max(0,C.TOTAL-sold),tierRemaining=Math.max(0,C.PREMIER_PALIER-(Number(data.tier_sold)||0));
-    setText('[data-price]',data.price);setText('[data-current-price]',data.price);setText('[data-tier-name]',Number(data.tier)===2?'Série 02 · Tickets 01 → 20':'Série 01 · Tickets 01 → 20');setText('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));
-    setText('[data-stock-count]',sold+' / '+C.TOTAL+' partis');setText('[data-stock-status]',remaining?(Number(data.tier)===2?tierRemaining+' pass à 249 € disponibles':tierRemaining+' pass à 199 € disponibles'):'Les 40 pass sont partis');setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':'Offre terminée');
-    document.querySelector('[data-stock-fill]').style.width=((sold/C.TOTAL)*100)+'%';document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);renderTickets(data);
-    if(data.sold_out){setText('[data-take-label]','Les 40 tickets sont partis');setText('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');}
+    var total=Math.max(1,Number(data.total)||C.TOTAL),sold=Math.max(0,Math.min(Number(data.sold)||0,total)),remaining=Math.max(0,total-sold),tierRemaining=Array.isArray(data.tickets)?data.tickets.filter(function(item){return item.status==='available';}).length:Math.max(0,C.PREMIER_PALIER-(Number(data.tier_sold)||0));
+    setText('[data-price]',data.price);setText('[data-current-price]',data.price);setText('[data-tier-name]','Série '+pad(data.tier)+' · Tickets 01 → 20');setText('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));setText('[data-tier-available]',tierRemaining);
+    setText('[data-stock-count]',sold+' / '+total+' partis');setText('[data-stock-status]',remaining?tierRemaining+' pass à '+data.price+' € disponibles':'Cette série est complète');setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':'Série complète · prochain tarif à venir');
+    document.querySelector('[data-stock-fill]').style.width=((sold/total)*100)+'%';document.querySelector('.stock-meter').setAttribute('aria-valuemax',total);document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);renderTickets(data);
+    if(data.sold_out){setText('[data-take-label]','Cette série est complète');setText('[data-take-message]','La série suivante ouvrira à un tarif supérieur.');}
     else if(message){setText('[data-take-label]',message.label);setText('[data-take-message]',message.body);}
     else if(selected!==null){setText('[data-take-label]',fullName()+' · ticket '+pad(selected));setText('[data-take-message]','Ton nom est imprimé. Le ticket sera bloqué 10 minutes pendant ton paiement.');}
     else{setText('[data-take-label]','Choisis ton numéro');setText('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');}
     updateActions(data);
   }
   function choose(number){if(!current||checkoutBusy||statusOf(number)!=='available')return;selected=number;render(current);var cell=ticket(number);if(cell&&!reduced){cell.classList.add('is-claiming');window.setTimeout(function(){cell.classList.remove('is-claiming');},430);}track('ticket_selected',{ticket:pad(number),tier:current.tier,price:current.price});}
-  function load(message){return fetch(C.STOCK_ENDPOINT,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();}).then(function(data){if(!data||data.live!==true||!Array.isArray(data.tickets))throw new Error('stock invalide');var previous=current;current=data;render(current,message);if(previous&&previous.tier===current.tier&&!reduced){for(var i=0;i<current.tickets.length;i++)if(previous.tickets[i]&&previous.tickets[i].status!=='sold'&&current.tickets[i].status==='sold'){var cell=ticket(current.tickets[i].number);if(cell)cell.classList.add('is-confirming');}}return data;}).catch(function(){setText('[data-stock-status]','Stock momentanément indisponible');setText('[data-stock-count]','40 pass maximum');setText('[data-closing-stock]','Actualise la page pour vérifier le stock');var actions=all('[data-ticket-action]');for(var i=0;i<actions.length;i++){actions[i].textContent='Actualise pour vérifier les tickets';actions[i].disabled=true;actions[i].classList.add('is-disabled');}});}
+  function load(message){return fetch(C.STOCK_ENDPOINT,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('stock '+r.status);return r.json();}).then(function(data){if(!data||data.live!==true||!Array.isArray(data.tickets))throw new Error('stock invalide');var previous=current;current=data;render(current,message);if(previous&&previous.tier===current.tier&&!reduced){for(var i=0;i<current.tickets.length;i++)if(previous.tickets[i]&&previous.tickets[i].status!=='sold'&&current.tickets[i].status==='sold'){var cell=ticket(current.tickets[i].number);if(cell)cell.classList.add('is-confirming');}}return data;}).catch(function(){setText('[data-stock-status]','Stock momentanément indisponible');setText('[data-stock-count]','Stock à actualiser');setText('[data-closing-stock]','Actualise la page pour vérifier le stock');var actions=all('[data-ticket-action]');for(var i=0;i<actions.length;i++){actions[i].textContent='Actualise pour vérifier les tickets';actions[i].disabled=true;actions[i].classList.add('is-disabled');}});}
   function checkoutRequest(body){return fetch(C.CHECKOUT_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(response){return response.json().catch(function(){return {};}).then(function(data){return {ok:response.ok,status:response.status,data:data};});});}
   function startCheckout(){
     if(!current||selected===null||checkoutBusy||statusOf(selected)!=='available')return;
@@ -611,6 +667,8 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   var identityForm=document.querySelector('[data-identity-form]');if(identityForm)identityForm.addEventListener('submit',submitIdentity);
   identity=readIdentity();confirmedPass=readConfirmed();var paypalMode=new URLSearchParams(window.location.search).get('paypal');if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);
   var actions=all('[data-ticket-action]');for(var j=0;j<actions.length;j++)actions[j].addEventListener('click',startCheckout);
+  var choices=all('[data-access-choice]');for(var k=0;k<choices.length;k++)choices[k].addEventListener('click',function(){track('plan_clicked',{plan:this.getAttribute('data-plan')||this.getAttribute('data-access-choice')});});
+  var demos=all('[data-demo-video]');for(var d=0;d<demos.length;d++){var trigger=demos[d].querySelector('.demo-video-trigger');if(trigger)trigger.addEventListener('click',function(){var shell=this.closest('[data-demo-video]'),frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/OWbtepb1e88?autoplay=1&rel=0';frame.title='Démonstration vidéo de Mobility Club';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.referrerPolicy='strict-origin-when-cross-origin';frame.allowFullscreen=true;shell.replaceChildren(frame);track('cta_clicked',{cta:'demo_video_play'});});}
   track('page_view');
   load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 })();

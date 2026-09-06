@@ -16,9 +16,9 @@ window.MC_LIFETIME = {
 };
 </script>
 
-<title>20 Lifetime Tickets — Mobility Club</title>
-<meta name="description" content="Les 20 derniers tickets Lifetime Mobility Club à 249 €. Un paiement, l’accès au cœur du Club à vie." />
-<meta property="og:title" content="20 Lifetime Tickets — Mobility Club" />
+<title>Lifetime Tickets — Mobility Club</title>
+<meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle à 249 €. Un paiement, l’accès au cœur du Club à vie." />
+<meta property="og:title" content="Lifetime Tickets — Mobility Club" />
 <meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mobilityclub.co/lifetime" />
@@ -261,14 +261,14 @@ details[open] summary::after{content:"×"}
   <main>
     <section class="hero">
       <div class="copy">
-        <span class="eyebrow">Lifetime Pass · saison 2</span>
-        <h1>20 derniers tickets.<br><span>Pas un de plus.</span></h1>
+        <span class="eyebrow">Lifetime Pass · série 02</span>
+        <h1>20 tickets par série.<br><span>Puis le prix monte.</span></h1>
         <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
         <div class="proof-line">
           <span><b>11 personnes</b> l’ont fait il y a un an</span>
           <span><b>20 tickets à 199 €</b> déjà attribués</span>
           <span data-price-reveal><b>249 €</b> paiement unique</span>
-          <span data-price-reveal><b>20 derniers tickets</b> disponibles</span>
+          <span data-price-reveal><b>10/20 tickets à 249 €</b> déjà pris</span>
           <span data-price-reveal><b>4× PayPal</b> disponible</span>
         </div>
       </div>
@@ -297,7 +297,7 @@ details[open] summary::after{content:"×"}
             <header class="board-head">
               <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · 249 €</b></div>
               <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
-              <div class="board-remaining" data-remaining>20 pass restants</div>
+              <div class="board-remaining" data-remaining>10 pass restants</div>
             </header>
             <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
             <div class="board-status">
@@ -364,7 +364,7 @@ details[open] summary::after{content:"×"}
     try{var saved=JSON.parse(sessionStorage.getItem(IDENTITY_KEY)||'null');if(saved&&validName(saved.first)&&validName(saved.last))return saved;}catch(e){}
     return null;
   }
-  function readConfirmed(){try{var value=JSON.parse(sessionStorage.getItem(CONFIRMED_KEY)||'null');return value&&[1,2].indexOf(Number(value.tier))!==-1&&Number(value.ticket)>=1&&Number(value.ticket)<=C.TIER_SIZE?{tier:Number(value.tier),ticket:Number(value.ticket)}:null;}catch(e){return null;}}
+  function readConfirmed(){try{var value=JSON.parse(sessionStorage.getItem(CONFIRMED_KEY)||'null'),tier=Number(value&&value.tier),ticket=Number(value&&value.ticket);return Number.isInteger(tier)&&tier>=1&&Number.isInteger(ticket)&&ticket>=1&&ticket<=C.TIER_SIZE?{tier:tier,ticket:ticket}:null;}catch(e){return null;}}
   function revealExperience(skipMotion){
     var gate=document.querySelector('[data-identity-gate]');
     var experience=document.querySelector('[data-ticket-experience]');
@@ -446,7 +446,7 @@ details[open] summary::after{content:"×"}
     var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){claims[i].textContent=label;claims[i].disabled=true;claims[i].classList.add('off');}
   }
   function updateActions(data){
-    if(data.sold_out){disableActions('Les 20 derniers tickets sont partis');return;}
+    if(data.sold_out){disableActions('Cette série est complète');return;}
     if(selected===null){disableActions('Choisis un ticket libre');return;}
     setVisible('[data-claim]',false);setVisible('[data-pay]',true);
     var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
@@ -458,14 +458,14 @@ details[open] summary::after{content:"×"}
   function render(data,message){
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
     text('[data-price]',data.price);
-    var tierRemaining=Math.max(0,C.TIER_SIZE-(Number(data.tier_sold)||0));
-    text('[data-tier-name]',Number(data.tier)===2?'Série 02 · 249 €':'Série 01 · 199 €');
+    var tierRemaining=Array.isArray(data.tickets)?data.tickets.filter(function(item){return item.status==='available';}).length:Math.max(0,C.TIER_SIZE-(Number(data.tier_sold)||0));
+    text('[data-tier-name]','Série '+pad(data.tier)+' · '+data.price+' €');
     text('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));
     renderTickets(data);
     if(data.sold_out){
-      text('[data-take-label]','Les 20 derniers tickets sont partis');
-      text('[data-take-message]','Le Lifetime Pass ferme. Mobility Club revient à l’abonnement.');
-      text('[data-action-note]','Offre complète · retour à l’abonnement');
+      text('[data-take-label]','Cette série est complète');
+      text('[data-take-message]','La série suivante ouvrira à un tarif supérieur.');
+      text('[data-action-note]','Série complète · prochain tarif à venir');
     }else if(message){
       text('[data-take-label]',message.label);text('[data-take-message]',message.body);
       text('[data-action-note]','Stock PayPal vérifié · aucun ticket fantôme');
@@ -479,7 +479,7 @@ details[open] summary::after{content:"×"}
       text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
     updateActions(data);
-    text('[data-live-stock]',data.remaining?tierRemaining+' Lifetime Pass à '+data.price+' € disponibles':'Offre complète');
+    text('[data-live-stock]',data.remaining?tierRemaining+' Lifetime Pass à '+data.price+' € disponibles':'Série complète');
   }
   function choose(number){
     if(!current||checkoutBusy||statusOf(number)!=='available')return;

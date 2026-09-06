@@ -154,11 +154,11 @@ test('au 19e paiement à 249 €, une seule réservation peut occuper la derniè
   const captures = bucket('lifetime_pass_2026');
   for (let index = 1; index <= 19; index++) captures.set(`249/CAP-${index}`, { data: {}, etag: `paid-${index}` });
 
-  const last = await call({ action: 'create', ticket: 20 });
+  const last = await call({ action: 'create', ticket: 19 });
   assert.equal(last.statusCode, 201);
   assert.equal(body(last).price, 249);
 
-  const overflow = await call({ action: 'create', ticket: 19 });
+  const overflow = await call({ action: 'create', ticket: 17 });
   assert.equal(overflow.statusCode, 409);
 });
 

@@ -1,18 +1,27 @@
 import { getStore } from '@netlify/blobs';
 
-export const TOTAL = 40;
 export const TIER_SIZE = 20;
+// Une nouvelle série s'ajoute ici uniquement lorsque son prix a été décidé.
+// Le stock, les numéros et le checkout s'adaptent ensuite automatiquement.
+export const TIER_PRICES = [199, 249];
+export const TOTAL = TIER_SIZE * TIER_PRICES.length;
 export const RESERVATION_MS = 10 * 60 * 1000;
 
 const INVENTORY_STORE = 'lifetime_ticket_inventory_2026';
 const INVENTORY_KEY = 'inventory';
 const CAPTURE_STORE = 'lifetime_pass_2026';
-// Le premier carnet à 199 € est complet. Ce plancher permet d'ouvrir le second
-// carnet même si certaines ventes historiques n'ont pas encore de capture NCP.
-export const PRELAUNCH_SOLD = { 1: 20, 2: 0 };
+// Ventes déjà conclues mais pas toutes rattachées à un numéro PayPal. La série
+// 249 € garde un motif dispersé. Le 01 est une vente réelle déjà observée ; les
+// autres numéros ont été choisis pour préserver les 02, 03, 04, 12 et 16.
+export const DECLARED_SOLD_TICKETS = {
+  1: Array.from({ length: TIER_SIZE }, (_, index) => index + 1),
+  2: [1, 5, 7, 8, 10, 13, 14, 15, 18, 20],
+};
 
-// Le numéro de carnet reste utile pour l'inventaire, mais le tarif public est
-const prixDuPalier = (tier) => (Number(tier) === 1 ? 199 : 249);
+export const tierValide = (tier) =>
+  Number.isInteger(Number(tier)) && Number(tier) >= 1 && Number(tier) <= TIER_PRICES.length;
+
+const prixDuPalier = (tier) => TIER_PRICES[Number(tier) - 1];
 const cleTicket = (ticket) => String(Number(ticket)).padStart(2, '0');
 
 export const ticketValide = (ticket) =>
@@ -22,21 +31,25 @@ export const customIdLifetime = ({ tier, ticket, token }) =>
   `MC-LIFE-2026-T${Number(tier)}-${cleTicket(ticket)}-${token}`;
 
 export const lireCustomIdLifetime = (customId) => {
-  const match = /^MC-LIFE-2026-T([12])-(\d{2})-([a-f0-9-]{36})$/i.exec(String(customId || ''));
-  if (!match || !ticketValide(Number(match[2]))) return null;
+  const match = /^MC-LIFE-2026-T(\d+)-(\d{2})-([a-f0-9-]{36})$/i.exec(String(customId || ''));
+  if (!match || !tierValide(Number(match[1])) || !ticketValide(Number(match[2]))) return null;
   return { tier: Number(match[1]), ticket: Number(match[2]), token: match[3].toLowerCase() };
 };
 
-export const inventaireVide = () => ({ version: 1, tiers: { 1: {}, 2: {} } });
+const tiersVides = () => Object.fromEntries(TIER_PRICES.map((_, index) => [index + 1, {}]));
+
+export const inventaireVide = () => ({ version: 2, tiers: tiersVides() });
 
 const copieInventaire = (value) => {
   const source = value && typeof value === 'object' ? value : {};
   return {
-    version: 1,
-    tiers: {
-      1: { ...(source.tiers?.[1] || source.tiers?.['1'] || {}) },
-      2: { ...(source.tiers?.[2] || source.tiers?.['2'] || {}) },
-    },
+    version: 2,
+    tiers: Object.fromEntries(
+      TIER_PRICES.map((_, index) => {
+        const tier = index + 1;
+        return [tier, { ...(source.tiers?.[tier] || source.tiers?.[String(tier)] || {}) }];
+      })
+    ),
   };
 };
 
@@ -46,7 +59,7 @@ const compteStatut = (inventory, tier, status) =>
 export const normaliserInventaire = (value, captures = { 1: 0, 2: 0 }, now = Date.now()) => {
   const inventory = copieInventaire(value);
 
-  for (const tier of [1, 2]) {
+  for (let tier = 1; tier <= TIER_PRICES.length; tier++) {
     for (const [ticket, entry] of Object.entries(inventory.tiers[tier])) {
       if (!ticketValide(Number(ticket)) || !entry || typeof entry !== 'object') {
         delete inventory.tiers[tier][ticket];
@@ -57,13 +70,21 @@ export const normaliserInventaire = (value, captures = { 1: 0, 2: 0 }, now = Dat
       }
     }
 
-    // Les captures signées restent la vérité comptable. Si une ancienne vente
-    // NCP n'avait pas de numéro, on matérialise les premiers numéros libres.
-    let missing = Math.max(0, Number(captures[tier] || 0) - compteStatut(inventory, tier, 'sold'));
-    for (let ticket = 1; ticket <= TIER_SIZE && missing > 0; ticket++) {
+    // Les ventes déclarées donnent un plancher et un motif visuel, sans
+    // s'ajouter aux captures PayPal. À mesure que les captures arrivent, elles
+    // remplacent ce plancher au lieu de le gonfler artificiellement.
+    const declared = DECLARED_SOLD_TICKETS[tier] || [];
+    const targetSold = Math.min(
+      TIER_SIZE,
+      Math.max(Number(captures[tier] || 0), declared.length, compteStatut(inventory, tier, 'sold'))
+    );
+    let missing = Math.max(0, targetSold - compteStatut(inventory, tier, 'sold'));
+    const preferred = [...new Set([...declared, ...Array.from({ length: TIER_SIZE }, (_, index) => index + 1)])];
+    for (const ticket of preferred) {
+      if (missing <= 0) break;
       const key = cleTicket(ticket);
       if (!inventory.tiers[tier][key]) {
-        inventory.tiers[tier][key] = { status: 'sold', source: 'paypal_capture_reconcile' };
+        inventory.tiers[tier][key] = { status: 'sold', source: 'campaign_declared_or_reconciled' };
         missing--;
       }
     }
@@ -73,13 +94,15 @@ export const normaliserInventaire = (value, captures = { 1: 0, 2: 0 }, now = Dat
 };
 
 export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }) => {
-  const soldByTier = {
-    1: Math.max(Number(captures[1] || 0), compteStatut(inventory, 1, 'sold')),
-    2: Math.max(Number(captures[2] || 0), compteStatut(inventory, 2, 'sold')),
-  };
-  const sold = Math.min(TOTAL, soldByTier[1] + soldByTier[2]);
+  const soldByTier = Object.fromEntries(
+    TIER_PRICES.map((_, index) => {
+      const tier = index + 1;
+      return [tier, Math.max(Number(captures[tier] || 0), compteStatut(inventory, tier, 'sold'))];
+    })
+  );
+  const sold = Math.min(TOTAL, Object.values(soldByTier).reduce((sum, count) => sum + count, 0));
   const soldOut = sold >= TOTAL;
-  const tier = soldByTier[1] >= TIER_SIZE ? 2 : 1;
+  const tier = TIER_PRICES.findIndex((_, index) => soldByTier[index + 1] < TIER_SIZE) + 1 || TIER_PRICES.length;
   const tickets = Array.from({ length: TIER_SIZE }, (_, index) => {
     const ticket = index + 1;
     const entry = inventory.tiers[tier][cleTicket(ticket)];
@@ -114,16 +137,13 @@ const lireCaptures = async () => {
   );
   const sansNumero = (capture) => !lireCustomIdLifetime(capture.data?.custom_id);
   const capturesNcp = captures.filter(sansNumero);
-  return {
-    // Les anciens liens NCP n'avaient aucun numéro : leurs captures doivent
-    // toujours être matérialisées dans la grille. Les nouvelles commandes
-    // numérotées vivent déjà dans l'inventaire atomique et ne sont pas
-    // recomptées ici, même si le webhook PayPal arrive avant le retour client.
-    // Le montant identifie le carnet des anciens liens NCP. PRELAUNCH_SOLD est
-    // un plancher, pas une vente ajoutée, pour éviter tout double comptage.
-    1: Math.max(PRELAUNCH_SOLD[1], capturesNcp.filter((capture) => capture.key.startsWith('199/')).length),
-    2: Math.max(PRELAUNCH_SOLD[2], capturesNcp.filter((capture) => capture.key.startsWith('249/')).length),
-  };
+  const counts = Object.fromEntries(TIER_PRICES.map((_, index) => [index + 1, 0]));
+  for (const capture of capturesNcp) {
+    const price = Number(capture.key.split('/')[0]);
+    const tierIndex = TIER_PRICES.indexOf(price);
+    if (tierIndex !== -1) counts[tierIndex + 1]++;
+  }
+  return counts;
 };
 
 const lireInventaire = async () => {

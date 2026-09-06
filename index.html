@@ -1093,6 +1093,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .voice-head{ margin-top:clamp(26px,4vh,42px); }
 .voice-title{ font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4.2vw,52px); line-height:1.06; letter-spacing:-0.03em; color:var(--text-primary); max-width:18ch; text-wrap:balance; }
 .voice-sub{ margin-top:18px; font-size:clamp(14.5px,1.5vw,17.5px); line-height:1.6; color:var(--text-secondary); max-width:52ch; }
+.voice-swipe{ display:none; }
 /* storyboard : ouvre → parle → c'est fait */
 .voice-flow{ display:flex; gap:clamp(14px,2.4vw,28px); justify-content:center; align-items:flex-start; margin:clamp(32px,5vh,54px) 0 clamp(26px,4vh,38px); }
 .voice-step{ flex:1 1 0; max-width:300px; margin:0; display:flex; flex-direction:column; }
@@ -1113,7 +1114,42 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .shot-ph-txt{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.6px; text-transform:uppercase; color:var(--v); text-align:center; padding:16px; }
 .tour-stage.tour-ph{ display:grid; place-items:center; background:var(--v-soft); border:1px dashed var(--v-line); border-radius:16px; }
 .tour-ph-txt{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--v); text-align:center; line-height:1.7; padding:20px; }
-@media (max-width:760px){ .voice-flow{ flex-direction:column; align-items:center; } .voice-step{ max-width:330px; width:100%; } .voice-title{ max-width:none; } }
+@media (max-width:760px){
+  .voice .eyebrow{ flex-wrap:wrap; row-gap:8px; }
+  .voice .beta-pill{ margin-left:0; }
+  .voice-head{ margin-top:24px; }
+  .voice-title{ max-width:none; }
+  .voice-swipe{
+    display:flex; align-items:center; gap:9px; margin-top:26px;
+    font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:.7px;
+    text-transform:uppercase; color:var(--v);
+  }
+  .voice-swipe::after{ content:"\2192"; font-size:15px; line-height:1; }
+  .voice-flow{
+    width:calc(100% + (var(--gutter) * 2));
+    margin:14px calc(var(--gutter) * -1) 28px;
+    padding:0 var(--gutter) 16px;
+    display:grid; grid-auto-flow:column; grid-auto-columns:min(78vw, 280px);
+    justify-content:start; align-items:start; gap:16px;
+    overflow-x:auto; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory; scroll-padding-inline:var(--gutter);
+    scrollbar-width:thin; scrollbar-color:var(--v-line) transparent;
+  }
+  .voice-flow::-webkit-scrollbar{ height:3px; }
+  .voice-flow::-webkit-scrollbar-track{ background:transparent; }
+  .voice-flow::-webkit-scrollbar-thumb{ background:var(--v-line); border-radius:10px; }
+  .voice-step{ width:auto; max-width:none; scroll-snap-align:start; scroll-snap-stop:always; }
+  .voice-step figcaption{ margin-top:12px; }
+  .voice-foot{ flex-direction:column; align-items:flex-start; gap:18px; }
+  .voice-chips{
+    width:calc(100% + var(--gutter)); padding:0 var(--gutter) 7px 0;
+    flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-inline:contain;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .voice-chips::-webkit-scrollbar{ display:none; }
+  .vchip{ flex:0 0 auto; }
+  .voice-priv{ align-items:flex-start; max-width:34ch; line-height:1.5; }
+}
 
 /* ◎ CORRECTION DE MOUVEMENT — le retour vidéo du coach (humain, pas un algo) : registre mint standard */
 .vc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,5vw,60px); align-items:center; margin-top:clamp(28px,4vh,44px); }
@@ -1549,16 +1585,17 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <p class="voice-sub reveal" data-i18n="voice_sub">Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.</p>
     </div>
 
-    <div class="voice-flow reveal" data-stagger>
-      <figure class="voice-step">
+    <p class="voice-swipe reveal" data-i18n="voice_swipe">Balaye pour voir les 3 étapes</p>
+    <div class="voice-flow reveal" data-stagger role="list" aria-label="Les trois étapes du coach vocal">
+      <figure class="voice-step" role="listitem">
         <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-nub.png" width="880" height="1904" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
         <figcaption><span class="vstep-n">1</span><span data-i18n="voice_s1">Ouvre — le bouton est au centre de ta nav, à portée de pouce.</span></figcaption>
       </figure>
-      <figure class="voice-step">
+      <figure class="voice-step" role="listitem">
         <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1904" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure></div>
         <figcaption><span class="vstep-n">2</span><span data-i18n="voice_s2">Parle — dis ta contrainte du jour, en langage normal.</span></figcaption>
       </figure>
-      <figure class="voice-step lead">
+      <figure class="voice-step lead" role="listitem">
         <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1904" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure></div>
         <figcaption><span class="vstep-n">3</span><span data-i18n="voice_s3">C'est fait — il reformule, tu valides. Ta séance s'adapte.</span></figcaption>
       </figure>
@@ -2103,6 +2140,7 @@ const I18N = {
     voice_beta: 'Nouveau · en approche',
     voice_title: "Parle. Ton coach s'occupe du reste.",
     voice_sub: "Une douleur, pas le temps, un imprévu ? Dis-le à voix haute — ta séance du jour et ta semaine s'adaptent. L'intelligence de la méthode, sans le moindre menu à remplir.",
+    voice_swipe: 'Balaye pour voir les 3 étapes',
     voice_c1: "« J'ai mal à l'épaule droite »",
     voice_c2: '« Ajoute du padel le jeudi »',
     voice_c3: "« J'ai que 10 minutes »",
@@ -2255,6 +2293,7 @@ const I18N = {
     voice_beta: 'New · rolling out',
     voice_title: 'Talk. Your coach handles the rest.',
     voice_sub: "In pain, short on time, thrown off? Just say it out loud — today's session and your week adapt. The method's intelligence, with zero menus to fill in.",
+    voice_swipe: 'Swipe through the 3 steps',
     voice_c1: '“My right shoulder hurts”',
     voice_c2: '“Add padel on Thursday”',
     voice_c3: "“I've only got 10 minutes”",
