@@ -60,8 +60,8 @@ test('GET renvoie seulement les agrégats publics', async () => {
   const response = { statusCode: native.status, headers: Object.fromEntries(native.headers), body: await native.text() };
   assert.equal(response.statusCode, 200);
   assert.equal(response.headers['cache-control'], 'no-store');
-  assert.equal(body(response).sold, 30);
-  assert.equal(body(response).remaining, 10);
+  assert.equal(body(response).sold, 34);
+  assert.equal(body(response).remaining, 6);
   assert.equal(body(response).tier, '249');
   assert.ok(!response.body.includes('CAP-'));
 });

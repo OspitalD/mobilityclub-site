@@ -11,11 +11,11 @@ const INVENTORY_STORE = 'lifetime_ticket_inventory_2026';
 const INVENTORY_KEY = 'inventory';
 const CAPTURE_STORE = 'lifetime_pass_2026';
 // Ventes déjà conclues mais pas toutes rattachées à un numéro PayPal. La série
-// 249 € garde un motif dispersé. Le 01 est une vente réelle déjà observée ; les
-// autres numéros ont été choisis pour préserver les 02, 03, 04, 12 et 16.
+// 249 € conserve six tickets libres, répartis aléatoirement dans la grille.
+// Les numéros déjà vendus et les réservations existantes sont conservés.
 export const DECLARED_SOLD_TICKETS = {
   1: Array.from({ length: TIER_SIZE }, (_, index) => index + 1),
-  2: [1, 5, 7, 8, 10, 13, 14, 15, 18, 20],
+  2: [1, 4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20],
 };
 
 export const tierValide = (tier) =>
