@@ -176,3 +176,24 @@ test('aucun secret PayPal ne sort dans les erreurs', async () => {
   assert.equal(response.statusCode, 502);
   assert.ok(!response.body.includes('secret-test'));
 });
+
+test('la billetterie directe reçoit le retour PayPal et son annulation', async () => {
+  const response = await call({ action: 'create', ticket: 19, return_path: '/mon-ticket' });
+  assert.equal(response.statusCode, 201);
+  const context = orders.get('ORDER1').payment_source.paypal.experience_context;
+  const returned = new URL(context.return_url);
+  const cancelled = new URL(context.cancel_url);
+  assert.equal(returned.pathname, '/mon-ticket');
+  assert.equal(returned.searchParams.get('paypal'), 'return');
+  assert.equal(returned.searchParams.get('ticket'), '19');
+  assert.equal(cancelled.pathname, '/mon-ticket');
+  assert.equal(cancelled.searchParams.get('paypal'), 'cancel');
+});
+
+test('une URL de retour externe est remplacée par la page Lifetime', async () => {
+  const response = await call({ action: 'create', ticket: 19, return_path: 'https://example.com' });
+  assert.equal(response.statusCode, 201);
+  const context = orders.get('ORDER1').payment_source.paypal.experience_context;
+  assert.equal(new URL(context.return_url).origin, 'http://localhost:8888');
+  assert.equal(new URL(context.return_url).pathname, '/lifetime');
+});

@@ -27,24 +27,24 @@ test('une réservation expirée redevient disponible', () => {
   assert.equal(etatCampagne(normalized, { 1: 0, 2: 0 }).tickets[1].status, 'available');
 });
 
-test('la série à 249 € expose quatorze tickets pris selon le motif de campagne', () => {
+test('la série à 249 € expose quinze tickets pris selon le motif de campagne', () => {
   const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 0 });
   const state = etatCampagne(normalized, { 1: 20, 2: 0 });
   assert.equal(state.total, 40);
-  assert.equal(state.sold, 34);
-  assert.equal(state.remaining, 6);
+  assert.equal(state.sold, 35);
+  assert.equal(state.remaining, 5);
   assert.equal(state.tier, 2);
   assert.equal(state.price, 249);
-  assert.deepEqual(state.tickets.filter((ticket) => ticket.status === 'sold').map((ticket) => ticket.number), [1, 4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16, 18, 20]);
-  assert.deepEqual(state.tickets.filter((ticket) => ticket.status === 'available').map((ticket) => ticket.number), [2, 3, 9, 11, 17, 19]);
+  assert.deepEqual(state.tickets.filter((ticket) => ticket.status === 'sold').map((ticket) => ticket.number), [1, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 20]);
+  assert.deepEqual(state.tickets.filter((ticket) => ticket.status === 'available').map((ticket) => ticket.number), [2, 3, 11, 17, 19]);
 });
 
 test('les captures PayPal dépassent le plancher déclaré sans double comptage', () => {
-  const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 15 });
-  const state = etatCampagne(normalized, { 1: 20, 2: 15 });
+  const normalized = normaliserInventaire(inventaireVide(), { 1: 20, 2: 16 });
+  const state = etatCampagne(normalized, { 1: 20, 2: 16 });
   assert.equal(state.tier, 2);
   assert.equal(state.price, 249);
-  assert.equal(state.tier_sold, 15);
+  assert.equal(state.tier_sold, 16);
   assert.equal(state.tickets[0].status, 'sold');
   assert.equal(state.tickets[1].status, 'sold');
   assert.equal(state.tickets[2].status, 'available');

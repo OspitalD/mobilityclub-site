@@ -62,3 +62,14 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Billetterie partagée directement, sans indexation.
+[[headers]]
+  for = "/mon-ticket"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/mon-ticket.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"

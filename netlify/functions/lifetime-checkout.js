@@ -65,7 +65,7 @@ const paypalRequest = async (path, { method = 'POST', body, requestId } = {}) =>
   return { response, data };
 };
 
-const cheminRetour = (value) => value === '/devenir-membre' ? '/devenir-membre' : '/lifetime';
+const cheminRetour = (value) => ['/devenir-membre', '/mon-ticket'].includes(value) ? value : '/lifetime';
 
 const creerCommande = async (reservation, returnPath) => {
   const customId = customIdLifetime(reservation);

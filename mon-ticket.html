@@ -16,12 +16,13 @@ window.MC_LIFETIME = {
 };
 </script>
 
-<title>Lifetime Tickets — Mobility Club</title>
+<title>Mon ticket — Mobility Club</title>
+<meta name="robots" content="noindex, nofollow, noarchive" />
 <meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle à 249 €. Un paiement, l’accès au cœur du Club à vie." />
-<meta property="og:title" content="Lifetime Tickets — Mobility Club" />
+<meta property="og:title" content="Mon ticket — Mobility Club" />
 <meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.mobilityclub.co/lifetime" />
+<meta property="og:url" content="https://www.mobilityclub.co/mon-ticket" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0F0E'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%233ECFA0'/%3E%3C/svg%3E" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -249,9 +250,43 @@ details[open] summary::after{content:"×"}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .ticket{will-change:auto}
 }
+
+/* Billetterie directe : grille centrale et action de paiement. */
+.direct-ticket .page{max-width:760px;padding-inline:24px}
+.direct-ticket .hero{grid-template-columns:1fr;gap:28px;padding-block:36px 24px}
+.direct-ticket .copy{gap:12px;text-align:center;justify-items:center}
+.direct-ticket .copy h1{max-width:16ch;font-size:clamp(34px,6vw,48px);line-height:1.05;letter-spacing:-.04em}
+.direct-ticket .lede{max-width:38ch;font-size:15px;line-height:1.6}
+.ticket-price{color:var(--muted);font-size:13px}.ticket-price b{color:var(--text)}
+.direct-ticket .machine{min-height:0;contain:none}
+.direct-ticket .ticket-board,.direct-ticket .identity-gate{width:min(100%,480px)}
+.direct-ticket .gate-copy h2{max-width:15ch;font-size:32px;line-height:1.1}
+.direct-ticket .gate-serial,.direct-ticket .gate-kicker,.direct-ticket .identity-field,.direct-ticket .identity-note,.direct-ticket .action-note{color:var(--muted)}
+.direct-ticket .action{width:min(100%,480px)}
+.direct-ticket .live-stock{max-width:145px;text-transform:none;letter-spacing:0;font:500 11px/1.4 var(--sans)}
+.direct-ticket .mini-ticket.is-taken{opacity:.65}
+.direct-ticket .mini-ticket.is-taken .mini-ticket-no{color:var(--muted)}
+.ticket-footer{max-width:480px;margin:0 auto;padding:8px 0 36px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7}
+.ticket-footer a{display:inline-block;margin:5px 0 14px;text-decoration:underline;text-underline-offset:4px}
+.ticket-footer a:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
+@media(max-width:600px){
+ .direct-ticket .page{padding-inline:18px}
+ .direct-ticket .hero{padding-top:24px;gap:24px}
+ .direct-ticket .copy h1{font-size:36px}
+ .direct-ticket .identity-fields{grid-template-columns:1fr 1fr}
+ .direct-ticket .identity-field input{padding-inline:10px}
+ .direct-ticket .ticket-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .direct-ticket .mini-ticket-no{font-size:28px}
+ .direct-ticket .mini-ticket-kicker,.direct-ticket .mini-ticket-code{font-size:6px;letter-spacing:0}
+ .direct-ticket .mini-ticket-status{font-size:7px;letter-spacing:0}
+ .direct-ticket .board-head{gap:10px}
+ .direct-ticket .board-tier b{font-size:14px}
+ .direct-ticket .board-price{font-size:28px}
+ .direct-ticket .mobile-action .buy{font-size:12px;padding:8px}
+}
 </style>
 </head>
-<body class="identity-locked">
+<body class="identity-locked direct-ticket">
 <div class="page">
   <header class="topbar">
     <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
@@ -261,23 +296,16 @@ details[open] summary::after{content:"×"}
   <main>
     <section class="hero">
       <div class="copy">
-        <span class="eyebrow">Lifetime Pass · série 02</span>
-        <h1>20 tickets par série.<br><span>Puis le prix monte.</span></h1>
-        <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
-        <div class="proof-line">
-          <span><b>11 personnes</b> l’ont fait il y a un an</span>
-          <span><b>20 tickets à 199 €</b> déjà attribués</span>
-          <span data-price-reveal><b>249 €</b> paiement unique</span>
-          <span data-price-reveal><b><span data-tier-sold>…</span>/20 tickets à <span data-price>249</span> €</b> déjà pris</span>
-          <span data-price-reveal><b>4× PayPal</b> disponible</span>
-        </div>
+        <h1>Ton ticket pour le Club.</h1>
+        <p class="lede">Choisis ton numéro, puis règle ton accès à vie sur PayPal.</p>
+        <p class="ticket-price"><b><span data-price>249</span> €</b> en une fois · aucun abonnement</p>
       </div>
 
       <div class="machine" aria-live="polite">
         <section class="identity-gate" data-identity-gate aria-labelledby="identity-title">
           <div class="gate-serial"><span>Émission nominative</span><span>01 / 02</span></div>
           <div class="gate-copy">
-            <span class="gate-kicker">Ton Lifetime Pass commence ici</span>
+            <span class="gate-kicker">Ton accès à vie au Club</span>
             <h2 id="identity-title">Comment tu t’appelles&nbsp;?</h2>
             <p>Entre ton identité pour ouvrir le carnet. Le numéro que tu choisiras sera imprimé à ton nom.</p>
           </div>
@@ -287,7 +315,7 @@ details[open] summary::after{content:"×"}
               <label class="identity-field"><span>Nom</span><input type="text" name="last_name" autocomplete="family-name" maxlength="40" placeholder="Ton nom" required /></label>
             </div>
             <p class="identity-error" data-identity-error aria-live="polite"></p>
-            <button class="identity-submit" type="submit" data-identity-submit><span>Ouvrir mon carnet</span><span aria-hidden="true">→</span></button>
+            <button class="identity-submit" type="submit" data-identity-submit><span>Choisir mon ticket</span><span aria-hidden="true">→</span></button>
           </form>
           <p class="identity-note"><b>Privé</b><span>Ton nom reste dans ce navigateur. Il n’est ni publié, ni envoyé à nos statistiques.</span></p>
         </section>
@@ -314,23 +342,11 @@ details[open] summary::after{content:"×"}
       </div>
     </section>
 
-    <section class="confidence" aria-label="Ce que couvre le Lifetime Pass">
-      <div class="confidence-item"><span>01 · Tu mesures</span><p><strong>Bilan articulaire</strong> puis nouveaux bilans quand ton corps change.</p></div>
-      <div class="confidence-item"><span>02 · Le Club décide</span><p><strong>Séances personnalisées</strong> selon tes besoins, ton sport et ta semaine.</p></div>
-      <div class="confidence-item"><span>03 · Tu recommences</span><p><strong>Progression mesurée</strong>, nouveaux besoins, nouvelle boucle.</p></div>
-    </section>
-
-    <section class="details">
-      <details>
-        <summary>Qu’est-ce qui est inclus à vie ?</summary>
-        <p class="detail-copy">Le cœur de Mobility Club : app membre, bilans, retests, séances personnalisées, programmes, exercices et évolutions normales du produit principal.</p>
-      </details>
-      <details>
-        <summary>Qu’est-ce qui n’est pas inclus ?</summary>
-        <p class="detail-copy">Coaching individuel, produits physiques, future offre Pro, nouvelles verticales autonomes et produits premium indépendants.</p>
-      </details>
-      <p class="legal">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical.</p>
-    </section>
+    <footer class="ticket-footer">
+      <p>Le cœur du Club à vie : bilans, séances personnalisées et programmes.</p>
+      <a href="/lifetime">Voir ce qui est inclus</a>
+      <p>Le ticket est réservé pendant 10 minutes après le clic sur « Payer ». Il est confirmé après le paiement.</p>
+    </footer>
   </main>
 </div>
 
@@ -450,7 +466,7 @@ details[open] summary::after{content:"×"}
     if(selected===null){disableActions('Choisis un ticket libre');return;}
     setVisible('[data-claim]',false);setVisible('[data-pay]',true);
     var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
-      pays[j].textContent=checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
+      pays[j].textContent=checkoutBusy?'Réservation du ticket…':'Payer le ticket '+pad(selected)+' · '+data.price+' €';
       pays[j].disabled=checkoutBusy;pays[j].classList.toggle('is-loading',checkoutBusy);
       pays[j].setAttribute('data-plan','lifetime_'+data.price+'_tier_'+data.tier+'_ticket_'+pad(selected));
     }
@@ -480,7 +496,7 @@ details[open] summary::after{content:"×"}
       text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
     updateActions(data);
-    text('[data-live-stock]',data.remaining?tierRemaining+' Lifetime Pass à '+data.price+' € disponibles':'Série complète');
+    text('[data-live-stock]',data.remaining?tierRemaining+' ticket'+(tierRemaining>1?'s':'')+' disponible'+(tierRemaining>1?'s':''):'Série complète');
   }
   function choose(number){
     if(!current||checkoutBusy||statusOf(number)!=='available')return;
@@ -513,7 +529,7 @@ details[open] summary::after{content:"×"}
     if(!current||selected===null||checkoutBusy||statusOf(selected)!=='available')return;
     var choice=selected,tier=current.tier,price=current.price;
     checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
-    checkoutRequest({action:'create',ticket:choice}).then(function(result){
+    checkoutRequest({action:'create',ticket:choice,return_path:'/mon-ticket'}).then(function(result){
       if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}
       if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
       track('checkout_started',{ticket:pad(choice),tier:tier,price:price});
@@ -555,7 +571,7 @@ details[open] summary::after{content:"×"}
 
   var TRACK_URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
-  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/lifetime',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(TRACK_URL,new Blob([b],{type:'application/json'}));}else{fetch(TRACK_URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
+  function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/mon-ticket',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(TRACK_URL,new Blob([b],{type:'application/json'}));}else{fetch(TRACK_URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
   track('page_view');
 })();
 </script>
