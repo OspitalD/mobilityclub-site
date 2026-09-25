@@ -267,9 +267,9 @@ details[open] summary::after{content:"×"}
         <div class="proof-line">
           <span><b>11 personnes</b> l’ont fait il y a un an</span>
           <span><b>20 tickets à 199 €</b> déjà attribués</span>
-          <span data-price-reveal><b>249 €</b> paiement unique</span>
+          <span data-price-reveal><b><span data-price>249</span> €</b> en 1 fois</span>
           <span data-price-reveal><b><span data-tier-sold>…</span>/20 tickets à <span data-price>249</span> €</b> déjà pris</span>
-          <span data-price-reveal><b>4× PayPal</b> disponible</span>
+          <span data-price-reveal><b>4 × <span data-installment>62,25</span> €</b> via PayPal</span>
         </div>
       </div>
 
@@ -296,7 +296,7 @@ details[open] summary::after{content:"×"}
           <div class="ticket-board" data-ticket-board tabindex="-1">
             <header class="board-head">
               <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · 249 €</b></div>
-              <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+              <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
               <div class="board-remaining" data-remaining>Vérification du stock…</div>
             </header>
             <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
@@ -329,13 +329,14 @@ details[open] summary::after{content:"×"}
         <summary>Qu’est-ce qui n’est pas inclus ?</summary>
         <p class="detail-copy">Coaching individuel, produits physiques, future offre Pro, nouvelles verticales autonomes et produits premium indépendants.</p>
       </details>
+      <p class="legal">Paiement en 4 fois sous réserve d’éligibilité et d’acceptation par PayPal.</p>
       <p class="legal">Mobility Club est un outil de bien-être et de prévention. Il ne remplace ni un diagnostic, ni un avis, ni un traitement médical.</p>
     </section>
   </main>
 </div>
 
 <div class="mobile-action">
-  <div class="mobile-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+  <div class="mobile-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
   <button class="buy off" type="button" data-claim disabled>Vérification…</button>
   <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
 </div>
@@ -458,6 +459,7 @@ details[open] summary::after{content:"×"}
   function render(data,message){
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
     text('[data-price]',data.price);
+    text('[data-installment]',(Number(data.price)/4).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}));
     text('[data-tier-sold]',data.tier_sold);
     var tierRemaining=Array.isArray(data.tickets)?data.tickets.filter(function(item){return item.status==='available';}).length:Math.max(0,C.TIER_SIZE-(Number(data.tier_sold)||0));
     text('[data-tier-name]','Série '+pad(data.tier)+' · '+data.price+' €');
@@ -473,7 +475,7 @@ details[open] summary::after{content:"×"}
     }else if(selected!==null){
       text('[data-take-label]',fullName()+' · ticket '+pad(selected));
       text('[data-take-message]','Ton nom est imprimé. Valide maintenant : le ticket sera bloqué 10 minutes pendant ton paiement.');
-      text('[data-action-note]','Ticket nominatif '+pad(selected)+' · 4× PayPal disponible · stock vérifié');
+      text('[data-action-note]','Ticket nominatif '+pad(selected)+' · paiement en 1 ou 4 fois via PayPal');
     }else{
       text('[data-take-label]','Choisis ton numéro');
       text('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');
