@@ -85,7 +85,7 @@ updateSticky();
 
 // Reveal once, in the reference site's 700 ms rhythm. No content depends on JS.
 let revealObserver;
-const revealElements = [...document.querySelectorAll('.pillar, .section>.eyebrow, .section>h2, .prose, .manifesto, .fit-list, .coach-section, .curriculum, .live-heading, .live-card, .live-timeline, .bonus-heading, .bonus-sessions article, .feature-row, .club-year, .annual-offer-heading, .annual-offer-card, .faq-list, .closing, .testimonials-heading, .testimonial-card, .testimonials-bottom')];
+const revealElements = [...document.querySelectorAll('.pillar, .manifesto, .coach-section, .programme-intro, .curriculum, .live-heading, .bonus-heading, .club-year, .annual-offer-heading, .annual-offer-card, .closing, .testimonials-heading')];
 function showEverything() {
   revealObserver?.disconnect();
   document.documentElement.classList.remove('motion-ready');
@@ -108,7 +108,7 @@ if ('IntersectionObserver' in window && !reducedMotion.matches) {
       else revealObserver.observe(element);
     });
     document.querySelectorAll('.pillar').forEach((element, i) => element.style.setProperty('--reveal-delay', `${i * 70}ms`));
-    [...hero.children].forEach((element, i) => element.style.setProperty('--hero-delay', `${Math.min(i * 65, 325)}ms`));
+    [...hero.querySelector('.hero-copy').children].forEach((element, i) => element.style.setProperty('--hero-delay', `${Math.min(i * 65, 325)}ms`));
     document.documentElement.classList.add('motion-ready');
   } catch { showEverything(); }
 }

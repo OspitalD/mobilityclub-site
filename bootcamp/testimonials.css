@@ -4,7 +4,7 @@
 .testimonials-heading h2{font-size:clamp(32px,3.5vw,46px);line-height:1.12;letter-spacing:-.035em}
 .testimonials-heading>p:last-child{font-size:16px;line-height:1.7;color:var(--muted);margin-top:22px;max-width:590px}
 .testimonial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.testimonial-card{margin:0;padding:26px 25px 23px;display:flex;flex-direction:column;min-width:0;background:linear-gradient(145deg,var(--surface),var(--bg));border:1px solid #3ecfa020;border-radius:18px;transition:border-color .25s ease-out}
+.testimonial-card{margin:0;padding:26px 25px 23px;display:flex;flex-direction:column;min-width:0;background:var(--surface);border:1px solid #3ecfa020;border-radius:18px;transition:border-color .25s ease-out}
 .testimonial-card:hover{border-color:#3ecfa040}
 .testimonial-topic{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:10px;letter-spacing:.15px;margin-bottom:19px;min-height:22px}
 .testimonial-topic>span{font-family:Georgia,serif;font-size:43px;line-height:22px;color:var(--muted);transform:translateY(7px)}
