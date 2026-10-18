@@ -36,6 +36,7 @@ process.env.SKOOL_INVITE_WEBHOOK = SKOOL;
 process.env.PAYPAL_CLIENT_ID = 'cid';
 process.env.PAYPAL_CLIENT_SECRET = 'csec';
 process.env.PAYPAL_WEBHOOK_ID = 'whid';
+process.env.RESEND_API_KEY = 're_test';
 
 const HEADERS = {
   'paypal-auth-algo': 'SHA256withRSA',
@@ -58,10 +59,16 @@ const capture = (montant = '197.00', devise = 'EUR', id = 'CAP-1', customId = nu
 
 // ── Faux PayPal / Skool ──────────────────────────────────────────────────────
 let appelsSkool = [];
+let emailsResend = [];
 const brancherFetch = ({ signature = 'SUCCESS', email = 'membre@example.com', skoolOk = true } = {}) => {
   appelsSkool = [];
+  emailsResend = [];
   globalThis.fetch = async (url, opts) => {
     const u = String(url);
+    if (u.startsWith('https://api.resend.com/')) {
+      emailsResend.push(JSON.parse(opts.body));
+      return new Response(JSON.stringify({ id: 'mail-1' }));
+    }
     if (u.includes('/v1/oauth2/token')) return new Response(JSON.stringify({ access_token: 'tok' }));
     if (u.includes('verify-webhook-signature'))
       return new Response(JSON.stringify({ verification_status: signature }));
@@ -140,6 +147,7 @@ test('montantsAttendus : défaut inchangé, campagne opt-in, PAYPAL_MONTANTS_ACC
 // ── Câblage complet ──────────────────────────────────────────────────────────
 test('paiement légitime → une invitation Skool, avec le bon email', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 200);
@@ -149,6 +157,7 @@ test('paiement légitime → une invitation Skool, avec le bon email', async () 
 
 test('SIGNATURE INVALIDE → 401, aucune invitation', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch({ signature: 'FAILURE' });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 401);
@@ -157,6 +166,7 @@ test('SIGNATURE INVALIDE → 401, aucune invitation', async () => {
 
 test('en-têtes de signature absents → refusé, aucune invitation', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const rep = await appeler(capture(), {});
   assert.equal(rep.statusCode, 401);
@@ -165,6 +175,7 @@ test('en-têtes de signature absents → refusé, aucune invitation', async () =
 
 test('achat Timer à 9 € → 200 ignoré, aucune invitation', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const rep = await appeler(capture('9.00'));
   assert.equal(rep.statusCode, 200);
@@ -174,6 +185,7 @@ test('achat Timer à 9 € → 200 ignoré, aucune invitation', async () => {
 
 test('PayPal réémet le même webhook → une seule invitation', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   await appeler(capture());
   await appeler(capture());
@@ -183,6 +195,7 @@ test('PayPal réémet le même webhook → une seule invitation', async () => {
 
 test('capture Lifetime signée → vente réelle comptée une seule fois par capture', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
   process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
@@ -201,6 +214,7 @@ test('capture Lifetime signée → vente réelle comptée une seule fois par cap
 
 test('capture Lifetime numérotée → le webhook conserve le custom_id', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
   process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
@@ -215,6 +229,7 @@ test('capture Lifetime numérotée → le webhook conserve le custom_id', async 
 
 test('Skool en panne → 500 (PayPal réessaiera) et RIEN n’est marqué fait', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch({ skoolOk: false });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 500);
@@ -229,6 +244,7 @@ test('Skool en panne → 500 (PayPal réessaiera) et RIEN n’est marqué fait',
 
 test('email introuvable → 500, aucune invitation, aucune trace', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch({ email: 'pas-un-email' });
   const rep = await appeler(capture());
   assert.equal(rep.statusCode, 500);
@@ -238,6 +254,7 @@ test('email introuvable → 500, aucune invitation, aucune trace', async () => {
 
 test('variable d’environnement manquante → 500, aucun appel réseau', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const garde = process.env.SKOOL_INVITE_WEBHOOK;
   delete process.env.SKOOL_INVITE_WEBHOOK;
@@ -256,6 +273,7 @@ test('GET → 405 (le webhook n’est pas une page)', async () => {
 
 test('le secret Skool ne fuit jamais dans la réponse HTTP', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
   const reps = [
     await appeler(capture()),
@@ -265,44 +283,94 @@ test('le secret Skool ne fuit jamais dans la réponse HTTP', async () => {
   for (const r of reps) assert.ok(!JSON.stringify(r).includes('SECRET-DE-TEST'));
 });
 
-// ── Méthode IKEA : tickets mensuels de l'offre avec appels ──────────────────
-test('Méthode IKEA : une capture à 97 € consomme un ticket du mois, sans inviter sur Skool', async () => {
+// ── Méthode IKEA : lien PayPal hébergé → ticket, accès, email de bienvenue ───
+const venteIkea = (montant, cap, ord, quand = '2026-10-18T09:00:00Z') => {
+  const ev = capture(montant, 'EUR', cap);
+  ev.resource.create_time = quand;
+  ev.resource.supplementary_data.related_ids.order_id = ord;
+  return ev;
+};
+const acheteurs = () => [...ikeaBlobs.entries()].filter(([k]) => k.startsWith('buyers/')).map(([, v]) => v);
+
+test('Méthode IKEA 97 € : ticket consommé, accès ouvert, email avec le lien Calendly, aucune invitation Skool', async () => {
   vider();
-  brancherFetch();
-  const ev = capture('97.00', 'EUR', 'CAP-IKEA-1');
-  ev.resource.create_time = '2026-10-18T09:00:00Z';
-  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-1';
-  const rep = await appeler(ev);
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'Acheteur.97@Example.com' });
+  const rep = await appeler(venteIkea('97.00', 'CAP-97', 'ORD-97'));
   assert.equal(rep.statusCode, 200);
-  assert.equal(JSON.parse(rep.body).ignore, 'montant:97.00');
-  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-IKEA-1'] });
+  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-97'] });
+  const [a] = acheteurs();
+  assert.equal(a.email, 'acheteur.97@example.com');
+  assert.equal(a.offre, 'avec_appels');
+  assert.equal(a.source, 'paypal_lien');
+  assert.equal(emailsResend.length, 1);
+  assert.deepEqual(emailsResend[0].to, ['acheteur.97@example.com']);
+  assert.match(emailsResend[0].html, /\/methode-ikea\/acces\?connexion/);
+  assert.match(emailsResend[0].html, /calendly\.com/);
   assert.equal(appelsSkool.length, 0);
 });
 
-test('Méthode IKEA : un webhook rejoué ne compte qu\'une fois', async () => {
+test('Méthode IKEA 49 € : accès ouvert, email SANS lien d\'appel, aucun ticket consommé', async () => {
   vider();
-  brancherFetch();
-  const ev = capture('97.00', 'EUR', 'CAP-IKEA-2');
-  ev.resource.create_time = '2026-10-18T09:00:00Z';
-  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-2';
-  await appeler(ev);
-  await appeler(ev);
-  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-IKEA-2'] });
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'acheteur.49@example.com' });
+  const rep = await appeler(venteIkea('49.00', 'CAP-49', 'ORD-49'));
+  assert.equal(rep.statusCode, 200);
+  assert.equal(ikeaBlobs.has('quota/2026-10'), false);
+  assert.equal(acheteurs()[0].offre, 'sans_appels');
+  assert.equal(emailsResend.length, 1);
+  assert.doesNotMatch(emailsResend[0].html, /calendly/i);
+  assert.equal(appelsSkool.length, 0);
 });
 
-test('Méthode IKEA : le downsell à 49 € et les autres montants ne consomment aucun ticket', async () => {
+test('Méthode IKEA : un webhook rejoué n\'envoie qu\'un email et ne compte qu\'un ticket', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
-  for (const m of ['49.00', '197.00', '9.00']) await appeler(capture(m, 'EUR', 'CAP-' + m));
+  const ev = venteIkea('97.00', 'CAP-R', 'ORD-R');
+  await appeler(ev);
+  await appeler(ev);
+  assert.equal(emailsResend.length, 1);
+  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-R'] });
+});
+
+test('Méthode IKEA : une commande passée par la page /methode-ikea/acces n\'est pas traitée deux fois', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  ikeaBlobs.set('orders/ORD-SITE', { status: 'captured' });
+  await appeler(venteIkea('97.00', 'CAP-S', 'ORD-SITE'));
+  assert.equal(emailsResend.length, 0);
+  assert.equal(acheteurs().length, 0);
+});
+
+test('Méthode IKEA : sans clé d\'envoi d\'email, 500 pour que PayPal réessaie, rien n\'est marqué fait', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  delete process.env.RESEND_API_KEY;
+  const rep = await appeler(venteIkea('49.00', 'CAP-NOKEY', 'ORD-NOKEY'));
+  process.env.RESEND_API_KEY = 're_test';
+  assert.equal(rep.statusCode, 500);
+  assert.equal(ikeaBlobs.has('paypal_lien/CAP-NOKEY'), false);
+  const rep2 = await appeler(venteIkea('49.00', 'CAP-NOKEY', 'ORD-NOKEY'));
+  assert.equal(rep2.statusCode, 200);
+  assert.equal(emailsResend.length, 1);
+});
+
+test('Méthode IKEA : les autres montants ne touchent à rien', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  for (const m of ['9.00', '17.00', '96.99']) await appeler(venteIkea(m, 'CAP-' + m, 'ORD-' + m));
   assert.equal(ikeaBlobs.size, 0);
+  assert.equal(emailsResend.length, 0);
 });
 
 test('Méthode IKEA : une vente le 31 au soir, heure de Paris, compte pour le bon mois', async () => {
   vider();
+  process.env.RESEND_API_KEY = 're_test';
   brancherFetch();
-  const ev = capture('97.00', 'EUR', 'CAP-IKEA-3');
-  ev.resource.create_time = '2026-10-31T23:30:00Z'; // 1er novembre 00:30 à Paris
-  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-3';
-  await appeler(ev);
-  assert.deepEqual(ikeaBlobs.get('quota/2026-11'), { orders: ['ORD-IKEA-3'] });
+  await appeler(venteIkea('97.00', 'CAP-N', 'ORD-N', '2026-10-31T23:30:00Z'));
+  assert.deepEqual(ikeaBlobs.get('quota/2026-11'), { orders: ['ORD-N'] });
 });

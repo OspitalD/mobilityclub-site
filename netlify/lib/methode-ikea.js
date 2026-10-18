@@ -35,6 +35,7 @@
 
 import { createHash, createHmac, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import { getStore } from '@netlify/blobs';
+import { consommerTicket, etatTickets, lireMois, moisCourant, placesParMois } from './methode-ikea-tickets.js';
 
 export const STORE = 'methode_ikea';
 export const COOKIE = 'mi_session';
@@ -69,26 +70,11 @@ export const quart = (prix) => (Math.round(Number(prix) * 25) / 100).toFixed(2).
 // Compteur réel : clé quota/AAAA-MM = ids des commandes « avec_appels » capturées
 // ce mois-ci. Idempotent (une capture rejouée ne compte qu'une fois). Les accès
 // ajoutés à la main ne comptent pas : seules les ventes consomment des places.
-export const placesParMois = () => {
-  const n = Number.parseInt(process.env.METHODE_IKEA_PLACES_APPELS ?? '20', 10);
-  return Number.isFinite(n) && n >= 0 ? n : 20;
-};
-
-export const moisCourant = (date = new Date()) => {
-  const parts = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit' }).formatToParts(date);
-  return `${parts.find((p) => p.type === 'year').value}-${parts.find((p) => p.type === 'month').value}`;
-};
-
-export const placesRestantes = async (date = new Date()) => {
-  const rec = await store().get(`quota/${moisCourant(date)}`, { type: 'json' });
-  return Math.max(0, placesParMois() - (rec?.orders?.length || 0));
-};
-
-const consommerPlace = async (orderId, date = new Date()) => {
-  const key = `quota/${moisCourant(date)}`;
-  const rec = (await store().get(key, { type: 'json' })) || { orders: [] };
-  if (!rec.orders.includes(orderId)) await store().setJSON(key, { orders: [...rec.orders, orderId] });
-};
+// Une seule implémentation du quota : netlify/lib/methode-ikea-tickets.js (lue aussi
+// par la page de vente et alimentée par le webhook PayPal des liens hébergés).
+export { placesParMois, moisCourant };
+export const placesRestantes = async (date = new Date()) => (etatTickets(await lireMois(moisCourant(date)), moisCourant(date))).restantes;
+const consommerPlace = (orderId, date = new Date()) => consommerTicket(orderId, date);
 
 export const ABONNEMENT = 'https://www.mobilityclub.co/devenir-membre';
 

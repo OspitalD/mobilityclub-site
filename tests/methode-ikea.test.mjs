@@ -135,11 +135,12 @@ test('netlify.toml : /methode-ikea réécrit vers la formation seulement avec le
     assert.match(bloc, /force = true/);
     assert.match(bloc, /conditions = \{Cookie = \["mi_session"\]\}/);
   }
-  // La page de vente ne pointe plus vers les liens PayPal hébergés (accès manuel).
+  // Décision du 18/10/2026 : la page de vente garde les liens PayPal hébergés ; le webhook
+  // paypal-to-skool ouvre l'accès et envoie l'email de bienvenue. « Me connecter » mène au code.
   const vente = await readFile(new URL('../methode-ikea.html', import.meta.url), 'utf8');
-  assert.doesNotMatch(vente, /paypal\.com\/ncp/);
-  assert.match(vente, /\/methode-ikea\/acces\?offre=avec_appels/);
-  assert.match(vente, /\/methode-ikea\/acces\?offre=sans_appels/);
+  assert.match(vente, /paypal\.com\/ncp\/payment\/B635FGXCASPJG/);
+  assert.match(vente, /paypal\.com\/ncp\/payment\/SMZPBP79P5Y7A/);
+  assert.match(vente, /\/methode-ikea\/acces\?connexion/);
 });
 
 test('cookie forgé ou signé avec un autre secret : refusé', async () => {

@@ -32,7 +32,8 @@
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
 
 import { connectLambda, getStore } from '@netlify/blobs';
-import { consommerTicket, prixAppels } from '../lib/methode-ikea-tickets.js';
+import { consommerTicket } from '../lib/methode-ikea-tickets.js';
+import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
@@ -58,25 +59,6 @@ const tracerVenteLifetime = async (captureId, montant, eventId, customId) => {
     custom_id: customId || null,
     paid_at: new Date().toISOString(),
   });
-};
-
-// Méthode IKEA : une capture à 97 € (offre avec appels) consomme un des 20
-// tickets du mois. Indépendant de l'invitation Skool : 97 € n'est PAS dans
-// PAYPAL_MONTANTS_ACCEPTES et ne doit jamais y entrer (un an de Club offert).
-// Le downsell à 49 € ne consomme rien. Idempotent : id de commande, sinon de capture.
-export const estVenteIkeaAppels = (evenement) => {
-  const r = evenement?.resource || {};
-  return evenement?.event_type === 'PAYMENT.CAPTURE.COMPLETED'
-    && r.amount?.currency_code === (process.env.PAYPAL_DEVISE || 'EUR')
-    && memeMontant(r.amount?.value, prixAppels())
-    && Boolean(r.supplementary_data?.related_ids?.order_id || r.id);
-};
-
-const tracerVenteIkea = async (evenement) => {
-  if (!estVenteIkeaAppels(evenement)) return;
-  const r = evenement.resource;
-  const quand = r.create_time ? new Date(r.create_time) : new Date();
-  await consommerTicket(r.supplementary_data?.related_ids?.order_id || r.id, Number.isNaN(quand.getTime()) ? new Date() : quand);
 };
 
 const api = () =>
@@ -202,6 +184,51 @@ const emailDuPayeur = async (token, evenement, orderId) => {
   return emailValide(email) ? email : null;
 };
 
+// ── Méthode IKEA : paiement par lien PayPal hébergé ──────────────────────────
+// 97 € = offre avec appels, 49 € = sans appels (montants : METHODE_IKEA_PRIX_APPELS
+// / METHODE_IKEA_PRIX_SOLO). Pour chaque capture :
+//   1. 97 € : un des 20 tickets du mois est consommé (id de commande, idempotent) ;
+//   2. l'acheteur est enregistré : il se connecte à /methode-ikea/acces par code email ;
+//   3. l'email de bienvenue part, avec le lien Calendly seulement à 97 €.
+// Ces montants n'entrent JAMAIS dans PAYPAL_MONTANTS_ACCEPTES (un an de Club offert).
+// Une vente passée par la page /methode-ikea/acces (commande créée par le site) est
+// déjà traitée par sa capture côté serveur : on n'y touche pas.
+// « Fait » n'est marqué qu'après l'email envoyé : sinon 500, et PayPal réessaie.
+export const offreIkeaDuMontant = (montant) =>
+  ['avec_appels', 'sans_appels'].map(offreIkea).find((o) => memeMontant(montant, o.prix)) || null;
+
+const origineSite = () => process.env.METHODE_IKEA_ORIGIN || 'https://www.mobilityclub.co';
+
+export const traiterVenteIkea = async (evenement, token) => {
+  const r = evenement?.resource || {};
+  if (evenement?.event_type !== 'PAYMENT.CAPTURE.COMPLETED') return null;
+  if (r.amount?.currency_code !== (process.env.PAYPAL_DEVISE || 'EUR') || !r.id) return null;
+  const o = offreIkeaDuMontant(r.amount?.value);
+  if (!o) return null;
+
+  const orderId = r.supplementary_data?.related_ids?.order_id || null;
+  const S = storeIkea();
+  if (orderId && (await S.get(`orders/${encodeURIComponent(orderId)}`, { type: 'json' }))) return { offre: o.id, deja: 'checkout_site' };
+  const trace = `paypal_lien/${encodeURIComponent(r.id)}`;
+  if (await S.get(trace, { type: 'json' })) return { offre: o.id, deja: 'traite' };
+
+  const quand = new Date(r.create_time || Date.now());
+  const date = Number.isNaN(quand.getTime()) ? new Date() : quand;
+  if (o.appels) await consommerTicket(orderId || r.id, date);
+
+  const email = normaliserEmail(await emailDuPayeur(token, evenement, orderId));
+  if (!email) throw new Error('email_introuvable');
+  await ajouterAcheteur(email, {
+    source: 'paypal_lien',
+    offre: o.id,
+    purchase: { offre: o.id, order_id: orderId || r.id, capture_id: r.id, amount: r.amount.value, paid_at: date.toISOString() },
+  });
+  const envoi = await emailBienvenue(email, origineSite(), { appels: o.appels });
+  if (!envoi?.sent) throw new Error('email_bienvenue_non_envoye');
+  await S.setJSON(trace, { offre: o.id, order_id: orderId, emailed_at: new Date().toISOString() });
+  return { offre: o.id, ok: true };
+};
+
 const inviterSurSkool = async (email) => {
   const base = process.env.SKOOL_INVITE_WEBHOOK;
   const url = `${base}${base.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`;
@@ -252,11 +279,12 @@ export const handler = async (req) => {
   }
 
   try {
-    await tracerVenteIkea(evenement);
+    const ikea = await traiterVenteIkea(evenement, token);
+    if (ikea) console.log('[paypal-to-skool] Méthode IKEA', ikea.offre, ikea.deja || 'accès ouvert');
   } catch (err) {
-    // 500 : PayPal réessaie, le ticket sera compté au prochain passage.
-    console.error('[paypal-to-skool] ticket Méthode IKEA non écrit:', err?.message);
-    return json(500, { error: 'methode_ikea_ticket_failed' });
+    // 500 : PayPal réessaie ; ticket et acheteur sont idempotents, l'email n'est marqué envoyé qu'une fois parti.
+    console.error('[paypal-to-skool] Méthode IKEA non traitée:', err?.message);
+    return json(500, { error: 'methode_ikea_failed' });
   }
 
   // Paiement en 4× (PayPal Pay Later) : PayPal règle le marchand en UNE fois,
