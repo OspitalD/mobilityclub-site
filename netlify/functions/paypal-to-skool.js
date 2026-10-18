@@ -32,6 +32,7 @@
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
 
 import { connectLambda, getStore } from '@netlify/blobs';
+import { consommerTicket, prixAppels } from '../lib/methode-ikea-tickets.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
@@ -57,6 +58,25 @@ const tracerVenteLifetime = async (captureId, montant, eventId, customId) => {
     custom_id: customId || null,
     paid_at: new Date().toISOString(),
   });
+};
+
+// Méthode IKEA : une capture à 97 € (offre avec appels) consomme un des 20
+// tickets du mois. Indépendant de l'invitation Skool : 97 € n'est PAS dans
+// PAYPAL_MONTANTS_ACCEPTES et ne doit jamais y entrer (un an de Club offert).
+// Le downsell à 49 € ne consomme rien. Idempotent : id de commande, sinon de capture.
+export const estVenteIkeaAppels = (evenement) => {
+  const r = evenement?.resource || {};
+  return evenement?.event_type === 'PAYMENT.CAPTURE.COMPLETED'
+    && r.amount?.currency_code === (process.env.PAYPAL_DEVISE || 'EUR')
+    && memeMontant(r.amount?.value, prixAppels())
+    && Boolean(r.supplementary_data?.related_ids?.order_id || r.id);
+};
+
+const tracerVenteIkea = async (evenement) => {
+  if (!estVenteIkeaAppels(evenement)) return;
+  const r = evenement.resource;
+  const quand = r.create_time ? new Date(r.create_time) : new Date();
+  await consommerTicket(r.supplementary_data?.related_ids?.order_id || r.id, Number.isNaN(quand.getTime()) ? new Date() : quand);
 };
 
 const api = () =>
@@ -229,6 +249,14 @@ export const handler = async (req) => {
     // 401 et non 500 : ce n'est pas une panne, c'est un événement qu'on refuse.
     console.warn('[paypal-to-skool] signature refusée, id:', evenement?.id);
     return json(401, { error: 'signature_invalide' });
+  }
+
+  try {
+    await tracerVenteIkea(evenement);
+  } catch (err) {
+    // 500 : PayPal réessaie, le ticket sera compté au prochain passage.
+    console.error('[paypal-to-skool] ticket Méthode IKEA non écrit:', err?.message);
+    return json(500, { error: 'methode_ikea_ticket_failed' });
   }
 
   // Paiement en 4× (PayPal Pay Later) : PayPal règle le marchand en UNE fois,

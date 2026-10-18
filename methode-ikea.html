@@ -123,6 +123,32 @@ section.block{padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--lin
 .guar ol li::marker{color:var(--jade);font-family:var(--f-mono);font-size:12px}
 .scar{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);color:var(--dust);font-size:15px}
 .scar b{color:var(--gold);font-weight:600}
+/* Imprimeur de tickets : 20 places avec appels par mois, compteur réel (/.netlify/functions/methode-ikea-places) */
+.tk{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.tk[hidden]{display:none}
+.tk-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.tk-mach{position:relative;padding-top:10px}
+.tk-slot{display:block;height:10px;border-radius:5px;background:#050706;border:1px solid var(--line-2)}
+.tk-clip{overflow:hidden;margin:-5px 14px 0;padding-bottom:4px}
+.tk-ticket{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 16px;padding:16px 20px 14px;background:#161a18;border:1px solid var(--line-2);border-top:0;border-radius:0 0 8px 8px;transform:translateY(-102%)}
+.tk-ticket::before,.tk-ticket::after{content:"";position:absolute;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--wall-2);border:1px solid var(--line-2)}
+.tk-ticket::before{left:-8px}.tk-ticket::after{right:-8px}
+.tk.on .tk-ticket{animation:tkPrint 1.1s steps(9,end) .25s forwards}
+@keyframes tkPrint{to{transform:translateY(0)}}
+.tk-k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
+.tk-no{font-family:var(--f-display);font-weight:800;font-size:clamp(44px,6vw,58px);line-height:.9;letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:var(--gold);grid-row:span 2;text-align:right}
+.tk-no i{font-style:normal;font-size:.42em;color:var(--dust);letter-spacing:-.02em;margin-left:2px}
+.tk-t{font-weight:600;font-size:15px}
+.tk-tear{grid-column:1/-1;border-top:1px dashed var(--line-2);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.tk-rail{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px}
+.tk-rail i{display:block;height:6px;border-radius:2px;border:1px solid rgba(62,207,160,.45)}
+.tk-rail i.pris{background:var(--line-2);border-color:transparent}
+.tk-rail i.suiv{background:var(--gold);border-color:var(--gold)}
+.tk-txt{color:var(--dust);font-size:15px}
+.tk-txt b{color:var(--gold);font-weight:600}
+.tk.full .tk-no{color:var(--dust)}
+.btn.off{background:var(--wall-2);color:var(--dust);box-shadow:none;border:1px solid var(--line-2);pointer-events:none}
+@media (prefers-reduced-motion:reduce){.tk-ticket{transform:none}.tk.on .tk-ticket{animation:none}}
 
 .down{display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:24px;align-items:center;padding:clamp(22px,3vw,32px);border:1px dashed #4a5753;border-radius:12px}
 .down b.p{font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:-.04em}
@@ -237,24 +263,33 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <span class="lbl jade">L'offre complète</span>
       <div class="price"><span class="now">97 €</span><s>200 €</s></div>
       <ul><li>Les 5 modules vidéo</li><li>Les 6 outils interactifs et le lecteur guidé</li><li>Les 10 fiches formats</li><li>2 appels de 30 min avec Damien</li><li>Bilan articulaire, librairie et timer</li><li>Garantie notice de montage, 30 jours</li></ul>
-      <a class="btn full" href="/methode-ikea/acces?offre=avec_appels">Payer 97 € avec PayPal →</a>
+      <a class="btn full" id="pay97" href="https://www.paypal.com/ncp/payment/B635FGXCASPJG" target="_blank" rel="noopener">Payer 97 € avec PayPal →</a>
       <p class="small">Paiement sécurisé PayPal. Paiement en 4X possible selon ton éligibilité PayPal.</p>
-      <p class="scar"><b>20 places par mois</b> avec les appels : c'est le temps réel que Damien peut y consacrer.</p>
+      <p class="scar" id="tkStatic"><b>20 places par mois</b> avec les appels : c'est le temps réel que Damien peut y consacrer.</p>
+      <div class="tk" id="tk" hidden aria-live="polite">
+        <div class="tk-head"><span class="lbl gold" id="tkSerie">Série du mois</span><span class="lbl" id="tkLeft"></span></div>
+        <div class="tk-mach" aria-hidden="true"><span class="tk-slot"></span><div class="tk-clip"><div class="tk-ticket">
+          <span class="tk-k">Méthode IKEA · avec appels</span><span class="tk-no"><span id="tkNo">01</span><i id="tkTot">/20</i></span>
+          <span class="tk-t" id="tkTicketT">Ton ticket</span>
+          <span class="tk-tear"><span id="tkMois"></span><span>2 appels avec Damien</span></span></div></div></div>
+        <div class="tk-rail" id="tkRail" aria-hidden="true"></div>
+        <p class="tk-txt" id="tkTxt"></p>
+      </div>
     </div>
   </div>
 </div></section>
 
 <section class="block" style="padding-top:0;border-top:0"><div class="wrap">
   <div class="down">
-    <div><span class="lbl">Pas besoin des appels ?</span><p style="margin-top:10px"><b class="p">49 €</b><s>100 €</s></p><p class="muted" style="margin-top:6px">La même formation, les mêmes outils et la même garantie, sans les 2 appels.</p></div>
-    <a class="ghost" href="/methode-ikea/acces?offre=sans_appels">Payer 49 € sans appels →</a>
+    <div><span class="lbl" id="downLbl">Pas besoin des appels ?</span><p style="margin-top:10px"><b class="p">49 €</b><s>100 €</s></p><p class="muted" style="margin-top:6px">La même formation, les mêmes outils et la même garantie, sans les 2 appels.</p></div>
+    <a class="ghost" href="https://www.paypal.com/ncp/payment/SMZPBP79P5Y7A" target="_blank" rel="noopener">Payer 49 € sans appels →</a>
   </div>
 </div></section>
 
 <section class="block"><div class="wrap">
   <div class="head"><div><span class="lbl">Après ton paiement</span><h2>Trois étapes, <span class="it">et tu montes.</span></h2></div><p class="lead muted">Pas de plateforme à installer : la formation s'ouvre dans ton navigateur, sur téléphone comme sur ordinateur.</p></div>
   <div class="after">
-    <div><span class="n">01</span><b>Ton accès s'ouvre tout de suite</b><span>Tu te reconnectes quand tu veux avec ton email : un code t'est envoyé.</span></div>
+    <div><span class="n">01</span><b>Ton accès arrive par email</b><span>À l'adresse de ton compte PayPal, quelques minutes après le paiement. Ensuite, tu te reconnectes quand tu veux avec un code.</span></div>
     <div><span class="n">02</span><b>Tu suis les 5 modules</b><span>Chaque module ajoute une pièce à ta routine.</span></div>
     <div><span class="n">03</span><b>Tu lances ta routine</b><span>Avec le lecteur guidé, et tu réserves tes appels si tu as pris l'offre complète.</span></div>
   </div>
@@ -284,6 +319,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   </div>
 </div>
 <script>
+/* Tickets du mois : compteur réel. Sans réponse fiable, la page garde son texte fixe (jamais de faux chiffre). */
+(function(){
+  const $ = id => document.getElementById(id), pad = n => String(n).padStart(2,"0");
+  const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(), 5000);
+  fetch("/.netlify/functions/methode-ikea-places", {signal:ctrl.signal, cache:"no-store"})
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(st => {
+      if(!st || !st.live || !Number.isFinite(st.places) || !Number.isFinite(st.restantes)) return;
+      const [y,m] = String(st.mois).split("-").map(Number);
+      const nom = new Date(y, m-1, 1).toLocaleDateString("fr-FR",{month:"long"});
+      const suiv = "1er " + new Date(y, m, 1).toLocaleDateString("fr-FR",{month:"long"});
+      const full = st.restantes <= 0;
+      $("tkSerie").textContent = "Série " + (/^[aeiouéè]/i.test(nom) ? "d'" : "de ") + nom;
+      $("tkLeft").textContent = full ? "Complet" : st.restantes + (st.restantes>1 ? " places restantes" : " place restante");
+      $("tkNo").textContent = full ? pad(st.places) : pad(st.prochain);
+      $("tkTot").textContent = "/" + st.places;
+      $("tkTicketT").textContent = full ? "Série complète" : "Le prochain ticket";
+      $("tkMois").textContent = nom + " " + y;
+      $("tkRail").innerHTML = Array.from({length:st.places}, (_,i) => `<i class="${i < st.vendues ? "pris" : (i === st.vendues && !full ? "suiv" : "")}"></i>`).join("");
+      $("tkTxt").innerHTML = full
+        ? `Les ${st.places} places d'${nom} avec les appels sont prises. Nouvelle série le <b>${suiv}</b>. La formation reste ouverte sans les appels, juste en dessous.`
+        : `<b>${st.restantes} place${st.restantes>1?"s":""} libre${st.restantes>1?"s":""} sur ${st.places}</b> ce mois-ci : c'est le temps réel que Damien peut consacrer aux appels. Nouvelle série le ${suiv}.`;
+      const tk = $("tk"); tk.classList.toggle("full", full); tk.hidden = false; $("tkStatic").hidden = true;
+      requestAnimationFrame(() => tk.classList.add("on"));
+      const mini = document.querySelector(".hero .price-mini");
+      if(mini && !full) mini.insertAdjacentHTML("beforeend", ` · <b style="color:var(--gold);font-weight:600">${st.restantes} place${st.restantes>1?"s":""} en ${nom}</b>`);
+      if(full){
+        const b = $("pay97"); b.classList.add("off"); b.removeAttribute("href"); b.setAttribute("aria-disabled","true"); b.textContent = "Complet en " + nom;
+        $("downLbl").textContent = "Places avec appels complètes ce mois-ci";
+      }
+    })
+    .catch(() => {});
+})();
 (function(){
   var K='mi-video-masquee', wrap=document.getElementById('vwrap'), mod=document.getElementById('vmod'), v=document.getElementById('vfull');
   var hidden=false; try{ hidden = sessionStorage.getItem(K)==='1'; }catch(e){}
