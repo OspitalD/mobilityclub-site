@@ -4,7 +4,7 @@
 //   METHODE_IKEA_ADMIN_TOKEN=… node scripts/methode-ikea.mjs <commande>
 //
 //   list                                       liste les accès
-//   add <email> [--offre avec_appels|sans_appels] [--note "…"]
+//   add <email> [--offre avec_appels|sans_appels] [--note "…"] [--bienvenue]  (--bienvenue : envoie l'email d'accès)
 //                                              accorde un accès manuel (défaut : sans_appels)
 //   remove <email>                             retire un accès (coupe aussi les sessions ouvertes)
 //   content <fichier.html>       dépose la formation (ajoute <!doctype>/<html>/<head>/<body> si absents)
@@ -57,9 +57,10 @@ const main = async ([cmd, ...args]) => {
     case 'add': {
       const offre = option(args, 'offre') || 'sans_appels';
       const note = option(args, 'note');
+      const iB = args.indexOf('--bienvenue'); const bienvenue = iB !== -1; if (bienvenue) args.splice(iB, 1);
       if (!args.length) throw new Error('Aucun email fourni.');
-      const r = await appel('POST', 'access', { emails: args, offre, source: 'manuel', note });
-      console.log(`ajoutés : ${r.added.length} · déjà présents : ${r.existing.length} · invalides : ${r.invalid.length}`);
+      const r = await appel('POST', 'access', { emails: args, offre, source: 'manuel', note, bienvenue });
+      console.log(`ajoutés : ${r.added.length} · déjà présents : ${r.existing.length} · invalides : ${r.invalid.length}${bienvenue ? ` · emails de bienvenue : ${(r.welcomed || []).length}` : ''}`);
       if (r.invalid.length) console.log('invalides :', r.invalid.join(', '));
       return;
     }

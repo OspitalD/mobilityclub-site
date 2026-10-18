@@ -114,7 +114,7 @@ const capturer = async (req) => {
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 
-const SOURCES = ['paypal', 'manuel'];
+const SOURCES = ['paypal', 'paypal_lien', 'manuel'];
 
 const adminAccess = async (req) => {
   if (req.method === 'GET') {
@@ -134,16 +134,23 @@ const adminAccess = async (req) => {
     if (!OFFRES.includes(offreId)) return json(400, { error: 'invalid_offer' });
     const source = SOURCES.includes(body.source) ? body.source : 'manuel';
     const note = body.note == null ? null : String(body.note).slice(0, 500);
-    const added = [], existing = [], invalid = [], records = [];
+    // bienvenue: true → envoie l'email d'accès (Calendly si avec_appels), ex. pour un achat
+    // passé par lien PayPal avant que le webhook ne soit branché.
+    const bienvenue = body.bienvenue === true;
+    const added = [], existing = [], invalid = [], records = [], welcomed = [];
     for (const raw of brut) {
       const email = normaliserEmail(raw);
       if (!email) { invalid.push(String(raw ?? '')); continue; }
       const { created, record } = await ajouterAcheteur(email, { source, offre: offreId, note });
       (created ? added : existing).push(email);
       records.push(record);
+      if (bienvenue) {
+        const r = await emailBienvenue(email, new URL(req.url).origin, { appels: record.offre === 'avec_appels' });
+        if (r?.sent || r?.mock) welcomed.push(email);
+      }
     }
     if (!records.length) return json(400, { error: 'invalid_email', invalid });
-    return json(200, { added, existing, invalid, access: records });
+    return json(200, { added, existing, invalid, welcomed, access: records });
   }
   return json(405, { error: 'method_not_allowed' });
 };
