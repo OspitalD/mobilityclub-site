@@ -6,11 +6,13 @@ import assert from 'node:assert/strict';
 // ── Mock du store Blobs (mémoire) ────────────────────────────────────────────
 const blobs = new Map();
 const lifetimeBlobs = new Map();
+const ikeaBlobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
     connectLambda: () => {},
-    getStore: (name) => {
-      const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : blobs;
+    getStore: (opt) => {
+      const name = typeof opt === 'string' ? opt : opt?.name;
+      const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : name === 'methode_ikea' ? ikeaBlobs : blobs;
       return {
         get: async (k) => (target.has(k) ? target.get(k) : null),
         setJSON: async (k, v) => void target.set(k, v),
@@ -26,6 +28,7 @@ const { handler, decider, memeMontant, emailValide, montantsAttendus, estMontant
 const vider = () => {
   blobs.clear();
   lifetimeBlobs.clear();
+  ikeaBlobs.clear();
 };
 
 const SKOOL = 'https://api2.skool.com/groups/mobility-club/webhooks/SECRET-DE-TEST';
@@ -260,4 +263,46 @@ test('le secret Skool ne fuit jamais dans la réponse HTTP', async () => {
     await handler({ httpMethod: 'GET', headers: {}, body: '' }),
   ];
   for (const r of reps) assert.ok(!JSON.stringify(r).includes('SECRET-DE-TEST'));
+});
+
+// ── Méthode IKEA : tickets mensuels de l'offre avec appels ──────────────────
+test('Méthode IKEA : une capture à 97 € consomme un ticket du mois, sans inviter sur Skool', async () => {
+  vider();
+  brancherFetch();
+  const ev = capture('97.00', 'EUR', 'CAP-IKEA-1');
+  ev.resource.create_time = '2026-10-18T09:00:00Z';
+  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-1';
+  const rep = await appeler(ev);
+  assert.equal(rep.statusCode, 200);
+  assert.equal(JSON.parse(rep.body).ignore, 'montant:97.00');
+  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-IKEA-1'] });
+  assert.equal(appelsSkool.length, 0);
+});
+
+test('Méthode IKEA : un webhook rejoué ne compte qu\'une fois', async () => {
+  vider();
+  brancherFetch();
+  const ev = capture('97.00', 'EUR', 'CAP-IKEA-2');
+  ev.resource.create_time = '2026-10-18T09:00:00Z';
+  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-2';
+  await appeler(ev);
+  await appeler(ev);
+  assert.deepEqual(ikeaBlobs.get('quota/2026-10'), { orders: ['ORD-IKEA-2'] });
+});
+
+test('Méthode IKEA : le downsell à 49 € et les autres montants ne consomment aucun ticket', async () => {
+  vider();
+  brancherFetch();
+  for (const m of ['49.00', '197.00', '9.00']) await appeler(capture(m, 'EUR', 'CAP-' + m));
+  assert.equal(ikeaBlobs.size, 0);
+});
+
+test('Méthode IKEA : une vente le 31 au soir, heure de Paris, compte pour le bon mois', async () => {
+  vider();
+  brancherFetch();
+  const ev = capture('97.00', 'EUR', 'CAP-IKEA-3');
+  ev.resource.create_time = '2026-10-31T23:30:00Z'; // 1er novembre 00:30 à Paris
+  ev.resource.supplementary_data.related_ids.order_id = 'ORD-IKEA-3';
+  await appeler(ev);
+  assert.deepEqual(ikeaBlobs.get('quota/2026-11'), { orders: ['ORD-IKEA-3'] });
 });
