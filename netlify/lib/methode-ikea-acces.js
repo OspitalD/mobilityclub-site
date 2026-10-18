@@ -58,6 +58,13 @@ const nomMois = (offset = 0) => {
   return new Intl.DateTimeFormat('fr-FR', { month: 'long', timeZone: 'Europe/Paris' }).format(d);
 };
 
+// Paiement par les liens PayPal hébergés (décision du 18/10/2026) : le webhook
+// paypal-to-skool ouvre l'accès et envoie l'email de bienvenue à l'adresse PayPal.
+export const LIENS_PAYPAL = {
+  avec_appels: process.env.METHODE_IKEA_LIEN_APPELS || 'https://www.paypal.com/ncp/payment/B635FGXCASPJG',
+  sans_appels: process.env.METHODE_IKEA_LIEN_SOLO || 'https://www.paypal.com/ncp/payment/SMZPBP79P5Y7A',
+};
+
 export const pageAcces = ({ principale, downsell, contact, places, placesTotal }) => {
   const complet = places <= 0;
   return `<!doctype html>
@@ -226,11 +233,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
         <p class="price"><b>${affiche(downsell.prix)} €</b><s>${downsell.barre} €</s><span>une fois · accès à vie</span></p>
         ${inclus(false)}
       </div>
-      <form id="f-buy" novalidate>
-        <label for="buy-email">Ton email (il servira à te connecter)</label>
-        <input id="buy-email" type="email" autocomplete="email" inputmode="email" required>
-        <button class="cta" type="submit" id="buy-cta">Payer ${affiche(complet ? downsell.prix : principale.prix)} € avec PayPal</button>
-      </form>
+      <div id="f-buy">
+        <a class="cta" id="buy-cta" href="${complet ? LIENS_PAYPAL.sans_appels : LIENS_PAYPAL.avec_appels}" target="_blank" rel="noopener">Payer ${affiche(complet ? downsell.prix : principale.prix)} € avec PayPal</a>
+        <p class="note" style="margin-top:10px">Ton accès arrive par email, à l'adresse de ton compte PayPal, quelques minutes après le paiement.</p>
+      </div>
       <button class="link" type="button" id="to-down"${complet ? ' hidden' : ''}>${TEXTES.downsell.refus}</button>
       <button class="link" type="button" id="to-main" hidden>${TEXTES.downsell.retour}</button>
       <p class="guar-mini"><b>${TEXTES.garantie.titre}</b> : remboursé sous 30 jours si ta routine ne tient pas debout.</p>
@@ -278,6 +284,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 (function(){
   var API = '/api/methode-ikea/';
   var PRIX = { avec_appels: '${affiche(principale.prix)}', sans_appels: '${affiche(downsell.prix)}' };
+  var LIENS = ${JSON.stringify(LIENS_PAYPAL)};
   var COMPLET = ${complet ? 'true' : 'false'};
   var $ = function(id){ return document.getElementById(id); };
   var msg = function(text, kind){ var m = $('msg'); m.textContent = text || ''; m.className = 'msg' + (kind ? ' ' + kind : ''); };
@@ -308,7 +315,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     var down = id === 'sans_appels';
     $('offer-avec_appels').hidden = down; $('offer-sans_appels').hidden = !down;
     $('to-down').hidden = down; $('to-main').hidden = !down || COMPLET; $('legal-4x').hidden = down;
-    $('buy-cta').textContent = 'Payer ' + PRIX[id] + ' € avec PayPal';
+    $('buy-cta').textContent = 'Payer ' + PRIX[id] + ' € avec PayPal'; $('buy-cta').href = LIENS[id];
   }
   $('to-down').onclick = function(){ montrer('sans_appels'); msg(''); };
   $('to-main').onclick = function(){ montrer('avec_appels'); msg(''); };
@@ -328,7 +335,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     }).catch(reseau(f));
   };
   $('restart').onclick = function(){ $('f-code').hidden = true; $('f-email').hidden = false; $('login-code').value = ''; msg(''); };
-  $('code-to-buy').onclick = function(){ tab('buy'); $('buy-email').value = currentEmail; };
+  $('code-to-buy').onclick = function(){ tab('buy'); };
   $('f-code').onsubmit = function(e){
     e.preventDefault();
     var code = $('login-code').value.replace(/\\D/g, '');
@@ -339,20 +346,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       busy(f, false);
       var t = { expired:'Code expiré : demande-en un nouveau.', too_many_attempts:'Trop d\\'essais : demande un nouveau code.' }[d.error];
       msg(t || 'Code incorrect.', 'err');
-    }).catch(reseau(f));
-  };
-
-  $('f-buy').onsubmit = function(e){
-    e.preventDefault();
-    var email = $('buy-email').value.trim().toLowerCase();
-    if (!emailOk(email)) return msg('Cet email ne semble pas valide.', 'err');
-    busy(this, true); var f = this;
-    post('checkout', { email: email, offre: offre }).then(function(d){
-      if (d.approve_url) { msg('Redirection vers PayPal…'); return location.assign(d.approve_url); }
-      busy(f, false);
-      if (d.error === 'already_buyer') { tab('login'); $('login-email').value = email; return msg('Cet email a déjà accès : connecte-toi avec un code.', 'ok'); }
-      if (d.error === 'quota_full') { COMPLET = true; montrer('sans_appels'); return msg('La dernière place avec appels de ce mois vient de partir. L\\'offre sans appels reste ouverte.', 'err'); }
-      msg('Le paiement n\\'a pas pu démarrer. Réessaie dans un instant.', 'err');
     }).catch(reseau(f));
   };
 
@@ -368,7 +361,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   var q = new URLSearchParams(location.search);
   if (q.get('offre') === 'sans_appels' && !q.get('paypal')) montrer('sans_appels');
   if (q.has('connexion')) { tab('login'); $('login-email').focus(); }
-  else if (q.has('offre')) $('buy-email').focus();
+  else if (q.has('offre')) $('buy-cta').focus();
   if (q.get('paypal') === 'cancel') {
     history.replaceState(null, '', '/methode-ikea/acces');
     montrer('sans_appels');
