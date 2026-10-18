@@ -118,6 +118,8 @@ export const ajouterAcheteur = async (email, infos = {}) => {
 export const supprimerAcheteur = async (email) => {
   const existe = await lireAcheteur(email);
   if (existe) await store().delete(buyerKey(email));
+  // La progression sauvegardée part avec l'accès (donnée personnelle : douleurs, notes).
+  await store().delete(`state/${hashEmail(email)}`).catch(() => {});
   return Boolean(existe);
 };
 
@@ -186,6 +188,30 @@ export const sessionValide = async (req) => {
   if (!email) return null;
   const acheteur = await lireAcheteur(email);
   return acheteur ? email : null;
+};
+
+// ── Progression du membre, sauvegardée sur son compte ─────────────────────────
+// La formation garde son état en localStorage ; une copie vit ici pour changer
+// d'appareil sans rien perdre. rev = compteur d'écritures : une écriture faite
+// depuis une révision dépassée est refusée (409) et l'appareil se resynchronise.
+export const ETAT_MAX_OCTETS = 400_000;
+const etatKey = (email) => `state/${hashEmail(email)}`;
+
+export const lireEtat = async (email) => store().get(etatKey(email), { type: 'json' });
+
+export const ecrireEtat = async (email, { state, summary, base_rev }) => {
+  const actuel = await lireEtat(email);
+  const rev = actuel?.rev || 0;
+  if (actuel && base_rev !== rev) return { conflit: true, actuel };
+  const record = { email, rev: rev + 1, updated_at: new Date().toISOString(), state, summary: summary || null };
+  await store().setJSON(etatKey(email), record);
+  return { record };
+};
+
+export const listerEtats = async () => {
+  const { blobs } = await store().list({ prefix: 'state/' });
+  const records = await Promise.all(blobs.map((b) => store().get(b.key, { type: 'json' })));
+  return records.filter(Boolean);
 };
 
 // ── Codes à 6 chiffres ────────────────────────────────────────────────────────

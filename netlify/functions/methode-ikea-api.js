@@ -13,12 +13,17 @@
 //   POST   admin/access { email, offre, source, note }
 //   DELETE admin/access?email=…           (ou corps { email })
 //   PUT    admin/content  (corps = HTML de la formation)
+//   GET    admin/stats                    → { buyers: [...], funnel: {...} } progression de chaque acheteur
+// Membre connecté (cookie de session) :
+//   GET  state                           → { state, rev, updated_at } (state null si rien de sauvegardé)
+//   PUT  state { state, summary, base_rev } → { rev, updated_at } ; 409 { conflict, state, rev, updated_at }
 
 import { createHash, timingSafeEqual } from 'node:crypto';
 import {
   CONTENT_KEY, OFFRES, ajouterAcheteur, calendly, capturerCommande, cookieEfface, cookieSession,
   creerCommande, creerJeton, emailBienvenue, emailCode, listerAcheteurs, lireAcheteur,
   moisCourant, normaliserEmail, nouveauCode, offre, placesParMois, placesRestantes, store, supprimerAcheteur, verifierCode,
+  ETAT_MAX_OCTETS, ecrireEtat, lireEtat, listerEtats, sessionValide,
 } from '../lib/methode-ikea.js';
 
 const json = (status, body, extra = {}) => new Response(JSON.stringify(body), {
@@ -163,6 +168,47 @@ const adminContent = async (req) => {
   return json(200, { ok: true, bytes: Buffer.byteLength(html) });
 };
 
+// Progression du membre connecté. Jamais d'email dans la réponse : la session suffit.
+const etat = async (req) => {
+  const email = await sessionValide(req);
+  if (!email) return json(401, { error: 'unauthorized' });
+  if (req.method === 'GET') {
+    const rec = await lireEtat(email);
+    return json(200, rec ? { state: rec.state, rev: rec.rev, updated_at: rec.updated_at } : { state: null, rev: 0 });
+  }
+  if (req.method !== 'PUT') return json(405, { error: 'method_not_allowed' });
+  const raw = await req.text();
+  if (raw.length > ETAT_MAX_OCTETS) return json(413, { error: 'too_large' });
+  let body; try { body = JSON.parse(raw || '{}'); } catch { return json(400, { error: 'invalid_json' }); }
+  if (!body.state || typeof body.state !== 'object' || Array.isArray(body.state)) return json(400, { error: 'invalid_state' });
+  const summary = body.summary && typeof body.summary === 'object' ? body.summary : null;
+  const r = await ecrireEtat(email, { state: body.state, summary, base_rev: Number(body.base_rev) || 0 });
+  if (r.conflit) return json(409, { conflict: true, state: r.actuel.state, rev: r.actuel.rev, updated_at: r.actuel.updated_at });
+  return json(200, { rev: r.record.rev, updated_at: r.record.updated_at });
+};
+
+// Mesure : où en est chaque acheteur (résumé calculé par la formation à chaque sauvegarde).
+const adminStats = async (req) => {
+  if (req.method !== 'GET') return json(405, { error: 'method_not_allowed' });
+  const [acheteurs, etats] = await Promise.all([listerAcheteurs(), listerEtats()]);
+  const parEmail = new Map(etats.map((e) => [e.email, e]));
+  const buyers = acheteurs.map((a) => {
+    const e = parEmail.get(a.email);
+    return { email: a.email, offre: a.offre, created_at: a.created_at, synced: Boolean(e), updated_at: e?.updated_at || null, ...(e?.summary || {}) };
+  });
+  const n = (f) => buyers.filter(f).length;
+  const funnel = {
+    acheteurs: buyers.length,
+    ont_ouvert: n((b) => b.synced),
+    ...Object.fromEntries([1, 2, 3, 4, 5].map((m) => [`module_${m}`, n((b) => (b.modules || 0) >= m)])),
+    routine_prete: n((b) => b.ready),
+    une_seance_lancee: n((b) => (b.starts || 0) > 0),
+    une_seance_notee: n((b) => (b.sessions || 0) > 0),
+    actifs_7_jours: n((b) => b.last_active && Date.now() - Date.parse(b.last_active) < 7 * 864e5),
+  };
+  return json(200, { buyers, funnel });
+};
+
 const admin = async (req, action) => {
   const cors = corsAdmin(req);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
@@ -170,6 +216,7 @@ const admin = async (req, action) => {
   if (!estAdmin(req)) return avecCors(json(401, { error: 'unauthorized' }));
   if (action === 'admin/access') return avecCors(await adminAccess(req));
   if (action === 'admin/content') return avecCors(await adminContent(req));
+  if (action === 'admin/stats') return avecCors(await adminStats(req));
   return avecCors(json(404, { error: 'not_found' }));
 };
 
@@ -181,6 +228,7 @@ export default async (req) => {
   const action = new URL(req.url).pathname.replace(/^\/api\/methode-ikea\/?/, '').replace(/\/$/, '');
   try {
     if (action.startsWith('admin/')) return await admin(req, action);
+    if (action === 'state') return await etat(req);
     if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' });
     if (action === 'logout') return json(200, { ok: true }, { 'Set-Cookie': cookieEfface(req) });
     const handler = PUBLIC[action];

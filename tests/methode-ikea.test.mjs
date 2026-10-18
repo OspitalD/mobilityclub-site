@@ -320,3 +320,68 @@ test('squelette HTML ajouté sans toucher au contenu', () => {
   assert.match(out, /<\/style>\n<meta name="robots" content="noindex, nofollow">\n<\/head>\n<body>\n<header class="bar">x<\/header>\n<script>1<\/script>\n<\/body>\n<\/html>\n$/);
   assert.equal(ajouterSquelette(out), out);
 });
+
+// ── Progression sauvegardée sur le compte ────────────────────────────────────
+const connecter = async (email) => {
+  await appel('admin/access', { email }, { auth: ADMIN });
+  await appel('request-code', { email });
+  return (await appel('verify-code', { email, code: codeEnvoye() })).cookie;
+};
+
+test('progression : sans session → 401, jamais l\'état d\'un autre', async () => {
+  assert.equal((await appel('state', null, { method: 'GET' })).status, 401);
+  assert.equal((await appel('state', { state: { a: 1 }, base_rev: 0 }, { method: 'PUT' })).status, 401);
+});
+
+test('progression : aller-retour, révision, et un appareil en retard reçoit 409 avec l\'état récent', async () => {
+  const cookie = await connecter('sync@test.fr');
+  const vide = await appel('state', null, { method: 'GET', cookie });
+  assert.deepEqual(vide.body, { state: null, rev: 0 });
+  const p1 = await appel('state', { state: { done: { 1: true } }, summary: { modules: 1 }, base_rev: 0 }, { method: 'PUT', cookie });
+  assert.equal(p1.status, 200);
+  assert.equal(p1.body.rev, 1);
+  const lu = await appel('state', null, { method: 'GET', cookie });
+  assert.deepEqual(lu.body.state, { done: { 1: true } });
+  assert.equal(lu.body.rev, 1);
+  // Téléphone : écrit depuis rev 1 → rev 2. Ordinateur resté sur rev 0 → conflit.
+  assert.equal((await appel('state', { state: { done: { 1: true, 2: true } }, base_rev: 1 }, { method: 'PUT', cookie })).body.rev, 2);
+  const retard = await appel('state', { state: { done: {} }, base_rev: 1 }, { method: 'PUT', cookie });
+  assert.equal(retard.status, 409);
+  assert.deepEqual(retard.body.state, { done: { 1: true, 2: true } });
+  assert.equal(retard.body.rev, 2);
+  assert.ok(!JSON.stringify(lu.body).includes('sync@test.fr'));
+});
+
+test('progression : état invalide ou trop gros refusé', async () => {
+  const cookie = await connecter('gros@test.fr');
+  assert.equal((await appel('state', { state: [1, 2], base_rev: 0 }, { method: 'PUT', cookie })).status, 400);
+  assert.equal((await appel('state', null, { method: 'PUT', cookie, raw: 'pas du json' })).status, 400);
+  assert.equal((await appel('state', null, { method: 'PUT', cookie, raw: JSON.stringify({ state: { x: 'a'.repeat(450_000) } }) })).status, 413);
+});
+
+test('progression : retirer l\'accès efface aussi la progression sauvegardée', async () => {
+  const cookie = await connecter('parti@test.fr');
+  await appel('state', { state: { notes: 'épaule droite' }, base_rev: 0 }, { method: 'PUT', cookie });
+  assert.ok([...data.keys()].some((k) => k.startsWith('state/')));
+  await appel('admin/access?email=parti@test.fr', null, { method: 'DELETE', auth: ADMIN });
+  const restants = [...data.entries()].filter(([k, v]) => k.startsWith('state/') && v.email === 'parti@test.fr');
+  assert.equal(restants.length, 0);
+});
+
+test('mesure : admin/stats donne l\'entonnoir et la progression de chaque acheteur, jeton exigé', async () => {
+  for (const k of [...data.keys()]) if (k.startsWith('buyers/') || k.startsWith('state/')) data.delete(k);
+  const c1 = await connecter('actif@test.fr');
+  await appel('admin/access', { email: 'dormant@test.fr' }, { auth: ADMIN });
+  await appel('state', { state: { x: 1 }, summary: { modules: 5, ready: true, starts: 4, sessions: 3, paliers: 2, last_active: new Date().toISOString() }, base_rev: 0 }, { method: 'PUT', cookie: c1 });
+  assert.equal((await appel('admin/stats', null, { method: 'GET' })).status, 401);
+  const r = await appel('admin/stats', null, { method: 'GET', auth: ADMIN });
+  assert.equal(r.status, 200);
+  assert.equal(r.body.funnel.acheteurs, 2);
+  assert.equal(r.body.funnel.ont_ouvert, 1);
+  assert.equal(r.body.funnel.module_5, 1);
+  assert.equal(r.body.funnel.routine_prete, 1);
+  assert.equal(r.body.funnel.une_seance_notee, 1);
+  assert.equal(r.body.funnel.actifs_7_jours, 1);
+  const dormant = r.body.buyers.find((b) => b.email === 'dormant@test.fr');
+  assert.equal(dormant.synced, false);
+});

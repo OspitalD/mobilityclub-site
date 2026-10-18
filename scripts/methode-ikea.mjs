@@ -64,6 +64,16 @@ const main = async ([cmd, ...args]) => {
       if (r.invalid.length) console.log('invalides :', r.invalid.join(', '));
       return;
     }
+    case 'stats': {
+      const { buyers, funnel } = await appel('GET', 'stats');
+      const f = funnel;
+      console.log(`Entonnoir : ${f.acheteurs} acheteurs · ${f.ont_ouvert} ont ouvert · modules 1→5 : ${f.module_1}/${f.module_2}/${f.module_3}/${f.module_4}/${f.module_5} · routine prête ${f.routine_prete} · séance lancée ${f.une_seance_lancee} · séance notée ${f.une_seance_notee} · actifs 7 j ${f.actifs_7_jours}`);
+      for (const b of buyers) {
+        const d = b.last_active ? b.last_active.slice(0, 10) : (b.synced ? (b.updated_at || '').slice(0, 10) : 'jamais ouvert');
+        console.log(`${b.email.padEnd(34)} ${b.offre.padEnd(11)} modules ${b.modules ?? 0}/5 ${b.ready ? 'routine prête' : '             '} lancées ${String(b.starts ?? 0).padStart(3)} notées ${String(b.sessions ?? 0).padStart(3)} paliers +${b.paliers ?? 0}  dernière activité ${d}`);
+      }
+      return;
+    }
     case 'remove': {
       const r = await appel('DELETE', `access?email=${encodeURIComponent(args[0] || '')}`);
       console.log(r.removed ? `retiré : ${args[0]}` : `absent : ${args[0]}`);
@@ -76,7 +86,7 @@ const main = async ([cmd, ...args]) => {
       return;
     }
     default:
-      console.log('Commandes : list | add <email…> [--offre avec_appels|sans_appels] [--note …] | remove <email> | content <fichier.html>');
+      console.log('Commandes : list | stats | add <email…> [--offre avec_appels|sans_appels] [--note …] [--bienvenue] | remove <email> | content <fichier.html>');
   }
 };
 
