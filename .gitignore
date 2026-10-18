@@ -11,3 +11,9 @@ node_modules/
 .claude/
 poc-hero-*.html
 assets/app/reviews-src/
+
+# Secrets locaux (netlify dev) et contenu payant de la Méthode IKEA : le repo est
+# PUBLIC, la formation vit uniquement dans Netlify Blobs.
+.env
+.env.*
+methode-ikea*.html
