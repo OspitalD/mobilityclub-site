@@ -267,7 +267,8 @@ export const envoyerEmail = async ({ to, subject, html, devLog }) => {
 };
 
 export const emailCode = (to, code) => {
-  const lisible = `${code.slice(0, 3)} ${code.slice(3)}`;
+  // Sans espace : le code doit se copier-coller d'un bloc (retour Damien, 18/10/2026).
+  const lisible = code;
   return envoyerEmail({
     to,
     subject: `Ton code Méthode IKEA : ${lisible}`,

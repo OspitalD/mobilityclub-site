@@ -89,7 +89,13 @@ beforeEach(() => {
   };
 });
 
-const codeEnvoye = () => mails.at(-1).subject.match(/(\d{3}) (\d{3})/).slice(1).join('');
+// Le code s'affiche d'un bloc, sans espace, pour se copier-coller (retour Damien, 18/10/2026).
+const codeEnvoye = () => {
+  const { subject, html } = mails.at(-1);
+  assert.match(subject, /: \d{6}$/);
+  assert.doesNotMatch(html, /\d{3} \d{3}/);
+  return subject.match(/(\d{6})$/)[1];
+};
 
 test('sans session : page d\'accès, jamais le contenu payant', async () => {
   const r = await pageAchat();

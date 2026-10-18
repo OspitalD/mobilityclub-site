@@ -253,7 +253,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <form id="f-code" novalidate hidden>
         <p class="note">Si <b id="sent-to"></b> a un accès, tu vas recevoir un code. Il expire dans 10 minutes (pense aux spams).</p>
         <label for="login-code">Code à 6 chiffres</label>
-        <input id="login-code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+        <input id="login-code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
         <button class="cta" type="submit">Ouvrir la formation</button>
         <button class="link" type="button" id="restart">Changer d'email ou renvoyer un code</button>
         <div class="help">
@@ -334,6 +334,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       msg('');
     }).catch(reseau(f));
   };
+  // Un code collé avec espaces ou tirets (« 390 858 ») est ramené à ses 6 chiffres.
+  $('login-code').addEventListener('input', function(){ var v = this.value.replace(/\\D/g, '').slice(0, 6); if (v !== this.value) this.value = v; });
   $('restart').onclick = function(){ $('f-code').hidden = true; $('f-email').hidden = false; $('login-code').value = ''; msg(''); };
   $('code-to-buy').onclick = function(){ tab('buy'); };
   $('f-code').onsubmit = function(e){
