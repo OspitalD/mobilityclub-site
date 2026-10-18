@@ -21,9 +21,10 @@
 //   METHODE_IKEA_PRIX_SOLO       optionnel, défaut « 49.00 » (downsell, sans appel)
 //                                NE JAMAIS ajouter ces montants à PAYPAL_MONTANTS_ACCEPTES :
 //                                ils ouvriraient un an de Club via le webhook paypal-to-skool.
-//   METHODE_IKEA_PLACES_APPELS   optionnel, défaut « 20 » (À VALIDER par Damien) : nombre de
+//   METHODE_IKEA_PLACES_APPELS   optionnel, défaut « 20 » (validé par Damien) : nombre de
 //                                ventes « avec_appels » par mois civil (heure de Paris). Quota
 //                                atteint = seul le downsell reste en vente jusqu'au mois suivant.
+//   METHODE_IKEA_CALENDLY        optionnel, lien de réservation des 2 appels (offre à 97 €)
 //   METHODE_IKEA_CONTACT         optionnel, email affiché « Pas reçu de code ? »
 //   METHODE_IKEA_ADMIN_ORIGINS   optionnel, origines CORS de l'API admin
 //                                (défaut « https://app.mobilityclub.co »)
@@ -91,7 +92,7 @@ const consommerPlace = async (orderId, date = new Date()) => {
 
 export const ABONNEMENT = 'https://www.mobilityclub.co/devenir-membre';
 
-export const CALENDLY = 'https://calendly.com/damienospitaltraining/bilan-gratuit-de-30min-avec-damien';
+export const calendly = () => process.env.METHODE_IKEA_CALENDLY || 'https://calendly.com/damienospitaltraining/bilan-gratuit-de-30min-avec-damien';
 export const contact = () => process.env.METHODE_IKEA_CONTACT || 'damien@mobilityclub.co';
 
 // ── Emails ────────────────────────────────────────────────────────────────────
@@ -298,7 +299,7 @@ export const emailBienvenue = (to, origin, { appels } = {}) => envoyerEmail({
     <p style="font-size:15px;color:#8C908D;margin:0 0 24px">Merci pour ton achat. Tu retrouves la formation à tout moment ici, en te connectant avec cet email (${to}).</p>
     <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
     ${appels ? `<p style="font-size:15px;color:#F5F5F3;margin:28px 0 12px">Tes 2 appels de 30 min avec moi sont inclus. Réserve le premier quand tu veux :</p>
-    <a href="${CALENDLY}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}
+    <a href="${calendly()}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}
     <p style="font-size:14px;color:#8C908D;margin:32px 0 6px;border-top:1px solid #222;padding-top:20px">Un jour, tu ne voudras plus monter ta routine toi-même ? Le Mobility Club te prescrit ta séance chaque jour.</p>
     <a href="${ABONNEMENT}" style="color:#F5F5F3;font-size:14px">Découvrir l'abonnement Mobility Club</a>`),
 });

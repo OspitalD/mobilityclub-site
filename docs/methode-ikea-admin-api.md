@@ -62,7 +62,7 @@ L'email est toujours normalisé en minuscules, sans espaces. C'est la clé de l'
 
 `200` → `{ "access": [ <accès>, … ], "quota": { "mois": "2026-10", "places": 20, "restantes": 17 } }`, trié du plus ancien au plus récent.
 
-`quota` donne l'état des places avec appels pour le mois civil en cours (heure de Paris). `places` vient de la variable `METHODE_IKEA_PLACES_APPELS` (20 par défaut, à valider). Seules les ventes PayPal `avec_appels` consomment une place : un accès ajouté à la main n'en consomme pas.
+`quota` donne l'état des places avec appels pour le mois civil en cours (heure de Paris). `places` vient de la variable `METHODE_IKEA_PLACES_APPELS` (20 par défaut). Seules les ventes PayPal `avec_appels` consomment une place : un accès ajouté à la main n'en consomme pas.
 
 ### `POST /access` : accorder
 

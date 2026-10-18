@@ -16,7 +16,7 @@
 
 import { createHash, timingSafeEqual } from 'node:crypto';
 import {
-  CALENDLY, CONTENT_KEY, OFFRES, ajouterAcheteur, capturerCommande, cookieEfface, cookieSession,
+  CONTENT_KEY, OFFRES, ajouterAcheteur, calendly, capturerCommande, cookieEfface, cookieSession,
   creerCommande, creerJeton, emailBienvenue, emailCode, listerAcheteurs, lireAcheteur,
   moisCourant, normaliserEmail, nouveauCode, offre, placesParMois, placesRestantes, store, supprimerAcheteur, verifierCode,
 } from '../lib/methode-ikea.js';
@@ -103,7 +103,7 @@ const capturer = async (req) => {
     return json(result.error === 'unknown_order' ? 404 : 402, { error: result.error });
   }
   const appels = result.offre === 'avec_appels';
-  const extra = { offre: result.offre, ...(appels ? { calendly: CALENDLY } : {}) };
+  const extra = { offre: result.offre, ...(appels ? { calendly: calendly() } : {}) };
   // Rejeu (rechargement, autre appareil) : pas de nouveau cookie sur la seule
   // foi d'un order id — l'acheteur se connecte avec son code.
   if (result.status === 'already_captured') return json(200, { ok: true, already_captured: true, ...extra });

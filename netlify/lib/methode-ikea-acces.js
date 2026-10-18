@@ -7,9 +7,9 @@
 //   « J'ai déjà acheté » : email → code à 6 chiffres (Resend) → accès.
 // Même langage visuel que le-suivi.html / index.html (mur sombre, jade, Bricolage).
 
-import { ABONNEMENT, CALENDLY, affiche, quart } from './methode-ikea.js';
+import { ABONNEMENT, affiche, calendly, quart } from './methode-ikea.js';
 
-// ── VALEURS DU STACK : À VALIDER PAR DAMIEN AVANT PUBLICATION ────────────────
+// ── VALEURS DU STACK : validées par Damien le 2026-10-18 ─────────────────────
 // Ne jamais afficher une valeur qu'il ne peut pas défendre. Modifier ici.
 const STACK = [
   { titre: 'La formation : 5 modules vidéo', detail: 'Besoins, contexte, sélection, plaisir, template : la méthode de Mobility Pro, celle que j\'applique aux membres du Club.', valeur: 97 },
@@ -263,7 +263,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <p class="note">Un email de confirmation part à ton adresse. Tu te reconnectes à tout moment avec un code envoyé par email.</p>
       <div id="done-calls" hidden>
         <p class="note" style="color:var(--chalk)">Tes 2 appels de 30 min avec moi sont inclus. Réserve le premier quand tu veux.</p>
-        <a class="cta" id="done-calendly" href="${CALENDLY}" target="_blank" rel="noopener">Réserver mon appel</a>
+        <a class="cta" id="done-calendly" href="${calendly()}" target="_blank" rel="noopener">Réserver mon appel</a>
       </div>
       <a class="cta" id="done-open" href="/methode-ikea">Ouvrir la formation</a>
     </div>
