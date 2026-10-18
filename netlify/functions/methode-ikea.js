@@ -2,7 +2,7 @@
 // Le HTML de la formation n'est JAMAIS servi sans cookie signé + acheteur en Blobs
 // (voir netlify/lib/methode-ikea.js pour le pourquoi).
 
-import { CONTENT_KEY, contact, offre, sessionValide, store } from '../lib/methode-ikea.js';
+import { CONTENT_KEY, contact, offre, placesParMois, placesRestantes, sessionValide, store } from '../lib/methode-ikea.js';
 import { pageAcces } from '../lib/methode-ikea-acces.js';
 
 const entetes = {
@@ -23,7 +23,11 @@ export default async (req) => {
     return null;
   });
 
-  if (!email) return new Response(pageAcces({ principale: offre('avec_appels'), downsell: offre('sans_appels'), contact: contact() }), { status: 200, headers: entetes });
+  if (!email) {
+    const places = await placesRestantes().catch(() => placesParMois());
+    const html = pageAcces({ principale: offre('avec_appels'), downsell: offre('sans_appels'), contact: contact(), places, placesTotal: placesParMois() });
+    return new Response(html, { status: 200, headers: entetes });
+  }
 
   const html = await store().get(CONTENT_KEY, { type: 'text' });
   if (!html) {

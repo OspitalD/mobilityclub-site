@@ -58,6 +58,7 @@ beforeEach(() => {
   delete process.env.METHODE_IKEA_PRIX_APPELS;
   delete process.env.METHODE_IKEA_PRIX_SOLO;
   delete process.env.METHODE_IKEA_ADMIN_ORIGINS;
+  delete process.env.METHODE_IKEA_PLACES_APPELS;
   process.env.RESEND_API_KEY = 're_test';
   process.env.PAYPAL_CLIENT_ID = 'id';
   process.env.PAYPAL_CLIENT_SECRET = 'secret';
@@ -97,6 +98,9 @@ test('sans session : page d\'accès, jamais le contenu payant', async () => {
   assert.match(r.html, /4 × 24,25 €/);
   assert.match(r.html, /<b>49 €<\/b><s>100 €<\/s>/);
   assert.match(r.html, /Pas reçu de code \? Contacte-moi/);
+  assert.match(r.html, /20 places avec appels sur 20/);
+  assert.match(r.html, /Garantie notice de montage/);
+  assert.match(r.html, /Valeur totale/);
   assert.equal(r.headers.get('cache-control'), 'private, no-store');
 });
 
@@ -189,6 +193,27 @@ test('downsell 49 € : accès identique, sans Calendly', async () => {
   assert.equal(cap.body.calendly, undefined);
   assert.doesNotMatch(mails.at(-1).html, /calendly/);
   assert.match((await ouvrir(cap.cookie)).html, /CONTENU-PAYANT/);
+});
+
+test('quota mensuel : chaque vente avec appels consomme une place, quota atteint → downsell seul', async () => {
+  process.env.METHODE_IKEA_PLACES_APPELS = '2';
+  for (const email of ['a@q.fr', 'b@q.fr']) {
+    await appel('checkout', { email, offre: 'avec_appels' });
+    const id = [...orders.keys()].at(-1);
+    await appel('capture', { order_id: id });
+    await appel('capture', { order_id: id }); // rejeu : ne compte pas deux fois
+  }
+  // Un accès manuel « avec_appels » ne consomme pas de place.
+  await appel('admin/access', { email: 'm@q.fr', offre: 'avec_appels' }, { auth: ADMIN });
+  const list = await appel('admin/access', null, { auth: ADMIN, method: 'GET' });
+  assert.equal(list.body.quota.places, 2);
+  assert.equal(list.body.quota.restantes, 0);
+  assert.equal((await appel('checkout', { email: 'c@q.fr', offre: 'avec_appels' })).body.error, 'quota_full');
+  assert.equal((await appel('checkout', { email: 'c@q.fr', offre: 'sans_appels' })).status, 201);
+  const html = (await ouvrir()).html;
+  assert.match(html, /Les 2 places avec appels de \S+ sont prises/);
+  assert.match(html, /<div id="offer-avec_appels" hidden>/);
+  assert.match(html, /Payer 49 € avec PayPal/);
 });
 
 test('capture refusée si montant faux, commande inconnue ou non complétée', async () => {

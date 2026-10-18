@@ -4,11 +4,12 @@
 //   POST request-code { email }           → { sent: true } (toujours, anti-énumération)
 //   POST verify-code  { email, code }     → { ok: true } + cookie de session
 //   POST checkout     { email, offre }    → { approve_url } (commande PayPal ; offre = avec_appels | sans_appels)
+//   (checkout avec_appels → 409 quota_full si les places du mois sont prises)
 //   POST capture      { order_id }        → { ok, offre, calendly? } + cookie (capture vérifiée)
 //   POST logout                           → efface le cookie
 // Admin (Authorization: Bearer METHODE_IKEA_ADMIN_TOKEN) — console de Damien et
 // scripts/methode-ikea.mjs. Contrat complet : docs/methode-ikea-admin-api.md
-//   GET    admin/access                   → { access: [...] }
+//   GET    admin/access                   → { access: [...], quota: { mois, places, restantes } }
 //   POST   admin/access { email, offre, source, note }
 //   DELETE admin/access?email=…           (ou corps { email })
 //   PUT    admin/content  (corps = HTML de la formation)
@@ -17,7 +18,7 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import {
   CALENDLY, CONTENT_KEY, OFFRES, ajouterAcheteur, capturerCommande, cookieEfface, cookieSession,
   creerCommande, creerJeton, emailBienvenue, emailCode, listerAcheteurs, lireAcheteur,
-  normaliserEmail, nouveauCode, offre, store, supprimerAcheteur, verifierCode,
+  moisCourant, normaliserEmail, nouveauCode, offre, placesParMois, placesRestantes, store, supprimerAcheteur, verifierCode,
 } from '../lib/methode-ikea.js';
 
 const json = (status, body, extra = {}) => new Response(JSON.stringify(body), {
@@ -87,6 +88,8 @@ const commander = async (req) => {
   if (!o) return json(400, { error: 'invalid_offer' });
   // Évite un double paiement : l'acheteur est renvoyé vers la connexion.
   if (await lireAcheteur(email)) return json(409, { error: 'already_buyer' });
+  // Quota du mois atteint : plus d'offre avec appels, le front bascule sur le downsell.
+  if (o.appels && (await placesRestantes()) <= 0) return json(409, { error: 'quota_full' });
   const { approveUrl } = await creerCommande({ email, offre: o, origin: new URL(req.url).origin });
   return json(201, { approve_url: approveUrl });
 };
@@ -114,7 +117,10 @@ const capturer = async (req) => {
 const SOURCES = ['paypal', 'manuel'];
 
 const adminAccess = async (req) => {
-  if (req.method === 'GET') return json(200, { access: await listerAcheteurs() });
+  if (req.method === 'GET') {
+    const quota = { mois: moisCourant(), places: placesParMois(), restantes: await placesRestantes() };
+    return json(200, { access: await listerAcheteurs(), quota });
+  }
   if (req.method === 'DELETE') {
     const fromQuery = new URL(req.url).searchParams.get('email');
     const email = normaliserEmail(fromQuery ?? (await lireJson(req)).email);

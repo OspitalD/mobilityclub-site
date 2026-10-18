@@ -21,6 +21,9 @@
 //   METHODE_IKEA_PRIX_SOLO       optionnel, défaut « 49.00 » (downsell, sans appel)
 //                                NE JAMAIS ajouter ces montants à PAYPAL_MONTANTS_ACCEPTES :
 //                                ils ouvriraient un an de Club via le webhook paypal-to-skool.
+//   METHODE_IKEA_PLACES_APPELS   optionnel, défaut « 20 » (À VALIDER par Damien) : nombre de
+//                                ventes « avec_appels » par mois civil (heure de Paris). Quota
+//                                atteint = seul le downsell reste en vente jusqu'au mois suivant.
 //   METHODE_IKEA_CONTACT         optionnel, email affiché « Pas reçu de code ? »
 //   METHODE_IKEA_ADMIN_ORIGINS   optionnel, origines CORS de l'API admin
 //                                (défaut « https://app.mobilityclub.co »)
@@ -60,6 +63,33 @@ export const offre = (id) => {
 
 export const affiche = (prix) => (prix.endsWith('.00') ? prix.slice(0, -3) : prix.replace('.', ','));
 export const quart = (prix) => (Math.round(Number(prix) * 25) / 100).toFixed(2).replace('.', ',');
+
+// ── Rareté honnête : places avec appels par mois ─────────────────────────────
+// Compteur réel : clé quota/AAAA-MM = ids des commandes « avec_appels » capturées
+// ce mois-ci. Idempotent (une capture rejouée ne compte qu'une fois). Les accès
+// ajoutés à la main ne comptent pas : seules les ventes consomment des places.
+export const placesParMois = () => {
+  const n = Number.parseInt(process.env.METHODE_IKEA_PLACES_APPELS ?? '20', 10);
+  return Number.isFinite(n) && n >= 0 ? n : 20;
+};
+
+export const moisCourant = (date = new Date()) => {
+  const parts = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit' }).formatToParts(date);
+  return `${parts.find((p) => p.type === 'year').value}-${parts.find((p) => p.type === 'month').value}`;
+};
+
+export const placesRestantes = async (date = new Date()) => {
+  const rec = await store().get(`quota/${moisCourant(date)}`, { type: 'json' });
+  return Math.max(0, placesParMois() - (rec?.orders?.length || 0));
+};
+
+const consommerPlace = async (orderId, date = new Date()) => {
+  const key = `quota/${moisCourant(date)}`;
+  const rec = (await store().get(key, { type: 'json' })) || { orders: [] };
+  if (!rec.orders.includes(orderId)) await store().setJSON(key, { orders: [...rec.orders, orderId] });
+};
+
+export const ABONNEMENT = 'https://www.mobilityclub.co/devenir-membre';
 
 export const CALENDLY = 'https://calendly.com/damienospitaltraining/bilan-gratuit-de-30min-avec-damien';
 export const contact = () => process.env.METHODE_IKEA_CONTACT || 'damien@mobilityclub.co';
@@ -268,7 +298,9 @@ export const emailBienvenue = (to, origin, { appels } = {}) => envoyerEmail({
     <p style="font-size:15px;color:#8C908D;margin:0 0 24px">Merci pour ton achat. Tu retrouves la formation à tout moment ici, en te connectant avec cet email (${to}).</p>
     <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
     ${appels ? `<p style="font-size:15px;color:#F5F5F3;margin:28px 0 12px">Tes 2 appels de 30 min avec moi sont inclus. Réserve le premier quand tu veux :</p>
-    <a href="${CALENDLY}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}`),
+    <a href="${CALENDLY}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}
+    <p style="font-size:14px;color:#8C908D;margin:32px 0 6px;border-top:1px solid #222;padding-top:20px">Un jour, tu ne voudras plus monter ta routine toi-même ? Le Mobility Club te prescrit ta séance chaque jour.</p>
+    <a href="${ABONNEMENT}" style="color:#F5F5F3;font-size:14px">Découvrir l'abonnement Mobility Club</a>`),
 });
 
 // ── PayPal (commande unique, capture vérifiée côté serveur) ───────────────────
@@ -377,6 +409,7 @@ export const capturerCommande = async (orderId) => {
       paid_at: new Date().toISOString(),
     },
   });
+  if (commande.offre === 'avec_appels') await consommerPlace(orderId);
   await store().setJSON(orderKey(orderId), { ...commande, status: 'captured', capture_id: capture.id, captured_at: new Date().toISOString() });
   return { status: 'captured', email: commande.email, offre: commande.offre, capture };
 };
