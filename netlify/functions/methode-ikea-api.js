@@ -1,22 +1,23 @@
 // /api/methode-ikea/* — connexion par code, achat PayPal, administration.
 //
 // Public :
-//   POST request-code { email }         → { sent: true } (toujours, anti-énumération)
-//   POST verify-code  { email, code }   → { ok: true } + cookie de session
-//   POST checkout     { email }         → { approve_url } (commande PayPal)
-//   POST capture      { order_id }      → { ok: true } + cookie (capture vérifiée)
-//   POST logout                         → efface le cookie
-// Admin (Authorization: Bearer METHODE_IKEA_ADMIN_TOKEN) — utilisé par scripts/methode-ikea.mjs :
-//   GET    admin/buyers                 → { buyers: [...] }
-//   POST   admin/buyers { emails, source }
-//   DELETE admin/buyers { email }
+//   POST request-code { email }           → { sent: true } (toujours, anti-énumération)
+//   POST verify-code  { email, code }     → { ok: true } + cookie de session
+//   POST checkout     { email, offre }    → { approve_url } (commande PayPal ; offre = avec_appels | sans_appels)
+//   POST capture      { order_id }        → { ok, offre, calendly? } + cookie (capture vérifiée)
+//   POST logout                           → efface le cookie
+// Admin (Authorization: Bearer METHODE_IKEA_ADMIN_TOKEN) — console de Damien et
+// scripts/methode-ikea.mjs. Contrat complet : docs/methode-ikea-admin-api.md
+//   GET    admin/access                   → { access: [...] }
+//   POST   admin/access { email, offre, source, note }
+//   DELETE admin/access?email=…           (ou corps { email })
 //   PUT    admin/content  (corps = HTML de la formation)
 
 import { createHash, timingSafeEqual } from 'node:crypto';
 import {
-  CONTENT_KEY, ajouterAcheteur, capturerCommande, cookieEfface, cookieSession, creerCommande,
-  creerJeton, emailBienvenue, emailCode, listerAcheteurs, lireAcheteur, normaliserEmail,
-  nouveauCode, store, supprimerAcheteur, verifierCode,
+  CALENDLY, CONTENT_KEY, OFFRES, ajouterAcheteur, capturerCommande, cookieEfface, cookieSession,
+  creerCommande, creerJeton, emailBienvenue, emailCode, listerAcheteurs, lireAcheteur,
+  normaliserEmail, nouveauCode, offre, store, supprimerAcheteur, verifierCode,
 } from '../lib/methode-ikea.js';
 
 const json = (status, body, extra = {}) => new Response(JSON.stringify(body), {
@@ -36,6 +37,22 @@ const estAdmin = (req) => {
   if (attendu.length < 24 || !recu) return false;
   const h = (v) => createHash('sha256').update(v).digest();
   return timingSafeEqual(h(attendu), h(recu));
+};
+
+// CORS de l'API admin : uniquement la console (app.mobilityclub.co par défaut).
+// Pas de cookie côté admin : l'autorisation passe par le jeton Bearer.
+const corsAdmin = (req) => {
+  const origin = req.headers.get('origin');
+  const permises = String(process.env.METHODE_IKEA_ADMIN_ORIGINS || 'https://app.mobilityclub.co')
+    .split(',').map((o) => o.trim()).filter(Boolean);
+  if (!origin || !permises.includes(origin)) return {};
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+    'Access-Control-Max-Age': '600',
+    Vary: 'Origin',
+  };
 };
 
 // ── Public ────────────────────────────────────────────────────────────────────
@@ -63,11 +80,14 @@ const validerCode = async (req) => {
 };
 
 const commander = async (req) => {
-  const email = normaliserEmail((await lireJson(req)).email);
+  const body = await lireJson(req);
+  const email = normaliserEmail(body.email);
   if (!email) return json(400, { error: 'invalid_email' });
+  const o = offre(body.offre);
+  if (!o) return json(400, { error: 'invalid_offer' });
   // Évite un double paiement : l'acheteur est renvoyé vers la connexion.
   if (await lireAcheteur(email)) return json(409, { error: 'already_buyer' });
-  const { approveUrl } = await creerCommande({ email, origin: new URL(req.url).origin });
+  const { approveUrl } = await creerCommande({ email, offre: o, origin: new URL(req.url).origin });
   return json(201, { approve_url: approveUrl });
 };
 
@@ -79,34 +99,45 @@ const capturer = async (req) => {
     console.error('[methode-ikea] capture refused:', orderId, result.error);
     return json(result.error === 'unknown_order' ? 404 : 402, { error: result.error });
   }
+  const appels = result.offre === 'avec_appels';
+  const extra = { offre: result.offre, ...(appels ? { calendly: CALENDLY } : {}) };
   // Rejeu (rechargement, autre appareil) : pas de nouveau cookie sur la seule
   // foi d'un order id — l'acheteur se connecte avec son code.
-  if (result.status === 'already_captured') return json(200, { ok: true, already_captured: true });
-  await emailBienvenue(result.email, new URL(req.url).origin).catch((err) => console.error('[methode-ikea] welcome email failed:', err));
-  return json(200, { ok: true }, { 'Set-Cookie': cookieSession(req, creerJeton(result.email)) });
+  if (result.status === 'already_captured') return json(200, { ok: true, already_captured: true, ...extra });
+  await emailBienvenue(result.email, new URL(req.url).origin, { appels })
+    .catch((err) => console.error('[methode-ikea] welcome email failed:', err));
+  return json(200, { ok: true, ...extra }, { 'Set-Cookie': cookieSession(req, creerJeton(result.email)) });
 };
 
 // ── Admin ─────────────────────────────────────────────────────────────────────
 
-const adminBuyers = async (req) => {
-  if (req.method === 'GET') return json(200, { buyers: await listerAcheteurs() });
-  const body = await lireJson(req);
+const SOURCES = ['paypal', 'manuel'];
+
+const adminAccess = async (req) => {
+  if (req.method === 'GET') return json(200, { access: await listerAcheteurs() });
   if (req.method === 'DELETE') {
-    const email = normaliserEmail(body.email);
+    const fromQuery = new URL(req.url).searchParams.get('email');
+    const email = normaliserEmail(fromQuery ?? (await lireJson(req)).email);
     if (!email) return json(400, { error: 'invalid_email' });
-    return json(200, { removed: await supprimerAcheteur(email) });
+    return json(200, { removed: await supprimerAcheteur(email), email });
   }
   if (req.method === 'POST') {
-    const emails = Array.isArray(body.emails) ? body.emails : [];
-    const source = ['import', 'admin', 'gift'].includes(body.source) ? body.source : 'admin';
-    const added = [], existing = [], invalid = [];
-    for (const raw of emails) {
+    const body = await lireJson(req);
+    const brut = Array.isArray(body.emails) ? body.emails : [body.email];
+    const offreId = body.offre ?? 'sans_appels';
+    if (!OFFRES.includes(offreId)) return json(400, { error: 'invalid_offer' });
+    const source = SOURCES.includes(body.source) ? body.source : 'manuel';
+    const note = body.note == null ? null : String(body.note).slice(0, 500);
+    const added = [], existing = [], invalid = [], records = [];
+    for (const raw of brut) {
       const email = normaliserEmail(raw);
-      if (!email) { invalid.push(String(raw)); continue; }
-      const { created } = await ajouterAcheteur(email, { source });
+      if (!email) { invalid.push(String(raw ?? '')); continue; }
+      const { created, record } = await ajouterAcheteur(email, { source, offre: offreId, note });
       (created ? added : existing).push(email);
+      records.push(record);
     }
-    return json(200, { added, existing, invalid });
+    if (!records.length) return json(400, { error: 'invalid_email', invalid });
+    return json(200, { added, existing, invalid, access: records });
   }
   return json(405, { error: 'method_not_allowed' });
 };
@@ -119,6 +150,16 @@ const adminContent = async (req) => {
   return json(200, { ok: true, bytes: Buffer.byteLength(html) });
 };
 
+const admin = async (req, action) => {
+  const cors = corsAdmin(req);
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+  const avecCors = (res) => { for (const [k, v] of Object.entries(cors)) res.headers.set(k, v); return res; };
+  if (!estAdmin(req)) return avecCors(json(401, { error: 'unauthorized' }));
+  if (action === 'admin/access') return avecCors(await adminAccess(req));
+  if (action === 'admin/content') return avecCors(await adminContent(req));
+  return avecCors(json(404, { error: 'not_found' }));
+};
+
 // ── Routage ───────────────────────────────────────────────────────────────────
 
 const PUBLIC = { 'request-code': demanderCode, 'verify-code': validerCode, checkout: commander, capture: capturer };
@@ -126,12 +167,7 @@ const PUBLIC = { 'request-code': demanderCode, 'verify-code': validerCode, check
 export default async (req) => {
   const action = new URL(req.url).pathname.replace(/^\/api\/methode-ikea\/?/, '').replace(/\/$/, '');
   try {
-    if (action.startsWith('admin/')) {
-      if (!estAdmin(req)) return json(401, { error: 'unauthorized' });
-      if (action === 'admin/buyers') return await adminBuyers(req);
-      if (action === 'admin/content') return await adminContent(req);
-      return json(404, { error: 'not_found' });
-    }
+    if (action.startsWith('admin/')) return await admin(req, action);
     if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' });
     if (action === 'logout') return json(200, { ok: true }, { 'Set-Cookie': cookieEfface(req) });
     const handler = PUBLIC[action];

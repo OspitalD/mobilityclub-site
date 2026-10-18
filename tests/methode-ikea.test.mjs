@@ -27,17 +27,18 @@ const ORIGIN = 'https://www.mobilityclub.co';
 const COURSE = '<!doctype html><html><head><title>Méthode IKEA</title></head><body>CONTENU-PAYANT</body></html>';
 let mails, orders, captureOverride;
 
-const appel = async (action, body, { cookie, auth, method = 'POST', raw } = {}) => {
+const appel = async (action, body, { cookie, auth, method = 'POST', raw, origin } = {}) => {
   const res = await api(new Request(`${ORIGIN}/api/methode-ikea/${action}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
       ...(cookie ? { cookie } : {}),
       ...(auth ? { authorization: `Bearer ${auth}` } : {}),
+      ...(origin ? { origin } : {}),
     },
-    ...(method === 'GET' ? {} : { body: raw ?? JSON.stringify(body ?? {}) }),
+    ...(['GET', 'OPTIONS'].includes(method) ? {} : { body: raw ?? JSON.stringify(body ?? {}) }),
   }));
-  return { status: res.status, body: await res.json(), cookie: (res.headers.get('set-cookie') || '').split(';')[0] };
+  return { status: res.status, body: res.status === 204 ? null : await res.json(), headers: res.headers, cookie: (res.headers.get('set-cookie') || '').split(';')[0] };
 };
 
 const ouvrir = async (cookie) => {
@@ -54,7 +55,9 @@ beforeEach(() => {
   captureOverride = null;
   process.env.METHODE_IKEA_SESSION_SECRET = 'x'.repeat(40);
   process.env.METHODE_IKEA_ADMIN_TOKEN = ADMIN;
-  process.env.METHODE_IKEA_PRIX = '47';
+  delete process.env.METHODE_IKEA_PRIX_APPELS;
+  delete process.env.METHODE_IKEA_PRIX_SOLO;
+  delete process.env.METHODE_IKEA_ADMIN_ORIGINS;
   process.env.RESEND_API_KEY = 're_test';
   process.env.PAYPAL_CLIENT_ID = 'id';
   process.env.PAYPAL_CLIENT_SECRET = 'secret';
@@ -90,19 +93,22 @@ test('sans session : page d\'accès, jamais le contenu payant', async () => {
   assert.equal(r.status, 200);
   assert.doesNotMatch(r.html, /CONTENU-PAYANT/);
   assert.match(r.html, /J'ai déjà acheté/);
-  assert.match(r.html, /47 €/);
+  assert.match(r.html, /<b>97 €<\/b><s>200 €<\/s>/);
+  assert.match(r.html, /4 × 24,25 €/);
+  assert.match(r.html, /<b>49 €<\/b><s>100 €<\/s>/);
+  assert.match(r.html, /Pas reçu de code \? Contacte-moi/);
   assert.equal(r.headers.get('cache-control'), 'private, no-store');
 });
 
 test('cookie forgé ou signé avec un autre secret : refusé', async () => {
-  await appel('admin/buyers', { emails: ['a@b.co'] }, { auth: ADMIN });
+  await appel('admin/access', { emails: ['a@b.co'] }, { auth: ADMIN });
   const payload = Buffer.from(JSON.stringify({ e: 'a@b.co', exp: 9e9 })).toString('base64url');
   assert.doesNotMatch((await ouvrir(`mi_session=${payload}.AAAA`)).html, /CONTENU-PAYANT/);
   assert.doesNotMatch((await ouvrir(`mi_session=${payload}`)).html, /CONTENU-PAYANT/);
 });
 
-test('acheteur importé : code par email → session → contenu', async () => {
-  await appel('admin/buyers', { emails: ['Client@Exemple.fr'], source: 'import' }, { auth: ADMIN });
+test('accès manuel : code par email → session → contenu', async () => {
+  await appel('admin/access', { email: 'Client@Exemple.fr', source: 'manuel', note: 'ancien acheteur' }, { auth: ADMIN });
   const sent = await appel('request-code', { email: 'client@exemple.fr' });
   assert.deepEqual(sent.body, { sent: true });
   assert.equal(mails.length, 1);
@@ -119,7 +125,7 @@ test('acheteur importé : code par email → session → contenu', async () => {
   assert.equal((await appel('verify-code', { email: 'client@exemple.fr', code: codeEnvoye() })).status, 401);
 
   // Retirer l'acheteur coupe la session existante.
-  await appel('admin/buyers', { email: 'client@exemple.fr' }, { auth: ADMIN, method: 'DELETE' });
+  await appel('admin/access?email=client%40exemple.fr', null, { auth: ADMIN, method: 'DELETE' });
   assert.doesNotMatch((await ouvrir(ok.cookie)).html, /CONTENU-PAYANT/);
 });
 
@@ -130,7 +136,7 @@ test('email inconnu : même réponse, aucun email envoyé', async () => {
 });
 
 test('5 mauvais codes brûlent le code ; plafond de 5 envois', async () => {
-  await appel('admin/buyers', { emails: ['x@y.fr'] }, { auth: ADMIN });
+  await appel('admin/access', { emails: ['x@y.fr'] }, { auth: ADMIN });
   await appel('request-code', { email: 'x@y.fr' });
   const good = codeEnvoye();
   const wrong = good === '123456' ? '654321' : '123456';
@@ -141,23 +147,30 @@ test('5 mauvais codes brûlent le code ; plafond de 5 envois', async () => {
   assert.equal(mails.length, 5);
 });
 
-test('achat PayPal : commande au bon prix → capture vérifiée → acheteur + session', async () => {
-  const c = await appel('checkout', { email: 'neuf@exemple.fr' });
+test('achat PayPal 97 € : commande → capture vérifiée → accès avec_appels + Calendly', async () => {
+  assert.equal((await appel('checkout', { email: 'neuf@exemple.fr' })).body.error, 'invalid_offer');
+  const c = await appel('checkout', { email: 'neuf@exemple.fr', offre: 'avec_appels' });
   assert.equal(c.status, 201);
   assert.match(c.body.approve_url, /ORDER1AAAA/);
   const order = orders.get('ORDER1AAAA');
-  assert.equal(order.purchase_units[0].amount.value, '47.00');
+  assert.equal(order.purchase_units[0].amount.value, '97.00');
   assert.equal(order.payment_source.paypal.experience_context.return_url, `${ORIGIN}/methode-ikea?paypal=return`);
+  assert.equal(order.payment_source.paypal.experience_context.cancel_url, `${ORIGIN}/methode-ikea?paypal=cancel&offre=avec_appels`);
 
   const cap = await appel('capture', { order_id: 'ORDER1AAAA' });
   assert.equal(cap.status, 200);
   assert.match(cap.cookie, /^mi_session=/);
+  assert.equal(cap.body.offre, 'avec_appels');
+  assert.match(cap.body.calendly, /^https:\/\/calendly\.com\//);
   assert.match((await ouvrir(cap.cookie)).html, /CONTENU-PAYANT/);
   assert.equal(mails.at(-1).subject, 'Ton accès à la Méthode IKEA');
+  assert.match(mails.at(-1).html, /calendly\.com/);
 
   const buyer = JSON.parse(JSON.stringify(data.get([...data.keys()].find((k) => k.startsWith('buyers/')))));
   assert.equal(buyer.email, 'neuf@exemple.fr');
   assert.equal(buyer.purchases[0].payer_email, 'payer@paypal.test');
+  assert.equal(buyer.offre, 'avec_appels');
+  assert.equal(buyer.source, 'paypal');
 
   // Rejeu : ok, mais pas de nouveau cookie.
   const replay = await appel('capture', { order_id: 'ORDER1AAAA' });
@@ -165,17 +178,28 @@ test('achat PayPal : commande au bon prix → capture vérifiée → acheteur + 
   assert.equal(replay.cookie, '');
 
   // Déjà acheteur : pas de 2e paiement.
-  assert.equal((await appel('checkout', { email: 'neuf@exemple.fr' })).body.error, 'already_buyer');
+  assert.equal((await appel('checkout', { email: 'neuf@exemple.fr', offre: 'sans_appels' })).body.error, 'already_buyer');
+});
+
+test('downsell 49 € : accès identique, sans Calendly', async () => {
+  await appel('checkout', { email: 'solo@exemple.fr', offre: 'sans_appels' });
+  assert.equal(orders.get('ORDER1AAAA').purchase_units[0].amount.value, '49.00');
+  const cap = await appel('capture', { order_id: 'ORDER1AAAA' });
+  assert.equal(cap.body.offre, 'sans_appels');
+  assert.equal(cap.body.calendly, undefined);
+  assert.doesNotMatch(mails.at(-1).html, /calendly/);
+  assert.match((await ouvrir(cap.cookie)).html, /CONTENU-PAYANT/);
 });
 
 test('capture refusée si montant faux, commande inconnue ou non complétée', async () => {
-  await appel('checkout', { email: 'a@exemple.fr' });
-  captureOverride = { amount: { currency_code: 'EUR', value: '1.00' } };
+  await appel('checkout', { email: 'a@exemple.fr', offre: 'avec_appels' });
+  // Montant d'une autre offre : refusé aussi.
+  captureOverride = { amount: { currency_code: 'EUR', value: '49.00' } };
   const r = await appel('capture', { order_id: 'ORDER1AAAA' });
   assert.equal(r.body.error, 'amount_mismatch');
   assert.equal(r.cookie, '');
 
-  await appel('checkout', { email: 'b@exemple.fr' });
+  await appel('checkout', { email: 'b@exemple.fr', offre: 'sans_appels' });
   captureOverride = { status: 'PENDING' };
   assert.equal((await appel('capture', { order_id: 'ORDER2AAAA' })).body.error, 'capture_not_completed');
 
@@ -183,9 +207,36 @@ test('capture refusée si montant faux, commande inconnue ou non complétée', a
   assert.equal([...data.keys()].filter((k) => k.startsWith('buyers/')).length, 0);
 });
 
+test('admin : accorder / lister / révoquer avec offre, source et note', async () => {
+  const add = await appel('admin/access', { email: 'Vieux@Client.fr', offre: 'avec_appels', note: 'ancien acheteur 2025' }, { auth: ADMIN });
+  assert.deepEqual(add.body.added, ['vieux@client.fr']);
+  assert.equal((await appel('admin/access', { email: 'x@y.fr', offre: 'premium' }, { auth: ADMIN })).status, 400);
+  assert.equal((await appel('admin/access', { email: 'pas-un-email' }, { auth: ADMIN })).status, 400);
+  const list = await appel('admin/access', null, { auth: ADMIN, method: 'GET' });
+  assert.equal(list.body.access.length, 1);
+  assert.deepEqual(
+    (({ email, offre, source, note }) => ({ email, offre, source, note }))(list.body.access[0]),
+    { email: 'vieux@client.fr', offre: 'avec_appels', source: 'manuel', note: 'ancien acheteur 2025' },
+  );
+  const del = await appel('admin/access', { email: 'vieux@client.fr' }, { auth: ADMIN, method: 'DELETE' });
+  assert.equal(del.body.removed, true);
+  assert.equal((await appel('admin/access', null, { auth: ADMIN, method: 'GET' })).body.access.length, 0);
+});
+
+test('admin : CORS ouvert à la console seulement', async () => {
+  const pre = await appel('admin/access', null, { method: 'OPTIONS', origin: 'https://app.mobilityclub.co' });
+  assert.equal(pre.status, 204);
+  assert.equal(pre.headers.get('access-control-allow-origin'), 'https://app.mobilityclub.co');
+  assert.match(pre.headers.get('access-control-allow-headers'), /Authorization/);
+  const get = await appel('admin/access', null, { method: 'GET', auth: ADMIN, origin: 'https://app.mobilityclub.co' });
+  assert.equal(get.headers.get('access-control-allow-origin'), 'https://app.mobilityclub.co');
+  const evil = await appel('admin/access', null, { method: 'OPTIONS', origin: 'https://evil.example' });
+  assert.equal(evil.headers.get('access-control-allow-origin'), null);
+});
+
 test('admin : jeton obligatoire, dépôt du contenu', async () => {
-  assert.equal((await appel('admin/buyers', null, { method: 'GET' })).status, 401);
-  assert.equal((await appel('admin/buyers', null, { method: 'GET', auth: 'mauvais-jeton-mauvais-jeton' })).status, 401);
+  assert.equal((await appel('admin/access', null, { method: 'GET' })).status, 401);
+  assert.equal((await appel('admin/access', null, { method: 'GET', auth: 'mauvais-jeton-mauvais-jeton' })).status, 401);
   const put = await appel('admin/content', null, { method: 'PUT', auth: ADMIN, raw: '<!doctype html><p>v2</p>' });
   assert.equal(put.status, 200);
   assert.equal(data.get('content/current'), '<!doctype html><p>v2</p>');

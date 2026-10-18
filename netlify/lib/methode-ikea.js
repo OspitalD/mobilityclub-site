@@ -17,9 +17,13 @@
 // VARIABLES D'ENVIRONNEMENT (Netlify → Site settings → Environment) :
 //   METHODE_IKEA_SESSION_SECRET  secret HMAC des cookies (SECRET, ≥ 32 caractères)
 //   METHODE_IKEA_ADMIN_TOKEN     jeton de la CLI admin (SECRET)
-//   METHODE_IKEA_PRIX            optionnel, défaut « 47.00 ». NE JAMAIS l'ajouter à
-//                                PAYPAL_MONTANTS_ACCEPTES : ce montant ouvrirait un
-//                                an de Club via le webhook paypal-to-skool.
+//   METHODE_IKEA_PRIX_APPELS     optionnel, défaut « 97.00 » (offre principale, 2 appels inclus)
+//   METHODE_IKEA_PRIX_SOLO       optionnel, défaut « 49.00 » (downsell, sans appel)
+//                                NE JAMAIS ajouter ces montants à PAYPAL_MONTANTS_ACCEPTES :
+//                                ils ouvriraient un an de Club via le webhook paypal-to-skool.
+//   METHODE_IKEA_CONTACT         optionnel, email affiché « Pas reçu de code ? »
+//   METHODE_IKEA_ADMIN_ORIGINS   optionnel, origines CORS de l'API admin
+//                                (défaut « https://app.mobilityclub.co »)
 //   RESEND_API_KEY               envoi des codes (SECRET)
 //   RESEND_FROM                  ex. « Mobility Club <noreply@mobilityclub.co> »
 //                                (domaine vérifié dans Resend)
@@ -39,15 +43,26 @@ export const CONTENT_KEY = 'content/current';
 
 export const store = () => getStore({ name: STORE, consistency: 'strong' });
 
-export const prix = () => {
-  const n = Number(String(process.env.METHODE_IKEA_PRIX || '47.00').replace(',', '.'));
-  return Number.isFinite(n) && n > 0 ? n.toFixed(2) : '47.00';
+// Deux offres, même accès à la formation. Seule « avec_appels » donne droit aux
+// 2 appels de 30 min (lien Calendly dans la confirmation et l'email).
+const montant = (env, defaut) => {
+  const n = Number(String(env || defaut).replace(',', '.'));
+  return (Number.isFinite(n) && n > 0 ? n : Number(defaut)).toFixed(2);
 };
 
-export const prixAffiche = () => {
-  const p = prix();
-  return p.endsWith('.00') ? p.slice(0, -3) : p.replace('.', ',');
+export const OFFRES = ['avec_appels', 'sans_appels'];
+
+export const offre = (id) => {
+  if (id === 'avec_appels') return { id, prix: montant(process.env.METHODE_IKEA_PRIX_APPELS, '97.00'), barre: '200', appels: true, libelle: 'Méthode IKEA + 2 appels avec Damien' };
+  if (id === 'sans_appels') return { id, prix: montant(process.env.METHODE_IKEA_PRIX_SOLO, '49.00'), barre: '100', appels: false, libelle: 'Méthode IKEA' };
+  return null;
 };
+
+export const affiche = (prix) => (prix.endsWith('.00') ? prix.slice(0, -3) : prix.replace('.', ','));
+export const quart = (prix) => (Math.round(Number(prix) * 25) / 100).toFixed(2).replace('.', ',');
+
+export const CALENDLY = 'https://calendly.com/damienospitaltraining/bilan-gratuit-de-30min-avec-damien';
+export const contact = () => process.env.METHODE_IKEA_CONTACT || 'damien@mobilityclub.co';
 
 // ── Emails ────────────────────────────────────────────────────────────────────
 
@@ -69,7 +84,10 @@ export const ajouterAcheteur = async (email, infos = {}) => {
     email,
     created_at: actuel?.created_at || now,
     updated_at: now,
-    source: actuel?.source || infos.source || 'admin',
+    source: actuel?.source || infos.source || 'manuel',
+    // Une fois « avec_appels », toujours « avec_appels » (on ne retire pas les appels).
+    offre: actuel?.offre === 'avec_appels' || infos.offre === 'avec_appels' ? 'avec_appels' : 'sans_appels',
+    note: infos.note ?? actuel?.note ?? null,
     // Dédoublonné par commande : une capture rejouée n'ajoute pas un 2e achat.
     purchases: [
       ...(actuel?.purchases || []).filter((p) => p.order_id !== infos.purchase?.order_id),
@@ -89,7 +107,9 @@ export const supprimerAcheteur = async (email) => {
 export const listerAcheteurs = async () => {
   const { blobs } = await store().list({ prefix: 'buyers/' });
   const records = await Promise.all(blobs.map((b) => store().get(b.key, { type: 'json' })));
-  return records.filter(Boolean).sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
+  return records.filter(Boolean)
+    .map((r) => ({ source: 'manuel', offre: 'sans_appels', note: null, purchases: [], ...r }))
+    .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
 };
 
 // ── Session (cookie signé) ────────────────────────────────────────────────────
@@ -241,12 +261,14 @@ export const emailCode = (to, code) => {
   });
 };
 
-export const emailBienvenue = (to, origin) => envoyerEmail({
+export const emailBienvenue = (to, origin, { appels } = {}) => envoyerEmail({
   to,
   subject: 'Ton accès à la Méthode IKEA',
   html: gabaritEmail('Ton accès est ouvert', `
     <p style="font-size:15px;color:#8C908D;margin:0 0 24px">Merci pour ton achat. Tu retrouves la formation à tout moment ici, en te connectant avec cet email (${to}).</p>
-    <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>`),
+    <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
+    ${appels ? `<p style="font-size:15px;color:#F5F5F3;margin:28px 0 12px">Tes 2 appels de 30 min avec moi sont inclus. Réserve le premier quand tu veux :</p>
+    <a href="${CALENDLY}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}`),
 });
 
 // ── PayPal (commande unique, capture vérifiée côté serveur) ───────────────────
@@ -286,8 +308,8 @@ const paypal = async (path, { method = 'POST', body, requestId } = {}) => {
 
 const orderKey = (orderId) => `orders/${encodeURIComponent(orderId)}`;
 
-export const creerCommande = async ({ email, origin }) => {
-  const value = prix();
+export const creerCommande = async ({ email, origin, offre: o }) => {
+  const value = o.prix;
   const customId = `methode-ikea:${randomUUID()}`;
   const { res, data } = await paypal('/v2/checkout/orders', {
     requestId: customId,
@@ -296,9 +318,9 @@ export const creerCommande = async ({ email, origin }) => {
       purchase_units: [{
         reference_id: 'methode-ikea',
         custom_id: customId,
-        description: 'Méthode IKEA — accès à vie',
+        description: `${o.libelle} — accès à vie`,
         amount: { currency_code: 'EUR', value, breakdown: { item_total: { currency_code: 'EUR', value } } },
-        items: [{ name: 'Méthode IKEA — formation en ligne', quantity: '1', category: 'DIGITAL_GOODS', unit_amount: { currency_code: 'EUR', value } }],
+        items: [{ name: o.libelle, quantity: '1', category: 'DIGITAL_GOODS', unit_amount: { currency_code: 'EUR', value } }],
       }],
       payment_source: {
         paypal: {
@@ -308,7 +330,7 @@ export const creerCommande = async ({ email, origin }) => {
             shipping_preference: 'NO_SHIPPING',
             user_action: 'PAY_NOW',
             return_url: `${origin}/methode-ikea?paypal=return`,
-            cancel_url: `${origin}/methode-ikea?paypal=cancel`,
+            cancel_url: `${origin}/methode-ikea?paypal=cancel&offre=${o.id}`,
           },
         },
       },
@@ -318,7 +340,7 @@ export const creerCommande = async ({ email, origin }) => {
   const approveUrl = data.links?.find((l) => ['payer-action', 'approve'].includes(l.rel))?.href;
   if (!data.id || !approveUrl) throw new Error('paypal_create_incomplete');
   await store().setJSON(orderKey(data.id), {
-    email, custom_id: customId, amount: value, status: 'created', created_at: new Date().toISOString(),
+    email, offre: o.id, custom_id: customId, amount: value, status: 'created', created_at: new Date().toISOString(),
   });
   return { orderId: data.id, approveUrl };
 };
@@ -327,7 +349,7 @@ export const creerCommande = async ({ email, origin }) => {
 export const capturerCommande = async (orderId) => {
   const commande = await store().get(orderKey(orderId), { type: 'json' });
   if (!commande) return { error: 'unknown_order' };
-  if (commande.status === 'captured') return { status: 'already_captured', email: commande.email };
+  if (commande.status === 'captured') return { status: 'already_captured', email: commande.email, offre: commande.offre };
 
   let { res, data } = await paypal(`/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {
     requestId: `mi-capture-${orderId}`,
@@ -345,7 +367,9 @@ export const capturerCommande = async (orderId) => {
 
   await ajouterAcheteur(commande.email, {
     source: 'paypal',
+    offre: commande.offre,
     purchase: {
+      offre: commande.offre,
       order_id: orderId,
       capture_id: capture.id,
       amount: capture.amount.value,
@@ -354,5 +378,5 @@ export const capturerCommande = async (orderId) => {
     },
   });
   await store().setJSON(orderKey(orderId), { ...commande, status: 'captured', capture_id: capture.id, captured_at: new Date().toISOString() });
-  return { status: 'captured', email: commande.email, capture };
+  return { status: 'captured', email: commande.email, offre: commande.offre, capture };
 };

@@ -3,10 +3,10 @@
 //
 //   METHODE_IKEA_ADMIN_TOKEN=… node scripts/methode-ikea.mjs <commande>
 //
-//   list                         liste les acheteurs
-//   add <email> [email…]         ajoute des acheteurs (source « admin »)
-//   import <fichier>             importe un fichier d'emails (CSV, TXT, export Notion : tout email trouvé)
-//   remove <email>               retire un accès (coupe aussi les sessions ouvertes)
+//   list                                       liste les accès
+//   add <email> [--offre avec_appels|sans_appels] [--note "…"]
+//                                              accorde un accès manuel (défaut : sans_appels)
+//   remove <email>                             retire un accès (coupe aussi les sessions ouvertes)
 //   content <fichier.html>       dépose la formation (ajoute <!doctype>/<html>/<head>/<body> si absents)
 //
 // Cible : METHODE_IKEA_URL (défaut https://www.mobilityclub.co ; http://localhost:8888 sous netlify dev).
@@ -40,28 +40,31 @@ const appel = async (method, path, body, type = 'application/json') => {
   return data;
 };
 
-const emailsDans = (texte) => [...new Set((texte.match(/[^\s@,;<>"'()]+@[^\s@,;<>"'()]+\.[a-z]{2,}/gi) || []).map((e) => e.toLowerCase()))];
+const option = (args, nom) => {
+  const i = args.indexOf(`--${nom}`);
+  return i === -1 ? undefined : args.splice(i, 2)[1];
+};
 
 const main = async ([cmd, ...args]) => {
   if (!TOKEN) throw new Error('METHODE_IKEA_ADMIN_TOKEN manquant.');
   switch (cmd) {
     case 'list': {
-      const { buyers } = await appel('GET', 'buyers');
-      for (const b of buyers) console.log(`${b.created_at.slice(0, 10)}  ${b.source.padEnd(7)}  ${b.email}`);
-      console.log(`${buyers.length} acheteur(s) — ${BASE}`);
+      const { access } = await appel('GET', 'access');
+      for (const a of access) console.log(`${a.created_at.slice(0, 10)}  ${a.source.padEnd(6)}  ${a.offre.padEnd(11)}  ${a.email}${a.note ? `  (${a.note})` : ''}`);
+      console.log(`${access.length} accès — ${BASE}`);
       return;
     }
-    case 'add':
-    case 'import': {
-      const emails = cmd === 'add' ? args : emailsDans(await readFile(args[0], 'utf8'));
-      if (!emails.length) throw new Error('Aucun email fourni.');
-      const r = await appel('POST', 'buyers', { emails, source: cmd === 'import' ? 'import' : 'admin' });
+    case 'add': {
+      const offre = option(args, 'offre') || 'sans_appels';
+      const note = option(args, 'note');
+      if (!args.length) throw new Error('Aucun email fourni.');
+      const r = await appel('POST', 'access', { emails: args, offre, source: 'manuel', note });
       console.log(`ajoutés : ${r.added.length} · déjà présents : ${r.existing.length} · invalides : ${r.invalid.length}`);
       if (r.invalid.length) console.log('invalides :', r.invalid.join(', '));
       return;
     }
     case 'remove': {
-      const r = await appel('DELETE', 'buyers', { email: args[0] });
+      const r = await appel('DELETE', `access?email=${encodeURIComponent(args[0] || '')}`);
       console.log(r.removed ? `retiré : ${args[0]}` : `absent : ${args[0]}`);
       return;
     }
@@ -72,7 +75,7 @@ const main = async ([cmd, ...args]) => {
       return;
     }
     default:
-      console.log('Commandes : list | add <email…> | import <fichier> | remove <email> | content <fichier.html>');
+      console.log('Commandes : list | add <email…> [--offre avec_appels|sans_appels] [--note …] | remove <email> | content <fichier.html>');
   }
 };
 
