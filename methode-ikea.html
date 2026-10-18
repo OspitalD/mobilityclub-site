@@ -135,6 +135,31 @@ section.block{padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--lin
 .after b{display:block;margin-top:6px}
 .after span{color:var(--dust);font-size:14.5px}
 @media (max-width:720px){.after{grid-template-columns:minmax(0,1fr)}.after div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}}
+/* bulle vidéo flottante */
+.vwrap{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:10px;animation:vpop .7s cubic-bezier(.34,1.56,.64,1) 1.2s both}
+.vwrap[hidden]{display:none}
+.vfloat{display:flex;align-items:center;gap:10px;animation:vdrift 16s ease-in-out 2s infinite}
+@keyframes vpop{from{opacity:0;transform:scale(.3) translateY(30px)}to{opacity:1;transform:none}}
+@keyframes vdrift{0%,100%{transform:translate(0,0)}25%{transform:translate(26px,-18px)}50%{transform:translate(8px,-42px)}75%{transform:translate(34px,-14px)}}
+.vbub{appearance:none;border:0;padding:0;cursor:pointer;position:relative;width:104px;height:104px;border-radius:50%;background:var(--wall-2);box-shadow:0 0 0 3px var(--jade),0 18px 40px -12px rgba(0,0,0,.8);overflow:visible;flex:none;transition:transform .2s}
+.vbub:hover{transform:scale(1.06)}
+.vbub video{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.vbub::before{content:"";position:absolute;inset:-3px;border-radius:50%;animation:vping 2.4s infinite;pointer-events:none}
+@keyframes vping{0%{box-shadow:0 0 0 0 rgba(62,207,160,.55)}70%{box-shadow:0 0 0 16px rgba(62,207,160,0)}100%{box-shadow:0 0 0 0 rgba(62,207,160,0)}}
+.vbub .vp{position:absolute;right:-2px;bottom:-2px;width:34px;height:34px;border-radius:50%;background:var(--jade);display:grid;place-items:center;box-shadow:0 0 0 3px var(--wall)}
+.vtag{background:var(--wall-2);border:1px solid var(--line-2);border-radius:100px;padding:8px 12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;cursor:pointer;color:var(--chalk)}
+.vtag b{color:var(--jade);font-weight:600}
+.vx{appearance:none;border:0;background:var(--wall-2);color:var(--dust);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;align-self:flex-start;margin-left:-6px;box-shadow:0 0 0 1px var(--line-2)}
+.vx:hover{color:var(--chalk)}
+@media (max-width:560px){.vbub{width:84px;height:84px}.vtag{display:none}}
+@media (prefers-reduced-motion:reduce){.vwrap,.vfloat,.vbub::before{animation:none}}
+.vmod{position:fixed;inset:0;z-index:60;background:rgba(5,7,6,.86);display:grid;place-items:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.vmod[hidden]{display:none}
+.vmod-in{position:relative;display:flex;flex-direction:column;gap:14px;align-items:center;width:min(100%,460px);animation:vpop .45s cubic-bezier(.34,1.4,.64,1) both}
+.vmod video{width:100%;max-height:74vh;aspect-ratio:3/4;object-fit:cover;border-radius:14px;background:#000;box-shadow:0 0 0 1px var(--line-2),0 30px 80px -20px rgba(0,0,0,.9)}
+.vmod video::cue{font-family:var(--f-body);font-size:15px;background:rgba(13,15,14,.82)}
+.vmod-top{width:100%;display:flex;justify-content:space-between;align-items:center}
+.vmod-x{appearance:none;border:0;background:none;color:var(--chalk);font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:6px 0}
 footer{border-top:1px solid var(--line);padding-block:28px 40px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 </style>
@@ -151,9 +176,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <div class="hero-copy">
       <span class="lbl jade rise">La Méthode IKEA · Mise à jour 2026</span>
       <h1><span class="mask"><span>Monte ta routine</span></span><span class="mask"><span style="--d:.08s">de mobilité</span></span><span class="mask"><span style="--d:.16s"><span class="it">en 5 étapes.</span></span></span></h1>
-      <p class="lead rise" style="--d:.3s">Pour les sportifs qui veulent une routine qu'ils font vraiment, et les coachs qui veulent une méthode à transmettre. Et refais-le pour chaque client.</p>
+      <p class="lead rise" style="--d:.3s">Cinq étapes, cinq outils, et tu sais construire tes propres séances. Sans dépendre d'un programme, d'un coach, ni de ce qui te perd sur Instagram. Pour les sportifs, et pour les coachs qui veulent une méthode à transmettre.</p>
       <div class="cta rise" style="--d:.4s"><a class="btn" href="#offre">Je veux ma routine →</a><span class="price-mini">97 € <s>200 €</s> · 2 appels avec Damien inclus</span></div>
-      <div class="facts rise" style="--d:.5s"><span><b>5</b> modules vidéo</span><span><b>6</b> outils interactifs</span><span><b>1</b> lecteur guidé pour lancer ta routine</span></div>
+      <div class="facts rise" style="--d:.5s"><span><b>5</b> modules vidéo</span><span><b>6</b> outils interactifs</span><span><b>1</b> lecteur guidé pour lancer ta routine</span><span><b>400+</b> membres accompagnés au Club</span></div>
     </div>
     <a class="video rise" style="--d:.2s" href="https://youtu.be/2omVNG_K2n4" target="_blank" rel="noopener" aria-label="Voir la vidéo d'introduction sur YouTube">
       <img src="/assets/app/methode-ikea-intro.jpg" alt=""><span class="veil"></span>
@@ -169,7 +194,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <span class="lbl jade">Ton formateur</span>
     <blockquote>« Tout faire, c'est <em>ne rien faire.</em> On choisit, on mesure, et on s'y tient. »</blockquote>
     <div class="sig"><b>Damien Ospital</b><span class="lbl">Fondateur du Mobility Club</span></div>
-    <p class="muted" style="margin-top:18px;max-width:34em">La Méthode IKEA, c'est ce que j'applique aux membres du Club : savoir ce que tu viens chercher, la place que tu as, et monter une routine que tu feras vraiment.</p>
+    <p class="muted" style="margin-top:18px;max-width:34em">La Méthode IKEA, c'est ce que j'applique aux membres du Club : savoir ce que tu viens chercher, la place que tu as, et monter une routine que tu feras vraiment. C'est ma première mini-formation, créée il y a deux ans, refaite en 2026 avec un site et des outils dédiés.</p>
   </div>
 </div></section>
 
@@ -183,7 +208,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <div class="ob"><span class="q">« J'abandonne au bout de deux semaines. »</span><span class="ar">→</span><span class="a"><b>Module 4 · Le coup de cœur</b><span>Plaisir × efficacité : tu gardes ce que tu aimes, tu compenses le reste.</span></span></div>
     <div class="ob"><span class="q">« Je ne sais pas doser ni assembler. »</span><span class="ar">→</span><span class="a"><b>Module 5 · La notice de montage</b><span>Des templates de 5 et 20 minutes, remplis avec tes exercices, prêts à lancer.</span></span></div>
     <div class="ob"><span class="q">« Ma séance change tous les jours. »</span><span class="ar">→</span><span class="a"><b>La matrice de séance</b><span>Un arbre de décision quotidien : quoi faire, où et dans quel ordre selon ta séance.</span></span></div>
-    <div class="ob"><span class="q">« Et si je me trompe ? »</span><span class="ar">→</span><span class="a"><b>2 appels de 30 min avec Damien</b><span>On valide ta routine ensemble, et on l'ajuste.</span></span></div>
+    <div class="ob"><span class="q">« Et si je me trompe ? »</span><span class="ar">→</span><span class="a"><b>2 appels de 30 min avec Damien</b><span>Un appel avant de commencer, un après : Damien s'assure lui-même que tu as compris.</span></span></div>
     <div class="ob"><span class="q">Coach : « Chaque client est différent. »</span><span class="ar">→</span><span class="a"><b>Une méthode rejouable</b><span>Les mêmes étapes, pour monter la routine de n'importe quel client.</span></span></div>
   </div>
 </div></section>
@@ -196,8 +221,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
         <div class="si"><div><b>La formation : 5 modules vidéo</b><span class="d">La méthode complète, de tes besoins à ta routine finale.</span></div><span class="v">97 €</span></div>
         <div class="si"><div><b>Les 6 outils interactifs</b><span class="d">Liste de courses, mètre ruban, rayon et 4 scénarios, coup de cœur, notice de montage, matrice de séance. Plus le lecteur guidé.</span></div><span class="v">120 €</span></div>
         <div class="si"><div><b>Les 10 fiches formats</b><span class="d">Principes et progressions, du RAC à l'EQI.</span></div><span class="v">29 €</span></div>
-        <div class="si"><div><b>2 appels de 30 min avec Damien</b><span class="d">Pour valider et ajuster ta routine.</span></div><span class="v">100 €</span></div>
-        <div class="si bonus"><div><b>Bonus : bilan articulaire, librairie de 130 exercices et timer par format</b><span class="d">Pour trouver tes zones prioritaires et piocher tes exercices.</span></div><span class="v">Inclus</span></div>
+        <div class="si"><div><b>2 appels de 30 min avec Damien</b><span class="d">Un avant de commencer pour cerner tes besoins, un après pour valider ta routine.</span></div><span class="v">100 €</span></div>
+        <div class="si bonus"><div><b>Bonus : bilan articulaire, librairie de 130 exercices et timer par format</b><span class="d">La librairie de 130 exercices que Damien utilise sur lui et sur les 400+ membres du Club : plus besoin de chercher sur YouTube.</span></div><span class="v">Inclus</span></div>
         <div class="si total"><b>Valeur totale</b><span class="v">346 €</span></div>
       </div>
       <div class="guar" style="margin-top:44px">
@@ -236,5 +261,41 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 </main>
 
 <footer><div class="wrap"><span>Mobility Club · La Méthode IKEA</span><span>We plan. You move.</span></div></footer>
+<div class="vwrap" id="vwrap" hidden>
+  <div class="vfloat">
+    <button class="vbub" id="vbub" type="button" aria-label="Regarder le message de Damien, 1 minute 54">
+      <video src="/assets/video/methode-ikea-teaser.mp4" muted autoplay loop playsinline preload="auto" aria-hidden="true"></video>
+      <span class="vp"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="#0D0F0E"/></svg></span>
+    </button>
+    <span class="vtag" id="vtag">Le mot de Damien · <b>1′54</b></span>
+    <button class="vx" id="vx" type="button" aria-label="Masquer la vidéo">×</button>
+  </div>
+</div>
+<div class="vmod" id="vmod" hidden role="dialog" aria-modal="true" aria-label="Le message de Damien">
+  <div class="vmod-in">
+    <div class="vmod-top"><span class="lbl jade">Le mot de Damien</span><button class="vmod-x" id="vclose" type="button">Fermer ×</button></div>
+    <video id="vfull" controls playsinline preload="none" poster="/assets/video/methode-ikea-poster.jpg">
+      <source src="/assets/video/methode-ikea-damien.mp4" type="video/mp4">
+      <track kind="captions" srclang="fr" label="Français" src="/assets/video/methode-ikea-damien.vtt" default>
+    </video>
+    <a class="btn full" href="#offre" id="vcta">Je veux ma routine →</a>
+  </div>
+</div>
+<script>
+(function(){
+  var K='mi-video-masquee', wrap=document.getElementById('vwrap'), mod=document.getElementById('vmod'), v=document.getElementById('vfull');
+  var hidden=false; try{ hidden = sessionStorage.getItem(K)==='1'; }catch(e){}
+  if(!hidden) wrap.hidden=false;
+  function open(){ mod.hidden=false; wrap.hidden=true; try{ v.currentTime=0; var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} document.getElementById('vclose').focus(); }
+  function close(){ v.pause(); mod.hidden=true; if(!hidden) wrap.hidden=false; }
+  document.getElementById('vbub').addEventListener('click', open);
+  document.getElementById('vtag').addEventListener('click', open);
+  document.getElementById('vx').addEventListener('click', function(){ hidden=true; wrap.hidden=true; try{ sessionStorage.setItem(K,'1'); }catch(e){} });
+  document.getElementById('vclose').addEventListener('click', close);
+  document.getElementById('vcta').addEventListener('click', close);
+  mod.addEventListener('click', function(e){ if(e.target===mod) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !mod.hidden) close(); });
+})();
+</script>
 </body>
 </html>
