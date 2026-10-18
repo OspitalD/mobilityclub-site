@@ -295,6 +295,7 @@ export const emailCode = (to, code) => {
 export const emailBienvenue = (to, origin, { appels } = {}) => envoyerEmail({
   to,
   subject: 'Ton accès à la Méthode IKEA',
+  devLog: { calendly: Boolean(appels) },
   html: gabaritEmail('Ton accès est ouvert', `
     <p style="font-size:15px;color:#8C908D;margin:0 0 24px">Merci pour ton achat. Tu retrouves la formation à tout moment ici, en te connectant avec cet email (${to}).</p>
     <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
