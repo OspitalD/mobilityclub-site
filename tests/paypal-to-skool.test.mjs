@@ -374,3 +374,19 @@ test('Méthode IKEA : une vente le 31 au soir, heure de Paris, compte pour le bo
   await appeler(venteIkea('97.00', 'CAP-N', 'ORD-N', '2026-10-31T23:30:00Z'));
   assert.deepEqual(ikeaBlobs.get('quota/2026-11'), { orders: ['ORD-N'] });
 });
+
+test('Méthode IKEA : fonctionne même sans SKOOL_INVITE_WEBHOOK (l\'annuel, lui, reste en 500)', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  const garde = process.env.SKOOL_INVITE_WEBHOOK;
+  delete process.env.SKOOL_INVITE_WEBHOOK;
+  const ikea = await appeler(venteIkea('49.00', 'CAP-SANS-SKOOL', 'ORD-SANS-SKOOL'));
+  const annuel = await appeler(capture('197.00', 'EUR', 'CAP-ANNUEL'));
+  process.env.SKOOL_INVITE_WEBHOOK = garde;
+  assert.equal(ikea.statusCode, 200);
+  assert.equal(emailsResend.length, 1);
+  assert.equal(annuel.statusCode, 500);
+  assert.equal(JSON.parse(annuel.body).error, 'not_configured');
+  assert.equal(appelsSkool.length, 0);
+});

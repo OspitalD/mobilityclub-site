@@ -243,7 +243,9 @@ export const handler = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
   if (req.blobs) connectLambda(req);
 
-  const requis = ['SKOOL_INVITE_WEBHOOK', 'PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET', 'PAYPAL_WEBHOOK_ID'];
+  // SKOOL_INVITE_WEBHOOK n'est exigé qu'au moment d'inviter (plus bas) : la Méthode IKEA
+  // n'en dépend pas et doit fonctionner même si l'invitation Skool n'est pas configurée.
+  const requis = ['PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET', 'PAYPAL_WEBHOOK_ID'];
   const manquantes = requis.filter((v) => !process.env[v]);
   if (manquantes.length) {
     // Fail closed : mal configuré = on n'invite personne. 500 ⇒ PayPal réessaie,
@@ -315,6 +317,11 @@ export const handler = async (req) => {
   } catch (err) {
     console.error('[paypal-to-skool] stock lifetime non écrit:', err?.message);
     return json(500, { error: 'lifetime_stock_failed' });
+  }
+
+  if (!process.env.SKOOL_INVITE_WEBHOOK) {
+    console.error('[paypal-to-skool] variables manquantes: SKOOL_INVITE_WEBHOOK');
+    return json(500, { error: 'not_configured' });
   }
 
   const store = getStore('skool_invites');
