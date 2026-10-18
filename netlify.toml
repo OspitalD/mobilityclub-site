@@ -73,3 +73,24 @@
   for = "/mon-ticket.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow, noarchive"
+
+# ── Méthode IKEA : une seule URL, deux contenus ───────────────────────────────
+# Sans cookie de session : /methode-ikea sert la page de vente statique
+# (methode-ikea.html, déjà envoyée aux prospects). Avec le cookie mi_session :
+# réécriture (200, l'URL ne change pas) vers la Function qui vérifie la signature
+# et l'accès en Blobs avant de servir la formation. Cookie invalide ou accès retiré
+# → la Function l'efface et renvoie ici, où la page de vente reprend la main.
+# force = true : sans lui, le fichier statique masquerait la règle.
+[[redirects]]
+  from = "/methode-ikea"
+  to = "/methode-ikea/formation"
+  status = 200
+  force = true
+  conditions = {Cookie = ["mi_session"]}
+
+[[redirects]]
+  from = "/methode-ikea/"
+  to = "/methode-ikea/formation"
+  status = 200
+  force = true
+  conditions = {Cookie = ["mi_session"]}

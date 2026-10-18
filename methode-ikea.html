@@ -137,12 +137,14 @@ section.block{padding-block:clamp(64px,9vw,112px);border-top:1px solid var(--lin
 @media (max-width:720px){.after{grid-template-columns:minmax(0,1fr)}.after div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}}
 footer{border-top:1px solid var(--line);padding-block:28px 40px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.bar-links{display:flex;gap:20px;white-space:nowrap}.bar-links .login{opacity:.75}
+@media (max-width:480px){.bar-links .buy-top{display:none}}
 </style>
 </head>
 <body>
 <header class="bar"><div class="wrap">
   <span class="brand"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14" stroke="#3ECFA0" stroke-width="2"/><path d="M9 21V11l7 7 7-7v10" stroke="#F5F5F3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Mobility Club</span>
-  <a class="link" href="#offre">97 € · Accéder →</a>
+  <span class="bar-links"><a class="link login" href="/methode-ikea/acces?connexion">Me connecter</a><a class="link buy-top" href="#offre">97 € · Accéder →</a></span>
 </div></header>
 
 <main>
@@ -210,7 +212,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <span class="lbl jade">L'offre complète</span>
       <div class="price"><span class="now">97 €</span><s>200 €</s></div>
       <ul><li>Les 5 modules vidéo</li><li>Les 6 outils interactifs et le lecteur guidé</li><li>Les 10 fiches formats</li><li>2 appels de 30 min avec Damien</li><li>Bilan articulaire, librairie et timer</li><li>Garantie notice de montage, 30 jours</li></ul>
-      <a class="btn full" href="https://www.paypal.com/ncp/payment/B635FGXCASPJG" target="_blank" rel="noopener">Payer 97 € avec PayPal →</a>
+      <a class="btn full" href="/methode-ikea/acces?offre=avec_appels">Payer 97 € avec PayPal →</a>
       <p class="small">Paiement sécurisé PayPal. Paiement en 4X possible selon ton éligibilité PayPal.</p>
       <p class="scar"><b>20 places par mois</b> avec les appels : c'est le temps réel que Damien peut y consacrer.</p>
     </div>
@@ -220,14 +222,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 <section class="block" style="padding-top:0;border-top:0"><div class="wrap">
   <div class="down">
     <div><span class="lbl">Pas besoin des appels ?</span><p style="margin-top:10px"><b class="p">49 €</b><s>100 €</s></p><p class="muted" style="margin-top:6px">La même formation, les mêmes outils et la même garantie, sans les 2 appels.</p></div>
-    <a class="ghost" href="https://www.paypal.com/ncp/payment/SMZPBP79P5Y7A" target="_blank" rel="noopener">Payer 49 € sans appels →</a>
+    <a class="ghost" href="/methode-ikea/acces?offre=sans_appels">Payer 49 € sans appels →</a>
   </div>
 </div></section>
 
 <section class="block"><div class="wrap">
   <div class="head"><div><span class="lbl">Après ton paiement</span><h2>Trois étapes, <span class="it">et tu montes.</span></h2></div><p class="lead muted">Pas de plateforme à installer : la formation s'ouvre dans ton navigateur, sur téléphone comme sur ordinateur.</p></div>
   <div class="after">
-    <div><span class="n">01</span><b>Damien t'envoie ton accès</b><span>À l'adresse email de ton compte PayPal.</span></div>
+    <div><span class="n">01</span><b>Ton accès s'ouvre tout de suite</b><span>Tu te reconnectes quand tu veux avec ton email : un code t'est envoyé.</span></div>
     <div><span class="n">02</span><b>Tu suis les 5 modules</b><span>Chaque module ajoute une pièce à ta routine.</span></div>
     <div><span class="n">03</span><b>Tu lances ta routine</b><span>Avec le lecteur guidé, et tu réserves tes appels si tu as pris l'offre complète.</span></div>
   </div>

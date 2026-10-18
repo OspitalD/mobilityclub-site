@@ -169,7 +169,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 </head>
 <body>
 <header class="bar"><div class="wrap">
-  <a class="brand" href="/">Mobility <b>Club</b></a>
+  <a class="brand" href="/methode-ikea">Mobility <b>Club</b></a>
   <span class="eyebrow">Formation</span>
 </div></header>
 
@@ -363,10 +363,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     msg('');
   }
 
+  // Arrivée depuis la page de vente : ?offre=sans_appels (bouton 49 €) ou ?connexion.
   // Retours de PayPal : ?paypal=cancel&offre=… ou ?paypal=return&token=<order id>
   var q = new URLSearchParams(location.search);
+  if (q.get('offre') === 'sans_appels' && !q.get('paypal')) montrer('sans_appels');
+  if (q.has('connexion')) { tab('login'); $('login-email').focus(); }
+  else if (q.has('offre')) $('buy-email').focus();
   if (q.get('paypal') === 'cancel') {
-    history.replaceState(null, '', '/methode-ikea');
+    history.replaceState(null, '', '/methode-ikea/acces');
     montrer('sans_appels');
     msg('Paiement annulé, rien n\\'a été prélevé.');
   }
@@ -374,7 +378,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     busy($('f-buy'), true);
     msg('Validation du paiement… Ne ferme pas cette page.');
     post('capture', { order_id: q.get('token') }).then(function(d){
-      history.replaceState(null, '', '/methode-ikea');
+      history.replaceState(null, '', '/methode-ikea/acces');
       busy($('f-buy'), false);
       if (d.ok && !d.already_captured) return confirmation(d);
       if (d.ok) { tab('login'); return msg('Paiement déjà validé : connecte-toi avec ton email pour ouvrir la formation.', 'ok'); }

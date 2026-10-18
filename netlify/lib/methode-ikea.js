@@ -298,7 +298,7 @@ export const emailBienvenue = (to, origin, { appels } = {}) => envoyerEmail({
   devLog: { calendly: Boolean(appels) },
   html: gabaritEmail('Ton accès est ouvert', `
     <p style="font-size:15px;color:#8C908D;margin:0 0 24px">Merci pour ton achat. Tu retrouves la formation à tout moment ici, en te connectant avec cet email (${to}).</p>
-    <a href="${origin}/methode-ikea" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
+    <a href="${origin}/methode-ikea/acces?connexion" style="display:inline-block;background:#3ECFA0;color:#0D0F0E;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px">Ouvrir la Méthode IKEA</a>
     ${appels ? `<p style="font-size:15px;color:#F5F5F3;margin:28px 0 12px">Tes 2 appels de 30 min avec moi sont inclus. Réserve le premier quand tu veux :</p>
     <a href="${calendly()}" style="color:#3ECFA0;font-weight:700">Réserver mon appel avec Damien</a>` : ''}
     <p style="font-size:14px;color:#8C908D;margin:32px 0 6px;border-top:1px solid #222;padding-top:20px">Un jour, tu ne voudras plus monter ta routine toi-même ? Le Mobility Club te prescrit ta séance chaque jour.</p>
@@ -363,8 +363,8 @@ export const creerCommande = async ({ email, origin, offre: o }) => {
             locale: 'fr-FR',
             shipping_preference: 'NO_SHIPPING',
             user_action: 'PAY_NOW',
-            return_url: `${origin}/methode-ikea?paypal=return`,
-            cancel_url: `${origin}/methode-ikea?paypal=cancel&offre=${o.id}`,
+            return_url: `${origin}/methode-ikea/acces?paypal=return`,
+            cancel_url: `${origin}/methode-ikea/acces?paypal=cancel&offre=${o.id}`,
           },
         },
       },

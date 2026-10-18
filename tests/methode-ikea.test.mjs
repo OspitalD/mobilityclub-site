@@ -41,10 +41,12 @@ const appel = async (action, body, { cookie, auth, method = 'POST', raw, origin 
   return { status: res.status, body: res.status === 204 ? null : await res.json(), headers: res.headers, cookie: (res.headers.get('set-cookie') || '').split(';')[0] };
 };
 
-const ouvrir = async (cookie) => {
-  const res = await page(new Request(`${ORIGIN}/methode-ikea`, { headers: cookie ? { cookie } : {} }));
+// /methode-ikea avec cookie est réécrit par netlify.toml vers /methode-ikea/formation.
+const ouvrir = async (cookie, chemin = '/methode-ikea/formation') => {
+  const res = await page(new Request(`${ORIGIN}${chemin}`, { headers: cookie ? { cookie } : {} }));
   return { status: res.status, html: await res.text(), headers: res.headers };
 };
+const pageAchat = (cookie) => ouvrir(cookie, '/methode-ikea/acces');
 
 const ADMIN = 'admin-token-de-test-suffisamment-long';
 
@@ -90,7 +92,7 @@ beforeEach(() => {
 const codeEnvoye = () => mails.at(-1).subject.match(/(\d{3}) (\d{3})/).slice(1).join('');
 
 test('sans session : page d\'accès, jamais le contenu payant', async () => {
-  const r = await ouvrir();
+  const r = await pageAchat();
   assert.equal(r.status, 200);
   assert.doesNotMatch(r.html, /CONTENU-PAYANT/);
   assert.match(r.html, /J'ai déjà acheté/);
@@ -102,6 +104,42 @@ test('sans session : page d\'accès, jamais le contenu payant', async () => {
   assert.match(r.html, /Garantie notice de montage/);
   assert.match(r.html, /Valeur totale/);
   assert.equal(r.headers.get('cache-control'), 'private, no-store');
+});
+
+test('routage : formation sans cookie → connexion ; cookie invalide → effacé, retour à la page de vente', async () => {
+  const sans = await ouvrir();
+  assert.equal(sans.status, 302);
+  assert.equal(sans.headers.get('location'), '/methode-ikea/acces?connexion');
+  const forge = await ouvrir('mi_session=nimporte.quoi');
+  assert.equal(forge.status, 302);
+  assert.equal(forge.headers.get('location'), '/methode-ikea');
+  assert.match(forge.headers.get('set-cookie'), /^mi_session=; .*Max-Age=0/);
+  assert.doesNotMatch(forge.html, /CONTENU-PAYANT/);
+  // Déjà connecté : la page d'achat renvoie vers la formation.
+  await appel('admin/access', { email: 'c@d.fr' }, { auth: ADMIN });
+  await appel('request-code', { email: 'c@d.fr' });
+  const ok = await appel('verify-code', { email: 'c@d.fr', code: codeEnvoye() });
+  const achat = await pageAchat(ok.cookie);
+  assert.equal(achat.status, 302);
+  assert.equal(achat.headers.get('location'), '/methode-ikea');
+});
+
+test('netlify.toml : /methode-ikea réécrit vers la formation seulement avec le cookie', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const toml = await readFile(new URL('../netlify.toml', import.meta.url), 'utf8');
+  for (const from of ['/methode-ikea', '/methode-ikea/']) {
+    const bloc = toml.split('[[redirects]]').find((b) => b.includes(`from = "${from}"`));
+    assert.ok(bloc, from);
+    assert.match(bloc, /to = "\/methode-ikea\/formation"/);
+    assert.match(bloc, /status = 200/);
+    assert.match(bloc, /force = true/);
+    assert.match(bloc, /conditions = \{Cookie = \["mi_session"\]\}/);
+  }
+  // La page de vente ne pointe plus vers les liens PayPal hébergés (accès manuel).
+  const vente = await readFile(new URL('../methode-ikea.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(vente, /paypal\.com\/ncp/);
+  assert.match(vente, /\/methode-ikea\/acces\?offre=avec_appels/);
+  assert.match(vente, /\/methode-ikea\/acces\?offre=sans_appels/);
 });
 
 test('cookie forgé ou signé avec un autre secret : refusé', async () => {
@@ -158,8 +196,8 @@ test('achat PayPal 97 € : commande → capture vérifiée → accès avec_appe
   assert.match(c.body.approve_url, /ORDER1AAAA/);
   const order = orders.get('ORDER1AAAA');
   assert.equal(order.purchase_units[0].amount.value, '97.00');
-  assert.equal(order.payment_source.paypal.experience_context.return_url, `${ORIGIN}/methode-ikea?paypal=return`);
-  assert.equal(order.payment_source.paypal.experience_context.cancel_url, `${ORIGIN}/methode-ikea?paypal=cancel&offre=avec_appels`);
+  assert.equal(order.payment_source.paypal.experience_context.return_url, `${ORIGIN}/methode-ikea/acces?paypal=return`);
+  assert.equal(order.payment_source.paypal.experience_context.cancel_url, `${ORIGIN}/methode-ikea/acces?paypal=cancel&offre=avec_appels`);
 
   const cap = await appel('capture', { order_id: 'ORDER1AAAA' });
   assert.equal(cap.status, 200);
@@ -210,7 +248,7 @@ test('quota mensuel : chaque vente avec appels consomme une place, quota atteint
   assert.equal(list.body.quota.restantes, 0);
   assert.equal((await appel('checkout', { email: 'c@q.fr', offre: 'avec_appels' })).body.error, 'quota_full');
   assert.equal((await appel('checkout', { email: 'c@q.fr', offre: 'sans_appels' })).status, 201);
-  const html = (await ouvrir()).html;
+  const html = (await pageAchat()).html;
   assert.match(html, /Les 2 places avec appels de \S+ sont prises/);
   assert.match(html, /<div id="offer-avec_appels" hidden>/);
   assert.match(html, /Payer 49 € avec PayPal/);
