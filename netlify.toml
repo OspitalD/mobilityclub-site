@@ -94,3 +94,15 @@
   status = 200
   force = true
   conditions = {Cookie = ["mi_session"]}
+
+# ── Bascule Skool → app : page privée, hors index ─────────────────────────────
+# Envoyée aux abonnés Skool uniquement. Même traitement que /retour-au-club.
+[[headers]]
+  for = "/bascule"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/bascule.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"

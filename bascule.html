@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<!--
+  BASCULE SKOOL → APP
+  Page privée envoyée aux abonnés mensuels Skool. Hors index (meta + en-tête netlify.toml).
+
+  Tout ce que Damien doit remplir est dans MC_BASCULE ci-dessous.
+  Une valeur entre crochets « [ ... ] » s'affiche surlignée en or sur la page :
+  tant qu'il en reste une, la page n'est pas prête à partir.
+  Chaque montant doit correspondre EXACTEMENT au checkout PayPal derrière le lien.
+-->
+<script>
+window.MC_BASCULE = {
+  // Formule mise en avant avec le badge « Avantage membres fondateurs » : 'annuel' | 'vie' | 'mensuel'
+  RECOMMANDE: 'annuel',
+
+  ANNUEL_PRIX: '[prix annuel]',          // ex. '197 €'
+  ANNUEL_EQUIV: '[≈ x € par mois]',      // ex. 'soit 16,40 € par mois'
+  ANNUEL_BONUS: '[bonus fondateur]',
+  LIEN_ANNUEL: '[lien annuel]',
+
+  VIE_PRIX: '249 €',                     // prix Lifetime actuel de /devenir-membre — à confirmer
+  VIE_BONUS: '[bonus éventuel]',         // laisser '' pour ne rien afficher
+  LIEN_VIE: '[lien à vie]',
+
+  MENSUEL_PRIX: '25 €',                  // plan PayPal actuel de /devenir-membre — à confirmer
+  LIEN_MENSUEL: '[lien mensuel]',
+
+  DATE_LIMITE: '[date]',                 // ex. 'dimanche 9 novembre'
+  DATE_FIN_SKOOL: '[date de fin Skool]', // jour où les abonnements Skool s'arrêtent
+  DELAI_COUPURE: '[48 h]',               // délai pour couper l'abonnement Skool après paiement
+  CONTACT: '[contact]',                  // ex. 'damien@mobilityclub.co'
+
+  // Si le lien de paiement ne récupère pas l'email Skool, on le demande avant de partir.
+  DEMANDER_EMAIL: true,
+  INTENT_ENDPOINT: '/.netlify/functions/bascule-intent',
+
+  APP_URL: 'https://app.mobilityclub.co'
+};
+</script>
+
+<title>Le club déménage — Mobility Club</title>
+<meta name="description" content="Le Mobility Club quitte Skool : ton abonnement passe dans l'app." />
+<meta name="robots" content="noindex,nofollow" />
+<meta name="theme-color" content="#0D0F0E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --bg:#0D0F0E;
+  --surface:#111412;
+  --surface-2:#17191A;
+  --line:rgba(255,255,255,.07);
+  --line-strong:#232826;
+  --green:#3ECFA0;
+  --green-ink:#0D0F0E;
+  --gold:#E8A020;
+  --text:#F5F5F3;
+  --muted:#8E918E;
+  --quiet:#5C615E;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --col:620px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{
+  min-width:320px;overflow-x:hidden;
+  background:radial-gradient(60rem 30rem at 50% -12rem,rgba(62,207,160,.06),transparent 70%),var(--bg);
+  color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.col{width:min(100%,var(--col));margin-inline:auto;padding-inline:20px}
+.wide{width:min(100%,1040px);margin-inline:auto;padding-inline:20px}
+
+/* Valeur à remplir par Damien */
+.ph{color:var(--gold);text-decoration:underline dashed rgba(232,160,32,.6);text-underline-offset:3px}
+
+/* En-tête */
+.top{display:flex;align-items:center;gap:9px;height:60px;font-size:13px;font-weight:700;letter-spacing:.3px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 16px rgba(62,207,160,.6)}
+
+/* 1. Mot de Damien */
+.hello{padding-block:clamp(28px,7vw,72px) clamp(40px,8vw,72px)}
+.hello h1{font-size:clamp(40px,11vw,68px);line-height:.98;font-weight:800;letter-spacing:-.045em}
+.hello h1 em{font-style:italic;color:var(--green)}
+.note{margin-top:26px;display:grid;gap:14px;font-size:clamp(17px,4.4vw,19px);line-height:1.6;color:#D6D8D5}
+.sign{margin-top:26px;padding-left:14px;border-left:2px solid var(--green);font-size:14px;color:var(--muted)}
+.sign b{display:block;color:var(--text);font-weight:600}
+
+/* 2. Ce qui change */
+.section{padding:clamp(40px,8vw,72px) 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacing:-.03em}
+.lead{margin-top:10px;color:var(--muted);font-size:16px}
+.split{display:grid;gap:30px;margin-top:28px}
+.split h3{font-size:15px;font-weight:700;color:var(--muted)}
+.list{list-style:none;margin-top:6px}
+.list li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.5}
+.list li:last-child{border-bottom:0}
+.list li::before{content:"";width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--quiet)}
+.list.new li::before{background:var(--green)}
+.list strong{font-weight:700}
+.once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 10px 10px 0;font-size:16px;line-height:1.5}
+
+/* 3. Le choix */
+.plans{display:grid;gap:14px;margin-top:28px}
+.plan{position:relative;display:flex;flex-direction:column;gap:6px;padding:24px 22px 22px;border:1px solid var(--line-strong);border-radius:16px;background:var(--surface)}
+.plan.reco{border-color:rgba(62,207,160,.55);background:linear-gradient(var(--surface-2),var(--surface-2)) padding-box;box-shadow:0 0 0 1px rgba(62,207,160,.12),0 20px 50px -30px rgba(62,207,160,.45)}
+.badge{align-self:flex-start;margin-bottom:6px;padding:5px 10px;border-radius:7px;background:rgba(62,207,160,.12);color:var(--green);font-size:12px;font-weight:700}
+.plan h3{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.price{margin-top:4px;font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-.035em}
+.price small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
+.sub{color:var(--muted);font-size:14px}
+.bonus{margin-top:10px;padding-top:12px;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+.bonus b{color:var(--gold);font-weight:700}
+.bonus.none{color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;margin-top:18px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;transition:transform .2s var(--ease),filter .2s var(--ease),border-color .2s var(--ease)}
+.cta:active{transform:scale(.985)}
+.cta.primary{background:var(--green);color:var(--green-ink)}
+.cta.primary:hover{filter:brightness(1.06)}
+.cta.ghost{border:1px solid var(--line-strong);color:var(--text)}
+.cta.ghost:hover{border-color:rgba(62,207,160,.6)}
+.cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+
+/* 4. Date limite */
+.deadline{margin-top:22px;color:var(--muted);font-size:15px;line-height:1.55;text-align:center}
+.deadline b{color:var(--text);font-weight:600}
+
+/* 5. FAQ */
+.faq{margin-top:20px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-size:16px;font-weight:600;line-height:1.4;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:9px;height:9px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .25s var(--ease)}
+.faq details[open] summary::after{transform:rotate(225deg) translateY(-2px)}
+.faq p{padding:0 0 18px;color:#C4C7C3;font-size:15.5px;line-height:1.65}
+
+/* 6. Pied */
+.foot{padding-block:48px 64px;border-top:1px solid var(--line);text-align:center}
+.foot p{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.foot span{display:block;margin-top:6px;color:var(--muted);font-size:15px}
+
+/* Feuille email */
+.veil{position:fixed;inset:0;z-index:40;background:rgba(5,6,6,.66);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;width:min(100%,520px);margin-inline:auto;padding:22px 20px calc(22px + env(safe-area-inset-bottom));border:1px solid var(--line-strong);border-bottom:0;border-radius:20px 20px 0 0;background:var(--surface-2);transform:translateY(105%);transition:transform .35s var(--ease)}
+.open .veil{opacity:1;pointer-events:auto}
+.open .sheet{transform:none}
+.grab{width:38px;height:4px;margin:0 auto 18px;border-radius:4px;background:var(--line-strong)}
+.sheet h2{font-size:22px}
+.sheet .lead{font-size:15px}
+.recap{display:flex;justify-content:space-between;gap:12px;margin-top:18px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15px}
+.recap b{font-weight:700}
+.field{display:grid;gap:8px;margin-top:18px;font-size:14px;font-weight:600;color:var(--muted)}
+.field input{width:100%;height:52px;padding:0 14px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);color:var(--text);font:500 16px var(--sans)}
+.field input[aria-invalid="true"]{border-color:#E05A4A}
+.err{min-height:20px;margin-top:6px;color:#E05A4A;font-size:13px}
+.later{display:block;width:100%;margin-top:10px;padding:10px;color:var(--muted);font-size:14px}
+
+/* Écran de confirmation */
+.done{display:none;padding-block:clamp(28px,8vw,72px) 72px}
+.is-done .main{display:none}
+.is-done .done{display:block}
+.check{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:rgba(62,207,160,.12);color:var(--green)}
+.done h1{margin-top:22px;font-size:clamp(36px,10vw,56px);line-height:1;font-weight:800;letter-spacing:-.045em}
+.done h1 em{font-style:italic;color:var(--green)}
+.steps{list-style:none;counter-reset:s;margin-top:30px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-strong);color:var(--green);font-size:13px;font-weight:700}
+.steps li>span{color:var(--text)}
+.steps li>span>b{display:block;font-weight:700}
+.steps li>span>span{display:block;color:var(--muted);font-size:14.5px}
+
+@media (min-width:860px){
+  .split{grid-template-columns:1fr 1fr;gap:48px}
+  .plans{grid-template-columns:repeat(3,1fr);align-items:stretch}
+  .plan .cta{margin-top:auto}
+  .plan .bonus{margin-bottom:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="main">
+  <header class="col top" aria-label="Mobility Club"><span class="dot" aria-hidden="true"></span>Mobility Club</header>
+
+  <!-- 1. Mot de Damien -->
+  <section class="col hello">
+    <h1>Le club <em>déménage.</em></h1>
+    <div class="note">
+      <p>Depuis le début, tu me suis sur Skool. Aujourd'hui, tout ce que je construis pour toi vit dans l'app : ton programme, le timer, le coach vocal.</p>
+      <p>Alors je fais simple : ton abonnement passe dans l'app, et je ferme la porte Skool. Choisis ta formule juste en dessous, ça prend une minute.</p>
+    </div>
+    <div class="sign">
+      <div><b>Damien</b>Fondateur du Mobility Club</div>
+    </div>
+  </section>
+
+  <!-- 2. Ce qui change / ce qui ne change pas -->
+  <section class="section">
+    <div class="col">
+      <h2>Ce qui bouge, ce qui reste</h2>
+      <div class="split">
+        <div>
+          <h3>Ce qui ne change pas</h3>
+          <ul class="list">
+            <li><span><strong>Ton programme.</strong> Le même, avec ta progression. Rien ne repart de zéro.</span></li>
+            <li><span><strong>Mon suivi.</strong> Tu me poses tes questions comme avant.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Ce qui change</h3>
+          <ul class="list new">
+            <li><span><strong>Tout est au même endroit.</strong> Programme personnalisé, timer et coach vocal (en bêta), dans l'app.</span></li>
+            <li><span><strong>Tu paies dans l'app,</strong> plus sur Skool.</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="once">Ton abonnement Skool s'arrête dès ta bascule. <strong>Tu ne paies jamais deux fois.</strong></p>
+    </div>
+  </section>
+
+  <!-- 3. Le choix -->
+  <section class="section" id="choix">
+    <div class="col">
+      <h2>Choisis ta formule</h2>
+      <p class="lead">Les trois donnent accès à toute l'app. Seule la façon de payer change.</p>
+    </div>
+    <div class="wide">
+      <div class="plans" id="plans"></div>
+    </div>
+    <div class="col">
+      <!-- 4. Date limite -->
+      <p class="deadline" id="deadline"></p>
+    </div>
+  </section>
+
+  <!-- 5. FAQ -->
+  <section class="section">
+    <div class="col">
+      <h2>Tes questions</h2>
+      <div class="faq" id="faq"></div>
+    </div>
+  </section>
+
+  <!-- 6. Pied de page -->
+  <footer class="col foot">
+    <p>Une question ? Réponds directement à mon message.</p>
+    <span>Ou écris-moi : <span data-v="CONTACT"></span></span>
+  </footer>
+</div>
+
+<!-- Écran de confirmation (retour PayPal : ?merci=annuel|vie|mensuel) -->
+<section class="col done" aria-live="polite">
+  <header class="top" style="height:auto;margin-bottom:28px"><span class="dot" aria-hidden="true"></span>Mobility Club</header>
+  <div class="check" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+  </div>
+  <h1>C'est fait. <em>Bienvenue chez toi.</em></h1>
+  <p class="lead" id="doneLead">Ton paiement est validé. Voilà comment ouvrir l'app tout de suite.</p>
+  <ol class="steps">
+    <li><span><b>Ouvre l'app sur ton téléphone.</b><a id="appLink" href="#" style="color:var(--green);font-weight:600">app.mobilityclub.co</a></span></li>
+    <li><span><b>Entre ton email.</b><span id="doneEmail">Celui de ton compte Mobility Club. Tu reçois un code à 6 chiffres par email.</span></span></li>
+    <li><span><b>Ajoute-la à ton écran d'accueil.</b><span>Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ». Elle s'ouvre comme une vraie app.</span></span></li>
+  </ol>
+  <p class="once">Ton abonnement Skool, je le coupe moi-même sous <span data-v="DELAI_COUPURE"></span>. Tu n'as rien à faire.</p>
+  <a class="cta primary" id="appCta" href="#">Ouvrir l'app</a>
+  <p class="deadline">Un souci pour te connecter ? Réponds à mon message ou écris-moi : <span data-v="CONTACT"></span></p>
+</section>
+
+<!-- Feuille : email Skool avant paiement -->
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" aria-hidden="true"></div>
+  <h2 id="sheetTitle">Ton email Skool</h2>
+  <p class="lead">Celui que tu utilises sur Skool. Il me sert à relier ton compte et à couper ton abonnement Skool.</p>
+  <div class="recap"><span id="recapName"></span><b id="recapPrice"></b></div>
+  <form id="emailForm" novalidate>
+    <label class="field">Email
+      <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="toi@exemple.com" required />
+    </label>
+    <p class="err" id="err" role="alert"></p>
+    <button class="cta primary" type="submit" id="go">Continuer vers le paiement</button>
+  </form>
+  <button class="later" type="button" id="close">Revenir aux formules</button>
+</div>
+
+<script>
+(() => {
+  const C = window.MC_BASCULE;
+  const isPh = (v) => typeof v === 'string' && /^\[.*\]$/.test(v.trim());
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const v = (k) => (isPh(C[k]) ? `<span class="ph">${esc(C[k])}</span>` : esc(C[k] || ''));
+
+  const PLANS = {
+    annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
+    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', subTxt: 'Un seul paiement, plus jamais d’abonnement.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
+    mensuel: { nom: 'Rester au mois', merci: 'Ton abonnement au mois est validé.', prix: 'MENSUEL_PRIX', unite: '/mois', subTxt: 'Sans engagement, tu arrêtes quand tu veux.', bonus: null, lien: 'LIEN_MENSUEL', cta: 'Rester au mois' },
+  };
+  const ORDER = ['annuel', 'vie', 'mensuel'];
+
+  // Remplissage des valeurs simples
+  document.querySelectorAll('[data-v]').forEach((el) => { el.innerHTML = v(el.dataset.v); });
+
+  // 3. Cartes
+  document.getElementById('plans').innerHTML = ORDER.map((id) => {
+    const p = PLANS[id];
+    const reco = id === C.RECOMMANDE;
+    const sub = p.sub ? v(p.sub) : esc(p.subTxt);
+    let bonus = '';
+    if (p.bonus === null) bonus = '<p class="bonus none">Sans bonus fondateur.</p>';
+    else if (C[p.bonus]) bonus = `<p class="bonus"><b>Bonus fondateur</b><br>${v(p.bonus)}</p>`;
+    return `<article class="plan${reco ? ' reco' : ''}">
+      ${reco ? '<span class="badge">Avantage membres fondateurs</span>' : ''}
+      <h3>${p.nom}</h3>
+      <p class="price">${v(p.prix)}${p.unite ? `<small> ${p.unite}</small>` : ''}</p>
+      <p class="sub">${sub}</p>
+      ${bonus}
+      <a class="cta ${reco ? 'primary' : 'ghost'}" href="#" data-plan="${id}">${p.cta}</a>
+    </article>`;
+  }).join('');
+
+  // 4. Date limite
+  document.getElementById('deadline').innerHTML =
+    `L'avantage fondateur reste ouvert jusqu'au <b>${v('DATE_LIMITE')}</b>. Ensuite, les formules restent disponibles, sans les bonus.`;
+
+  // 5. FAQ
+  const FAQ = [
+    ['Que devient mon abonnement Skool ?',
+      `Dès que ton paiement dans l'app est validé, je coupe ton abonnement Skool moi-même, sous ${v('DELAI_COUPURE')}. Tu n'as rien à faire. Et si un prélèvement Skool passait quand même après ta bascule, je te le rembourse : tu ne paies jamais deux fois.`],
+    ['Est-ce que je garde mes données et ma progression ?',
+      "Oui. Ton programme, tes séances faites et ta progression sont déjà dans l'app. Rien ne repart de zéro."],
+    [`Et si je ne fais rien avant le ${v('DATE_LIMITE')} ?`,
+      `L'avantage fondateur se ferme à cette date. Ton abonnement Skool, lui, s'arrête le ${v('DATE_FIN_SKOOL')}. Après, tu pourras toujours revenir dans l'app au prix normal, sans les bonus.`],
+    ['Comment je contacte Damien ?',
+      `Réponds directement à mon message, ou écris-moi : ${v('CONTACT')}. Je lis tout moi-même.`],
+  ];
+  document.getElementById('faq').innerHTML = FAQ.map(([q, a]) =>
+    `<details><summary>${q}</summary><p>${a}</p></details>`
+  ).join('');
+
+  // Paiement
+  const html = document.documentElement;
+  const sheet = document.getElementById('sheet');
+  const emailIn = document.getElementById('email');
+  const err = document.getElementById('err');
+  let current = null;
+  let lastFocus = null;
+
+  const store = (k, val) => { try { localStorage.setItem(k, val); } catch {} };
+  const read = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+
+  const goPay = (id) => {
+    const link = C[PLANS[id].lien];
+    if (isPh(link) || !link) {
+      err.textContent = 'Lien de paiement pas encore branché (à remplir dans MC_BASCULE).';
+      return false;
+    }
+    store('mc_bascule_plan', id);
+    window.location.href = link;
+    return true;
+  };
+
+  const openSheet = (id) => {
+    current = id;
+    lastFocus = document.activeElement;
+    document.getElementById('recapName').textContent = PLANS[id].nom;
+    document.getElementById('recapPrice').innerHTML = v(PLANS[id].prix) + (PLANS[id].unite ? ' ' + PLANS[id].unite : '');
+    emailIn.value = read('mc_bascule_email') || '';
+    emailIn.removeAttribute('aria-invalid');
+    err.textContent = '';
+    html.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false');
+    setTimeout(() => emailIn.focus(), 300);
+  };
+  const closeSheet = () => {
+    html.classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true');
+    if (lastFocus) lastFocus.focus();
+  };
+
+  document.getElementById('plans').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-plan]');
+    if (!a) return;
+    e.preventDefault();
+    if (C.DEMANDER_EMAIL) openSheet(a.dataset.plan);
+    else goPay(a.dataset.plan);
+  });
+  document.getElementById('veil').addEventListener('click', closeSheet);
+  document.getElementById('close').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && html.classList.contains('open')) closeSheet(); });
+
+  document.getElementById('emailForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailIn.value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      emailIn.setAttribute('aria-invalid', 'true');
+      err.textContent = 'Vérifie ton email, il manque quelque chose.';
+      return;
+    }
+    emailIn.removeAttribute('aria-invalid');
+    err.textContent = '';
+    const btn = document.getElementById('go');
+    btn.disabled = true;
+    btn.textContent = 'Un instant…';
+    store('mc_bascule_email', email);
+    // On note le lien email Skool ↔ formule avant de partir. Ne bloque jamais le paiement :
+    // au pire, l'email reste dans le navigateur et Damien relie à la main.
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 2500);
+      await fetch(C.INTENT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, plan: current }),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(t);
+    } catch {}
+    if (!goPay(current)) {
+      btn.disabled = false;
+      btn.textContent = 'Continuer vers le paiement';
+    }
+  });
+
+  // Confirmation au retour de PayPal
+  const merci = new URLSearchParams(location.search).get('merci');
+  const appA = document.getElementById('appLink');
+  const appCta = document.getElementById('appCta');
+  appA.href = appCta.href = C.APP_URL;
+  if (merci && PLANS[merci]) {
+    html.classList.add('is-done');
+    document.getElementById('doneLead').textContent =
+      `${PLANS[merci].merci} Voilà comment ouvrir l'app tout de suite.`;
+    const mail = read('mc_bascule_email');
+    if (mail) {
+      document.getElementById('doneEmail').innerHTML =
+        `Celui de ton compte Mobility Club (souvent celui de Skool : <b style="color:var(--text)">${esc(mail)}</b>). Tu reçois un code à 6 chiffres par email.`;
+    }
+    window.scrollTo(0, 0);
+  }
+})();
+</script>
+</body>
+</html>
