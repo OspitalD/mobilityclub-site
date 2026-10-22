@@ -18,16 +18,18 @@ window.MC_BASCULE = {
   // Formule mise en avant avec le badge « Avantage membres fondateurs » : 'annuel' | 'vie' | 'mensuel'
   RECOMMANDE: 'annuel',
 
-  ANNUEL_PRIX: '[prix annuel]',          // ex. '197 €'
-  ANNUEL_EQUIV: '[≈ x € par mois]',      // ex. 'soit 16,40 € par mois'
+  ANNUEL_PRIX: '220 €',
+  ANNUEL_EQUIV: 'soit 18,33 € par mois',
+  ANNUEL_4X: '4 × 55 €',                // paiement en 4 fois PayPal — vérifier qu'il est proposé au checkout
   ANNUEL_BONUS: '[bonus fondateur]',
   LIEN_ANNUEL: '[lien annuel]',
 
-  VIE_PRIX: '249 €',                     // prix Lifetime actuel de /devenir-membre — à confirmer
+  VIE_PRIX: '249 €',
+  VIE_4X: '4 × 62,25 €',
   VIE_BONUS: '[bonus éventuel]',         // laisser '' pour ne rien afficher
   LIEN_VIE: '[lien à vie]',
 
-  MENSUEL_PRIX: '25 €',                  // plan PayPal actuel de /devenir-membre — à confirmer
+  MENSUEL_PRIX: '25 €',                  // ⚠️ plan SANS essai gratuit (le plan de /devenir-membre a 7 j d'essai)
   LIEN_MENSUEL: '[lien mensuel]',
 
   DATE_LIMITE: '[date]',                 // ex. 'dimanche 9 novembre'
@@ -55,25 +57,26 @@ window.MC_BASCULE = {
 <style>
 :root{
   --bg:#0D0F0E;
-  --surface:#111412;
-  --surface-2:#17191A;
+  --surface:#17191A;
+  --surface-2:#202324;
   --line:rgba(255,255,255,.07);
-  --line-strong:#232826;
+  --line-strong:rgba(255,255,255,.1);
+  --purple:#B990E0;
   --green:#3ECFA0;
   --green-ink:#0D0F0E;
   --gold:#E8A020;
   --text:#F5F5F3;
-  --muted:#8E918E;
-  --quiet:#5C615E;
+  --muted:#A9ABA8;
+  --quiet:#6F716E;
   --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
   --ease:cubic-bezier(.22,1,.36,1);
   --col:620px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);-webkit-text-size-adjust:100%}
+html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip}
 body{
   min-width:320px;overflow-x:hidden;
-  background:radial-gradient(60rem 30rem at 50% -12rem,rgba(62,207,160,.06),transparent 70%),var(--bg);
+  background:var(--bg);
   color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
   padding-bottom:env(safe-area-inset-bottom);
@@ -91,16 +94,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 16px rgba(62,207,160,.6)}
 
 /* 1. Mot de Damien */
-.hello{padding-block:clamp(28px,7vw,72px) clamp(40px,8vw,72px)}
-.hello h1{font-size:clamp(40px,11vw,68px);line-height:.98;font-weight:800;letter-spacing:-.045em}
-.hello h1 em{font-style:italic;color:var(--green)}
+.hello{position:relative;padding-block:clamp(28px,7vw,72px) clamp(40px,8vw,72px)}
+.halo{position:absolute;inset:-40px -20px auto;height:380px;z-index:0;pointer-events:none}
+.halo i{position:absolute;border-radius:50%}
+.hello>*:not(.halo){position:relative;z-index:1}
+.hello h1{font-size:clamp(42px,12vw,72px);line-height:.98;font-weight:800;font-style:italic;letter-spacing:-.05em}
+.hello h1 em{color:var(--green)}
 .note{margin-top:26px;display:grid;gap:14px;font-size:clamp(17px,4.4vw,19px);line-height:1.6;color:#D6D8D5}
 .sign{margin-top:26px;padding-left:14px;border-left:2px solid var(--green);font-size:14px;color:var(--muted)}
 .sign b{display:block;color:var(--text);font-weight:600}
 
 /* 2. Ce qui change */
 .section{padding:clamp(40px,8vw,72px) 0;border-top:1px solid var(--line)}
-h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacing:-.03em}
+h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:italic;letter-spacing:-.035em}
 .lead{margin-top:10px;color:var(--muted);font-size:16px}
 .split{display:grid;gap:30px;margin-top:28px}
 .split h3{font-size:15px;font-weight:700;color:var(--muted)}
@@ -110,25 +116,30 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
 .list li::before{content:"";width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--quiet)}
 .list.new li::before{background:var(--green)}
 .list strong{font-weight:700}
-.once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 10px 10px 0;font-size:16px;line-height:1.5}
+.once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 14px 14px 0;font-size:16px;line-height:1.5}
 
 /* 3. Le choix */
-.plans{display:grid;gap:14px;margin-top:28px}
-.plan{position:relative;display:flex;flex-direction:column;gap:6px;padding:24px 22px 22px;border:1px solid var(--line-strong);border-radius:16px;background:var(--surface)}
-.plan.reco{border-color:rgba(62,207,160,.55);background:linear-gradient(var(--surface-2),var(--surface-2)) padding-box;box-shadow:0 0 0 1px rgba(62,207,160,.12),0 20px 50px -30px rgba(62,207,160,.45)}
-.badge{align-self:flex-start;margin-bottom:6px;padding:5px 10px;border-radius:7px;background:rgba(62,207,160,.12);color:var(--green);font-size:12px;font-weight:700}
-.plan h3{font-size:19px;font-weight:800;letter-spacing:-.02em}
-.price{margin-top:4px;font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-.035em}
+.plans-wrap{position:relative;margin-top:28px}
+.plans{position:relative;display:grid;gap:14px}
+.plans-halo{position:absolute;left:-20px;right:-20px;top:-30px;height:420px;z-index:0;pointer-events:none}
+.plans-halo i{position:absolute;border-radius:50%}
+.plan{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:26px 22px 22px;border:1px solid var(--line);border-radius:26px;background:var(--surface)}
+.plan.reco{overflow:hidden;isolation:isolate;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04) 55%,rgba(255,255,255,.07));border-color:rgba(255,255,255,.16);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px rgba(0,0,0,.3)}
+.plan.reco::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%);z-index:-1}
+.badge{align-self:flex-start;margin-bottom:8px;padding:6px 12px;border-radius:100px;background:rgba(62,207,160,.16);color:var(--green);font-size:12px;font-weight:700}
+.plan h3{font-size:20px;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.price{margin-top:4px;font-size:40px;line-height:1;font-weight:800;letter-spacing:-.045em}
 .price small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
 .sub{color:var(--muted);font-size:14px}
+.split4{margin-top:2px;color:var(--text);font-size:14px;font-weight:600}
 .bonus{margin-top:10px;padding-top:12px;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
 .bonus b{color:var(--gold);font-weight:700}
 .bonus.none{color:var(--muted)}
-.cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;margin-top:18px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;transition:transform .2s var(--ease),filter .2s var(--ease),border-color .2s var(--ease)}
+.cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;margin-top:18px;border-radius:100px;font-size:16px;font-weight:700;text-decoration:none;transition:transform .2s var(--ease),filter .2s var(--ease),border-color .2s var(--ease)}
 .cta:active{transform:scale(.985)}
 .cta.primary{background:var(--green);color:var(--green-ink)}
 .cta.primary:hover{filter:brightness(1.06)}
-.cta.ghost{border:1px solid var(--line-strong);color:var(--text)}
+.cta.ghost{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--text)}
 .cta.ghost:hover{border-color:rgba(62,207,160,.6)}
 .cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 
@@ -152,7 +163,7 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
 
 /* Feuille email */
 .veil{position:fixed;inset:0;z-index:40;background:rgba(5,6,6,.66);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;width:min(100%,520px);margin-inline:auto;padding:22px 20px calc(22px + env(safe-area-inset-bottom));border:1px solid var(--line-strong);border-bottom:0;border-radius:20px 20px 0 0;background:var(--surface-2);transform:translateY(105%);transition:transform .35s var(--ease)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;width:min(100%,520px);margin-inline:auto;padding:22px 20px calc(22px + env(safe-area-inset-bottom));border:1px solid rgba(255,255,255,.16);border-bottom:0;border-radius:26px 26px 0 0;background:linear-gradient(160deg,rgba(40,44,45,.92),rgba(23,25,26,.96));backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);transform:translateY(105%);transition:transform .35s var(--ease)}
 .open .veil{opacity:1;pointer-events:auto}
 .open .sheet{transform:none}
 .grab{width:38px;height:4px;margin:0 auto 18px;border-radius:4px;background:var(--line-strong)}
@@ -161,7 +172,7 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
 .recap{display:flex;justify-content:space-between;gap:12px;margin-top:18px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15px}
 .recap b{font-weight:700}
 .field{display:grid;gap:8px;margin-top:18px;font-size:14px;font-weight:600;color:var(--muted)}
-.field input{width:100%;height:52px;padding:0 14px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);color:var(--text);font:500 16px var(--sans)}
+.field input{width:100%;height:54px;padding:0 16px;border:1px solid var(--line-strong);border-radius:14px;background:var(--bg);color:var(--text);font:500 16px var(--sans)}
 .field input[aria-invalid="true"]{border-color:#E05A4A}
 .err{min-height:20px;margin-top:6px;color:#E05A4A;font-size:13px}
 .later{display:block;width:100%;margin-top:10px;padding:10px;color:var(--muted);font-size:14px}
@@ -171,8 +182,8 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
 .is-done .main{display:none}
 .is-done .done{display:block}
 .check{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:rgba(62,207,160,.12);color:var(--green)}
-.done h1{margin-top:22px;font-size:clamp(36px,10vw,56px);line-height:1;font-weight:800;letter-spacing:-.045em}
-.done h1 em{font-style:italic;color:var(--green)}
+.done h1{margin-top:22px;font-size:clamp(38px,10.5vw,58px);line-height:1;font-weight:800;font-style:italic;letter-spacing:-.05em}
+.done h1 em{color:var(--green)}
 .steps{list-style:none;counter-reset:s;margin-top:30px}
 .steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55}
 .steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-strong);color:var(--green);font-size:13px;font-weight:700}
@@ -196,9 +207,10 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
 
   <!-- 1. Mot de Damien -->
   <section class="col hello">
+    <div class="halo" aria-hidden="true"><i style="left:-30px;top:10px;width:230px;height:230px;background:#3ECFA0;opacity:.32;filter:blur(60px)"></i><i style="right:-30px;top:120px;width:210px;height:210px;background:#B990E0;opacity:.26;filter:blur(64px)"></i></div>
     <h1>Le club <em>déménage.</em></h1>
     <div class="note">
-      <p>Depuis le début, tu me suis sur Skool. Aujourd'hui, tout ce que je construis pour toi vit dans l'app : ton programme, le timer, le coach vocal.</p>
+      <p>Depuis le début, tu me suis sur Skool. Aujourd'hui, tout ce que je construis pour toi vit dans l'app : ton programme, le timer, le coach vocal qui ajuste ta séance.</p>
       <p>Alors je fais simple : ton abonnement passe dans l'app, et je ferme la porte Skool. Choisis ta formule juste en dessous, ça prend une minute.</p>
     </div>
     <div class="sign">
@@ -221,7 +233,8 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
         <div>
           <h3>Ce qui change</h3>
           <ul class="list new">
-            <li><span><strong>Tout est au même endroit.</strong> Programme personnalisé, timer et coach vocal (en bêta), dans l'app.</span></li>
+            <li><span><strong>Tout est au même endroit.</strong> Ton programme personnalisé et le timer, dans l'app.</span></li>
+            <li><span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</span></li>
             <li><span><strong>Tu paies dans l'app,</strong> plus sur Skool.</span></li>
           </ul>
         </div>
@@ -237,7 +250,7 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
       <p class="lead">Les trois donnent accès à toute l'app. Seule la façon de payer change.</p>
     </div>
     <div class="wide">
-      <div class="plans" id="plans"></div>
+      <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
     </div>
     <div class="col">
       <!-- 4. Date limite -->
@@ -303,8 +316,8 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
   const v = (k) => (isPh(C[k]) ? `<span class="ph">${esc(C[k])}</span>` : esc(C[k] || ''));
 
   const PLANS = {
-    annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
-    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', subTxt: 'Un seul paiement, plus jamais d’abonnement.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
+    annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', x4: 'ANNUEL_4X', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
+    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
     mensuel: { nom: 'Rester au mois', merci: 'Ton abonnement au mois est validé.', prix: 'MENSUEL_PRIX', unite: '/mois', subTxt: 'Sans engagement, tu arrêtes quand tu veux.', bonus: null, lien: 'LIEN_MENSUEL', cta: 'Rester au mois' },
   };
   const ORDER = ['annuel', 'vie', 'mensuel'];
@@ -325,6 +338,7 @@ h2{font-size:clamp(24px,6vw,32px);line-height:1.12;font-weight:800;letter-spacin
       <h3>${p.nom}</h3>
       <p class="price">${v(p.prix)}${p.unite ? `<small> ${p.unite}</small>` : ''}</p>
       <p class="sub">${sub}</p>
+      ${p.x4 && C[p.x4] ? `<p class="split4">ou ${v(p.x4)} sans frais avec PayPal</p>` : ''}
       ${bonus}
       <a class="cta ${reco ? 'primary' : 'ghost'}" href="#" data-plan="${id}">${p.cta}</a>
     </article>`;
