@@ -152,6 +152,14 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cta.ghost:hover{border-color:rgba(62,207,160,.6)}
 .cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 
+.compare{margin-top:30px;padding-top:22px;border-top:1px solid var(--line)}
+.compare h3{font-size:15px;font-weight:700;color:var(--muted)}
+.compare ul{list-style:none;margin-top:8px}
+.compare li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;color:#C9CCC8}
+.compare li b{flex:none;color:var(--text);font-weight:700}
+.compare li:first-child span,.compare li:first-child b{color:var(--green)}
+.compare p{margin-top:14px;color:var(--muted);font-size:14.5px;line-height:1.6}
+
 /* 4. Date limite */
 .deadline{margin-top:22px;color:var(--muted);font-size:15px;line-height:1.55;text-align:center}
 .deadline b{color:var(--text);font-weight:600}
@@ -277,6 +285,17 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
       <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
     </div>
     <div class="col">
+      <!-- Coût d'opportunité : chiffres sourcés dans docs/bascule-etude-marche-2026-10-23.md -->
+      <div class="compare">
+        <h3>Pour comparer</h3>
+        <ul>
+          <li><span>L'accès à vie</span><b>249 € une fois</b></li>
+          <li><span>Rester au mois</span><b>300 € par an</b></li>
+          <li><span>Les applis de mobilité les plus connues</span><b>jusqu'à 200 € par an</b></li>
+          <li><span>4 consultations chez l'ostéo</span><b>≈ 240 €</b></li>
+        </ul>
+        <p>Ces applis se paient chaque année, sans accès à vie. Ici, tu paies une fois, et le club continue d'évoluer avec toi.</p>
+      </div>
       <!-- 4. Date limite -->
       <p class="deadline" id="deadline"></p>
     </div>
