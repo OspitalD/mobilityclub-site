@@ -1358,6 +1358,75 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   .pin-stage{ position:static !important; min-height:0 !important; }
   .bar-fill{ transition:none !important; }
 }
+
+/* ============ COMPARER (lot 1, DA V2 : verre + halos, Plus Jakarta italique 800) ============ */
+.cmpx{position:relative;isolation:isolate}
+.cmpx .cx-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cmpx .cx-halo i{position:absolute;border-radius:50%}
+.cmpx .cx-col{width:min(100%,680px);margin-inline:auto}
+.cmpx{--cx-glass:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 55%,rgba(255,255,255,.05));--cx-line:rgba(255,255,255,.12);--cx-hi:inset 0 1px 0 rgba(255,255,255,.18);--cx-blur:blur(18px) saturate(170%);--cx-muted:#A9ABA8;--cx-quiet:#6F716E;font-family:var(--font-sans)}
+.cx-title{font:italic 800 clamp(30px,5.4vw,52px)/1.04 var(--font-sans);letter-spacing:-.04em;text-wrap:balance}
+.cx-lead{margin-top:12px;color:var(--cx-muted);font-size:clamp(15px,1.6vw,17px);line-height:1.6}
+.cx-vs{list-style:none;margin:22px 0 0;padding:0}
+.cx-vs li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.cx-vs li:first-child{border-top:1px solid rgba(255,255,255,.07)}
+.cx-vs strong{font-size:16.5px;font-weight:700;line-height:1.35;color:var(--text-primary)}
+.cx-us{align-self:start;color:var(--accent-green);font-size:15px;font-weight:800;white-space:nowrap}
+.cx-else{grid-column:1/-1;color:var(--cx-muted);font-size:15px;line-height:1.5}
+.cx-detail{margin-top:20px}
+.cx-detail summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:10px 14px 10px 20px;border:1px solid rgba(62,207,160,.45);border-radius:100px;background:linear-gradient(160deg,rgba(62,207,160,.16),rgba(62,207,160,.05));box-shadow:var(--cx-hi),0 0 28px rgba(62,207,160,.12);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur);color:var(--text-primary);font-size:16px;font-weight:700;cursor:pointer;list-style:none;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.cx-detail summary:hover{border-color:rgba(62,207,160,.8);box-shadow:var(--cx-hi),0 0 36px rgba(62,207,160,.22)}
+.cx-detail summary:active{transform:scale(.985)}
+.cx-detail summary:focus-visible,.cx-seg button:focus-visible,.cx-chips button:focus-visible{outline:2px solid var(--text-primary);outline-offset:3px}
+.cx-detail summary::-webkit-details-marker{display:none}
+.cx-detail summary small{display:block;margin-top:1px;color:var(--cx-muted);font-size:13px;font-weight:500}
+.cx-detail .cx-open{display:none}
+.cx-detail[open] .cx-open{display:block}
+.cx-detail[open] .cx-closed{display:none}
+.cx-chev{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--accent-green);color:#0D0F0E;transition:transform .25s var(--ease)}
+.cx-detail[open] .cx-chev{transform:rotate(180deg)}
+.cx-panel{margin-top:14px;padding:6px 14px 16px;border:1px solid var(--cx-line);border-radius:22px;background:var(--cx-glass);box-shadow:var(--cx-hi);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur)}
+.cx-table{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
+.cx-table th,.cx-table td{text-align:center;vertical-align:middle}
+.cx-table thead th{padding:0 1px 10px;color:var(--cx-muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25;hyphens:manual;-webkit-hyphens:manual}
+.cx-table thead th.us{color:var(--accent-green)}
+.cx-table .lbl th{padding:14px 0 6px;border-top:1px solid rgba(255,255,255,.07);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
+.cx-table tbody tr.lbl:first-child th{border-top:0}
+.cx-table .val td{padding:4px 2px 12px;color:var(--cx-muted);font-size:13px;white-space:nowrap}
+.cx-table .val td.us{color:var(--accent-green);font-weight:800}
+.cx-table .val td.soon{color:var(--accent-gold);font-size:11px;font-weight:700}
+.cx-table .part td{padding:0 0 12px;text-align:left;color:var(--cx-quiet);font-size:12.5px;line-height:1.5;white-space:normal}
+@media (max-width:420px){.cx-table thead th{font-size:9.5px}.cx-table .val td{font-size:10.5px;letter-spacing:-.2px;white-space:normal;line-height:1.25}}
+@media (min-width:640px){.cx-table thead th{font-size:13px}.cx-table .val td{font-size:14px}}
+.cx-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--cx-muted);font-size:13px}
+.cx-note{margin-top:14px;color:var(--cx-quiet);font-size:13px;line-height:1.55}
+.cx-sim{margin-top:34px;padding:24px 20px;border:1px solid var(--cx-line);border-radius:26px;background:var(--cx-glass);box-shadow:var(--cx-hi);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur)}
+.cx-sim h3{font:italic 800 clamp(22px,3vw,28px)/1.15 var(--font-sans);letter-spacing:-.03em}
+.cx-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:rgba(0,0,0,.35)}
+.cx-seg.two{grid-template-columns:1fr 1fr}
+.cx-seg button{min-height:44px;border:0;border-radius:100px;background:none;color:var(--cx-muted);font:700 14px var(--font-sans);cursor:pointer}
+.cx-seg button[aria-pressed="true"]{background:rgba(255,255,255,.12);color:var(--text-primary);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.cx-bars{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px}
+.cx-bars li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:baseline;font-size:15.5px;color:#C9CCC8}
+.cx-bars b{font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.cx-bar{grid-column:1/-1;height:8px;border-radius:8px;background:rgba(255,255,255,.07)}
+.cx-bar i{display:block;height:100%;border-radius:8px;background:#5C615E;transition:width .45s var(--ease)}
+.cx-bars li.us,.cx-bars li.us b{color:var(--accent-green)}
+.cx-bars li.us span:first-child{font-weight:700}
+.cx-bars li.us .cx-bar i{background:var(--accent-green)}
+.cx-combo{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+.cx-combo-h{font-size:16px;font-weight:700;color:var(--text-primary)}
+.cx-combo-sub{margin-top:2px;color:var(--cx-muted);font-size:14px}
+.cx-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cx-chips button{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.12);border-radius:100px;background:none;color:var(--cx-muted);font:600 15px var(--font-sans);cursor:pointer}
+.cx-chips button[aria-pressed="true"]{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text-primary)}
+.cx-chips .cx-soon{margin-left:6px;color:var(--accent-gold);font-size:12px;font-weight:700}
+.cx-hint{margin-top:8px;color:var(--cx-muted);font-size:13.5px;line-height:1.5}
+.cx-total{margin-top:16px;font-size:16px;line-height:1.55;color:#C9CCC8}
+.cx-total b{color:var(--text-primary)}
+.cx-total .g{color:var(--accent-green);font-weight:700}
+.cx-total .s{display:block;margin-top:6px;color:var(--cx-muted);font-size:14.5px}
+.cx-cta{margin-top:22px;display:flex;justify-content:center}
 </style>
 <script type="importmap">
 { "imports": {
@@ -1797,6 +1866,15 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 
 <hr class="divider" />
 
+<!-- ============================ COMPARER (comparatif + simulateur, données = /bascule, relevé du 23/10/2026,
+     sources : docs/bascule-etude-marche-2026-10-23.md). Rendu par renderCompare(lang). ============================ -->
+<section class="pad cmpx" id="comparer" aria-label="Comparer">
+  <div class="cx-halo" aria-hidden="true"><i style="right:-60px;top:40px;width:280px;height:280px;background:#3ECFA0;opacity:.16;filter:blur(80px)"></i><i style="left:-80px;bottom:200px;width:300px;height:300px;background:#B990E0;opacity:.16;filter:blur(84px)"></i></div>
+  <div class="wrap"><div class="cx-col" id="cmpRoot"></div></div>
+</section>
+
+<hr class="divider" />
+
 <!-- ============================ ✦ WHY-SCALE — POURQUOI UN PRODUIT ============================ -->
 <section class="pad whyscale" aria-label="Pourquoi un produit">
   <div class="wrap">
@@ -1902,6 +1980,175 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 </footer>
 
 <!-- Lenis smooth-scroll (dégradation gracieuse si le CDN échoue → scroll natif) -->
+<script>
+/* Comparer — même données que /bascule (relevé du 23/10/2026). « — » = non trouvé dans leur documentation, jamais « n'existe pas ». */
+(function(){
+  var APPS = ['Mobility Club','Plia&shy;bility','GOWOD','Fitbod','Free&shy;letics','Hevy','Runna','Ladder'];
+  var T = {
+    fr: {
+      title: 'Ce que tu ne trouves pas ailleurs',
+      lead: 'Comparé à Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna et Ladder.',
+      inc: 'Inclus',
+      vs: [
+        ['Ton geste corrigé en vidéo par un vrai coach', 'Inclus', 'Ailleurs : aucune des 7.'],
+        ['Un coach vocal qui ajuste ta séance', 'Inclus', 'Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance. Freeletics ajuste la séance sur ton retour écrit, sans voix.'],
+        ['Ton programme importé (PDF, photo, texte)', 'Inclus', 'Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.'],
+        ['Un bilan articulaire de départ', 'Inclus', 'Ailleurs : Pliability et GOWOD.'],
+        ['Un programme créé pour toi', 'Inclus', 'Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.'],
+        ['Accès à vie', '249 €', 'Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.']
+      ],
+      open: 'Voir le tableau détaillé', close: 'Masquer le tableau', sub: 'Fonctions et prix des 8 applis',
+      rows: ['Un programme créé pour toi, personnalisé','Importer ton programme (PDF, photo, texte)','Créer ton propre programme','Bilan articulaire de départ','Coach vocal qui ajuste ta séance','Ton geste corrigé en vidéo par un vrai coach','Accès à vie','Prix au mois','Prix sur un an'],
+      soon: 'bientôt',
+      parts: {
+        0: ['◐ Hevy : seulement via ChatGPT, pas dans l\'appli','◐ Ladder : t\'oriente vers une équipe, programme commun à tous'],
+        1: ['◐ Fitbod : une séance en photo, sur Android seulement','◐ Hevy : via un outil externe, pas dans l\'appli'],
+        2: ['◐ Fitbod : des séances, pas un cycle de semaines','◐ Freeletics : des séances à toi, à côté du plan de son coach IA','◐ Hevy : des routines, sans semaines distinctes','◐ Runna : tu déplaces les séances de leur plan'],
+        4: ['◐ Freeletics : ajuste la séance sur ton retour écrit, sans voix','◐ Runna : annonces d\'allure, la séance ne change pas','◐ Ladder : coach dans l\'oreille, la séance ne change pas'],
+        6: ['◐ Freeletics : accès à vie sur son site, prix non publié'],
+        7: ['— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois']
+      },
+      key: ['● oui','◐ en partie','— non trouvé dans leur documentation'],
+      note: 'Relevé le 23 octobre 2026 sur les sites, centres d\'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. Runna : prix de l\'App Store repris par plusieurs comparatifs, durée non affichée sur sa fiche.',
+      simT: 'Ce que tu paies sur la durée',
+      years: function(y){ return y > 1 ? y + ' ans' : '1 an'; },
+      us: 'Mobility Club à vie', hevy: 'Hevy, à vie',
+      comboH: 'Et si tu prenais une appli par besoin ?', comboSub: 'Coche ce que tu cherches.',
+      needs: { mobilite: 'Mobilité', muscu: 'Musculation', course: 'Course', sante: 'Tracker tes données santé' },
+      gen: 'Générique', ind: 'Individualisé',
+      hint: { gen: 'Un programme tout fait, le même pour tous.', ind: 'Un plan créé pour toi, selon ton niveau et tes objectifs.' },
+      over: 'sur', all: 'Tout ça dans le club, à vie : 249 €, une fois.',
+      santeLine: 'Tracker tes données santé : bientôt dans le club, avec WHOOP.',
+      empty: 'Coche tes besoins pour voir le total.',
+      cta: 'Devenir membre', locale: 'fr-FR', colon: ' : '
+    },
+    en: {
+      title: 'What you won\'t find anywhere else',
+      lead: 'Compared with Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna and Ladder.',
+      inc: 'Included',
+      vs: [
+        ['Your form corrected on video by a real coach', 'Included', 'Elsewhere: none of the 7.'],
+        ['A voice coach that adjusts your session', 'Included', 'Elsewhere: none. Runna and Ladder talk to you without changing the session. Freeletics adjusts the session from your written feedback, no voice.'],
+        ['Import your own program (PDF, photo, text)', 'Included', 'Elsewhere: partly. Fitbod, one session from a photo on Android. Hevy, through an external tool.'],
+        ['A starting joint assessment', 'Included', 'Elsewhere: Pliability and GOWOD.'],
+        ['A program built for you', 'Included', 'Elsewhere: Pliability, GOWOD, Fitbod, Freeletics and Runna.'],
+        ['Lifetime access', '€249', 'Elsewhere: Hevy (€89.99), program only: no coach, no mobility, no joint assessment. Freeletics, on its website, price not published.']
+      ],
+      open: 'See the detailed table', close: 'Hide the table', sub: 'Features and prices of 8 apps',
+      rows: ['A personalised program built for you','Import your program (PDF, photo, text)','Build your own program','Starting joint assessment','Voice coach that adjusts your session','Form corrected on video by a real coach','Lifetime access','Monthly price','Yearly price'],
+      soon: 'soon',
+      parts: {
+        0: ['◐ Hevy: only through ChatGPT, not in the app','◐ Ladder: points you to a team, same program for everyone'],
+        1: ['◐ Fitbod: one session from a photo, Android only','◐ Hevy: through an external tool, not in the app'],
+        2: ['◐ Fitbod: sessions, not a multi-week cycle','◐ Freeletics: your own sessions, next to its AI coach plan','◐ Hevy: routines, no distinct weeks','◐ Runna: you move sessions around their plan'],
+        4: ['◐ Freeletics: adjusts the session from your written feedback, no voice','◐ Runna: pace cues, the session doesn\'t change','◐ Ladder: coach in your ear, the session doesn\'t change'],
+        6: ['◐ Freeletics: lifetime access on its website, price not published'],
+        7: ['— Freeletics: no monthly plan, only 3, 6 or 12 months']
+      },
+      key: ['● yes','◐ partly','— not found in their documentation'],
+      note: 'Checked on 23 October 2026 on each app\'s website, help centre and French App Store page. Prices: the lowest shown on each page. Runna: App Store price reported by several comparisons, duration not shown on its page.',
+      simT: 'What you pay over time',
+      years: function(y){ return y > 1 ? y + ' years' : '1 year'; },
+      us: 'Mobility Club, lifetime', hevy: 'Hevy, lifetime',
+      comboH: 'What if you used one app per need?', comboSub: 'Tick what you\'re looking for.',
+      needs: { mobilite: 'Mobility', muscu: 'Strength training', course: 'Running', sante: 'Track your health data' },
+      gen: 'Generic', ind: 'Individualised',
+      hint: { gen: 'A ready-made program, the same for everyone.', ind: 'A plan built for you, based on your level and goals.' },
+      over: 'over', all: 'All of it in the club, for life: €249, once.',
+      santeLine: 'Track your health data: coming soon to the club, with WHOOP.',
+      empty: 'Tick your needs to see the total.',
+      cta: 'Become a member', locale: 'en-IE', colon: ': '
+    }
+  };
+  // ordre des colonnes : MC, Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna, Ladder
+  var VALS = [
+    ['●','●','●','●','●','◐','●','◐'],
+    ['●','—','—','◐','—','◐','—','—'],
+    ['SOON','●','—','◐','◐','◐','◐','—'],
+    ['●','●','●','—','—','—','—','—'],
+    ['●','—','—','—','◐','—','◐','◐'],
+    ['●','—','—','—','—','—','—','—'],
+    [249,'—','—','—','◐',89.99,'—','—'],
+    [25,22.99,9.29,13.49,'—',3.49,19.99,14.99],
+    [220,199.99,84.99,81.99,79.99,26.49,119.99,94.99]
+  ];
+  var OUTILS = [
+    { k: 'us', us: true, cout: function(){ return 249; } },
+    { n: 'Pliability', cout: function(y){ return 199.99 * y; } },
+    { n: 'Runna', cout: function(y){ return 119.99 * y; } },
+    { n: 'Ladder', cout: function(y){ return 94.99 * y; } },
+    { n: 'GOWOD', cout: function(y){ return 84.99 * y; } },
+    { n: 'Fitbod', cout: function(y){ return 81.99 * y; } },
+    { n: 'Freeletics', cout: function(y){ return 79.99 * y; } },
+    { k: 'hevy', cout: function(){ return 89.99; } }
+  ];
+  var BESOINS = [
+    { id: 'mobilite', gen: { app: 'GOWOD', c: function(y){ return 84.99 * y; } }, ind: { app: 'GOWOD', c: function(y){ return 84.99 * y; } } },
+    { id: 'muscu', gen: { app: 'Hevy', c: function(y){ return Math.min(26.49 * y, 89.99); } }, ind: { app: 'Fitbod', c: function(y){ return 81.99 * y; } } },
+    { id: 'course', gen: { app: 'Runna', c: function(y){ return 119.99 * y; } }, ind: { app: 'Runna', c: function(y){ return 119.99 * y; } } },
+    { id: 'sante', soon: true }
+  ];
+  var st = { lang: 'fr', years: 3, mode: 'ind', pick: { mobilite: true, muscu: true } };
+  var root = document.getElementById('cmpRoot');
+  if (!root) return;
+  function eur(n, t){ return n.toLocaleString(t.locale, { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  function cell(v, t){ return v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : v); }
+  function build(){
+    var t = T[st.lang], i;
+    var vs = t.vs.map(function(r){ return '<li><strong>' + r[0] + '</strong><span class="cx-us">' + r[1] + '</span><span class="cx-else">' + r[2] + '</span></li>'; }).join('');
+    var head = '<tr>' + APPS.map(function(a, j){ return '<th scope="col"' + (j ? '' : ' class="us"') + '>' + a + '</th>'; }).join('') + '</tr>';
+    var body = '';
+    for (i = 0; i < t.rows.length; i++){
+      body += '<tr class="lbl"><th scope="colgroup" colspan="8">' + t.rows[i] + '</th></tr>';
+      body += '<tr class="val">' + VALS[i].map(function(v, j){ return '<td' + (j ? '' : (v === 'SOON' ? ' class="us soon"' : ' class="us"')) + '>' + cell(v, t) + '</td>'; }).join('') + '</tr>';
+      if (t.parts[i]) body += '<tr class="part"><td colspan="8">' + t.parts[i].join('<br>') + '</td></tr>';
+    }
+    var wasOpen = root.querySelector('.cx-detail') && root.querySelector('.cx-detail').open;
+    root.innerHTML =
+      '<h2 class="cx-title">' + t.title + '</h2><p class="cx-lead">' + t.lead + '</p>' +
+      '<ul class="cx-vs">' + vs + '</ul>' +
+      '<details class="cx-detail"' + (wasOpen ? ' open' : '') + '><summary><span><span class="cx-closed">' + t.open + '</span><span class="cx-open">' + t.close + '</span><small>' + t.sub + '</small></span><span class="cx-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>' +
+      '<div class="cx-panel"><table class="cx-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' +
+      '<p class="cx-key">' + t.key.map(function(k){ return '<span>' + k + '</span>'; }).join('') + '</p></div></details>' +
+      '<p class="cx-note">' + t.note + '</p>' +
+      '<div class="cx-sim"><h3>' + t.simT + '</h3>' +
+      '<div class="cx-seg" data-g="y" role="group">' + [1,2,3,5].map(function(y){ return '<button type="button" data-y="' + y + '">' + t.years(y) + '</button>'; }).join('') + '</div>' +
+      '<ul class="cx-bars" data-g="bars"></ul>' +
+      '<div class="cx-combo"><p class="cx-combo-h">' + t.comboH + '</p><p class="cx-combo-sub">' + t.comboSub + '</p>' +
+      '<div class="cx-chips" data-g="chips">' + BESOINS.map(function(b){ return '<button type="button" data-id="' + b.id + '">' + t.needs[b.id] + (b.soon ? '<span class="cx-soon">' + t.soon + '</span>' : '') + '</button>'; }).join('') + '</div>' +
+      '<div class="cx-seg two" data-g="m" role="group"><button type="button" data-m="gen">' + t.gen + '</button><button type="button" data-m="ind">' + t.ind + '</button></div>' +
+      '<p class="cx-hint" data-g="hint"></p><p class="cx-total" data-g="total"></p></div></div>' +
+      '<div class="cx-cta"><a href="/devenir-membre" class="btn btn-primary" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
+    draw();
+  }
+  function q(g){ return root.querySelector('[data-g="' + g + '"]'); }
+  function draw(){
+    var t = T[st.lang];
+    q('y').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(Number(b.dataset.y) === st.years)); });
+    q('m').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.m === st.mode)); });
+    q('chips').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(!!st.pick[b.dataset.id])); });
+    q('hint').textContent = t.hint[st.mode];
+    var rows = OUTILS.map(function(o){ return { us: o.us, nom: o.k ? t[o.k] : o.n, v: o.cout(st.years) }; }).sort(function(a, b){ return a.v - b.v; });
+    var max = Math.max.apply(null, rows.map(function(r){ return r.v; }));
+    q('bars').innerHTML = rows.map(function(r){ return '<li class="' + (r.us ? 'us' : '') + '"><span>' + r.nom + '</span><b>' + eur(Math.round(r.v * 100) / 100, t) + '</b><span class="cx-bar"><i style="width:' + Math.max(2, r.v / max * 100) + '%"></i></span></li>'; }).join('');
+    var sel = BESOINS.filter(function(b){ return st.pick[b.id] && !b.soon; });
+    var soon = BESOINS.some(function(b){ return st.pick[b.id] && b.soon; });
+    var tot = Math.round(sel.reduce(function(n, b){ return n + b[st.mode].c(st.years); }, 0) * 100) / 100;
+    var s = soon ? '<span class="s">' + t.santeLine + '</span>' : '';
+    q('total').innerHTML = sel.length
+      ? sel.map(function(b){ return t.needs[b.id] + ' (' + b[st.mode].app + ')'; }).join(' + ') + ' ' + t.over + ' ' + t.years(st.years) + t.colon + '<b>' + eur(tot, t) + '</b>.<br><span class="g">' + t.all + '</span>' + s
+      : (soon ? s : t.empty);
+  }
+  root.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.y){ st.years = Number(b.dataset.y); draw(); }
+    else if (b.dataset.m){ st.mode = b.dataset.m; draw(); }
+    else if (b.dataset.id){ st.pick[b.dataset.id] = !st.pick[b.dataset.id]; draw(); }
+  });
+  window.renderCompare = function(lang){ st.lang = T[lang] ? lang : 'fr'; build(); };
+  build();
+})();
+</script>
 <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
 <script>
 /* ============================================================
@@ -2406,6 +2653,8 @@ function setLang(lang){
       splitLines(el);                   // si l'élément a déjà .in, les lignes s'affichent aussitôt
     });
   }
+
+  if (window.renderCompare) window.renderCompare(lang);
 
   // toggle UI state
   document.querySelectorAll('.lang button').forEach(b => {
