@@ -41,7 +41,14 @@ window.MC_BASCULE = {
   DEMANDER_EMAIL: true,
   INTENT_ENDPOINT: '/.netlify/functions/bascule-intent',
 
-  APP_URL: 'https://app.mobilityclub.co'
+  APP_URL: 'https://app.mobilityclub.co',
+
+  // Les 3 façons d'avoir ton programme : 'dispo' | 'bientot'.
+  // Vérifié en prod le 23/10 : import = ouvert à 100 % (program_import) ; programme créé par le club =
+  // mobilité personnalisée par le bilan ; constructeur de programme = pas encore en prod (seul « Créer ma séance » existe).
+  PROG_IMPORTER: 'dispo',
+  PROG_CREER: 'bientot',
+  PROG_CLUB: 'dispo'
 };
 </script>
 
@@ -118,7 +125,15 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .list strong{font-weight:700}
 .once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 14px 14px 0;font-size:16px;line-height:1.5}
 
-.news{list-style:none;margin-top:24px}
+.sub-h{margin-top:30px;font-size:15px;font-weight:700;color:var(--muted)}
+.ways{list-style:none;counter-reset:w;margin-top:12px;display:grid;gap:10px}
+.ways li{counter-increment:w;position:relative;padding:18px 18px 18px 54px;border:1px solid var(--line);border-radius:20px;background:var(--surface);font-size:15.5px;line-height:1.55;color:#C9CCC8}
+.ways li::before{content:counter(w);position:absolute;left:18px;top:18px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(62,207,160,.14);color:var(--green);font-size:12.5px;font-weight:800}
+.ways strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700}
+.way-tag{display:inline-block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--green)}
+.ways li.soon .way-tag{color:var(--gold)}
+.ways li.soon::before{background:rgba(232,160,32,.14);color:var(--gold)}
+.news{list-style:none;margin-top:12px}
 .news li{padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55;color:#C9CCC8}
 .news li:last-child{border-bottom:1px solid var(--line)}
 .news strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700;letter-spacing:-.01em}
@@ -156,12 +171,13 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .compare h3{font-size:clamp(20px,5.4vw,26px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
 .cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
 .cmp th,.cmp td{text-align:center;vertical-align:middle}
-.cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10.5px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
+.cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
 .cmp thead th.us{color:var(--green)}
 .cmp .lbl th{padding:14px 0 6px;border-top:1px solid var(--line);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
 .cmp .val td{padding:4px 2px 12px;color:var(--muted);font-size:13px;white-space:nowrap}
 .cmp .val td.us{color:var(--green);font-weight:800}
-@media (max-width:380px){.cmp .val td{font-size:11.5px}}
+.cmp .val td.soon{color:var(--gold);font-size:11px;font-weight:700}
+@media (max-width:420px){.cmp .val td{font-size:10.5px;letter-spacing:-.2px}}
 @media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
@@ -272,11 +288,17 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     <div class="col">
       <h2>Ce qui t'attend dans l'app</h2>
       <p class="lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Déjà disponible pour toi.</p>
+      <h3 class="sub-h">Ton programme, comme tu veux</h3>
+      <ol class="ways">
+        <li data-prog="PROG_CLUB"><span class="way-tag"></span><strong>Le club crée ton programme.</strong> Personnalisé à partir de ton bilan articulaire, de ton sport et de ton temps dispo.</li>
+        <li data-prog="PROG_IMPORTER"><span class="way-tag"></span><strong>Tu importes ton programme.</strong> Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.</li>
+        <li data-prog="PROG_CREER"><span class="way-tag"></span><strong>Tu crées ton programme.</strong> Tes séances, tes exercices, tes semaines, construits par toi.</li>
+      </ol>
+      <h3 class="sub-h">Et aussi</h3>
       <ul class="news">
         <li><span class="new-tag">Nouveau</span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</li>
         <li><span class="new-tag">Nouveau</span><strong>Je corrige ton geste en vidéo.</strong> Tu te filmes sur un exercice, je te réponds avec mes corrections.</li>
         <li><span class="new-tag">Nouveau</span><strong>Ton bilan articulaire dans l'app.</strong> Tu le refais quand tu veux, avec les démos sous les yeux.</li>
-        <li><span class="new-tag">Nouveau</span><strong>Ton entraînement importé.</strong> Ajoute ton programme de salle ou de course (PDF, photo ou texte) : ta mobilité s'organise autour.</li>
         <li><span class="new-tag">Nouveau</span><strong>Une séance calée sur ton sport.</strong> Ta mobilité du jour prépare la séance de sport prévue.</li>
       </ul>
     </div>
@@ -299,27 +321,29 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
         <h3>Ce que tu ne trouves pas ailleurs</h3>
         <table class="cmp">
           <thead>
-            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Runna</th><th scope="col">Freeletics</th></tr>
+            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
           </thead>
           <tbody>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Bilan articulaire qui personnalise ton programme</th></tr>
-            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Ton programme de salle ou de course importé (PDF, photo, texte)</th></tr>
-            <tr class="val"><td class="us">●</td><td>◐</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Séance calée sur le sport prévu ce jour-là</th></tr>
-            <tr class="val"><td class="us">●</td><td>◐</td><td>●</td><td>◐</td><td>◐</td><td>◐</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Coach vocal qui ajuste ta séance</th></tr>
-            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Ton geste corrigé en vidéo par un vrai coach</th></tr>
-            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Accès à vie</th></tr>
-            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>—</td><td>●</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="6">Prix sur un an</th></tr>
-            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>98,99 €</td><td>99,99 €</td><td>n.c.</td><td>n.c.</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Un programme créé pour toi, personnalisé</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>●</td><td>◐</td><td>●</td><td>◐</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Importer ton programme (PDF, photo, texte)</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>◐</td><td>◐</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Créer ton propre programme</th></tr>
+            <tr class="val"><td class="us soon">bientôt</td><td>●</td><td>—</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Bilan articulaire de départ</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Coach vocal qui ajuste ta séance</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>◐</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Ton geste corrigé en vidéo par un vrai coach</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Accès à vie</th></tr>
+            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Prix sur un an</th></tr>
+            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>89,99 €</td><td>81,99 €</td><td>26,49 €</td><td>n.c.</td><td>139,99 €</td></tr>
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
-        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. n.c. : durée de l'offre non précisée sur la fiche. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
+        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. n.c. : durée de l'offre non précisée. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
       </div>
       <!-- 4. Date limite -->
       <p class="deadline" id="deadline"></p>
@@ -432,6 +456,13 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   document.getElementById('faq').innerHTML = FAQ.map(([q, a]) =>
     `<details><summary>${q}</summary><p>${a}</p></details>`
   ).join('');
+
+  // Statut des 3 façons d'avoir ton programme
+  document.querySelectorAll('[data-prog]').forEach((li) => {
+    const soon = C[li.dataset.prog] !== 'dispo';
+    li.classList.toggle('soon', soon);
+    li.querySelector('.way-tag').textContent = soon ? 'Bientôt' : 'Disponible';
+  });
 
   // Paiement
   const html = document.documentElement;

@@ -46,3 +46,22 @@ Fil : https://www.perplexity.ai/search/6723312c-e38b-4424-b3a0-7371a929dc23 — 
 | Prix annuel App Store FR | 199,99 € | 98,99 € (promo 84,99 €) | 99,99 € (aussi 81,99 €) | 119,99 € durée non précisée → n.c. | 79,99 / 99,99 € durée non précisée → n.c. |
 
 Mobility Club (vérifié en prod le 23/10 : drapeaux `feature-flags/all` + code origin/main) : bilan intégré, import de programme (program_import 100 %), séance calée sur le sport (PR #483, sans drapeau), coach vocal (voice_onboarding 100 %), retour vidéo coach (video_review 100 %), accès à vie 249 €, annuel 220 € (plan PayPal vérifié par Damien).
+
+## 3e recherche : créateurs de programmes (23/10/2026)
+
+Fil : https://www.perplexity.ai/search/030c5150-9f75-4e7f-ad6c-ce764fa6c10f. Le tableau de la page passe à 6 concurrents : Pliability, GOWOD, Fitbod, Hevy, Runna, Ladder (Freeletics retiré pour tenir sur mobile).
+
+| Critère | Pliability | GOWOD | Fitbod | Hevy | Runna | Ladder |
+|---|---|---|---|---|---|---|
+| Programme personnalisé généré | Oui (Mobility Test) | Oui (test) | Oui (IA) | Partiel (via ChatGPT) | Oui (plans 6-26 sem.) | Partiel (orientation vers une équipe) |
+| Import PDF/photo/texte | non trouvé | non trouvé | Partiel (photo, Android) | Partiel (outil tiers n8n) | non trouvé | non trouvé |
+| Créer son programme | Oui (« Build Your Program ») | non trouvé | Partiel (séances) | Partiel (routines/dossiers) | Partiel (calendrier) | non trouvé |
+| Programmes de coachs identiques pour tous | Oui (« Paths ») | non trouvé | non trouvé | non trouvé | non trouvé | Oui (équipes, coach) |
+| Coach vocal qui modifie la séance | non trouvé | non trouvé | non trouvé | non trouvé | Partiel (guidage d'allure) | Partiel (audio in-ear) |
+| Correction vidéo humaine | non trouvé | non trouvé | non trouvé | non trouvé | non trouvé | non trouvé |
+| Prix annuel App Store FR | 199,99 € | 89,99 € (98,99 € lors de la 2e recherche) | 81,99 € ou 99,99 € | 26,49 € | 119,99 € durée non précisée | 139,99 € (PRO) |
+| À vie | non trouvé | non trouvé | non trouvé | **89,99 €** | non trouvé | non trouvé |
+
+Choix d'affichage : le prix le plus bas relevé pour chaque concurrent (GOWOD 89,99 €, Fitbod 81,99 €) pour ne jamais les desservir. Hevy à vie (89,99 €) affiché même s'il est moins cher que le nôtre.
+
+Mobility Club, statut des 3 façons d'avoir son programme (prod 23/10) : le club crée ton programme = disponible (mobilité personnalisée par le bilan) ; importer = disponible (program_import 100 %) ; créer son programme = **bientôt** (seul « Créer ma séance » existe). Statut réglable dans `MC_BASCULE.PROG_*`.
