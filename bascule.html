@@ -167,7 +167,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cta.ghost:hover{border-color:rgba(62,207,160,.6)}
 .cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 
-.compare{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.compare{margin-top:0}
 .compare h3{font-size:clamp(20px,5.4vw,26px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
 .vs-lead{margin-top:8px;color:var(--muted);font-size:15px}
 .vs{list-style:none;margin-top:14px}
@@ -295,6 +295,21 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     </div>
   </section>
 
+  <!-- 3. Le choix -->
+  <section class="section" id="choix">
+    <div class="col">
+      <h2>Choisis ta formule</h2>
+      <p class="lead">Les trois donnent accès à toute l'app. Seule la façon de payer change.</p>
+    </div>
+    <div class="wide">
+      <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
+    </div>
+    <div class="col">
+      <!-- 4. Date limite -->
+      <p class="deadline" id="deadline"></p>
+    </div>
+  </section>
+
   <!-- 2. Ce qui change / ce qui ne change pas -->
   <section class="section">
     <div class="col">
@@ -341,21 +356,14 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     </div>
   </section>
 
-  <!-- 3. Le choix -->
-  <section class="section" id="choix">
-    <div class="col">
-      <h2>Choisis ta formule</h2>
-      <p class="lead">Les trois donnent accès à toute l'app. Seule la façon de payer change.</p>
-    </div>
-    <div class="wide">
-      <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
-    </div>
+  <!-- Comparer -->
+  <section class="section">
     <div class="col">
       <!-- Comparatif nominatif : vérification documentaire publique du 23/10/2026 (Perplexity),
            détail et sources dans docs/bascule-etude-marche-2026-10-23.md.
            « — » = non documenté publiquement, jamais « n'existe pas ». -->
       <div class="compare">
-        <h3>Ce que tu ne trouves pas ailleurs</h3>
+        <h2>Ce que tu ne trouves pas ailleurs</h2>
         <p class="vs-lead">Comparé à Pliability, GOWOD, Fitbod, Hevy, Runna et Ladder.</p>
         <ul class="vs">
           <li><strong>Ton geste corrigé en vidéo par un vrai coach</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune des 6.</span></li>
@@ -417,8 +425,6 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           <p class="combo-total" id="comboTotal"></p>
         </div>
       </div>
-      <!-- 4. Date limite -->
-      <p class="deadline" id="deadline"></p>
     </div>
   </section>
 
