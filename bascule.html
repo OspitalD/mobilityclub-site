@@ -184,6 +184,29 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
 .cmp-note{margin-top:10px;color:var(--quiet);font-size:12.5px;line-height:1.55}
 
+.sim{margin-top:30px;padding:22px 18px;border:1px solid var(--line);border-radius:22px;background:var(--surface)}
+.sim h3{font-size:clamp(20px,5.4vw,24px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:var(--bg)}
+.seg button{min-height:40px;border-radius:100px;color:var(--muted);font-size:14px;font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.bars{list-style:none;margin-top:18px;display:grid;gap:12px}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline;font-size:14px;color:#C9CCC8}
+.bars b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.bars small{color:var(--quiet);font-size:12px}
+.bar{grid-column:1/-1;height:8px;border-radius:8px;background:var(--line)}
+.bar i{display:block;height:100%;border-radius:8px;background:#5C615E;transition:width .45s var(--ease)}
+.bars li.us{color:var(--green)}
+.bars li.us b{color:var(--green)}
+.bars li.us .bar i{background:var(--green)}
+.combo{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.combo-h{font-size:15px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:100px;color:var(--muted);font-size:13.5px;font-weight:600}
+.chips button[aria-pressed="true"]{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text)}
+.combo-total{margin-top:14px;font-size:15px;line-height:1.55;color:#C9CCC8}
+.combo-total b{color:var(--text)}
+.combo-total .g{color:var(--green);font-weight:700}
+
 /* 4. Date limite */
 .deadline{margin-top:22px;color:var(--muted);font-size:15px;line-height:1.55;text-align:center}
 .deadline b{color:var(--text);font-weight:600}
@@ -343,12 +366,31 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
             <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="7">Accès à vie</th></tr>
             <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="7">Prix au mois</th></tr>
+            <tr class="val"><td class="us">25 €</td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>3,49 €</td><td>n.c.</td><td>14,99 €</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="7">Prix sur un an</th></tr>
-            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>89,99 €</td><td>81,99 €</td><td>26,49 €</td><td>n.c.</td><td>139,99 €</td></tr>
+            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>26,49 €</td><td>n.c.</td><td>94,99 €</td></tr>
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
-        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. n.c. : durée de l'offre non précisée. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
+        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. n.c. : durée de l'offre non précisée. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
+      </div>
+      <!-- Simulateur de coût cumulé : mêmes prix que le tableau (plus bas relevé, App Store FR 23/10/2026).
+           Runna exclu : durée de ses offres non précisée sur sa fiche. -->
+      <div class="sim" id="sim">
+        <h3>Ce que tu paies sur la durée</h3>
+        <div class="seg" role="group" aria-label="Durée">
+          <button type="button" data-y="1">1 an</button>
+          <button type="button" data-y="2">2 ans</button>
+          <button type="button" data-y="3" aria-pressed="true">3 ans</button>
+          <button type="button" data-y="5">5 ans</button>
+        </div>
+        <ul class="bars" id="bars"></ul>
+        <div class="combo">
+          <p class="combo-h">Et si tu cumules plusieurs applis ?</p>
+          <div class="chips" id="chips"></div>
+          <p class="combo-total" id="comboTotal"></p>
+        </div>
       </div>
       <!-- 4. Date limite -->
       <p class="deadline" id="deadline"></p>
@@ -468,6 +510,46 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     li.classList.toggle('soon', soon);
     li.querySelector('.way-tag').textContent = soon ? 'Bientôt' : 'Disponible';
   });
+
+  // Simulateur : coût cumulé sur N années (formule annuelle la moins chère de chaque appli)
+  const OUTILS = [
+    { id: 'mc_vie', nom: 'Mobility Club, accès à vie', us: true, cout: () => 249 },
+    { id: 'mc_an', nom: 'Mobility Club, annuel', cout: (y) => 220 * y },
+    { id: 'mc_mois', nom: 'Mobility Club, au mois', cout: (y) => 25 * 12 * y },
+    { id: 'pliability', nom: 'Pliability', cout: (y) => 199.99 * y, combo: true },
+    { id: 'ladder', nom: 'Ladder', cout: (y) => 94.99 * y, combo: true },
+    { id: 'gowod', nom: 'GOWOD', cout: (y) => 84.99 * y, combo: true },
+    { id: 'fitbod', nom: 'Fitbod', cout: (y) => 81.99 * y, combo: true },
+    { id: 'hevy', nom: 'Hevy, à vie', cout: () => 89.99, combo: true },
+  ];
+  const eur = (n) => n.toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
+  const pick = new Set(['gowod', 'fitbod']);
+  let years = 3;
+  const chips = document.getElementById('chips');
+  chips.innerHTML = OUTILS.filter((o) => o.combo).map((o) => `<button type="button" data-id="${o.id}">${o.nom}</button>`).join('');
+  const drawSim = () => {
+    document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.y) === years)));
+    const rows = OUTILS.map((o) => ({ ...o, v: o.cout(years) })).sort((a, b) => a.v - b.v);
+    const max = Math.max(...rows.map((r) => r.v));
+    document.getElementById('bars').innerHTML = rows.map((r) =>
+      `<li class="${r.us ? 'us' : ''}"><span>${r.nom}</span><b>${eur(Math.round(r.v * 100) / 100)}</b><span class="bar"><i style="width:${Math.max(2, (r.v / max) * 100)}%"></i></span></li>`).join('');
+    chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(pick.has(b.dataset.id))));
+    const sel = OUTILS.filter((o) => pick.has(o.id));
+    const tot = Math.round(sel.reduce((n, o) => n + o.cout(years), 0) * 100) / 100;
+    const yl = years > 1 ? `${years} ans` : '1 an';
+    document.getElementById('comboTotal').innerHTML = sel.length
+      ? `${sel.map((o) => o.nom).join(' + ')} sur ${yl} : <b>${eur(tot)}</b>.<br><span class="g">L'accès à vie au club : 249 €, une fois.</span>`
+      : 'Choisis les applis que tu utiliserais pour voir le total.';
+  };
+  document.querySelector('.seg').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-y]'); if (!b) return;
+    years = Number(b.dataset.y); drawSim();
+  });
+  chips.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-id]'); if (!b) return;
+    pick.has(b.dataset.id) ? pick.delete(b.dataset.id) : pick.add(b.dataset.id); drawSim();
+  });
+  drawSim();
 
   // Paiement
   const html = document.documentElement;

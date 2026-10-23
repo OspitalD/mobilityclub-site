@@ -65,3 +65,18 @@ Fil : https://www.perplexity.ai/search/030c5150-9f75-4e7f-ad6c-ce764fa6c10f. Le 
 Choix d'affichage : le prix le plus bas relevé pour chaque concurrent (GOWOD 89,99 €, Fitbod 81,99 €) pour ne jamais les desservir. Hevy à vie (89,99 €) affiché même s'il est moins cher que le nôtre.
 
 Mobility Club, statut des 3 façons d'avoir son programme (prod 23/10) : le club crée ton programme = disponible (mobilité personnalisée par le bilan) ; importer = disponible (program_import 100 %) ; créer son programme = **bientôt** (seul « Créer ma séance » existe). Statut réglable dans `MC_BASCULE.PROG_*`.
+
+## 4e recherche : prix au mois (23/10/2026)
+
+Fil : https://www.perplexity.ai/search/ae1b1f4e-bb7e-4f5f-88fb-6603888b7b27 (fiches App Store France).
+
+| Appli | Mois | An | À vie |
+|---|---|---|---|
+| Pliability | 22,99 € | 199,99 € | — |
+| GOWOD | 9,29 € (BF) ou 10,99 € | 84,99 € (BF) ou 98,99 € | — |
+| Fitbod | 13,49 / 14,99 / 17,99 € | 81,99 ou 99,99 € | — |
+| Hevy | 3,49 ou 4,49 € | 26,49 € | 89,99 € |
+| Runna | 19,99 € et 119,99 € sans durée explicite → n.c. | n.c. | — |
+| Ladder (PRO) | 14,99 ou 15,99 € | 94,99 ou 139,99 € | — |
+
+Règle d'affichage : toujours le prix le plus bas relevé (GOWOD annuel passe de 89,99 € à 84,99 €, Ladder de 139,99 € à 94,99 €). Le simulateur « Ce que tu paies sur la durée » multiplie ces annuels par 1, 2, 3 ou 5 ans ; Runna en est exclu (durée non précisée) ; Hevy compté à vie (89,99 €).
