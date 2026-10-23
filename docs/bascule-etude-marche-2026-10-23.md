@@ -29,4 +29,20 @@ Perplexity précise : pas de médiane nationale disponible, ce sont des points c
 - Accès à vie Mobility Club : 249 € une fois (ou 4 × 62,25 €). Au mois : 25 € × 12 = 300 € par an.
 - Les applis de mobilité les plus connues : jusqu'à 200 € par an, chaque année, aucune avec un accès à vie.
 - 249 € ≈ le prix de 4 consultations chez l'ostéo (60 €).
-- Aucune comparaison de soin : la page ne dit pas que l'app remplace un kiné ou un ostéo (pas de promesse médicale). Aucune marque concurrente nommée.
+- Aucune comparaison de soin : la page ne dit pas que l'app remplace un kiné ou un ostéo (pas de promesse médicale). Depuis b81757b, les concurrents sont nommés dans le tableau ci-dessous, à la demande de Damien.
+
+## Comparatif nominatif (2e recherche Perplexity, 23/10/2026)
+
+Fil : https://www.perplexity.ai/search/6723312c-e38b-4424-b3a0-7371a929dc23 — vérification documentaire publique (sites, centres d'aide, fiches App Store France), pas un test des comptes payants. Perplexity : « non trouvé » ne doit jamais devenir « Non » → la page affiche « — non trouvé dans leur documentation ».
+
+| Critère | Pliability | GOWOD | Fitbod | Runna | Freeletics |
+|---|---|---|---|---|---|
+| Bilan articulaire qui personnalise | Oui (test mobilité iPhone) | Oui (test par zones) | non trouvé | non trouvé | non trouvé |
+| Programme salle/course déjà suivi pris en compte (import) | Partiel (« Build Your Program », pas d'import) | Partiel (mouvements du WOD du jour) | Partiel (saisie manuelle) | Partiel (ajout de courses) | non trouvé |
+| Séance adaptée au sport prévu ce jour-là | Partiel | Oui (protocoles « Activate ») | Partiel (échauffement de la séance muscu) | Partiel (jour fixe) | Partiel |
+| Assistant vocal qui modifie la séance | non trouvé | non trouvé | non trouvé | non trouvé (annonces audio seulement) | non trouvé |
+| Correction vidéo par un coach humain | non trouvé | non trouvé | non trouvé (« Ask a Trainer » sans vidéo) | non trouvé | non trouvé |
+| Offre à vie | non trouvé | non trouvé | non trouvé | non trouvé | Oui, web seulement, prix non publié |
+| Prix annuel App Store FR | 199,99 € | 98,99 € (promo 84,99 €) | 99,99 € (aussi 81,99 €) | 119,99 € durée non précisée → n.c. | 79,99 / 99,99 € durée non précisée → n.c. |
+
+Mobility Club (vérifié en prod le 23/10 : drapeaux `feature-flags/all` + code origin/main) : bilan intégré, import de programme (program_import 100 %), séance calée sur le sport (PR #483, sans drapeau), coach vocal (voice_onboarding 100 %), retour vidéo coach (video_review 100 %), accès à vie 249 €, annuel 220 € (plan PayPal vérifié par Damien).

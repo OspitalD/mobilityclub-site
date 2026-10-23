@@ -152,13 +152,20 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cta.ghost:hover{border-color:rgba(62,207,160,.6)}
 .cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 
-.compare{margin-top:30px;padding-top:22px;border-top:1px solid var(--line)}
-.compare h3{font-size:15px;font-weight:700;color:var(--muted)}
-.compare ul{list-style:none;margin-top:8px}
-.compare li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;color:#C9CCC8}
-.compare li b{flex:none;color:var(--text);font-weight:700}
-.compare li:first-child span,.compare li:first-child b{color:var(--green)}
-.compare p{margin-top:14px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.compare{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.compare h3{font-size:clamp(20px,5.4vw,26px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
+.cmp th,.cmp td{text-align:center;vertical-align:middle}
+.cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10.5px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
+.cmp thead th.us{color:var(--green)}
+.cmp .lbl th{padding:14px 0 6px;border-top:1px solid var(--line);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
+.cmp .val td{padding:4px 2px 12px;color:var(--muted);font-size:13px;white-space:nowrap}
+.cmp .val td.us{color:var(--green);font-weight:800}
+@media (max-width:380px){.cmp .val td{font-size:11.5px}}
+@media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
+.cmp-note{margin-top:10px;color:var(--quiet);font-size:12.5px;line-height:1.55}
 
 /* 4. Date limite */
 .deadline{margin-top:22px;color:var(--muted);font-size:15px;line-height:1.55;text-align:center}
@@ -227,7 +234,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     <div class="halo" aria-hidden="true"><i style="left:-30px;top:10px;width:230px;height:230px;background:#3ECFA0;opacity:.32;filter:blur(60px)"></i><i style="right:-30px;top:120px;width:210px;height:210px;background:#B990E0;opacity:.26;filter:blur(64px)"></i></div>
     <h1>Le club <em>déménage.</em></h1>
     <div class="note">
-      <p>Depuis le début, tu me suis sur Skool. Aujourd'hui, tout ce que je construis pour toi vit dans l'app : ton programme, le timer, le coach vocal qui ajuste ta séance.</p>
+      <p>Depuis le début, tu me suis sur Skool pour ta mobilité. Aujourd'hui, l'app va plus loin : elle prend en compte ton entraînement de salle ou de course, cale ta séance sur ton sport, et un coach vocal l'ajuste quand tu lui parles.</p>
       <p>Alors je fais simple : ton abonnement passe dans l'app, et je ferme la porte Skool. Choisis ta formule juste en dessous, ça prend une minute.</p>
     </div>
     <div class="sign">
@@ -264,7 +271,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   <section class="section">
     <div class="col">
       <h2>Ce qui t'attend dans l'app</h2>
-      <p class="lead">Ce que j'ai construit ces derniers mois, déjà disponible pour toi.</p>
+      <p class="lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Déjà disponible pour toi.</p>
       <ul class="news">
         <li><span class="new-tag">Nouveau</span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</li>
         <li><span class="new-tag">Nouveau</span><strong>Je corrige ton geste en vidéo.</strong> Tu te filmes sur un exercice, je te réponds avec mes corrections.</li>
@@ -285,16 +292,34 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
       <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
     </div>
     <div class="col">
-      <!-- Coût d'opportunité : chiffres sourcés dans docs/bascule-etude-marche-2026-10-23.md -->
+      <!-- Comparatif nominatif : vérification documentaire publique du 23/10/2026 (Perplexity),
+           détail et sources dans docs/bascule-etude-marche-2026-10-23.md.
+           « — » = non documenté publiquement, jamais « n'existe pas ». -->
       <div class="compare">
-        <h3>Pour comparer</h3>
-        <ul>
-          <li><span>L'accès à vie</span><b>249 € une fois</b></li>
-          <li><span>Rester au mois</span><b>300 € par an</b></li>
-          <li><span>Les applis de mobilité les plus connues</span><b>jusqu'à 200 € par an</b></li>
-          <li><span>4 consultations chez l'ostéo</span><b>≈ 240 €</b></li>
-        </ul>
-        <p>Ces applis se paient chaque année, sans accès à vie. Ici, tu paies une fois, et le club continue d'évoluer avec toi.</p>
+        <h3>Ce que tu ne trouves pas ailleurs</h3>
+        <table class="cmp">
+          <thead>
+            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Runna</th><th scope="col">Freeletics</th></tr>
+          </thead>
+          <tbody>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Bilan articulaire qui personnalise ton programme</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Ton programme de salle ou de course importé (PDF, photo, texte)</th></tr>
+            <tr class="val"><td class="us">●</td><td>◐</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Séance calée sur le sport prévu ce jour-là</th></tr>
+            <tr class="val"><td class="us">●</td><td>◐</td><td>●</td><td>◐</td><td>◐</td><td>◐</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Coach vocal qui ajuste ta séance</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Ton geste corrigé en vidéo par un vrai coach</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Accès à vie</th></tr>
+            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>—</td><td>●</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="6">Prix sur un an</th></tr>
+            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>98,99 €</td><td>99,99 €</td><td>n.c.</td><td>n.c.</td></tr>
+          </tbody>
+        </table>
+        <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
+        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. n.c. : durée de l'offre non précisée sur la fiche. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
       </div>
       <!-- 4. Date limite -->
       <p class="deadline" id="deadline"></p>
