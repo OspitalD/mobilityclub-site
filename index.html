@@ -4,20 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Mobility Club — Le club de mouvement de demain</title>
-<meta name="description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta name="description" content="Ton coach de mouvement dans ta poche : mobilité, muscu et course, un plan qui s'adapte à ton corps et à ta semaine. Bilan articulaire, coach vocal, correction vidéo." />
 <meta name="theme-color" content="#0D0F0E" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Mobility Club — Le club de mouvement de demain" />
-<meta property="og:description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta property="og:description" content="Ton coach de mouvement dans ta poche : mobilité, muscu et course, un plan qui s'adapte à ton corps et à ta semaine." />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 
 <style>
 /* ============================================================
@@ -28,10 +28,11 @@
 
 :root{
   --bg-primary:     #0D0F0E;
-  --bg-surface:     #111412;
+  /* DA V2 : surfaces en verre (dégradé translucide sur les halos) */
+  --bg-surface:     linear-gradient(160deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02) 55%, rgba(255,255,255,0.045));
   --bg-elevated:    #14181600;
   --border-subtle:  rgba(255, 255, 255, 0.04);
-  --border-active:  #1A1E1C;
+  --border-active:  rgba(255, 255, 255, 0.11);
   --hair:           rgba(255, 255, 255, 0.07);
 
   --accent-green:   #3ECFA0;
@@ -45,8 +46,8 @@
   --text-tertiary:  #4A4D4B;
 
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
-  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
-  --font-accent: 'Spectral', Georgia, 'Times New Roman', serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+  --font-accent: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --maxw: 1160px;
@@ -76,6 +77,7 @@ body{
   background:
     radial-gradient(120% 80% at 78% -8%, rgba(62,207,160,0.10) 0%, rgba(62,207,160,0) 42%),
     radial-gradient(90% 60% at 12% 6%, rgba(62,207,160,0.05) 0%, rgba(62,207,160,0) 46%),
+    radial-gradient(70% 55% at 8% 62%, rgba(185,144,224,0.07) 0%, rgba(185,144,224,0) 50%),
     radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 55%),
     var(--bg-primary);
 }
@@ -219,7 +221,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 
 /* Décalage d'ancrage : les sections ciblées ne passent pas sous le header fixe. */
-#app, #fondateur, #avis, #doors, #reversal{ scroll-margin-top:118px; }
+#app, #fondateur, #avis, #doors, #reversal, #comparer, #programme{ scroll-margin-top:118px; }
 
 /* Barre de progression scroll */
 .scroll-progress{
@@ -1359,6 +1361,39 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   .bar-fill{ transition:none !important; }
 }
 
+/* ============ DA V2 (alignée sur l'app V2) ============ */
+.hero-title, .reversal-headline, .problem-stmt, .s5-title, .demo-title, .voice-title, .vc-title, .s4-close .big, .method-quote{
+  font-family:var(--font-sans); font-style:italic; font-weight:800; letter-spacing:-0.045em;
+}
+.it{ font-family:var(--font-sans); font-style:italic; font-weight:800; letter-spacing:-0.03em; }
+.hero-title .it{ font-weight:800; }
+.btn{ border-radius:100px; }
+.trust-item, .door, .sticky-inner{ box-shadow:inset 0 1px 0 rgba(255,255,255,0.14); }
+.hero-title[data-v="coach"]{ font-size:clamp(44px, 8.4vw, 116px); line-height:0.96; }
+@media (max-width:560px){ .hero-title[data-v="coach"] br{ display:none; } }
+
+/* ============ TON PROGRAMME, COMME TU VEUX (lot 2) ============ */
+.prg{position:relative;isolation:isolate}
+.prg .pg-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.prg .pg-halo i{position:absolute;border-radius:50%}
+.pg-grid{display:grid;gap:clamp(36px,6vw,80px);align-items:center}
+@media (min-width:900px){.pg-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}}
+.pg-title{font:italic 800 clamp(32px,5.4vw,64px)/1.02 var(--font-sans);letter-spacing:-.045em;text-wrap:balance}
+.pg-lead{margin-top:16px;max-width:46ch;color:#A9ABA8;font-size:clamp(15px,1.6vw,18px);line-height:1.62;text-wrap:pretty}
+.pg-ways{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:10px}
+.pg-ways li{padding:18px 20px;border:1px solid rgba(255,255,255,.12);border-radius:22px;background:var(--bg-surface);box-shadow:inset 0 1px 0 rgba(255,255,255,.16);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);color:#C9CCC8;font-size:15.5px;line-height:1.55}
+.pg-ways strong{display:block;margin-bottom:2px;color:var(--text-primary);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.pg-tag{display:inline-block;margin-bottom:6px;color:var(--accent-green);font-size:13px;font-weight:700}
+.pg-ways li.soon .pg-tag{color:var(--accent-gold)}
+.pg-sports{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px}
+.pg-sports span{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid rgba(255,255,255,.14);border-radius:100px;background:rgba(255,255,255,.04);color:var(--text-primary);font-size:14.5px;font-weight:600}
+.pg-sports span.soon{color:#A9ABA8}
+.pg-sports span.soon b{margin-left:6px;color:var(--accent-gold);font-size:12px;font-weight:700}
+.pg-phones{position:relative;display:flex;justify-content:center;gap:clamp(12px,2vw,22px)}
+.pg-phones figure{margin:0;width:min(46%,260px);border-radius:34px;overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 40px 80px -40px rgba(0,0,0,.9);background:#0D0F0E}
+.pg-phones figure:nth-child(2){transform:translateY(clamp(24px,5vw,56px))}
+.pg-phones img{display:block;width:100%;height:auto}
+
 /* ============ COMPARER (lot 1, DA V2 : verre + halos, Plus Jakarta italique 800) ============ */
 .cmpx{position:relative;isolation:isolate}
 .cmpx .cx-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
@@ -1465,6 +1500,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <a class="jump" href="#app" data-i18n="jn_app">L'app</a>
       <a class="jump" href="#avis" data-i18n="jn_avis">Avis</a>
       <a class="jump" href="#fondateur" data-i18n="jn_fondateur">Le fondateur</a>
+      <a class="jump" href="#comparer" data-i18n="jn_comparer">Comparer</a>
       <a class="jump jump-cta" href="#doors" data-i18n="jn_rejoindre">Rejoindre le club</a>
     </div>
   </nav>
@@ -1475,16 +1511,16 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <!-- ============================ 00 · HERO ============================ -->
 <section class="hero wrap" aria-label="Hero">
   <canvas class="hero-3d" id="hero3d" aria-hidden="true"></canvas>
-  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mobilité quotidienne</span></span>
+  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club qui te met en mouvement</span></span>
 
   <!-- Hero A/B — le HTML statique porte la variante `forced` (cf. const AB).
        Sans JS, c'est ce hook qui s'affiche. -->
   <!-- L'espace avant chaque <br> est VOLONTAIRE : en desktop il est absorbé en fin
        de ligne, et en mobile (où le <br> est masqué) il évite « mobilité,c'est ». -->
-  <h1 class="hero-title reveal" data-v="vision" data-i18n="hero_title_vision">La mobilité, <br>c'est la pratique qui garde <br><span class="em">tes articulations jeunes.</span></h1>
+  <h1 class="hero-title reveal" data-v="coach" data-i18n="hero_title_coach">Ton coach de mouvement, <br><span class="em">dans ta poche.</span></h1>
 
-  <p class="hero-sub reveal" data-i18n="hero_sub_vision">
-    Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong>
+  <p class="hero-sub reveal" data-i18n="hero_sub_coach">
+    Mobilité, muscu, course : un plan qui s'adapte à ton corps et à ta semaine. <strong>Tu ouvres, ta séance est prête.</strong>
   </p>
 
   <div class="hero-cta-row reveal">
@@ -1714,6 +1750,33 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <hr class="divider" />
 
 <!-- ============================ 03 · MÉTHODE + DAMIEN ============================ -->
+<!-- ============================ TON PROGRAMME, COMME TU VEUX (lot 2) ============================ -->
+<section class="pad prg" id="programme" aria-label="Ton programme">
+  <div class="pg-halo" aria-hidden="true"><i style="left:-80px;top:80px;width:300px;height:300px;background:#B990E0;opacity:.18;filter:blur(84px)"></i><i style="right:-60px;bottom:60px;width:280px;height:280px;background:#3ECFA0;opacity:.16;filter:blur(80px)"></i></div>
+  <div class="wrap">
+    <div class="pg-grid">
+      <div>
+        <h2 class="pg-title reveal" data-i18n="pg_title">Ton programme, comme tu veux.</h2>
+        <p class="pg-lead reveal" data-i18n="pg_lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Le coach organise ta semaine autour de ce que tu fais déjà.</p>
+        <ul class="pg-ways reveal">
+          <li><span class="pg-tag" data-i18n="pg_avail">Disponible</span><strong data-i18n="pg_w1_t">Le club crée ton programme.</strong><span data-i18n="pg_w1_d">À partir de ton bilan articulaire, de ton sport et de ton temps dispo.</span></li>
+          <li><span class="pg-tag" data-i18n="pg_avail2">Disponible</span><strong data-i18n="pg_w2_t">Tu importes le tien.</strong><span data-i18n="pg_w2_d">Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.</span></li>
+          <li class="soon"><span class="pg-tag" data-i18n="pg_soon">Bientôt</span><strong data-i18n="pg_w3_t">Tu crées le tien.</strong><span data-i18n="pg_w3_d">Tes séances, tes exercices, tes semaines, construits par toi.</span></li>
+        </ul>
+        <div class="pg-sports reveal">
+          <span data-i18n="pg_s1">Mobilité</span><span data-i18n="pg_s2">Musculation</span><span data-i18n="pg_s3">Course</span><span class="soon" data-i18n="pg_s4">Données santé<b>bientôt</b></span>
+        </div>
+      </div>
+      <div class="pg-phones reveal">
+        <figure><img src="assets/app/v2/today.png" width="1179" height="2556" loading="lazy" alt="Écran Aujourd'hui de l'app Mobility Club V2" /></figure>
+        <figure><img src="assets/app/v2/plan.png" width="1179" height="2556" loading="lazy" alt="Écran Plan de l'app Mobility Club V2" /></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <section class="pad" id="fondateur" aria-label="La méthode">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1871,20 +1934,6 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <section class="pad cmpx" id="comparer" aria-label="Comparer">
   <div class="cx-halo" aria-hidden="true"><i style="right:-60px;top:40px;width:280px;height:280px;background:#3ECFA0;opacity:.16;filter:blur(80px)"></i><i style="left:-80px;bottom:200px;width:300px;height:300px;background:#B990E0;opacity:.16;filter:blur(84px)"></i></div>
   <div class="wrap"><div class="cx-col" id="cmpRoot"></div></div>
-</section>
-
-<hr class="divider" />
-
-<!-- ============================ ✦ WHY-SCALE — POURQUOI UN PRODUIT ============================ -->
-<section class="pad whyscale" aria-label="Pourquoi un produit">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow"><span class="idx">✦</span><span data-i18n="ws_eyebrow">Pourquoi un produit, et pas juste du coaching</span></span>
-    </div>
-    <p class="whyscale-lead reveal-lines" data-split-lines data-i18n="ws_lead">J'ai vu des membres arriver d'applications à des millions d'utilisateurs, sans résultats. Et obtenir, avec quelques centaines de membres chez nous, ce qu'ils cherchaient depuis des années.</p>
-    <p class="whyscale-p reveal" data-i18n="ws_p1">Le jour où tu comprends que ta méthode aide plus de gens que les mastodontes du marché, continuer à accompagner une personne à la fois devient une forme de gâchis.</p>
-    <p class="whyscale-p accent reveal" data-i18n="ws_p2">Alors j'ai appris à coder. Pour mettre cette méthode devant des millions de personnes — pas quelques centaines.</p>
-  </div>
 </section>
 
 <hr class="divider" />
@@ -2174,8 +2223,8 @@ const LINKS = {
    ============================================================ */
 const AB = {
   enabled: false,
-  forced:  'vision',                  // 'vision' = hook articulations jeunes
-  variants: ['vision', 'friction'],   // 'friction' = hook « décidé pour toi »
+  forced:  'coach',                   // 'coach' = « Ton coach de mouvement, dans ta poche » (V2, 23/10/2026)
+  variants: ['coach', 'vision', 'friction'],   // 'vision' = articulations jeunes · 'friction' = « décidé pour toi »
 };
 
 /* ============================================================
@@ -2324,8 +2373,17 @@ function countUp(el){
 const I18N = {
   fr: {
     wm_tag: '/ MANIFESTE',
-    jn_app: "L'app", jn_avis: 'Avis', jn_fondateur: 'Le fondateur', jn_rejoindre: 'Rejoindre le club',
-    hero_eyebrow: 'Le club de mobilité quotidienne',
+    jn_app: "L'app", jn_avis: 'Avis', jn_fondateur: 'Le fondateur', jn_comparer: 'Comparer', jn_rejoindre: 'Rejoindre le club',
+    hero_eyebrow: 'Le club qui te met en mouvement',
+    pg_title: 'Ton programme, comme tu veux.',
+    pg_lead: "Plus seulement ta mobilité : ton entraînement entier, au même endroit. Le coach organise ta semaine autour de ce que tu fais déjà.",
+    pg_avail: 'Disponible', pg_avail2: 'Disponible', pg_soon: 'Bientôt',
+    pg_w1_t: 'Le club crée ton programme.', pg_w1_d: "À partir de ton bilan articulaire, de ton sport et de ton temps dispo.",
+    pg_w2_t: 'Tu importes le tien.', pg_w2_d: "Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.",
+    pg_w3_t: 'Tu crées le tien.', pg_w3_d: 'Tes séances, tes exercices, tes semaines, construits par toi.',
+    pg_s1: 'Mobilité', pg_s2: 'Musculation', pg_s3: 'Course', pg_s4: 'Données santé<b>bientôt</b>',
+    hero_title_coach: "Ton coach de mouvement, <br><span class=\"em\">dans ta poche.</span>",
+    hero_sub_coach: "Mobilité, muscu, course : un plan qui s'adapte à ton corps et à ta semaine. <strong>Tu ouvres, ta séance est prête.</strong>",
     // Hero A/B — deux portes d'entrée. `vision` = enjeu long terme (articulations
     // jeunes), `friction` = l'insight qui nous différencie (décidé pour toi).
     // Les deux sous-titres gardent le « comment » : ~8 min/jour décidées pour toi.
@@ -2455,7 +2513,7 @@ const I18N = {
     door_go: 'Commencer',
     door_go_club: 'Rejoindre',
     pricing_k: 'Deux façons de rejoindre',
-    pricing_v: "<b>Essai gratuit 7 jours</b> puis <b>25 $/mois</b>, ou <b>197 €</b> pour un an",
+    pricing_v: "<b>Essai gratuit 7 jours</b> puis <b>25 €/mois</b>, ou <b>220 €</b> pour un an",
     pricing_then: "l'annuel est un paiement unique — aucun renouvellement automatique",
     plan_cta: 'Devenir membre',
     plan_per_mo: '/mois',
@@ -2463,11 +2521,11 @@ const I18N = {
     plan_flex: 'Essai gratuit 7 jours · sans engagement',
     plan_save: 'Un an d\'accès, sans reconduction',
     plan_reco: 'Recommandé',
-    plan_permo: '≈ 16,42€/mois · ou 4× 49,25€ sans frais',
+    plan_permo: '≈ 18,33 €/mois',
     guarantee_badge: 'Garantie progression',
     guarantee_txt: "Fais tes séances pendant 90 jours. Si ton score articulaire n'a pas progressé au retest, <b>on prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</b> On peut le promettre parce qu'on le mesure.",
     nav_cta: 'Devenir membre',
-    sticky_txt: "<b>Le Club qui garde tes articulations jeunes.</b>",
+    sticky_txt: "<b>Ton coach de mouvement, dans ta poche.</b>",
     sticky_btn: 'Devenir membre',
     trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
     trust_2k: 'Sans engagement', trust_2v: 'Tu annules quand tu veux',
@@ -2480,8 +2538,17 @@ const I18N = {
 
   en: {
     wm_tag: '/ MANIFESTO',
-    jn_app: 'The app', jn_avis: 'Reviews', jn_fondateur: 'The founder', jn_rejoindre: 'Join the club',
-    hero_eyebrow: 'The daily mobility club',
+    jn_app: 'The app', jn_avis: 'Reviews', jn_fondateur: 'The founder', jn_comparer: 'Compare', jn_rejoindre: 'Join the club',
+    hero_eyebrow: 'The club that gets you moving',
+    pg_title: 'Your program, your way.',
+    pg_lead: "Not just your mobility: your whole training, in one place. The coach builds your week around what you already do.",
+    pg_avail: 'Available', pg_avail2: 'Available', pg_soon: 'Coming soon',
+    pg_w1_t: 'The club builds your program.', pg_w1_d: 'From your joint assessment, your sport and the time you have.',
+    pg_w2_t: 'Import your own.', pg_w2_d: "Your coach's or one you bought: PDF, photo or text. Your mobility fits around it.",
+    pg_w3_t: 'Build your own.', pg_w3_d: 'Your sessions, your exercises, your weeks, built by you.',
+    pg_s1: 'Mobility', pg_s2: 'Strength', pg_s3: 'Running', pg_s4: 'Health data<b>soon</b>',
+    hero_title_coach: "Your movement coach, <br><span class=\"em\">in your pocket.</span>",
+    hero_sub_coach: "Mobility, strength, running: a plan that adapts to your body and your week. <strong>Open the app, your session is ready.</strong>",
     hero_title_vision: "Mobility is <br>the practice that keeps <br><span class=\"em\">your joints young.</span>",
     hero_sub_vision: "Personalised joint training that adapts to your sport and your schedule — <strong>~8 min a day, decided for you.</strong>",
     hero_title_friction: "Your mobility.<br>Decided for you.<br><span class=\"em\">Every day.</span>",
@@ -2608,7 +2675,7 @@ const I18N = {
     door_go: 'Start',
     door_go_club: 'Join',
     pricing_k: 'Two ways to join',
-    pricing_v: '<b>7-day free trial</b> then <b>$25/mo</b>, or <b>€197</b> for a year',
+    pricing_v: '<b>7-day free trial</b> then <b>€25/mo</b>, or <b>€220</b> for a year',
     pricing_then: 'the yearly plan is a one-off payment — it never auto-renews',
     plan_cta: 'Become a member',
     plan_per_mo: '/mo',
@@ -2616,11 +2683,11 @@ const I18N = {
     plan_flex: '7-day free trial · no commitment',
     plan_save: 'One year of access, no auto-renewal',
     plan_reco: 'Recommended',
-    plan_permo: '≈ €16.42/mo · or 4× €49.25 interest-free',
+    plan_permo: '≈ €18.33/mo',
     guarantee_badge: 'Progress guarantee',
     guarantee_txt: "Train for 90 days. If your joint score hasn't improved at retest, <b>we extend your access for free until it does.</b> We can promise it because we measure it.",
     nav_cta: 'Become a member',
-    sticky_txt: "<b>The Club that keeps your joints young.</b>",
+    sticky_txt: "<b>Your movement coach, in your pocket.</b>",
     sticky_btn: 'Become a member',
     trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
     trust_2k: 'No commitment', trust_2v: 'Cancel whenever you want',
