@@ -16,7 +16,7 @@
 <script>
 window.MC_BASCULE = {
   // Formule mise en avant avec le badge « Avantage membres fondateurs » : 'annuel' | 'vie' | 'mensuel'
-  RECOMMANDE: 'annuel',
+  RECOMMANDE: 'vie',
 
   ANNUEL_PRIX: '220 €',
   ANNUEL_EQUIV: 'soit 18,33 € par mois',
@@ -321,10 +321,11 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   const PLANS = {
     annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', x4: 'ANNUEL_4X', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
-    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
+    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement. Rentabilisé en 10 mois par rapport au mois.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
     mensuel: { nom: 'Rester au mois', merci: 'Ton abonnement au mois est validé.', prix: 'MENSUEL_PRIX', unite: '/mois', subTxt: 'Sans engagement, tu arrêtes quand tu veux.', bonus: null, lien: 'LIEN_MENSUEL', cta: 'Rester au mois' },
   };
-  const ORDER = ['annuel', 'vie', 'mensuel'];
+  // La formule recommandée passe en tête (premier écran sur mobile).
+  const ORDER = [C.RECOMMANDE, ...['vie', 'annuel', 'mensuel'].filter((id) => id !== C.RECOMMANDE)];
 
   // Remplissage des valeurs simples
   document.querySelectorAll('[data-v]').forEach((el) => { el.innerHTML = v(el.dataset.v); });
