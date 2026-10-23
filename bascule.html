@@ -201,7 +201,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .vs-detail .cmp-panel{margin-top:14px;padding:6px 14px 16px;border:1px solid var(--glass-line);border-radius:22px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
 .cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
 .cmp th,.cmp td{text-align:center;vertical-align:middle}
-.cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
+.cmp thead th{padding:0 1px 10px;hyphens:manual;-webkit-hyphens:manual;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
 .cmp thead th.us{color:var(--green)}
 .cmp .lbl th{padding:14px 0 6px;border-top:1px solid var(--line);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
 .cmp .val td{padding:4px 2px 12px;color:var(--muted);font-size:13px;white-space:nowrap}
@@ -209,7 +209,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cmp .part td{padding:0 0 12px;text-align:left;color:var(--quiet);font-size:12.5px;line-height:1.5;white-space:normal}
 .cmp .val td.soon{color:var(--gold);font-size:11px;font-weight:700}
 .cmp tbody tr.lbl:first-child th{border-top:0}
-@media (max-width:420px){.cmp .val td{font-size:10.5px;letter-spacing:-.2px}}
+@media (max-width:420px){.cmp thead th{font-size:9.5px}.cmp .val td{font-size:10.5px;letter-spacing:-.2px;white-space:normal;line-height:1.25}}
 @media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
@@ -386,45 +386,47 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
            « — » = non documenté publiquement, jamais « n'existe pas ». -->
       <div class="compare">
         <h2>Ce que tu ne trouves pas ailleurs</h2>
-        <p class="vs-lead">Comparé à Pliability, GOWOD, Fitbod, Hevy, Runna et Ladder.</p>
+        <p class="vs-lead">Comparé à Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna et Ladder.</p>
         <ul class="vs">
-          <li><strong>Ton geste corrigé en vidéo par un vrai coach</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune des 6.</span></li>
-          <li><strong>Un coach vocal qui ajuste ta séance</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance.</span></li>
+          <li><strong>Ton geste corrigé en vidéo par un vrai coach</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune des 7.</span></li>
+          <li><strong>Un coach vocal qui ajuste ta séance</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance. Freeletics ajuste la séance sur ton retour écrit, sans voix.</span></li>
           <li><strong>Ton programme importé (PDF, photo, texte)</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.</span></li>
           <li><strong>Un bilan articulaire de départ</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability et GOWOD.</span></li>
-          <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod et Runna.</span></li>
-          <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire.</span></li>
+          <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.</span></li>
+          <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
         </ul>
         <details class="vs-detail">
-          <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 7 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 8 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
         <div class="cmp-panel">
         <table class="cmp">
           <thead>
-            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
+            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Plia&shy;bility</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Free&shy;letics</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
           </thead>
           <tbody>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Un programme créé pour toi, personnalisé</th></tr>
-            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>●</td><td>◐</td><td>●</td><td>◐</td></tr>
-            <tr class="part"><td colspan="7">◐ Hevy : seulement via ChatGPT, pas dans l'appli<br>◐ Ladder : t'oriente vers une équipe, programme commun à tous</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Importer ton programme (PDF, photo, texte)</th></tr>
-            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>◐</td><td>◐</td><td>—</td><td>—</td></tr>
-            <tr class="part"><td colspan="7">◐ Fitbod : une séance en photo, sur Android seulement<br>◐ Hevy : via un outil externe, pas dans l'appli</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Créer ton propre programme</th></tr>
-            <tr class="val"><td class="us soon">bientôt</td><td>●</td><td>—</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
-            <tr class="part"><td colspan="7">◐ Fitbod : des séances, pas un cycle de semaines<br>◐ Hevy : des routines, sans semaines distinctes<br>◐ Runna : tu déplaces les séances de leur plan</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Bilan articulaire de départ</th></tr>
-            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Coach vocal qui ajuste ta séance</th></tr>
-            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>◐</td></tr>
-            <tr class="part"><td colspan="7">◐ Runna : annonces d'allure, la séance ne change pas<br>◐ Ladder : coach dans l'oreille, la séance ne change pas</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Ton geste corrigé en vidéo par un vrai coach</th></tr>
-            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Accès à vie</th></tr>
-            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>89,99 €</td><td>—</td><td>—</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Prix au mois</th></tr>
-            <tr class="val"><td class="us">25 €</td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>3,49 €</td><td>n.c.</td><td>14,99 €</td></tr>
-            <tr class="lbl"><th scope="colgroup" colspan="7">Prix sur un an</th></tr>
-            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>26,49 €</td><td>n.c.</td><td>94,99 €</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Un programme créé pour toi, personnalisé</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>●</td><td>●</td><td>◐</td><td>●</td><td>◐</td></tr>
+            <tr class="part"><td colspan="8">◐ Hevy : seulement via ChatGPT, pas dans l'appli<br>◐ Ladder : t'oriente vers une équipe, programme commun à tous</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Importer ton programme (PDF, photo, texte)</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>◐</td><td>—</td><td>◐</td><td>—</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Fitbod : une séance en photo, sur Android seulement<br>◐ Hevy : via un outil externe, pas dans l'appli</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Créer ton propre programme</th></tr>
+            <tr class="val"><td class="us soon">bientôt</td><td>●</td><td>—</td><td>◐</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Fitbod : des séances, pas un cycle de semaines<br>◐ Freeletics : des séances à toi, à côté du plan de son coach IA<br>◐ Hevy : des routines, sans semaines distinctes<br>◐ Runna : tu déplaces les séances de leur plan</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Bilan articulaire de départ</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Coach vocal qui ajuste ta séance</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>—</td><td>◐</td><td>◐</td></tr>
+            <tr class="part"><td colspan="8">◐ Freeletics : ajuste la séance sur ton retour écrit, sans voix<br>◐ Runna : annonces d'allure, la séance ne change pas<br>◐ Ladder : coach dans l'oreille, la séance ne change pas</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Ton geste corrigé en vidéo par un vrai coach</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Accès à vie</th></tr>
+            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Freeletics : accès à vie sur son site, prix non publié</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Prix au mois</th></tr>
+            <tr class="val"><td class="us">25 €</td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>n.c.</td><td>14,99 €</td></tr>
+            <tr class="part"><td colspan="8">— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Prix sur un an</th></tr>
+            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>n.c.</td><td>94,99 €</td></tr>
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
@@ -573,6 +575,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     { id: 'pliability', nom: 'Pliability', cout: (y) => 199.99 * y, combo: true },
     { id: 'ladder', nom: 'Ladder', cout: (y) => 94.99 * y, combo: true },
     { id: 'gowod', nom: 'GOWOD', cout: (y) => 84.99 * y, combo: true },
+    { id: 'freeletics', nom: 'Freeletics', cout: (y) => 79.99 * y, combo: true },
     { id: 'fitbod', nom: 'Fitbod', cout: (y) => 81.99 * y, combo: true },
     { id: 'hevy', nom: 'Hevy, à vie', cout: () => 89.99, combo: true },
   ];

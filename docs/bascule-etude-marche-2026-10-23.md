@@ -80,3 +80,19 @@ Fil : https://www.perplexity.ai/search/ae1b1f4e-bb7e-4f5f-88fb-6603888b7b27 (fic
 | Ladder (PRO) | 14,99 ou 15,99 € | 94,99 ou 139,99 € | — |
 
 Règle d'affichage : toujours le prix le plus bas relevé (GOWOD annuel passe de 89,99 € à 84,99 €, Ladder de 139,99 € à 94,99 €). Le simulateur « Ce que tu paies sur la durée » multiplie ces annuels par 1, 2, 3 ou 5 ans ; Runna en est exclu (durée non précisée) ; Hevy compté à vie (89,99 €).
+
+## 5e passage : Freeletics réintégré (23/10/2026)
+
+Demande de Damien : Freeletics remis partout (liste, tableau à 8 colonnes, simulateur). Sources : fiche App Store France (id654810212), blog Freeletics « Workout Creator », Subger (prix 2026).
+
+| Critère | Freeletics |
+|---|---|
+| Programme créé pour toi | Oui (Coach IA, parcours de 6 à 12 semaines) |
+| Import PDF/photo/texte | non trouvé |
+| Créer son programme | Partiel (Workout Creator : des séances, à côté du plan du coach IA) |
+| Bilan articulaire | non trouvé (la mobilité n'est qu'une partie de séance) |
+| Coach vocal qui modifie la séance | Partiel (ajuste sur le retour écrit, pas de voix) |
+| Correction vidéo humaine | non trouvé |
+| À vie | Partiel (sur leur site, prix non publié) |
+| Prix au mois | pas de formule au mois (3, 6 ou 12 mois) |
+| Prix sur un an | 79,99 € (plus bas ; 99,99 € aussi listé). Achats App Store sans durée affichée, durée 12 mois recoupée avec Subger : à reconfirmer dans l'appli |
