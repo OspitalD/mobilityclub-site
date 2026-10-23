@@ -118,6 +118,12 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .list strong{font-weight:700}
 .once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 14px 14px 0;font-size:16px;line-height:1.5}
 
+.news{list-style:none;margin-top:24px}
+.news li{padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55;color:#C9CCC8}
+.news li:last-child{border-bottom:1px solid var(--line)}
+.news strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.new-tag{display:inline-block;margin-bottom:6px;color:var(--green);font-size:12px;font-weight:700;letter-spacing:.2px}
+
 /* 3. Le choix */
 .plans-wrap{position:relative;margin-top:28px}
 .plans{position:relative;display:grid;gap:14px}
@@ -237,13 +243,27 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
         <div>
           <h3>Ce qui change</h3>
           <ul class="list new">
-            <li><span><strong>Tout est au même endroit.</strong> Ton programme personnalisé et le timer, dans l'app.</span></li>
-            <li><span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</span></li>
+            <li><span><strong>Tout est au même endroit.</strong> Ta séance du jour, ton programme et ton bilan articulaire, dans l'app.</span></li>
             <li><span><strong>Tu paies dans l'app,</strong> plus sur Skool.</span></li>
           </ul>
         </div>
       </div>
       <p class="once">Ton abonnement Skool s'arrête dès ta bascule. <strong>Tu ne paies jamais deux fois.</strong></p>
+    </div>
+  </section>
+
+  <!-- 2 bis. Nouveautés (vérifiées ouvertes à tous en prod le 23/10 : drapeaux feature-flags/all) -->
+  <section class="section">
+    <div class="col">
+      <h2>Ce qui t'attend dans l'app</h2>
+      <p class="lead">Ce que j'ai construit ces derniers mois, déjà disponible pour toi.</p>
+      <ul class="news">
+        <li><span class="new-tag">Nouveau</span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Je corrige ton geste en vidéo.</strong> Tu te filmes sur un exercice, je te réponds avec mes corrections.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Ton bilan articulaire dans l'app.</strong> Tu le refais quand tu veux, avec les démos sous les yeux.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Ton entraînement importé.</strong> Ajoute ton programme de salle ou de course (PDF, photo ou texte) : ta mobilité s'organise autour.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Une séance calée sur ton sport.</strong> Ta mobilité du jour prépare la séance de sport prévue.</li>
+      </ul>
     </div>
   </section>
 
