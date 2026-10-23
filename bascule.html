@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<!--
+  BASCULE SKOOL → APP
+  Page privée envoyée aux abonnés mensuels Skool. Hors index (meta + en-tête netlify.toml).
+
+  Tout ce que Damien doit remplir est dans MC_BASCULE ci-dessous.
+  Une valeur entre crochets « [ ... ] » s'affiche surlignée en or sur la page :
+  tant qu'il en reste une, la page n'est pas prête à partir.
+  Chaque montant doit correspondre EXACTEMENT au checkout PayPal derrière le lien.
+-->
+<script>
+window.MC_BASCULE = {
+  // Formule mise en avant avec le badge « Avantage membres fondateurs » : 'annuel' | 'vie' | 'mensuel'
+  RECOMMANDE: 'vie',
+
+  ANNUEL_PRIX: '220 €',
+  ANNUEL_EQUIV: 'soit 18,33 € par mois',
+  ANNUEL_4X: '',                         // '4 × 55 €' quand l'annuel sera un paiement unique (lien ncp) : PayPal ne propose pas le 4x sur un abonnement
+  ANNUEL_BONUS: ['Un appel avec moi, offert', 'La Méthode IKEA V2, tout juste mise à jour'],
+  LIEN_ANNUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A',
+
+  VIE_PRIX: '249 €',
+  VIE_4X: '4 × 62,25 €',
+  VIE_BONUS: ['Un appel avec moi, offert', 'La Méthode IKEA V2, tout juste mise à jour'],  // [] pour ne rien afficher
+  LIEN_VIE: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
+
+  MENSUEL_PRIX: '25 €',                  // ⚠️ plan SANS essai gratuit (le plan de /devenir-membre a 7 j d'essai)
+  LIEN_MENSUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-17C64877T6348331UNLCQIVI',
+
+  DATE_LIMITE: 'dimanche 25 octobre',
+  DATE_FIN_SKOOL: 'dimanche 25 octobre', // jour de la bascule : les abonnements Skool s'arrêtent
+  DELAI_COUPURE: '48 h',                 // délai pour couper l'abonnement Skool après paiement
+  CONTACT: 'damien@mobilityclub.co',
+
+  // Si le lien de paiement ne récupère pas l'email Skool, on le demande avant de partir.
+  DEMANDER_EMAIL: true,
+  INTENT_ENDPOINT: '/.netlify/functions/bascule-intent',
+
+  APP_URL: 'https://app.mobilityclub.co',
+
+  // Les 3 façons d'avoir ton programme : 'dispo' | 'bientot'.
+  // Vérifié en prod le 23/10 : import = ouvert à 100 % (program_import) ; programme créé par le club =
+  // mobilité personnalisée par le bilan ; constructeur de programme = pas encore en prod (seul « Créer ma séance » existe).
+  PROG_IMPORTER: 'dispo',
+  PROG_CREER: 'bientot',
+  PROG_CLUB: 'dispo'
+};
+</script>
+
+<title>Le club déménage — Mobility Club</title>
+<meta name="description" content="Le Mobility Club quitte Skool : ton abonnement passe dans l'app." />
+<meta name="robots" content="noindex,nofollow" />
+<meta name="theme-color" content="#0D0F0E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --bg:#0D0F0E;
+  --surface:#17191A;
+  --surface-2:#202324;
+  --line:rgba(255,255,255,.07);
+  --line-strong:rgba(255,255,255,.1);
+  --purple:#B990E0;
+  --green:#3ECFA0;
+  --green-ink:#0D0F0E;
+  --gold:#E8A020;
+  --text:#F5F5F3;
+  --muted:#A9ABA8;
+  --quiet:#6F716E;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --col:620px;
+  /* Verre DA V2 (même recette que la carte recommandée) */
+  --glass:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 55%,rgba(255,255,255,.05));
+  --glass-line:rgba(255,255,255,.12);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.18);
+  --glass-blur:blur(18px) saturate(170%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+body{
+  min-width:320px;overflow-x:hidden;
+  background:var(--bg);
+  color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.col{width:min(100%,var(--col));margin-inline:auto;padding-inline:20px}
+.wide{width:min(100%,1040px);margin-inline:auto;padding-inline:20px}
+
+/* Halos de section (DA V2) */
+.section{position:relative;isolation:isolate}
+.s-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.s-halo i{position:absolute;border-radius:50%}
+
+/* Valeur à remplir par Damien */
+.ph{color:var(--gold);text-decoration:underline dashed rgba(232,160,32,.6);text-underline-offset:3px}
+
+/* En-tête */
+.top{display:flex;align-items:center;gap:9px;height:60px;font-size:13px;font-weight:700;letter-spacing:.3px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 16px rgba(62,207,160,.6)}
+
+/* 1. Mot de Damien */
+.hello{position:relative;padding-block:clamp(28px,7vw,72px) clamp(40px,8vw,72px)}
+.halo{position:absolute;inset:-40px -20px auto;height:380px;z-index:0;pointer-events:none}
+.halo i{position:absolute;border-radius:50%}
+.hello>*:not(.halo){position:relative;z-index:1}
+.hello h1{font-size:clamp(42px,12vw,72px);line-height:.98;font-weight:800;font-style:italic;letter-spacing:-.05em}
+.hello h1 em{color:var(--green)}
+.note{margin-top:26px;display:grid;gap:14px;font-size:clamp(17px,4.4vw,19px);line-height:1.6;color:#D6D8D5}
+.sign{margin-top:26px;padding-left:14px;border-left:2px solid var(--green);font-size:14px;color:var(--muted)}
+.sign b{display:block;color:var(--text);font-weight:600}
+
+/* 2. Ce qui change */
+.section{padding:clamp(40px,8vw,72px) 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:italic;letter-spacing:-.035em}
+.lead{margin-top:10px;color:var(--muted);font-size:16px}
+.split{display:grid;gap:30px;margin-top:28px}
+.split h3{font-size:15px;font-weight:700;color:var(--muted)}
+.list{list-style:none;margin-top:6px}
+.list li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.5}
+.list li:last-child{border-bottom:0}
+.list li::before{content:"";width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--quiet)}
+.list.new li::before{background:var(--green)}
+.list strong{font-weight:700}
+.once{margin-top:22px;padding:16px 18px;border:1px solid var(--glass-line);border-left:2px solid var(--green);background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-radius:0 18px 18px 0;font-size:16px;line-height:1.5}
+
+.sub-h{margin-top:30px;font-size:15px;font-weight:700;color:var(--muted)}
+.ways{list-style:none;counter-reset:w;margin-top:12px;display:grid;gap:10px}
+.ways li{counter-increment:w;position:relative;padding:18px 18px 18px 54px;border:1px solid var(--glass-line);border-radius:22px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);font-size:15.5px;line-height:1.55;color:#C9CCC8}
+.ways li::before{content:counter(w);position:absolute;left:18px;top:18px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(62,207,160,.14);color:var(--green);font-size:12.5px;font-weight:800}
+.ways strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700}
+.way-tag{display:inline-block;margin-bottom:6px;font-size:13px;font-weight:700;color:var(--green)}
+.ways li.soon .way-tag{color:var(--gold)}
+.ways li.soon::before{background:rgba(232,160,32,.14);color:var(--gold)}
+.news{list-style:none;margin-top:12px}
+.news li{padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55;color:#C9CCC8}
+.news li:last-child{border-bottom:1px solid var(--line)}
+.news strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.new-tag{display:inline-block;margin-bottom:6px;color:var(--green);font-size:13px;font-weight:700;letter-spacing:.2px}
+
+/* 3. Le choix */
+.plans-wrap{position:relative;margin-top:28px}
+.plans{position:relative;display:grid;gap:14px}
+.plans-halo{position:absolute;left:-20px;right:-20px;top:-30px;height:420px;z-index:0;pointer-events:none}
+.plans-halo i{position:absolute;border-radius:50%}
+.plan{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:26px 22px 22px;border:1px solid var(--glass-line);border-radius:26px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.plan.reco{overflow:hidden;isolation:isolate;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04) 55%,rgba(255,255,255,.07));border-color:rgba(255,255,255,.16);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px rgba(0,0,0,.3)}
+.plan.reco::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%);z-index:-1}
+.badge{align-self:flex-start;margin-bottom:8px;padding:6px 12px;border-radius:100px;background:rgba(62,207,160,.16);color:var(--green);font-size:13px;font-weight:700}
+.plan h3{font-size:20px;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.price{margin-top:4px;font-size:40px;line-height:1;font-weight:800;letter-spacing:-.045em}
+.price small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
+.sub{color:var(--muted);font-size:15px;line-height:1.5}
+.split4{margin-top:4px;color:var(--text);font-size:15px;font-weight:600}
+.bonus{margin-top:10px;padding-top:12px;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
+.bonus b{color:var(--gold);font-weight:700}
+.bonus ul{list-style:none;margin-top:6px;display:grid;gap:6px}
+.bonus li{display:grid;grid-template-columns:14px 1fr;gap:8px}
+.bonus li::before{content:"";width:6px;height:6px;margin-top:9px;border-radius:50%;background:var(--gold)}
+.bonus.none{color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:54px;margin-top:18px;border-radius:100px;font-size:16px;font-weight:700;text-decoration:none;transition:transform .2s var(--ease),filter .2s var(--ease),border-color .2s var(--ease)}
+.cta:active{transform:scale(.985)}
+.cta.primary{background:var(--green);color:var(--green-ink)}
+.cta.primary:hover{filter:brightness(1.06)}
+.cta.ghost{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--text)}
+.cta.ghost:hover{border-color:rgba(62,207,160,.6)}
+.cta:focus-visible,.faq summary:focus-visible,.field input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+
+.compare{margin-top:0}
+.compare h3{font-size:clamp(20px,5.4vw,26px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.vs-lead{margin-top:8px;color:var(--muted);font-size:15px}
+.vs{list-style:none;margin-top:14px}
+.vs li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.vs li:first-child{border-top:1px solid var(--line)}
+.vs strong{font-size:16.5px;font-weight:700;line-height:1.35}
+.vs-us{align-self:start;color:var(--green);font-size:15px;font-weight:800;white-space:nowrap}
+.vs-else{grid-column:1/-1;color:var(--muted);font-size:15px;line-height:1.5}
+.vs-detail{margin-top:20px}
+.vs-detail summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:10px 14px 10px 20px;border:1px solid rgba(62,207,160,.45);border-radius:100px;background:linear-gradient(160deg,rgba(62,207,160,.16),rgba(62,207,160,.05));box-shadow:var(--glass-hi),0 0 28px rgba(62,207,160,.12);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;list-style:none;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.vs-detail summary:hover{border-color:rgba(62,207,160,.8);box-shadow:var(--glass-hi),0 0 36px rgba(62,207,160,.22)}
+.vs-detail summary:active{transform:scale(.985)}
+.vs-detail summary:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.vs-detail summary::-webkit-details-marker{display:none}
+.vs-detail summary small{display:block;margin-top:1px;color:var(--muted);font-size:13px;font-weight:500}
+.vs-detail .when-open{display:none}
+.vs-detail[open] .when-open{display:block}
+.vs-detail[open] .when-closed{display:none}
+.vs-detail summary .chev{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--green-ink);transition:transform .25s var(--ease)}
+.vs-detail[open] summary .chev{transform:rotate(180deg)}
+.vs-detail .cmp-panel{margin-top:14px;padding:6px 14px 16px;border:1px solid var(--glass-line);border-radius:22px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
+.cmp th,.cmp td{text-align:center;vertical-align:middle}
+.cmp thead th{padding:0 1px 10px;hyphens:manual;-webkit-hyphens:manual;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
+.cmp thead th.us{color:var(--green)}
+.cmp .lbl th{padding:14px 0 6px;border-top:1px solid var(--line);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
+.cmp .val td{padding:4px 2px 12px;color:var(--muted);font-size:13px;white-space:nowrap}
+.cmp .val td.us{color:var(--green);font-weight:800}
+.cmp .part td{padding:0 0 12px;text-align:left;color:var(--quiet);font-size:12.5px;line-height:1.5;white-space:normal}
+.cmp .val td.soon{color:var(--gold);font-size:11px;font-weight:700}
+.cmp tbody tr.lbl:first-child th{border-top:0}
+@media (max-width:420px){.cmp thead th{font-size:9.5px}.cmp .val td{font-size:10.5px;letter-spacing:-.2px;white-space:normal;line-height:1.25}}
+@media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
+.cmp-note{margin-top:14px;color:var(--quiet);font-size:13px;line-height:1.55}
+
+.sim{margin-top:30px;padding:22px 18px;border:1px solid var(--glass-line);border-radius:26px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+.sim h3{font-size:clamp(20px,5.4vw,24px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:rgba(0,0,0,.35)}
+.seg button{min-height:44px;border-radius:100px;color:var(--muted);font-size:14px;font-weight:700}
+.seg button[aria-pressed="true"]{background:rgba(255,255,255,.12);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.bars{list-style:none;margin-top:18px;display:grid;gap:12px}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:baseline;font-size:15.5px;color:#C9CCC8}
+.bars b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.bars small{color:var(--quiet);font-size:12px}
+.bar{grid-column:1/-1;height:8px;border-radius:8px;background:var(--line)}
+.bar i{display:block;height:100%;border-radius:8px;background:#5C615E;transition:width .45s var(--ease)}
+.bars li.us{color:var(--green)}
+.bars li.us b{color:var(--green)}
+.bars li.us span:first-child{font-weight:700}
+.bars li.us .bar i{background:var(--green)}
+.combo{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.combo-h{font-size:16px;font-weight:700}
+.combo-sub{margin-top:2px;color:var(--muted);font-size:14px}
+.seg.two{grid-template-columns:1fr 1fr}
+.mode-hint{margin-top:8px;color:var(--muted);font-size:13.5px;line-height:1.5}
+.chips button .soon-tag{margin-left:6px;color:var(--gold);font-size:12px;font-weight:700}
+.combo-total .soon-line{display:block;margin-top:6px;color:var(--muted);font-size:14.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.12);border-radius:100px;color:var(--muted);font-size:15px;font-weight:600}
+.chips button[aria-pressed="true"]{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text)}
+.combo-total{margin-top:16px;font-size:16px;line-height:1.55;color:#C9CCC8}
+.combo-total b{color:var(--text)}
+.combo-total .g{color:var(--green);font-weight:700}
+
+/* 4. Date limite */
+.deadline{margin-top:22px;color:var(--muted);font-size:15px;line-height:1.55;text-align:center}
+.deadline b{color:var(--text);font-weight:600}
+
+/* 5. FAQ */
+.faq{margin-top:20px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;font-size:16px;font-weight:600;line-height:1.4;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:9px;height:9px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .25s var(--ease)}
+.faq details[open] summary::after{transform:rotate(225deg) translateY(-2px)}
+.faq p{padding:0 0 18px;color:#C4C7C3;font-size:15.5px;line-height:1.65}
+
+/* 6. Pied */
+.foot{padding-block:48px 64px;border-top:1px solid var(--line);text-align:center}
+.foot p{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.foot span{display:block;margin-top:6px;color:var(--muted);font-size:15px}
+
+/* Feuille email */
+.veil{position:fixed;inset:0;z-index:40;background:rgba(5,6,6,.66);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;width:min(100%,520px);margin-inline:auto;padding:22px 20px calc(22px + env(safe-area-inset-bottom));border:1px solid rgba(255,255,255,.16);border-bottom:0;border-radius:26px 26px 0 0;background:linear-gradient(160deg,rgba(40,44,45,.92),rgba(23,25,26,.96));backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);transform:translateY(105%);transition:transform .35s var(--ease)}
+.open .veil{opacity:1;pointer-events:auto}
+.open .sheet{transform:none}
+.grab{width:38px;height:4px;margin:0 auto 18px;border-radius:4px;background:var(--line-strong)}
+.sheet h2{font-size:22px}
+.sheet .lead{font-size:15px}
+.recap{display:flex;justify-content:space-between;gap:12px;margin-top:18px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15px}
+.recap b{font-weight:700}
+.field{display:grid;gap:8px;margin-top:18px;font-size:14px;font-weight:600;color:var(--muted)}
+.field input{width:100%;height:54px;padding:0 16px;border:1px solid var(--line-strong);border-radius:14px;background:var(--bg);color:var(--text);font:500 16px var(--sans)}
+.field input[aria-invalid="true"]{border-color:#E05A4A}
+.err{min-height:20px;margin-top:6px;color:#E05A4A;font-size:13px}
+.later{display:block;width:100%;margin-top:10px;padding:10px;color:var(--muted);font-size:14px}
+
+/* Écran de confirmation */
+.done{display:none;padding-block:clamp(28px,8vw,72px) 72px}
+.is-done .main{display:none}
+.is-done .done{display:block}
+.check{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:rgba(62,207,160,.12);color:var(--green)}
+.done h1{margin-top:22px;font-size:clamp(38px,10.5vw,58px);line-height:1;font-weight:800;font-style:italic;letter-spacing:-.05em}
+.done h1 em{color:var(--green)}
+.steps{list-style:none;counter-reset:s;margin-top:30px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-strong);color:var(--green);font-size:13px;font-weight:700}
+.steps li>span{color:var(--text)}
+.steps li>span>b{display:block;font-weight:700}
+.steps li>span>span{display:block;color:var(--muted);font-size:14.5px}
+
+@media (min-width:860px){
+  .split{grid-template-columns:1fr 1fr;gap:48px}
+  .plans{grid-template-columns:repeat(3,1fr);align-items:stretch}
+  .plan .cta{margin-top:auto}
+  .plan .bonus{margin-bottom:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="main">
+  <header class="col top" aria-label="Mobility Club"><span class="dot" aria-hidden="true"></span>Mobility Club</header>
+
+  <!-- 1. Mot de Damien -->
+  <section class="col hello">
+    <div class="halo" aria-hidden="true"><i style="left:-30px;top:10px;width:230px;height:230px;background:#3ECFA0;opacity:.32;filter:blur(60px)"></i><i style="right:-30px;top:120px;width:210px;height:210px;background:#B990E0;opacity:.26;filter:blur(64px)"></i></div>
+    <h1>Le club <em>déménage.</em></h1>
+    <div class="note">
+      <p>Depuis le début, tu me suis sur Skool pour ta mobilité. Aujourd'hui, l'app va plus loin : elle prend en compte ton entraînement de salle ou de course, cale ta séance sur ton sport, et un coach vocal l'ajuste quand tu lui parles.</p>
+      <p>Alors je fais simple : ton abonnement passe dans l'app, et je ferme la porte Skool. Choisis ta formule juste en dessous, ça prend une minute.</p>
+    </div>
+    <div class="sign">
+      <div><b>Damien</b>Fondateur du Mobility Club</div>
+    </div>
+  </section>
+
+  <!-- 3. Le choix -->
+  <section class="section" id="choix">
+    <div class="col">
+      <h2>Choisis ta formule</h2>
+      <p class="lead">Les trois donnent accès à toute l'app. Seule la façon de payer change.</p>
+    </div>
+    <div class="wide">
+      <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
+    </div>
+    <div class="col">
+      <!-- 4. Date limite -->
+      <p class="deadline" id="deadline"></p>
+    </div>
+  </section>
+
+  <!-- 2. Ce qui change / ce qui ne change pas -->
+  <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="right:-60px;top:60px;width:240px;height:240px;background:#3ECFA0;opacity:.16;filter:blur(70px)"></i></div>
+    <div class="col">
+      <h2>Ce qui bouge, ce qui reste</h2>
+      <div class="split">
+        <div>
+          <h3>Ce qui ne change pas</h3>
+          <ul class="list">
+            <li><span><strong>Ton programme.</strong> Le même, avec ta progression. Rien ne repart de zéro.</span></li>
+            <li><span><strong>Mon suivi.</strong> Tu me poses tes questions comme avant.</span></li>
+            <li><span><strong>Les cours.</strong> Le classroom reste sur Skool, en accès libre.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Ce qui change</h3>
+          <ul class="list new">
+            <li><span><strong>Tout est au même endroit.</strong> Ta séance du jour, ton programme et ton bilan articulaire, dans l'app.</span></li>
+            <li><span><strong>Tu paies dans l'app,</strong> plus sur Skool.</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="once">Ton abonnement Skool s'arrête dès ta bascule. <strong>Tu ne paies jamais deux fois.</strong></p>
+    </div>
+  </section>
+
+  <!-- 2 bis. Nouveautés (vérifiées ouvertes à tous en prod le 23/10 : drapeaux feature-flags/all) -->
+  <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="left:-60px;top:120px;width:260px;height:260px;background:#B990E0;opacity:.2;filter:blur(72px)"></i><i style="right:-40px;bottom:80px;width:220px;height:220px;background:#3ECFA0;opacity:.14;filter:blur(70px)"></i></div>
+    <div class="col">
+      <h2>Ce qui t'attend dans l'app</h2>
+      <p class="lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Déjà disponible pour toi.</p>
+      <h3 class="sub-h">Ton programme, comme tu veux</h3>
+      <ol class="ways">
+        <li data-prog="PROG_CLUB"><span class="way-tag"></span><strong>Le club crée ton programme.</strong> Personnalisé à partir de ton bilan articulaire, de ton sport et de ton temps dispo.</li>
+        <li data-prog="PROG_IMPORTER"><span class="way-tag"></span><strong>Tu importes ton programme.</strong> Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.</li>
+        <li data-prog="PROG_CREER"><span class="way-tag"></span><strong>Tu crées ton programme.</strong> Tes séances, tes exercices, tes semaines, construits par toi.</li>
+      </ol>
+      <h3 class="sub-h">Et aussi</h3>
+      <ul class="news">
+        <li><span class="new-tag">Nouveau</span><strong>Le coach vocal.</strong> Douleur, fatigue, peu de temps : tu le dis, il ajuste ta séance.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Je corrige ton geste en vidéo.</strong> Tu te filmes sur un exercice, je te réponds avec mes corrections.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Ton bilan articulaire dans l'app.</strong> Tu le refais quand tu veux, avec les démos sous les yeux.</li>
+        <li><span class="new-tag">Nouveau</span><strong>Une séance calée sur ton sport.</strong> Ta mobilité du jour prépare la séance de sport prévue.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Comparer -->
+  <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="right:-50px;top:40px;width:250px;height:250px;background:#3ECFA0;opacity:.18;filter:blur(70px)"></i><i style="left:-70px;bottom:160px;width:260px;height:260px;background:#B990E0;opacity:.18;filter:blur(74px)"></i></div>
+    <div class="col">
+      <!-- Comparatif nominatif : vérification documentaire publique du 23/10/2026 (Perplexity),
+           détail et sources dans docs/bascule-etude-marche-2026-10-23.md.
+           « — » = non documenté publiquement, jamais « n'existe pas ». -->
+      <div class="compare">
+        <h2>Ce que tu ne trouves pas ailleurs</h2>
+        <p class="vs-lead">Comparé à Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna et Ladder.</p>
+        <ul class="vs">
+          <li><strong>Ton geste corrigé en vidéo par un vrai coach</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune des 7.</span></li>
+          <li><strong>Un coach vocal qui ajuste ta séance</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance. Freeletics ajuste la séance sur ton retour écrit, sans voix.</span></li>
+          <li><strong>Ton programme importé (PDF, photo, texte)</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.</span></li>
+          <li><strong>Un bilan articulaire de départ</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability et GOWOD.</span></li>
+          <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.</span></li>
+          <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
+        </ul>
+        <details class="vs-detail">
+          <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 8 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+        <div class="cmp-panel">
+        <table class="cmp">
+          <thead>
+            <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Plia&shy;bility</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Free&shy;letics</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
+          </thead>
+          <tbody>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Un programme créé pour toi, personnalisé</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>●</td><td>●</td><td>◐</td><td>●</td><td>◐</td></tr>
+            <tr class="part"><td colspan="8">◐ Hevy : seulement via ChatGPT, pas dans l'appli<br>◐ Ladder : t'oriente vers une équipe, programme commun à tous</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Importer ton programme (PDF, photo, texte)</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>◐</td><td>—</td><td>◐</td><td>—</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Fitbod : une séance en photo, sur Android seulement<br>◐ Hevy : via un outil externe, pas dans l'appli</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Créer ton propre programme</th></tr>
+            <tr class="val"><td class="us soon">bientôt</td><td>●</td><td>—</td><td>◐</td><td>◐</td><td>◐</td><td>◐</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Fitbod : des séances, pas un cycle de semaines<br>◐ Freeletics : des séances à toi, à côté du plan de son coach IA<br>◐ Hevy : des routines, sans semaines distinctes<br>◐ Runna : tu déplaces les séances de leur plan</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Bilan articulaire de départ</th></tr>
+            <tr class="val"><td class="us">●</td><td>●</td><td>●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Coach vocal qui ajuste ta séance</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>—</td><td>◐</td><td>◐</td></tr>
+            <tr class="part"><td colspan="8">◐ Freeletics : ajuste la séance sur ton retour écrit, sans voix<br>◐ Runna : annonces d'allure, la séance ne change pas<br>◐ Ladder : coach dans l'oreille, la séance ne change pas</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Ton geste corrigé en vidéo par un vrai coach</th></tr>
+            <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Accès à vie</th></tr>
+            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="part"><td colspan="8">◐ Freeletics : accès à vie sur son site, prix non publié</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Prix au mois</th></tr>
+            <tr class="val"><td class="us">25 €</td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>19,99 €</td><td>14,99 €</td></tr>
+            <tr class="part"><td colspan="8">— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois</td></tr>
+            <tr class="lbl"><th scope="colgroup" colspan="8">Prix sur un an</th></tr>
+            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>119,99 €</td><td>94,99 €</td></tr>
+          </tbody>
+        </table>
+        <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
+        </div>
+        </details>
+        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. Runna : prix de l'App Store repris par plusieurs comparatifs, durée non affichée sur sa fiche.</p>
+      </div>
+      <!-- Simulateur de coût cumulé : mêmes prix que le tableau (plus bas relevé, App Store FR 23/10/2026).
+           Simulateur par besoin : chaque besoin coûte le prix annuel de l'appli la moins chère qui le couvre (générique)
+           ou qui crée un plan pour toi (individualisé). Runna : 119,99 €/an repris par plusieurs comparatifs. -->
+      <div class="sim" id="sim">
+        <h3>Ce que tu paies sur la durée</h3>
+        <div class="seg" id="yearsSeg" role="group" aria-label="Durée">
+          <button type="button" data-y="1">1 an</button>
+          <button type="button" data-y="2">2 ans</button>
+          <button type="button" data-y="3" aria-pressed="true">3 ans</button>
+          <button type="button" data-y="5">5 ans</button>
+        </div>
+        <ul class="bars" id="bars"></ul>
+        <div class="combo">
+          <p class="combo-h">Et si tu prenais une appli par besoin ?</p>
+          <p class="combo-sub">Coche ce que tu cherches.</p>
+          <div class="chips" id="chips"></div>
+          <div class="seg two" id="modeSeg" role="group" aria-label="Type de programme">
+            <button type="button" data-m="gen">Générique</button>
+            <button type="button" data-m="ind" aria-pressed="true">Individualisé</button>
+          </div>
+          <p class="mode-hint" id="modeHint"></p>
+          <p class="combo-total" id="comboTotal"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FAQ -->
+  <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="left:20%;top:20px;width:200px;height:200px;background:#B990E0;opacity:.12;filter:blur(70px)"></i></div>
+    <div class="col">
+      <h2>Tes questions</h2>
+      <div class="faq" id="faq"></div>
+    </div>
+  </section>
+
+  <!-- 6. Pied de page -->
+  <footer class="col foot">
+    <p>Une question ? Réponds directement à mon message.</p>
+    <span>Ou écris-moi : <span data-v="CONTACT"></span></span>
+  </footer>
+</div>
+
+<!-- Écran de confirmation (retour PayPal : ?merci=annuel|vie|mensuel) -->
+<section class="col done" aria-live="polite">
+  <header class="top" style="height:auto;margin-bottom:28px"><span class="dot" aria-hidden="true"></span>Mobility Club</header>
+  <div class="check" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+  </div>
+  <h1>C'est fait. <em>Bienvenue chez toi.</em></h1>
+  <p class="lead" id="doneLead">Ton paiement est validé. Voilà comment ouvrir l'app tout de suite.</p>
+  <ol class="steps">
+    <li><span><b>Ouvre l'app sur ton téléphone.</b><a id="appLink" href="#" style="color:var(--green);font-weight:600">app.mobilityclub.co</a></span></li>
+    <li><span><b>Entre ton email.</b><span id="doneEmail">Celui de ton compte Mobility Club. Tu reçois un code à 6 chiffres par email.</span></span></li>
+    <li><span><b>Ajoute-la à ton écran d'accueil.</b><span>Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ». Elle s'ouvre comme une vraie app.</span></span></li>
+  </ol>
+  <p class="once">Ton abonnement Skool, je le coupe moi-même sous <span data-v="DELAI_COUPURE"></span>. Tu n'as rien à faire.</p>
+  <a class="cta primary" id="appCta" href="#">Ouvrir l'app</a>
+  <p class="deadline">Un souci pour te connecter ? Réponds à mon message ou écris-moi : <span data-v="CONTACT"></span></p>
+</section>
+
+<!-- Feuille : email Skool avant paiement -->
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-hidden="true">
+  <div class="grab" aria-hidden="true"></div>
+  <h2 id="sheetTitle">Ton email Skool</h2>
+  <p class="lead">Celui que tu utilises sur Skool. Il me sert à relier ton compte et à couper ton abonnement Skool.</p>
+  <div class="recap"><span id="recapName"></span><b id="recapPrice"></b></div>
+  <form id="emailForm" novalidate>
+    <label class="field">Email
+      <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="toi@exemple.com" required />
+    </label>
+    <p class="err" id="err" role="alert"></p>
+    <button class="cta primary" type="submit" id="go">Continuer vers le paiement</button>
+  </form>
+  <button class="later" type="button" id="close">Revenir aux formules</button>
+</div>
+
+<script>
+(() => {
+  const C = window.MC_BASCULE;
+  const isPh = (v) => typeof v === 'string' && /^\[.*\]$/.test(v.trim());
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const v = (k) => (isPh(C[k]) ? `<span class="ph">${esc(C[k])}</span>` : esc(C[k] || ''));
+
+  const PLANS = {
+    annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', x4: 'ANNUEL_4X', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
+    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement. Rentabilisé en 10 mois par rapport au mois.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
+    mensuel: { nom: 'Rester au mois', merci: 'Ton abonnement au mois est validé.', prix: 'MENSUEL_PRIX', unite: '/mois', subTxt: 'Sans engagement, tu arrêtes quand tu veux.', bonus: null, lien: 'LIEN_MENSUEL', cta: 'Rester au mois' },
+  };
+  // La formule recommandée passe en tête (premier écran sur mobile).
+  const ORDER = [C.RECOMMANDE, ...['vie', 'annuel', 'mensuel'].filter((id) => id !== C.RECOMMANDE)];
+
+  // Remplissage des valeurs simples
+  document.querySelectorAll('[data-v]').forEach((el) => { el.innerHTML = v(el.dataset.v); });
+
+  // 3. Cartes
+  document.getElementById('plans').innerHTML = ORDER.map((id) => {
+    const p = PLANS[id];
+    const reco = id === C.RECOMMANDE;
+    const sub = p.sub ? v(p.sub) : esc(p.subTxt);
+    let bonus = '';
+    if (p.bonus === null) bonus = '<p class="bonus none">Sans bonus fondateur.</p>';
+    else if (Array.isArray(C[p.bonus]) && C[p.bonus].length) bonus = `<div class="bonus"><b>Bonus fondateur</b><ul>${C[p.bonus].map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    else if (C[p.bonus] && !Array.isArray(C[p.bonus])) bonus = `<p class="bonus"><b>Bonus fondateur</b><br>${v(p.bonus)}</p>`;
+    return `<article class="plan${reco ? ' reco' : ''}">
+      ${reco ? '<span class="badge">Avantage membres fondateurs</span>' : ''}
+      <h3>${p.nom}</h3>
+      <p class="price">${v(p.prix)}${p.unite ? `<small> ${p.unite}</small>` : ''}</p>
+      <p class="sub">${sub}</p>
+      ${p.x4 && C[p.x4] ? `<p class="split4">ou ${v(p.x4)} sans frais avec PayPal</p>` : ''}
+      ${bonus}
+      <a class="cta ${reco ? 'primary' : 'ghost'}" href="#" data-plan="${id}">${p.cta}</a>
+    </article>`;
+  }).join('');
+
+  // 4. Date limite
+  document.getElementById('deadline').innerHTML =
+    `L'avantage fondateur reste ouvert jusqu'au <b>${v('DATE_LIMITE')}</b>. Ensuite, les formules restent disponibles, sans les bonus.`;
+
+  // 5. FAQ
+  const FAQ = [
+    ['Que devient mon abonnement Skool ?',
+      `Dès que ton paiement dans l'app est validé, je coupe ton abonnement Skool moi-même, sous ${v('DELAI_COUPURE')}. Tu n'as rien à faire, et le classroom reste ouvert en accès libre. Si un prélèvement Skool passait quand même après ta bascule, je te le rembourse : tu ne paies jamais deux fois.`],
+    ['Est-ce que je garde mes données et ma progression ?',
+      "Oui. Ton programme, tes séances faites et ta progression sont déjà dans l'app. Rien ne repart de zéro."],
+    [`Et si je ne fais rien avant le ${v('DATE_LIMITE')} ?`,
+      `L'avantage fondateur se ferme à cette date. Ton abonnement Skool, lui, s'arrête le ${v('DATE_FIN_SKOOL')}. Après, tu pourras toujours revenir dans l'app au prix normal, sans les bonus.`],
+    ['Comment je contacte Damien ?',
+      `Réponds directement à mon message, ou écris-moi : ${v('CONTACT')}. Je lis tout moi-même.`],
+  ];
+  document.getElementById('faq').innerHTML = FAQ.map(([q, a]) =>
+    `<details><summary>${q}</summary><p>${a}</p></details>`
+  ).join('');
+
+  // Statut des 3 façons d'avoir ton programme
+  document.querySelectorAll('[data-prog]').forEach((li) => {
+    const soon = C[li.dataset.prog] !== 'dispo';
+    li.classList.toggle('soon', soon);
+    li.querySelector('.way-tag').textContent = soon ? 'Bientôt' : 'Disponible';
+  });
+
+  // Simulateur : coût cumulé sur N années (formule annuelle la moins chère de chaque appli)
+  const OUTILS = [
+    { id: 'mc_vie', nom: 'Mobility Club à vie', us: true, cout: () => 249 },
+    { id: 'pliability', nom: 'Pliability', cout: (y) => 199.99 * y, combo: true },
+    { id: 'ladder', nom: 'Ladder', cout: (y) => 94.99 * y, combo: true },
+    { id: 'gowod', nom: 'GOWOD', cout: (y) => 84.99 * y, combo: true },
+    { id: 'freeletics', nom: 'Freeletics', cout: (y) => 79.99 * y, combo: true },
+    { id: 'fitbod', nom: 'Fitbod', cout: (y) => 81.99 * y, combo: true },
+    { id: 'hevy', nom: 'Hevy, à vie', cout: () => 89.99, combo: true },
+    { id: 'runna', nom: 'Runna', cout: (y) => 119.99 * y },
+  ];
+  // Besoins : appli la moins chère qui couvre le besoin (générique) ou qui crée un plan pour toi (individualisé)
+  const BESOINS = [
+    { id: 'mobilite', nom: 'Mobilité', gen: { app: 'GOWOD', cout: (y) => 84.99 * y }, ind: { app: 'GOWOD', cout: (y) => 84.99 * y } },
+    { id: 'muscu', nom: 'Musculation', gen: { app: 'Hevy', cout: (y) => Math.min(26.49 * y, 89.99) }, ind: { app: 'Fitbod', cout: (y) => 81.99 * y } },
+    { id: 'course', nom: 'Course', gen: { app: 'Runna', cout: (y) => 119.99 * y }, ind: { app: 'Runna', cout: (y) => 119.99 * y } },
+    { id: 'sante', nom: 'Tracker tes données santé', soon: true },
+  ];
+  const MODES = { gen: 'Un programme tout fait, le même pour tous.', ind: 'Un plan créé pour toi, selon ton niveau et tes objectifs.' };
+  const eur = (n) => n.toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €';
+  const pick = new Set(['mobilite', 'muscu']);
+  let mode = 'ind';
+  let years = 3;
+  const chips = document.getElementById('chips');
+  chips.innerHTML = BESOINS.map((b) => `<button type="button" data-id="${b.id}">${b.nom}${b.soon ? '<span class="soon-tag">bientôt</span>' : ''}</button>`).join('');
+  const drawSim = () => {
+    document.querySelectorAll('#yearsSeg button').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.y) === years)));
+    document.querySelectorAll('#modeSeg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === mode)));
+    document.getElementById('modeHint').textContent = MODES[mode];
+    const rows = OUTILS.map((o) => ({ ...o, v: o.cout(years) })).sort((a, b) => a.v - b.v);
+    const max = Math.max(...rows.map((r) => r.v));
+    document.getElementById('bars').innerHTML = rows.map((r) =>
+      `<li class="${r.us ? 'us' : ''}"><span>${r.nom}</span><b>${eur(Math.round(r.v * 100) / 100)}</b><span class="bar"><i style="width:${Math.max(2, (r.v / max) * 100)}%"></i></span></li>`).join('');
+    chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(pick.has(b.dataset.id))));
+    const sel = BESOINS.filter((b) => pick.has(b.id) && !b.soon);
+    const soon = BESOINS.some((b) => pick.has(b.id) && b.soon);
+    const tot = Math.round(sel.reduce((n, b) => n + b[mode].cout(years), 0) * 100) / 100;
+    const yl = years > 1 ? `${years} ans` : '1 an';
+    const soonLine = soon ? '<span class="soon-line">Tracker tes données santé : bientôt dans le club, avec WHOOP.</span>' : '';
+    document.getElementById('comboTotal').innerHTML = sel.length
+      ? `${sel.map((b) => `${b.nom} (${b[mode].app})`).join(' + ')} sur ${yl} : <b>${eur(tot)}</b>.<br><span class="g">Tout ça dans le club, à vie : 249 €, une fois.</span>${soonLine}`
+      : (soon ? soonLine : 'Coche tes besoins pour voir le total.');
+  };
+  document.getElementById('yearsSeg').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-y]'); if (!b) return;
+    years = Number(b.dataset.y); drawSim();
+  });
+  document.getElementById('modeSeg').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-m]'); if (!b) return;
+    mode = b.dataset.m; drawSim();
+  });
+  chips.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-id]'); if (!b) return;
+    pick.has(b.dataset.id) ? pick.delete(b.dataset.id) : pick.add(b.dataset.id); drawSim();
+  });
+  drawSim();
+
+  // Paiement
+  const html = document.documentElement;
+  const sheet = document.getElementById('sheet');
+  const emailIn = document.getElementById('email');
+  const err = document.getElementById('err');
+  let current = null;
+  let lastFocus = null;
+
+  const store = (k, val) => { try { localStorage.setItem(k, val); } catch {} };
+  const read = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+
+  const goPay = (id) => {
+    const link = C[PLANS[id].lien];
+    if (isPh(link) || !link) {
+      err.textContent = 'Lien de paiement pas encore branché (à remplir dans MC_BASCULE).';
+      return false;
+    }
+    store('mc_bascule_plan', id);
+    window.location.href = link;
+    return true;
+  };
+
+  const openSheet = (id) => {
+    current = id;
+    lastFocus = document.activeElement;
+    document.getElementById('recapName').textContent = PLANS[id].nom;
+    document.getElementById('recapPrice').innerHTML = v(PLANS[id].prix) + (PLANS[id].unite ? ' ' + PLANS[id].unite : '');
+    emailIn.value = read('mc_bascule_email') || '';
+    emailIn.removeAttribute('aria-invalid');
+    err.textContent = '';
+    html.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false');
+    setTimeout(() => emailIn.focus(), 300);
+  };
+  const closeSheet = () => {
+    html.classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true');
+    if (lastFocus) lastFocus.focus();
+  };
+
+  document.getElementById('plans').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-plan]');
+    if (!a) return;
+    e.preventDefault();
+    if (C.DEMANDER_EMAIL) openSheet(a.dataset.plan);
+    else goPay(a.dataset.plan);
+  });
+  document.getElementById('veil').addEventListener('click', closeSheet);
+  document.getElementById('close').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && html.classList.contains('open')) closeSheet(); });
+
+  document.getElementById('emailForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailIn.value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      emailIn.setAttribute('aria-invalid', 'true');
+      err.textContent = 'Vérifie ton email, il manque quelque chose.';
+      return;
+    }
+    emailIn.removeAttribute('aria-invalid');
+    err.textContent = '';
+    const btn = document.getElementById('go');
+    btn.disabled = true;
+    btn.textContent = 'Un instant…';
+    store('mc_bascule_email', email);
+    // On note le lien email Skool ↔ formule avant de partir. Ne bloque jamais le paiement :
+    // au pire, l'email reste dans le navigateur et Damien relie à la main.
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 2500);
+      await fetch(C.INTENT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, plan: current }),
+        signal: ctrl.signal,
+        keepalive: true,
+      });
+      clearTimeout(t);
+    } catch {}
+    if (!goPay(current)) {
+      btn.disabled = false;
+      btn.textContent = 'Continuer vers le paiement';
+    }
+  });
+
+  // Confirmation au retour de PayPal
+  const merci = new URLSearchParams(location.search).get('merci');
+  const appA = document.getElementById('appLink');
+  const appCta = document.getElementById('appCta');
+  appA.href = appCta.href = C.APP_URL;
+  if (merci && PLANS[merci]) {
+    html.classList.add('is-done');
+    document.getElementById('doneLead').textContent =
+      `${PLANS[merci].merci} Voilà comment ouvrir l'app tout de suite.`;
+    const mail = read('mc_bascule_email');
+    if (mail) {
+      document.getElementById('doneEmail').innerHTML =
+        `Celui de ton compte Mobility Club (souvent celui de Skool : <b style="color:var(--text)">${esc(mail)}</b>). Tu reçois un code à 6 chiffres par email.`;
+    }
+    window.scrollTo(0, 0);
+  }
+})();
+</script>
+</body>
+</html>
