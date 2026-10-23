@@ -35,7 +35,7 @@
 
 ## Reste à faire
 
-1. **Captures V2** : la section `#programme` pointe vers `assets/app/v2/today.png` et `assets/app/v2/plan.png`, **qui n'existent pas encore** (images cassées tant qu'elles manquent). Un sous-agent devait les produire depuis l'app test (iPhone 393×852 @3x, Playwright) ; vérifier si `assets/app/v2/` est rempli, sinon les refaire. Écrans utiles : Aujourd'hui, séance, coach vocal, Plan, Progrès. Optimiser (≤ 1179 px de large, JPG q85 si > 600 Ko).
+1. **Captures V2 : FAITES** dans `assets/app/v2/` (1179 px de large, JPG q85 commités ; les PNG lourds restent en local, non commités). Écrans : `today` (jour de repos), `today-session` (jour d'entraînement « Lower 2 »), `seance`, `seance-force`, `voice`, `plan`, `progress`, `bilan` (+ versions `-full`). La section `#programme` utilise `today-session.jpg` + `plan.jpg`. Défauts vus sur les captures (données de démo) : consignes du bloc force en anglais (`seance-force`), barre du bas qui couvre un bouton sur `progress` et la ligne « Chevilles » sur `bilan`, compteurs eau/protéines/calories à 0 sur `today`. Choisir les captures en conséquence ou recadrer.
 2. Remplacer les anciennes captures V1 par les V2 là où c'est pertinent (démo carrousel, section vocal `voice-*.png`, vidéo coach), sans casser le carrousel interactif.
 3. Vérifier visuellement toute la page (ordinateur + iPhone 375 px) : pas de défilement horizontal, contrastes du verre, titres italiques qui ne débordent pas, FR et EN.
 4. Faire valider Damien en local, puis **demander son OK** avant de publier.
