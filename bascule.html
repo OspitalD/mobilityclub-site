@@ -80,7 +80,7 @@ window.MC_BASCULE = {
   --col:620px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip}
+html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip;-webkit-tap-highlight-color:transparent}
 body{
   min-width:320px;overflow-x:hidden;
   background:var(--bg);
@@ -130,14 +130,14 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .ways li{counter-increment:w;position:relative;padding:18px 18px 18px 54px;border:1px solid var(--line);border-radius:20px;background:var(--surface);font-size:15.5px;line-height:1.55;color:#C9CCC8}
 .ways li::before{content:counter(w);position:absolute;left:18px;top:18px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(62,207,160,.14);color:var(--green);font-size:12.5px;font-weight:800}
 .ways strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700}
-.way-tag{display:inline-block;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--green)}
+.way-tag{display:inline-block;margin-bottom:6px;font-size:13px;font-weight:700;color:var(--green)}
 .ways li.soon .way-tag{color:var(--gold)}
 .ways li.soon::before{background:rgba(232,160,32,.14);color:var(--gold)}
 .news{list-style:none;margin-top:12px}
 .news li{padding:18px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.55;color:#C9CCC8}
 .news li:last-child{border-bottom:1px solid var(--line)}
 .news strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700;letter-spacing:-.01em}
-.new-tag{display:inline-block;margin-bottom:6px;color:var(--green);font-size:12px;font-weight:700;letter-spacing:.2px}
+.new-tag{display:inline-block;margin-bottom:6px;color:var(--green);font-size:13px;font-weight:700;letter-spacing:.2px}
 
 /* 3. Le choix */
 .plans-wrap{position:relative;margin-top:28px}
@@ -147,12 +147,12 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .plan{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:26px 22px 22px;border:1px solid var(--line);border-radius:26px;background:var(--surface)}
 .plan.reco{overflow:hidden;isolation:isolate;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04) 55%,rgba(255,255,255,.07));border-color:rgba(255,255,255,.16);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px rgba(0,0,0,.3)}
 .plan.reco::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%);z-index:-1}
-.badge{align-self:flex-start;margin-bottom:8px;padding:6px 12px;border-radius:100px;background:rgba(62,207,160,.16);color:var(--green);font-size:12px;font-weight:700}
+.badge{align-self:flex-start;margin-bottom:8px;padding:6px 12px;border-radius:100px;background:rgba(62,207,160,.16);color:var(--green);font-size:13px;font-weight:700}
 .plan h3{font-size:20px;font-weight:800;font-style:italic;letter-spacing:-.03em}
 .price{margin-top:4px;font-size:40px;line-height:1;font-weight:800;letter-spacing:-.045em}
 .price small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
-.sub{color:var(--muted);font-size:14px}
-.split4{margin-top:2px;color:var(--text);font-size:14px;font-weight:600}
+.sub{color:var(--muted);font-size:15px;line-height:1.5}
+.split4{margin-top:4px;color:var(--text);font-size:15px;font-weight:600}
 .bonus{margin-top:10px;padding-top:12px;border-top:1px solid var(--line);font-size:15px;line-height:1.5}
 .bonus b{color:var(--gold);font-weight:700}
 .bonus ul{list-style:none;margin-top:6px;display:grid;gap:6px}
@@ -169,6 +169,18 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
 .compare{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
 .compare h3{font-size:clamp(20px,5.4vw,26px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
+.vs-lead{margin-top:8px;color:var(--muted);font-size:15px}
+.vs{list-style:none;margin-top:14px}
+.vs li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.vs li:first-child{border-top:1px solid var(--line)}
+.vs strong{font-size:16.5px;font-weight:700;line-height:1.35}
+.vs-us{align-self:start;color:var(--green);font-size:15px;font-weight:800;white-space:nowrap}
+.vs-else{grid-column:1/-1;color:var(--muted);font-size:15px;line-height:1.5}
+.vs-detail{margin-top:16px}
+.vs-detail summary{display:flex;align-items:center;justify-content:space-between;min-height:48px;color:var(--text);font-size:15px;font-weight:700;cursor:pointer;list-style:none}
+.vs-detail summary::-webkit-details-marker{display:none}
+.vs-detail summary::after{content:"";width:8px;height:8px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .25s var(--ease)}
+.vs-detail[open] summary::after{transform:rotate(225deg)}
 .cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
 .cmp th,.cmp td{text-align:center;vertical-align:middle}
 .cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
@@ -182,28 +194,29 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 @media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
-.cmp-note{margin-top:10px;color:var(--quiet);font-size:12.5px;line-height:1.55}
+.cmp-note{margin-top:14px;color:var(--quiet);font-size:13px;line-height:1.55}
 
 .sim{margin-top:30px;padding:22px 18px;border:1px solid var(--line);border-radius:22px;background:var(--surface)}
 .sim h3{font-size:clamp(20px,5.4vw,24px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:var(--bg)}
-.seg button{min-height:40px;border-radius:100px;color:var(--muted);font-size:14px;font-weight:700}
+.seg button{min-height:44px;border-radius:100px;color:var(--muted);font-size:14px;font-weight:700}
 .seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .bars{list-style:none;margin-top:18px;display:grid;gap:12px}
-.bars li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline;font-size:14px;color:#C9CCC8}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:baseline;font-size:15.5px;color:#C9CCC8}
 .bars b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
 .bars small{color:var(--quiet);font-size:12px}
 .bar{grid-column:1/-1;height:8px;border-radius:8px;background:var(--line)}
 .bar i{display:block;height:100%;border-radius:8px;background:#5C615E;transition:width .45s var(--ease)}
 .bars li.us{color:var(--green)}
 .bars li.us b{color:var(--green)}
+.bars li.us span:first-child{font-weight:700}
 .bars li.us .bar i{background:var(--green)}
 .combo{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-.combo-h{font-size:15px;font-weight:700}
+.combo-h{font-size:16px;font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chips button{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:100px;color:var(--muted);font-size:13.5px;font-weight:600}
+.chips button{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.12);border-radius:100px;color:var(--muted);font-size:15px;font-weight:600}
 .chips button[aria-pressed="true"]{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text)}
-.combo-total{margin-top:14px;font-size:15px;line-height:1.55;color:#C9CCC8}
+.combo-total{margin-top:16px;font-size:16px;line-height:1.55;color:#C9CCC8}
 .combo-total b{color:var(--text)}
 .combo-total .g{color:var(--green);font-weight:700}
 
@@ -343,6 +356,17 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
            « — » = non documenté publiquement, jamais « n'existe pas ». -->
       <div class="compare">
         <h3>Ce que tu ne trouves pas ailleurs</h3>
+        <p class="vs-lead">Comparé à Pliability, GOWOD, Fitbod, Hevy, Runna et Ladder.</p>
+        <ul class="vs">
+          <li><strong>Ton geste corrigé en vidéo par un vrai coach</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune des 6.</span></li>
+          <li><strong>Un coach vocal qui ajuste ta séance</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance.</span></li>
+          <li><strong>Ton programme importé (PDF, photo, texte)</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.</span></li>
+          <li><strong>Un bilan articulaire de départ</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability et GOWOD.</span></li>
+          <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod et Runna.</span></li>
+          <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), carnet d'entraînement sans bilan ni coach.</span></li>
+        </ul>
+        <details class="vs-detail">
+          <summary>Voir le tableau détaillé</summary>
         <table class="cmp">
           <thead>
             <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
@@ -373,7 +397,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
-        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. n.c. : durée de l'offre non précisée. Pour comparer encore : 249 € une fois, c'est le prix d'environ 4 consultations chez l'ostéo, et moins qu'un an au mois (300 €).</p>
+        </details>
+        <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. n.c. : durée de l'offre non précisée. </p>
       </div>
       <!-- Simulateur de coût cumulé : mêmes prix que le tableau (plus bas relevé, App Store FR 23/10/2026).
            Runna exclu : durée de ses offres non précisée sur sa fiche. -->
@@ -513,9 +538,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   // Simulateur : coût cumulé sur N années (formule annuelle la moins chère de chaque appli)
   const OUTILS = [
-    { id: 'mc_vie', nom: 'Mobility Club, accès à vie', us: true, cout: () => 249 },
-    { id: 'mc_an', nom: 'Mobility Club, annuel', cout: (y) => 220 * y },
-    { id: 'mc_mois', nom: 'Mobility Club, au mois', cout: (y) => 25 * 12 * y },
+    { id: 'mc_vie', nom: 'Mobility Club à vie', us: true, cout: () => 249 },
     { id: 'pliability', nom: 'Pliability', cout: (y) => 199.99 * y, combo: true },
     { id: 'ladder', nom: 'Ladder', cout: (y) => 94.99 * y, combo: true },
     { id: 'gowod', nom: 'GOWOD', cout: (y) => 84.99 * y, combo: true },
