@@ -78,6 +78,11 @@ window.MC_BASCULE = {
   --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
   --ease:cubic-bezier(.22,1,.36,1);
   --col:620px;
+  /* Verre DA V2 (même recette que la carte recommandée) */
+  --glass:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 55%,rgba(255,255,255,.05));
+  --glass-line:rgba(255,255,255,.12);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.18);
+  --glass-blur:blur(18px) saturate(170%);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:clip;-webkit-tap-highlight-color:transparent}
@@ -92,6 +97,11 @@ a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .col{width:min(100%,var(--col));margin-inline:auto;padding-inline:20px}
 .wide{width:min(100%,1040px);margin-inline:auto;padding-inline:20px}
+
+/* Halos de section (DA V2) */
+.section{position:relative;isolation:isolate}
+.s-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.s-halo i{position:absolute;border-radius:50%}
 
 /* Valeur à remplir par Damien */
 .ph{color:var(--gold);text-decoration:underline dashed rgba(232,160,32,.6);text-underline-offset:3px}
@@ -123,11 +133,11 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .list li::before{content:"";width:8px;height:8px;margin-top:8px;border-radius:50%;background:var(--quiet)}
 .list.new li::before{background:var(--green)}
 .list strong{font-weight:700}
-.once{margin-top:22px;padding:16px 18px;border-left:2px solid var(--green);background:var(--surface);border-radius:0 14px 14px 0;font-size:16px;line-height:1.5}
+.once{margin-top:22px;padding:16px 18px;border:1px solid var(--glass-line);border-left:2px solid var(--green);background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-radius:0 18px 18px 0;font-size:16px;line-height:1.5}
 
 .sub-h{margin-top:30px;font-size:15px;font-weight:700;color:var(--muted)}
 .ways{list-style:none;counter-reset:w;margin-top:12px;display:grid;gap:10px}
-.ways li{counter-increment:w;position:relative;padding:18px 18px 18px 54px;border:1px solid var(--line);border-radius:20px;background:var(--surface);font-size:15.5px;line-height:1.55;color:#C9CCC8}
+.ways li{counter-increment:w;position:relative;padding:18px 18px 18px 54px;border:1px solid var(--glass-line);border-radius:22px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);font-size:15.5px;line-height:1.55;color:#C9CCC8}
 .ways li::before{content:counter(w);position:absolute;left:18px;top:18px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(62,207,160,.14);color:var(--green);font-size:12.5px;font-weight:800}
 .ways strong{display:block;margin-bottom:2px;color:var(--text);font-size:17px;font-weight:700}
 .way-tag{display:inline-block;margin-bottom:6px;font-size:13px;font-weight:700;color:var(--green)}
@@ -144,7 +154,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .plans{position:relative;display:grid;gap:14px}
 .plans-halo{position:absolute;left:-20px;right:-20px;top:-30px;height:420px;z-index:0;pointer-events:none}
 .plans-halo i{position:absolute;border-radius:50%}
-.plan{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:26px 22px 22px;border:1px solid var(--line);border-radius:26px;background:var(--surface)}
+.plan{position:relative;z-index:1;display:flex;flex-direction:column;gap:6px;padding:26px 22px 22px;border:1px solid var(--glass-line);border-radius:26px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
 .plan.reco{overflow:hidden;isolation:isolate;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04) 55%,rgba(255,255,255,.07));border-color:rgba(255,255,255,.16);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px rgba(0,0,0,.3)}
 .plan.reco::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%);z-index:-1}
 .badge{align-self:flex-start;margin-bottom:8px;padding:6px 12px;border-radius:100px;background:rgba(62,207,160,.16);color:var(--green);font-size:13px;font-weight:700}
@@ -176,11 +186,19 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .vs strong{font-size:16.5px;font-weight:700;line-height:1.35}
 .vs-us{align-self:start;color:var(--green);font-size:15px;font-weight:800;white-space:nowrap}
 .vs-else{grid-column:1/-1;color:var(--muted);font-size:15px;line-height:1.5}
-.vs-detail{margin-top:16px}
-.vs-detail summary{display:flex;align-items:center;justify-content:space-between;min-height:48px;color:var(--text);font-size:15px;font-weight:700;cursor:pointer;list-style:none}
+.vs-detail{margin-top:20px}
+.vs-detail summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:10px 14px 10px 20px;border:1px solid rgba(62,207,160,.45);border-radius:100px;background:linear-gradient(160deg,rgba(62,207,160,.16),rgba(62,207,160,.05));box-shadow:var(--glass-hi),0 0 28px rgba(62,207,160,.12);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;list-style:none;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.vs-detail summary:hover{border-color:rgba(62,207,160,.8);box-shadow:var(--glass-hi),0 0 36px rgba(62,207,160,.22)}
+.vs-detail summary:active{transform:scale(.985)}
+.vs-detail summary:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 .vs-detail summary::-webkit-details-marker{display:none}
-.vs-detail summary::after{content:"";width:8px;height:8px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);transition:transform .25s var(--ease)}
-.vs-detail[open] summary::after{transform:rotate(225deg)}
+.vs-detail summary small{display:block;margin-top:1px;color:var(--muted);font-size:13px;font-weight:500}
+.vs-detail .when-open{display:none}
+.vs-detail[open] .when-open{display:block}
+.vs-detail[open] .when-closed{display:none}
+.vs-detail summary .chev{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--green-ink);transition:transform .25s var(--ease)}
+.vs-detail[open] summary .chev{transform:rotate(180deg)}
+.vs-detail .cmp-panel{margin-top:14px;padding:6px 14px 16px;border:1px solid var(--glass-line);border-radius:22px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
 .cmp{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
 .cmp th,.cmp td{text-align:center;vertical-align:middle}
 .cmp thead th{padding:0 0 10px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25}
@@ -190,17 +208,18 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 .cmp .val td.us{color:var(--green);font-weight:800}
 .cmp .part td{padding:0 0 12px;text-align:left;color:var(--quiet);font-size:12.5px;line-height:1.5;white-space:normal}
 .cmp .val td.soon{color:var(--gold);font-size:11px;font-weight:700}
+.cmp tbody tr.lbl:first-child th{border-top:0}
 @media (max-width:420px){.cmp .val td{font-size:10.5px;letter-spacing:-.2px}}
 @media (min-width:640px){.cmp thead th{font-size:13px}.cmp .val td{font-size:14px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .cmp-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--muted);font-size:13px}
 .cmp-note{margin-top:14px;color:var(--quiet);font-size:13px;line-height:1.55}
 
-.sim{margin-top:30px;padding:22px 18px;border:1px solid var(--line);border-radius:22px;background:var(--surface)}
+.sim{margin-top:30px;padding:22px 18px;border:1px solid var(--glass-line);border-radius:26px;background:var(--glass);box-shadow:var(--glass-hi);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
 .sim h3{font-size:clamp(20px,5.4vw,24px);line-height:1.15;font-weight:800;font-style:italic;letter-spacing:-.03em}
-.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:var(--bg)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:rgba(0,0,0,.35)}
 .seg button{min-height:44px;border-radius:100px;color:var(--muted);font-size:14px;font-weight:700}
-.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.seg button[aria-pressed="true"]{background:rgba(255,255,255,.12);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .bars{list-style:none;margin-top:18px;display:grid;gap:12px}
 .bars li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:baseline;font-size:15.5px;color:#C9CCC8}
 .bars b{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
@@ -312,6 +331,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   <!-- 2. Ce qui change / ce qui ne change pas -->
   <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="right:-60px;top:60px;width:240px;height:240px;background:#3ECFA0;opacity:.16;filter:blur(70px)"></i></div>
     <div class="col">
       <h2>Ce qui bouge, ce qui reste</h2>
       <div class="split">
@@ -337,6 +357,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   <!-- 2 bis. Nouveautés (vérifiées ouvertes à tous en prod le 23/10 : drapeaux feature-flags/all) -->
   <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="left:-60px;top:120px;width:260px;height:260px;background:#B990E0;opacity:.2;filter:blur(72px)"></i><i style="right:-40px;bottom:80px;width:220px;height:220px;background:#3ECFA0;opacity:.14;filter:blur(70px)"></i></div>
     <div class="col">
       <h2>Ce qui t'attend dans l'app</h2>
       <p class="lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Déjà disponible pour toi.</p>
@@ -358,6 +379,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   <!-- Comparer -->
   <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="right:-50px;top:40px;width:250px;height:250px;background:#3ECFA0;opacity:.18;filter:blur(70px)"></i><i style="left:-70px;bottom:160px;width:260px;height:260px;background:#B990E0;opacity:.18;filter:blur(74px)"></i></div>
     <div class="col">
       <!-- Comparatif nominatif : vérification documentaire publique du 23/10/2026 (Perplexity),
            détail et sources dans docs/bascule-etude-marche-2026-10-23.md.
@@ -374,7 +396,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire.</span></li>
         </ul>
         <details class="vs-detail">
-          <summary>Voir le tableau détaillé</summary>
+          <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 7 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+        <div class="cmp-panel">
         <table class="cmp">
           <thead>
             <tr><th scope="col" class="us">Mobility Club</th><th scope="col">Pliability</th><th scope="col">GOWOD</th><th scope="col">Fitbod</th><th scope="col">Hevy</th><th scope="col">Runna</th><th scope="col">Ladder</th></tr>
@@ -405,6 +428,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
+        </div>
         </details>
         <p class="cmp-note">Relevé le 23 octobre 2026 sur les sites, centres d'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. n.c. : durée de l'offre non précisée. </p>
       </div>
@@ -430,6 +454,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   <!-- 5. FAQ -->
   <section class="section">
+    <div class="s-halo" aria-hidden="true"><i style="left:20%;top:20px;width:200px;height:200px;background:#B990E0;opacity:.12;filter:blur(70px)"></i></div>
     <div class="col">
       <h2>Tes questions</h2>
       <div class="faq" id="faq"></div>
