@@ -24,6 +24,8 @@ window.MC_LIFETIME = {
   PRIX_MOIS: 25,
   DEVISE_MOIS: '€',
   LIEN_MENSUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-43F663568B911461GNLNCJBY',
+  PRIX_AN: 220,                          // plan PayPal annuel, montant vérifié par Damien le 23/10/2026 (même lien que /bascule)
+  LIEN_ANNUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A',
 
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
@@ -32,10 +34,10 @@ window.MC_LIFETIME = {
 </script>
 
 <title>Devenir membre — Mobility Club</title>
-<meta name="description" content="Rejoins Mobility Club avec 7 jours d’essai gratuit puis 25 €/mois, ou choisis un Lifetime Pass à 249 € en paiement unique." />
+<meta name="description" content="Rejoins Mobility Club avec 7 jours d’essai gratuit puis 25 €/mois, 220 € pour un an, ou un Lifetime Pass à 249 € en paiement unique." />
 <meta name="robots" content="index,follow" />
 <meta property="og:title" content="Devenir membre — Mobility Club" />
-<meta property="og:description" content="Deux façons de rejoindre Mobility Club : 7 jours gratuits puis 25 €/mois, ou un Lifetime Pass à 249 €." />
+<meta property="og:description" content="Trois façons de rejoindre Mobility Club : 7 jours gratuits puis 25 €/mois, 220 € pour un an, ou un Lifetime Pass à 249 €." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mobilityclub.co/devenir-membre" />
 
@@ -111,6 +113,8 @@ header{position:relative;z-index:30;border-bottom:1px solid var(--border)}
 .hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;color:var(--quiet);font:500 10px/1.5 var(--mono);letter-spacing:.35px;text-transform:uppercase}
 .hero-proof b{color:var(--text);font-weight:600}
 .access-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.access-choices .access-choice.primary{grid-column:1/-1;min-height:0}
+@media (min-width:641px) and (max-width:900px){.access-choices{grid-template-columns:repeat(3,1fr)}.access-choices .access-choice.primary{grid-column:auto;min-height:166px}}
 .access-choice{position:relative;display:grid;gap:8px;min-height:166px;padding:20px;border:1px solid var(--border-strong);border-radius:12px;background:var(--surface);transition:transform .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease)}
 .access-choice:hover{transform:translateY(-3px);border-color:rgba(62,207,160,.5)}
 .access-choice:focus-visible{outline:2px solid var(--text);outline-offset:4px}
@@ -335,7 +339,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 <header>
   <div class="wrap header-inner">
     <a class="wordmark" href="/" aria-label="Mobility Club — accueil"><span class="wordmark-dot"></span>MOBILITY&nbsp;CLUB</a>
-    <span class="header-note">Deux façons de rejoindre le Club</span>
+    <span class="header-note">Trois façons de rejoindre le Club</span>
   </div>
 </header>
 
@@ -345,7 +349,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
       <div class="hero-copy">
         <span class="eyebrow">Devenir membre</span>
         <h1>Entre dans le Club.<span class="mint">À ta façon.</span></h1>
-        <p class="hero-sub">Le même Mobility Club, avec deux portes d’entrée. Commence par l’essai gratuit mensuel ou sécurise ton accès à vie avec un ticket nominatif.</p>
+        <p class="hero-sub">Le même Mobility Club, trois portes d’entrée. Commence par l’essai gratuit au mois, prends l’année, ou sécurise ton accès à vie avec un ticket nominatif.</p>
         <div class="hero-proof">
           <span><b>7 jours gratuits</b> avec l’abonnement</span>
           <span><b>20 pass à 199 €</b> déjà pris</span>
@@ -359,6 +363,13 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
             <strong class="access-choice-price">puis 25 €/mois</strong>
             <span class="access-choice-detail">Sans engagement · paiement sécurisé PayPal</span>
             <span class="access-choice-action">Démarrer l’essai →</span>
+          </a>
+          <a class="access-choice" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" data-access-choice="yearly" data-plan="yearly_220_eur">
+            <span class="access-choice-kicker">Avec abonnement</span>
+            <h2>Un an</h2>
+            <strong class="access-choice-price">220 €/an</strong>
+            <span class="access-choice-detail">Soit 18,33 €/mois · renouvelé chaque année, tu arrêtes quand tu veux</span>
+            <span class="access-choice-action">Choisir l’année →</span>
           </a>
           <a class="access-choice" href="#tickets" data-access-choice="lifetime_tickets" data-plan="lifetime_tickets_249">
             <span class="access-choice-kicker">Sans abonnement</span>
