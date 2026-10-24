@@ -16,6 +16,7 @@
 import { connectLambda } from '@netlify/blobs';
 import { storeAbonnements } from '../lib/acces-app.js';
 import { executerCoupure } from './paypal-to-skool.js';
+import { journaliser } from '../lib/bascule-journal.js';
 
 export const config = { schedule: '@hourly' };
 
@@ -30,6 +31,7 @@ export const coupuresEchues = async (S, now = Date.now()) => {
       const r = await executerCoupure(S, c);
       bilan.faites++;
       console.log('[paypal-coupures]', c.subscription_id, JSON.stringify(r));
+      await journaliser({ type: 'coupure', email_paypal: c.email, ref: c.subscription_id, evenement: 'fin_de_periode', ...r });
     } catch (err) {
       bilan.erreurs++;
       console.error('[paypal-coupures] échec, retenté plus tard:', c.subscription_id, err?.message);
