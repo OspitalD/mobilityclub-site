@@ -1814,8 +1814,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
       <div class="vc-media reveal">
         <div class="vc-shots">
-          <div class="shot-wrap vc-shot"><figure class="shot"><img src="assets/app/video-send.png" width="1170" height="2532" loading="lazy" alt="Envoi d'une vidéo de ton mouvement au coach depuis l'app" /></figure></div>
-          <div class="shot-wrap vc-shot lead"><figure class="shot"><img src="assets/app/video-coach.png" width="1170" height="2532" loading="lazy" alt="La correction écrite du coach sur ta vidéo" /></figure></div>
+          <div class="shot-wrap vc-shot"><figure class="shot"><img src="assets/app/v2/video-send.jpg" width="1179" height="2556" loading="lazy" alt="Envoi d'une vidéo de ton mouvement au coach depuis l'app" /></figure></div>
+          <div class="shot-wrap vc-shot lead"><figure class="shot"><img src="assets/app/v2/video-coach.jpg" width="1179" height="2556" loading="lazy" alt="La correction écrite du coach sur ta vidéo" /></figure></div>
         </div>
         <span class="shot-cap"><span class="dot"></span><span data-i18n="vc_cap">Tu filmes · le coach corrige · tu progresses</span></span>
       </div>
@@ -2015,13 +2015,13 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="diag-preview reveal">
       <div class="shot-wrap reveal">
         <figure class="shot">
-          <img src="assets/app/diagnostic-result.png" width="1290" height="2796" loading="lazy"
-               alt="Écran de résultat du Mobility Diagnostic : radar 5 zones, score 86/100, « Base solide »" />
+          <img src="assets/app/v2/diag-bilan.jpg" width="1179" height="2556" loading="lazy"
+               alt="Écran de résultat du diagnostic : radar 5 zones, score 81/100, « Base solide », chevilles à surveiller" />
         </figure>
       </div>
       <div>
         <p class="s4-lead" data-i18n="diag_lead"><span class="dim">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.</p>
-        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="diag_cap">Un vrai bilan de membre — score 86</span></span>
+        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="diag_cap">Ton bilan, en 10 minutes — dans l'app</span></span>
       </div>
     </div>
 
@@ -2572,7 +2572,7 @@ const I18N = {
 
     s6_eyebrow: 'Les 3 portes',
     diag_lead: "<span class=\"dim\">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.",
-    diag_cap: 'Un vrai bilan de membre — score 86',
+    diag_cap: 'Ton bilan, en 10 minutes — dans l'app',
     tag_free: 'Gratuit', tag_product: 'Le produit',
     door1_desc: "Mesure où tu en es. Ton point de départ, articulation par articulation.",
     door2_desc: "L'outil de séance. Guidé, minuté, sans friction. Tu suis, tu bouges.",
@@ -2734,7 +2734,7 @@ const I18N = {
 
     s6_eyebrow: 'The 3 doors',
     diag_lead: "<span class=\"dim\">Before you move,</span> measure exactly where you stand. The Mobility Diagnostic scans your 5 zones and gives you a score — free, in 10 minutes.",
-    diag_cap: 'A real member report — score 86',
+    diag_cap: 'Your report, in 10 minutes — in the app',
     tag_free: 'Free', tag_product: 'The product',
     door1_desc: 'Measure where you stand. Your starting point, joint by joint.',
     door2_desc: 'The session tool. Guided, timed, frictionless. You follow, you move.',
@@ -3333,12 +3333,12 @@ if (prefersReduced) {
   /* rend le contenu de chaque carte une seule fois (re-appelé au changement de langue) */
   function renderAll(){
     stageD.classList.remove('is-shot'); renderDiag();
-    renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
+    renderImg(cards[1],'assets/app/v2/diag-bilan.jpg', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
     renderImg(cards[3],'assets/app/v2/today-session.jpg', tr('Programme généré','Program built'));
     renderImg(cards[4],'assets/app/v2/voice-adjusted.jpg', tr('Séance ajustée par le coach','Session adjusted by the coach'));
-    renderImg(cards[5],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
-    renderImg(cards[6],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
+    renderImg(cards[5],'assets/app/v2/video-send.jpg',  tr('Envoi vidéo au coach','Send video to coach'));
+    renderImg(cards[6],'assets/app/v2/video-coach.jpg', tr('Correction du coach','Coach feedback'));
     renderImg(cards[7],'assets/app/v2/progress.jpg', tr('Tes progrès','Your progress'));
   }
 
@@ -3388,7 +3388,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result.png','v2/today-session.jpg','v2/voice-adjusted.jpg','video-send.png','video-coach.png','v2/progress.jpg'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
+  ['v2/diag-bilan.jpg','v2/today-session.jpg','v2/voice-adjusted.jpg','v2/video-send.jpg','v2/video-coach.jpg','v2/progress.jpg'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
