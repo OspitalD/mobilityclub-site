@@ -8,13 +8,16 @@ const blobs = new Map();
 const lifetimeBlobs = new Map();
 const ikeaBlobs = new Map();
 const aboBlobs = new Map();
+const intentBlobs = new Map();
+const journalBlobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
     connectLambda: () => {},
     getStore: (opt) => {
       const name = typeof opt === 'string' ? opt : opt?.name;
       const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : name === 'methode_ikea' ? ikeaBlobs
-        : name === 'paypal_abonnements' ? aboBlobs : blobs;
+        : name === 'paypal_abonnements' ? aboBlobs : name === 'bascule_intents' ? intentBlobs
+        : name === 'bascule_journal' ? journalBlobs : blobs;
       return {
         get: async (k) => (target.has(k) ? structuredClone(target.get(k)) : null),
         setJSON: async (k, v) => void target.set(k, structuredClone(v)),
@@ -28,7 +31,9 @@ mock.module('@netlify/blobs', {
 const { handler, decider, memeMontant, emailValide, montantsAttendus, estMontantLifetime } = await import(
   '../netlify/functions/paypal-to-skool.js'
 );
-const { deciderAbonnement, finDeDroit, PLAN_MENSUEL } = await import('../netlify/lib/acces-app.js');
+const { deciderAbonnement, finDeDroit, PLAN_MENSUEL, PLAN_MENSUEL_BASCULE, PLAN_ANNUEL } = await import('../netlify/lib/acces-app.js');
+const { choisirIntention } = await import('../netlify/lib/bascule-journal.js');
+const { handler: journalHandler } = await import('../netlify/functions/bascule-journal.js');
 const { coupuresEchues } = await import('../netlify/functions/paypal-coupures.js');
 
 const vider = () => {
@@ -36,6 +41,8 @@ const vider = () => {
   lifetimeBlobs.clear();
   ikeaBlobs.clear();
   aboBlobs.clear();
+  intentBlobs.clear();
+  journalBlobs.clear();
 };
 
 const JETON_DASHBOARD = 'SECRET-DE-TEST-jeton-dashboard-0123456789';
@@ -452,13 +459,19 @@ test('deciderAbonnement : seul le plan du Club, seuls les 4 événements utiles'
 test('finDeDroit : essai, mois payé, prochaine échéance, bornes', () => {
   const now = Date.parse('2026-10-24T00:00:00Z');
   // Résilié pendant l'essai : accès jusqu'à la fin des 7 jours.
-  assert.equal(finDeDroit({ start_time: '2026-10-22T10:00:00Z' }, now), '2026-10-29T10:00:00.000Z');
+  assert.equal(finDeDroit({ plan_id: PLAN_MENSUEL, start_time: '2026-10-22T10:00:00Z' }, now), '2026-10-29T10:00:00.000Z');
+  // Plan de la bascule : pas d'essai, donc pas de 7 jours offerts.
+  assert.equal(finDeDroit({ plan_id: PLAN_MENSUEL_BASCULE, start_time: '2026-10-22T10:00:00Z' }, now), new Date(now).toISOString());
   // Dernier paiement le 31/10 → 30/11 (fin de mois gérée).
-  assert.equal(finDeDroit({ start_time: '2026-10-01T00:00:00Z', billing_info: { last_payment: { time: '2026-10-31T08:00:00Z' } } }, Date.parse('2026-11-01T00:00:00Z')),
+  assert.equal(finDeDroit({ plan_id: PLAN_MENSUEL, start_time: '2026-10-01T00:00:00Z', billing_info: { last_payment: { time: '2026-10-31T08:00:00Z' } } }, Date.parse('2026-11-01T00:00:00Z')),
     '2026-11-30T08:00:00.000Z');
-  // Jamais dans le passé, jamais plus de 35 jours devant.
+  // Jamais dans le passé, jamais plus d'un mois + 5 jours devant pour un mensuel.
   assert.equal(finDeDroit({}, now), new Date(now).toISOString());
-  assert.equal(finDeDroit({ billing_info: { next_billing_time: '2027-10-01T00:00:00Z' } }, now), new Date(now + 35 * 86400e3).toISOString());
+  assert.equal(finDeDroit({ plan_id: PLAN_MENSUEL, billing_info: { next_billing_time: '2027-10-01T00:00:00Z' } }, now), '2026-11-29T00:00:00.000Z');
+  // Annuel : l'année payée est due, pas plus.
+  assert.equal(finDeDroit({ plan_id: PLAN_ANNUEL, billing_info: { last_payment: { time: '2026-10-25T09:00:00Z' } } }, Date.parse('2027-03-01T00:00:00Z')),
+    '2027-10-25T09:00:00.000Z');
+  assert.equal(finDeDroit({ plan_id: PLAN_ANNUEL, billing_info: { next_billing_time: '2030-01-01T00:00:00Z' } }, now), '2027-10-29T00:00:00.000Z');
 });
 
 test('ABONNEMENT ACTIVÉ → compte programme créé dans l\'app, email d\'accès « essai », une seule fois', async () => {
@@ -584,4 +597,98 @@ test('abonnement sans DASHBOARD_PROVISION_TOKEN → 500, rien de marqué', async
   process.env.DASHBOARD_PROVISION_TOKEN = garde;
   assert.equal(rep.statusCode, 500);
   assert.equal(aboBlobs.size, 0);
+});
+
+// ── Bascule Skool → app : plans de la page /bascule, rapprochement, journal ──
+
+test('plans de la bascule acceptés par défaut, sans variable', () => {
+  const garde = process.env.PAYPAL_PLANS_ABONNEMENT;
+  delete process.env.PAYPAL_PLANS_ABONNEMENT;
+  assert.equal(deciderAbonnement(abo(ACT, { plan: PLAN_MENSUEL_BASCULE })).geste, 'activer');
+  assert.equal(deciderAbonnement(abo(ACT, { plan: PLAN_ANNUEL })).geste, 'activer');
+  if (garde !== undefined) process.env.PAYPAL_PLANS_ABONNEMENT = garde;
+});
+
+test('mensuel de la bascule (sans essai) → email d\'accès SANS « 7 jours gratuits »', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  assert.equal((await appeler(abo(ACT, { plan: PLAN_MENSUEL_BASCULE }))).statusCode, 200);
+  assert.equal(comptes.get('abonne@example.com'), 'programme');
+  assert.doesNotMatch(emailsResend[0].html, /7 jours gratuits/);
+});
+
+test('choisirIntention : même email, auto (une seule candidate récente), ambigu, aucun', () => {
+  const now = Date.parse('2026-10-25T12:00:00Z');
+  const i = (email, plan, h, extra = {}) => ({ email, plan, updated_at: new Date(now - h * 3600e3).toISOString(), ...extra });
+  assert.equal(choisirIntention([i('a@x.fr', 'vie', 1)], { emailPaypal: 'a@x.fr', formule: 'annuel', now }).rapprochement, 'meme_email');
+  const auto = choisirIntention([i('s@x.fr', 'vie', 1), i('t@x.fr', 'annuel', 1), i('u@x.fr', 'vie', 30)], { emailPaypal: 'p@x.fr', formule: 'vie', now });
+  assert.equal(auto.rapprochement, 'auto');
+  assert.equal(auto.intention.email, 's@x.fr');
+  assert.deepEqual(choisirIntention([i('s@x.fr', 'vie', 1), i('v@x.fr', 'vie', 2)], { emailPaypal: 'p@x.fr', formule: 'vie', now }).candidats, ['s@x.fr', 'v@x.fr']);
+  assert.equal(choisirIntention([i('s@x.fr', 'vie', 1, { consumed_by: 'CAP-0' })], { emailPaypal: 'p@x.fr', formule: 'vie', now }).rapprochement, 'aucun');
+});
+
+test('À VIE 249 € via /bascule, email PayPal ≠ email Skool → les DEUX comptes ouverts, intention consommée, journal écrit', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'paypal@example.com' });
+  intentBlobs.set('skool@example.com', { email: 'skool@example.com', plan: 'vie', first_seen: new Date().toISOString(), updated_at: new Date().toISOString(), clicks: 1 });
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,100.00,199.00,249.00'; // valeur de prod au 24/10
+  const rep = await appeler(capture('249.00', 'EUR', 'CAP-VIE'));
+  delete process.env.PAYPAL_MONTANTS_ACCEPTES;
+  assert.equal(rep.statusCode, 200);
+  assert.deepEqual(appelsActiver().map((b) => b.email), ['paypal@example.com', 'skool@example.com']);
+  assert.equal(intentBlobs.get('skool@example.com').consumed_by, 'CAP-VIE');
+  const [ligne] = [...journalBlobs.values()];
+  assert.equal(ligne.type, 'activation');
+  assert.equal(ligne.formule, 'vie');
+  assert.equal(ligne.rapprochement, 'auto');
+  assert.equal(ligne.email_skool, 'skool@example.com');
+  assert.equal(ligne.skool_ouvert, true);
+  // Jamais de coupure programmée pour un achat à vie.
+  assert.equal([...aboBlobs.keys()].filter((k) => k.startsWith('coupures/')).length, 0);
+});
+
+test('deux intentions candidates → seul le payeur est ouvert, Damien tranche via le journal', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'paypal@example.com' });
+  const t = new Date().toISOString();
+  intentBlobs.set('s1@example.com', { email: 's1@example.com', plan: 'vie', updated_at: t });
+  intentBlobs.set('s2@example.com', { email: 's2@example.com', plan: 'vie', updated_at: t });
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,100.00,199.00,249.00';
+  assert.equal((await appeler(capture('249.00', 'EUR', 'CAP-VIE2'))).statusCode, 200);
+  delete process.env.PAYPAL_MONTANTS_ACCEPTES;
+  assert.deepEqual(appelsActiver().map((b) => b.email), ['paypal@example.com']);
+  const [ligne] = [...journalBlobs.values()];
+  assert.equal(ligne.rapprochement, 'ambigu');
+  assert.deepEqual(ligne.candidats.sort(), ['s1@example.com', 's2@example.com']);
+});
+
+test('annuel de la bascule : résiliation → coupure à la fin de l\'année payée, journalisée', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  await appeler(abo(ACT, { plan: PLAN_ANNUEL, sub: 'I-AN' }));
+  const last = new Date(Date.now() - 30 * 86400e3).toISOString();
+  await appeler(abo(CAN, { plan: PLAN_ANNUEL, sub: 'I-AN', billing: { last_payment: { time: last } } }));
+  const fin = Date.parse(aboBlobs.get('coupures/I-AN').fin);
+  assert.ok(fin - Date.now() > 300 * 86400e3, 'l\'année payée est respectée');
+  assert.deepEqual([...journalBlobs.values()].map((l) => l.type).sort(), ['activation', 'resiliation']);
+});
+
+test('bascule-journal : jeton exigé, filtre since', async () => {
+  vider();
+  journalBlobs.set('2026-10-25T10:00:00.000Z_A', { at: '2026-10-25T10:00:00.000Z', type: 'activation' });
+  journalBlobs.set('2026-10-25T12:00:00.000Z_B', { at: '2026-10-25T12:00:00.000Z', type: 'activation' });
+  process.env.BASCULE_JOURNAL_TOKEN = 'j'.repeat(40);
+  const get = (auth, since) => journalHandler({ httpMethod: 'GET', headers: auth ? { authorization: auth } : {}, queryStringParameters: since ? { since } : {} });
+  assert.equal((await get(null)).statusCode, 401);
+  assert.equal((await get('Bearer mauvais')).statusCode, 401);
+  const ok = await get(`Bearer ${'j'.repeat(40)}`, '2026-10-25T11:00:00Z');
+  assert.equal(ok.statusCode, 200);
+  assert.deepEqual(JSON.parse(ok.body).lignes.map((l) => l.at), ['2026-10-25T12:00:00.000Z']);
+  delete process.env.BASCULE_JOURNAL_TOKEN;
+  assert.equal((await get(`Bearer ${'j'.repeat(40)}`)).statusCode, 401, 'sans variable : fermé');
 });

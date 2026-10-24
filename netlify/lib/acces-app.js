@@ -15,16 +15,31 @@
 //                              scripts/paypal-provision-token-to-blob.sh (dashboard)
 //   DASHBOARD_ORIGIN           optionnel, défaut https://app.mobilityclub.co
 //   PAYPAL_PLANS_ABONNEMENT    optionnel, plan_id acceptés séparés par des virgules,
-//                              défaut P-43F663568B911461GNLNCJBY (25 €/mois)
+//                              défaut = les trois plans de PLANS ci-dessous
 
 import { getStore } from '@netlify/blobs';
 import { envoyerEmail } from './methode-ikea.js';
 
 export const PLAN_MENSUEL = 'P-43F663568B911461GNLNCJBY';
+export const PLAN_MENSUEL_BASCULE = 'P-17C64877T6348331UNLCQIVI';
+export const PLAN_ANNUEL = 'P-4VH08043D1618690PNJJ2Z5A';
 export const ESSAI_JOURS = 7;
 
+// Ce que chaque plan promet. `mois` = durée d'une période payée, `essai` = jours
+// gratuits au départ. `formule` = le nom côté page /bascule (bascule_intents).
+//   • P-43F… 25 €/mois APRÈS 7 jours gratuits (/devenir-membre)
+//   • P-17C… 25 €/mois SANS essai (/bascule, anciens abonnés Skool)
+//   • P-4VH… 220 €/an (/bascule et /devenir-membre)
+export const PLANS = Object.freeze({
+  [PLAN_MENSUEL]: { formule: 'mensuel', mois: 1, essai: ESSAI_JOURS },
+  [PLAN_MENSUEL_BASCULE]: { formule: 'mensuel', mois: 1, essai: 0 },
+  [PLAN_ANNUEL]: { formule: 'annuel', mois: 12, essai: 0 },
+});
+// Plan inconnu de PLANS mais déclaré par variable : traité comme un mensuel sans essai.
+export const planDe = (planId) => PLANS[planId] || { formule: 'mensuel', mois: 1, essai: 0 };
+
 export const plansAbonnement = (env = process.env) =>
-  String(env.PAYPAL_PLANS_ABONNEMENT || PLAN_MENSUEL).split(',').map((s) => s.trim()).filter(Boolean);
+  String(env.PAYPAL_PLANS_ABONNEMENT || Object.keys(PLANS).join(',')).split(',').map((s) => s.trim()).filter(Boolean);
 
 export const origineApp = () => (process.env.DASHBOARD_ORIGIN || 'https://app.mobilityclub.co').replace(/\/+$/, '');
 
@@ -70,20 +85,22 @@ const ms = (v) => { const t = Date.parse(v); return Number.isFinite(t) ? t : nul
 /**
  * Jusqu'à quand l'abonné résilié garde l'accès. La plus lointaine de :
  *   - la prochaine échéance annoncée par PayPal (si elle figure encore) ;
- *   - le dernier paiement + 1 mois ;
- *   - le début de l'abonnement + 7 jours (l'essai promis).
- * Jamais avant maintenant, jamais plus de 35 jours devant (une date aberrante ne doit
- * pas offrir un an).
+ *   - le dernier paiement + une période du plan (1 mois, ou 12 pour l'annuel) ;
+ *   - le début de l'abonnement + les jours d'essai promis par le plan.
+ * Jamais avant maintenant, jamais plus d'une période (+ 5 jours) devant : une date
+ * aberrante ne doit pas offrir un an à un mensuel.
  */
 export const finDeDroit = (resource, now = Date.now()) => {
+  const plan = planDe(resource?.plan_id);
   const b = resource?.billing_info || {};
   const candidats = [
     ms(b.next_billing_time),
-    ms(b.last_payment?.time) != null ? ajouterMois(ms(b.last_payment.time)) : null,
-    ms(resource?.start_time) != null ? ms(resource.start_time) + ESSAI_JOURS * 86400e3 : null,
+    ms(b.last_payment?.time) != null ? ajouterMois(ms(b.last_payment.time), plan.mois) : null,
+    ms(resource?.start_time) != null && plan.essai ? ms(resource.start_time) + plan.essai * 86400e3 : null,
   ].filter((v) => v != null);
   const fin = candidats.length ? Math.max(...candidats) : now;
-  return new Date(Math.min(Math.max(fin, now), now + 35 * 86400e3)).toISOString();
+  const plafond = ajouterMois(now, plan.mois) + 5 * 86400e3;
+  return new Date(Math.min(Math.max(fin, now), plafond)).toISOString();
 };
 
 // ── Réseau ────────────────────────────────────────────────────────────────────

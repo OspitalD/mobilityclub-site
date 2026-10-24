@@ -45,8 +45,9 @@ import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 import {
-  appelerDashboard, deciderAbonnement, emailAccesApp, finDeDroit, storeAbonnements,
+  appelerDashboard, deciderAbonnement, emailAccesApp, finDeDroit, planDe, storeAbonnements,
 } from '../lib/acces-app.js';
+import { journaliser, rapprocherSkool } from '../lib/bascule-journal.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
@@ -212,6 +213,24 @@ const abonnementComplet = async (token, resource) => {
   return { ...resource, ...(await rep.json()) };
 };
 
+// ── Bascule Skool → app : email Skool lié + journal pour Hermès ─────────────
+// Appelé APRÈS l'ouverture du compte payeur. Ne jette jamais : le payeur a son
+// accès, le reste (2e email, journal) est du best-effort signalé à Damien.
+export const lierEtJournaliser = async ({ emailPaypal, prenom, formule, ref }) => {
+  const lien = await rapprocherSkool({ emailPaypal, formule, ref });
+  let skool_ouvert = false;
+  if (lien.email_skool && lien.email_skool !== emailPaypal) {
+    try {
+      await appelerDashboard('activer', { email: lien.email_skool, first_name: prenom, ref });
+      skool_ouvert = true;
+    } catch (err) {
+      console.error('[paypal-to-skool] email Skool lié non ouvert:', err?.message);
+    }
+  }
+  await journaliser({ type: 'activation', formule, prenom, email_paypal: emailPaypal, ref, ...lien, skool_ouvert });
+  return { ...lien, skool_ouvert };
+};
+
 // ── Abonnement mensuel ───────────────────────────────────────────────────────
 // Store `paypal_abonnements` :
 //   abonnes/<email>        { subscription_id, statut, acces_avant, bienvenue_pour }
@@ -257,7 +276,8 @@ export const traiterAbonnement = async (evenement, verdict, token) => {
     const nouveau = abonne?.bienvenue_pour !== subId;
     // L'email n'est marqué envoyé qu'une fois parti : sinon 500 et PayPal réessaie
     // (le provisionnement, lui, est idempotent).
-    if (nouveau) await emailAccesApp(email, prenom, { essai: true });
+    const plan = planDe(r.plan_id || evenement.resource?.plan_id);
+    if (nouveau) await emailAccesApp(email, prenom, { essai: plan.essai > 0 });
     await S.setJSON(cleAbonne, {
       subscription_id: subId,
       statut: 'active',
@@ -268,6 +288,7 @@ export const traiterAbonnement = async (evenement, verdict, token) => {
     });
     // Réactivation après suspension / résiliation annulée : plus de coupure en attente.
     await S.delete(`coupures/${encodeURIComponent(subId)}`);
+    if (nouveau) await lierEtJournaliser({ emailPaypal: email, prenom, formule: plan.formule, ref: subId });
     resultat = { activer: true, compte_cree: !!rep.compte_cree, email_envoye: nouveau };
   } else if (verdict.geste === 'programmer_coupure') {
     const fin = finDeDroit(r);
@@ -275,9 +296,11 @@ export const traiterAbonnement = async (evenement, verdict, token) => {
       email, subscription_id: subId, fin, programmee_at: new Date().toISOString(),
     });
     if (abonne?.subscription_id === subId) await S.setJSON(cleAbonne, { ...abonne, statut: 'resilie', fin });
+    await journaliser({ type: 'resiliation', formule: planDe(r.plan_id).formule, prenom, email_paypal: email, ref: subId, fin });
     resultat = { coupure_programmee: fin };
   } else {
     resultat = await executerCoupure(S, { email, subscription_id: subId });
+    await journaliser({ type: 'coupure', email_paypal: email, ref: subId, evenement: evenement.event_type, ...resultat });
   }
 
   await S.setJSON(cleEv, { type: evenement.event_type, subscription_id: subId, traite_at: new Date().toISOString() });
@@ -459,6 +482,12 @@ export const handler = async (req) => {
   try {
     await appelerDashboard('activer', { email, first_name: payeur.prenom, ref: verdict.captureId });
     await emailAccesApp(email, payeur.prenom);
+    await lierEtJournaliser({
+      emailPaypal: email,
+      prenom: payeur.prenom,
+      formule: estMontantLifetime(evenement.resource?.amount?.value) ? 'vie' : 'annuel_capture',
+      ref: verdict.captureId,
+    });
   } catch (err) {
     console.error('[paypal-to-skool] ouverture du compte échouée:', err?.message);
     return json(500, { error: 'acces_failed' });
