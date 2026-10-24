@@ -17,3 +17,9 @@ assets/app/reviews-src/
 .env
 .env.*
 methode-ikea*.html
+
+# Captures source PNG de l'app V2 (le site sert les JPG compressés) — gardées en local
+assets/app/v2/*.png
+
+# Dossiers de reprise opérationnels : docs/ est servi publiquement sur www.mobilityclub.co
+docs/REPRISE-ACCES-PAYPAL-HERMES.md
