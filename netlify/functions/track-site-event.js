@@ -23,7 +23,7 @@ const EVENTS = new Set([
   'purchase_confirmed', // capture PayPal confirmée au retour sur le site
 ]);
 
-const VARIANTS = new Set(['vision', 'friction']);
+const VARIANTS = new Set(['vision', 'friction', 'coach']);
 
 // Longueur max d'une valeur de props. Coupe court aux payloads gonflés.
 const MAX_VAL = 64;

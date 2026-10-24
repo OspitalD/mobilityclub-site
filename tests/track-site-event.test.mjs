@@ -36,3 +36,10 @@ test('les quatre étapes de conversion Lifetime sont acceptées et mesurées', a
   assert.ok(!JSON.stringify(records).includes('jamais@stocke.fr'));
   assert.ok(!JSON.stringify(records).includes('Damien'));
 });
+
+test('la variante de hero servie par la page (coach) est acceptée, une inconnue est refusée', async () => {
+  const avecVariante = (variant) =>
+    handler({ httpMethod: 'POST', headers: {}, body: JSON.stringify({ event: 'page_view', variant, vid: 'abcd1234' }) });
+  assert.equal((await avecVariante('coach')).statusCode, 200);
+  assert.equal((await avecVariante('inconnue')).statusCode, 400);
+});
