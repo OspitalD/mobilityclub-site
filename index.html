@@ -4,20 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Mobility Club — Le club de mouvement de demain</title>
-<meta name="description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta name="description" content="Ton coach de mouvement dans ta poche : mobilité, muscu et course, un plan qui s'adapte à ton corps et à ta semaine. Bilan articulaire, coach vocal, correction vidéo." />
 <meta name="theme-color" content="#0D0F0E" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Mobility Club — Le club de mouvement de demain" />
-<meta property="og:description" content="On ne vend pas la mobilité. On retire les frictions du mouvement. Chacun son Mobility Club." />
+<meta property="og:description" content="Ton coach de mouvement dans ta poche : mobilité, muscu et course, un plan qui s'adapte à ton corps et à ta semaine." />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
 
 <style>
 /* ============================================================
@@ -28,10 +28,11 @@
 
 :root{
   --bg-primary:     #0D0F0E;
-  --bg-surface:     #111412;
+  /* DA V2 : surfaces en verre (dégradé translucide sur les halos) */
+  --bg-surface:     linear-gradient(160deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02) 55%, rgba(255,255,255,0.045));
   --bg-elevated:    #14181600;
   --border-subtle:  rgba(255, 255, 255, 0.04);
-  --border-active:  #1A1E1C;
+  --border-active:  rgba(255, 255, 255, 0.11);
   --hair:           rgba(255, 255, 255, 0.07);
 
   --accent-green:   #3ECFA0;
@@ -45,8 +46,8 @@
   --text-tertiary:  #4A4D4B;
 
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
-  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
-  --font-accent: 'Spectral', Georgia, 'Times New Roman', serif;
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+  --font-accent: 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --maxw: 1160px;
@@ -76,6 +77,7 @@ body{
   background:
     radial-gradient(120% 80% at 78% -8%, rgba(62,207,160,0.10) 0%, rgba(62,207,160,0) 42%),
     radial-gradient(90% 60% at 12% 6%, rgba(62,207,160,0.05) 0%, rgba(62,207,160,0) 46%),
+    radial-gradient(70% 55% at 8% 62%, rgba(185,144,224,0.07) 0%, rgba(185,144,224,0) 50%),
     radial-gradient(140% 120% at 50% 120%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 55%),
     var(--bg-primary);
 }
@@ -219,7 +221,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 }
 
 /* Décalage d'ancrage : les sections ciblées ne passent pas sous le header fixe. */
-#app, #fondateur, #avis, #doors, #reversal{ scroll-margin-top:118px; }
+#app, #fondateur, #avis, #doors, #reversal, #comparer, #programme{ scroll-margin-top:118px; }
 
 /* Barre de progression scroll */
 .scroll-progress{
@@ -733,6 +735,32 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .scal-sres.added .srn{ color:var(--text-tertiary); }
 .scal-sres-none{ padding:12px; font-size:12.5px; color:var(--text-tertiary); }
 
+/* ---- Démo · Calendrier en DA V2 (verre, titre italique, pas de mono ni d'icônes en pastilles) ---- */
+.phone.scal.cal2{ --scal-s2:rgba(255,255,255,0.06); --border-strong:rgba(255,255,255,0.14); isolation:isolate;
+  background:radial-gradient(120% 55% at 0% 10%, rgba(62,207,160,0.15), transparent 60%), radial-gradient(90% 50% at 100% 85%, rgba(185,144,224,0.12), transparent 60%), #0D0F0E; }
+.cal2 .scal-eyebrow{ font-family:var(--font-sans); font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; color:#8B8D8A; }
+.cal2 .scal-eyebrow .scal-dot{ display:none; }
+.cal2 .scal-hero{ font-size:25px; font-weight:800; font-style:italic; letter-spacing:-0.03em; margin:2px 0 4px; }
+.cal2 .scal-diag{ border-radius:100px; padding:7px 8px 7px 14px; border-color:rgba(255,255,255,0.14); background:linear-gradient(160deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03)); }
+.cal2 .scal-diag .di{ display:none; }
+.cal2 .scal-diag .dt{ font-size:12.5px; font-weight:600; color:#BFC1BE; }
+.cal2 .scal-diag .dre{ font-family:var(--font-sans); font-size:12px; font-weight:700; border-color:rgba(255,255,255,0.14); }
+.cal2 .scal-ghead>span{ font-family:var(--font-sans); font-size:10.5px; font-weight:600; letter-spacing:0; text-transform:capitalize; color:#6E716E; }
+.cal2 .scal-gday{ font-family:var(--font-sans); font-size:11.5px; font-weight:700; text-transform:capitalize; color:#9A9C99; }
+.cal2 .scal-grow+.scal-grow{ border-top-color:rgba(255,255,255,0.05); }
+.cal2 .scal-blk{ border-radius:12px; }
+.cal2 .scal-blk.sport{ background:linear-gradient(160deg,rgba(255,255,255,0.11),rgba(255,255,255,0.04)); border:1px solid rgba(255,255,255,0.14); box-shadow:inset 0 1px 0 rgba(255,255,255,0.14); }
+.cal2 .scal-blk.mob{ background:rgba(62,207,160,0.12); border:1px solid rgba(62,207,160,0.35); }
+.cal2 .scal-tray{ border-radius:24px; background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02) 50%,rgba(255,255,255,0.04)); border:1px solid rgba(255,255,255,0.12); box-shadow:inset 0 1px 0 rgba(255,255,255,0.2); }
+.cal2 .scal-search input{ border-radius:100px; }
+.cal2 .scal-searchres{ border-radius:16px; border-color:rgba(255,255,255,0.10); }
+.cal2 .scal-sres .scat{ font-family:var(--font-sans); font-size:10.5px; letter-spacing:0; text-transform:none; }
+.cal2 .scal-tray-head .thb{ font-family:var(--font-sans); font-size:11px; letter-spacing:0; border-radius:100px; padding:3px 9px; }
+.cal2 .scal-ptoken{ border-radius:100px; padding:8px 13px; }
+.cal2 .scal-token{ border-radius:100px; border-style:solid; border-color:rgba(62,207,160,0.38); background:rgba(62,207,160,0.10); padding:9px 16px; }
+.cal2 .scal-token .tk-ic{ display:none; }
+.cal2 .scal-token .tk-s{ font-family:var(--font-sans); font-size:11px; letter-spacing:0; text-transform:none; }
+
 /* ---- Tour produit : phone-stage + stepper + slider diagnostic ---- */
 .phone.tour-stage{ height:648px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
 .phone.tour-stage::-webkit-scrollbar{ width:0; }
@@ -777,6 +805,40 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .mc-slider::-moz-range-track{ height:4px; border-radius:2px; background:rgba(255,255,255,0.1); }
 .mc-slider::-moz-range-progress{ height:4px; border-radius:2px; background:#E8A020; }
 .mc-slider::-moz-range-thumb{ height:24px; width:24px; border-radius:50%; background:#E8A020; border:4px solid var(--bg-primary); }
+
+/* ---- Démo · Diagnostic en DA V2 (copie de l'écran de test de l'app : verre, titre italique, curseur or/violet) ---- */
+.phone.tour-stage.dg2{ --side:#E8A020; display:flex; flex-direction:column; overflow:hidden; padding:16px 16px 18px; isolation:isolate;
+  background:radial-gradient(120% 60% at 0% 18%, rgba(62,207,160,0.16), transparent 60%), radial-gradient(90% 50% at 100% 70%, rgba(185,144,224,0.13), transparent 60%), #0D0F0E; }
+.phone.tour-stage.dg2[data-side="gauche"]{ --side:#B990E0; }
+.dg2-top{ display:flex; align-items:center; gap:10px; }
+.dg2-prog{ flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,0.10); overflow:hidden; }
+.dg2-prog i{ display:block; width:4%; height:100%; background:#3ECFA0; }
+.dg2-step{ font-size:11.5px; font-weight:600; color:#9A9C99; font-variant-numeric:tabular-nums; }
+.dg2-eyebrow{ margin-top:14px; font-size:12px; font-weight:600; color:#8B8D8A; }
+.dg2-title{ margin:2px 0 0; font-size:25px; font-weight:800; font-style:italic; letter-spacing:-0.03em; line-height:1.1; color:#F5F5F3; }
+.dg2-photo{ position:relative; flex:1 1 auto; min-height:150px; margin-top:12px; border-radius:26px; overflow:hidden; background:#141715; border:1px solid rgba(255,255,255,0.12); box-shadow:0 20px 50px rgba(0,0,0,0.45); }
+.dg2-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%; }
+.dg2-sides{ position:absolute; top:12px; left:12px; display:flex; gap:6px; }
+.dg2-side{ appearance:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border-radius:100px; font-family:var(--font-sans); font-size:12.5px; font-weight:700; color:rgba(245,245,243,0.55);
+  background:rgba(13,15,14,0.55); border:1px solid rgba(255,255,255,0.14); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); transition:color .3s, border-color .3s; }
+.dg2-side i{ width:7px; height:7px; border-radius:50%; background:#E8A020; opacity:.5; }
+.dg2-side[data-side="G"] i{ background:#B990E0; }
+.dg2-side.on{ color:#F5F5F3; border-color:color-mix(in srgb, var(--side) 55%, transparent); }
+.dg2-side.on i{ opacity:1; box-shadow:0 0 8px var(--side); }
+.dg2-sl{ margin-top:12px; padding:13px 16px 12px; border-radius:24px; background:linear-gradient(160deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.05));
+  border:1px solid rgba(255,255,255,0.14); backdrop-filter:blur(26px) saturate(170%); -webkit-backdrop-filter:blur(26px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.28), 0 20px 50px rgba(0,0,0,0.45); }
+.dg2-read{ display:flex; align-items:baseline; gap:10px; min-height:30px; }
+.dg2-num{ font-size:28px; font-weight:800; font-style:italic; letter-spacing:-1px; line-height:1; color:var(--side); font-variant-numeric:tabular-nums; transition:color .4s ease; }
+.dg2-num small{ font-size:14px; font-weight:800; font-style:normal; color:#5E615E; margin-left:1px; }
+.dg2-lbl{ flex:1; min-width:0; font-size:13.5px; font-weight:700; line-height:1.3; color:#D9DBD8; }
+.dg2-range{ -webkit-appearance:none; appearance:none; display:block; width:100%; height:44px; margin:6px 0 0; background:transparent; cursor:pointer; touch-action:none; }
+.dg2-range::-webkit-slider-runnable-track{ height:6px; border-radius:3px; background:linear-gradient(90deg, var(--side) 0 var(--fill,50%), rgba(255,255,255,0.09) var(--fill,50%)); box-shadow:inset 0 1px 1px rgba(0,0,0,0.35); }
+.dg2-range::-webkit-slider-thumb{ -webkit-appearance:none; width:30px; height:30px; margin-top:-12px; border-radius:50%; background:radial-gradient(circle at 50% 35%,#FFFFFF,#E4E5E2); border:3px solid var(--side); box-shadow:0 4px 12px rgba(0,0,0,0.5), 0 0 18px color-mix(in srgb, var(--side) 55%, transparent); }
+.dg2-range::-moz-range-track{ height:6px; border-radius:3px; background:rgba(255,255,255,0.09); }
+.dg2-range::-moz-range-progress{ height:6px; border-radius:3px; background:var(--side); }
+.dg2-range::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--side); box-shadow:0 0 18px color-mix(in srgb, var(--side) 55%, transparent); }
+.dg2-range:focus-visible{ outline:2px solid rgba(62,207,160,0.6); outline-offset:2px; border-radius:22px; }
 /* Calendrier (étape 2 du tour) compact → tient dans le phone sans scroll interne (mobile + desktop) */
 .scal-hero{ font-size:20px; margin:8px 0 4px; }
 .scal-diag{ margin-top:8px; padding:7px 11px; }
@@ -925,6 +987,22 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 /* Sélecteur de sport interactif — démo live de personnalisation */
 .switcher{ margin-top:clamp(40px,6vh,64px); }
 .switch-hint{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:14px; }
+/* ---- §04 · carte séance en DA V2 (copie de la carte d'Aujourd'hui : verre + halo, titre italique, blocs à filet) ---- */
+.switch-card .tc2{ position:relative; isolation:isolate; overflow:hidden; padding:20px 20px 18px; border-radius:28px; border:1px solid rgba(255,255,255,0.16);
+  background:radial-gradient(110% 80% at 0% 0%, rgba(62,207,160,0.30), transparent 55%), radial-gradient(90% 70% at 100% 60%, rgba(185,144,224,0.22), transparent 60%), radial-gradient(70% 50% at 50% 100%, rgba(232,160,32,0.10), transparent 60%), #141715;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 30px 70px -30px rgba(0,0,0,0.8); }
+.switch-card.card{ border:none; background:none; box-shadow:none; overflow:visible; }
+.switch-card .card-caption{ border:none; background:none; padding:12px 4px 0; }
+.tc2-plan{ font-size:12.5px; font-weight:600; color:rgba(245,245,243,0.5); }
+.tc2-title{ margin:6px 0 14px; font-size:clamp(34px,4vw,44px); font-weight:800; font-style:italic; letter-spacing:-0.035em; line-height:1; color:#F5F5F3; }
+.tc2-blk{ border-left:2px solid rgba(245,245,243,0.85); padding:1px 0 1px 12px; margin-top:12px; }
+.tc2-blk.mob{ border-left-color:#3ECFA0; margin-top:0; }
+.tc2-k{ font-size:14px; font-weight:700; color:#F5F5F3; }
+.tc2-blk.mob .tc2-k{ color:#3ECFA0; }
+.tc2-v{ margin-top:3px; font-size:14px; line-height:1.45; color:rgba(245,245,243,0.82); }
+.tc2-actions{ display:flex; gap:10px; margin-top:18px; }
+.tc2-det{ display:inline-flex; align-items:center; justify-content:center; padding:0 20px; height:48px; border-radius:100px; border:1px solid rgba(255,255,255,0.16); background:rgba(13,15,14,0.5); font-size:14.5px; font-weight:700; color:#F5F5F3; }
+.tc2-go{ flex:1; display:inline-flex; align-items:center; justify-content:center; height:48px; border-radius:100px; background:#6CCFA6; color:#0D0F0E; font-size:15.5px; font-weight:800; box-shadow:0 10px 30px -12px rgba(62,207,160,0.6); }
 .switch-tabs{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:26px; }
 .switch-tab{
   appearance:none; cursor:pointer; font-family:var(--font-mono); font-size:12px; font-weight:600;
@@ -1358,6 +1436,108 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   .pin-stage{ position:static !important; min-height:0 !important; }
   .bar-fill{ transition:none !important; }
 }
+
+/* ============ DA V2 (alignée sur l'app V2) ============ */
+.hero-title, .reversal-headline, .problem-stmt, .s5-title, .demo-title, .voice-title, .vc-title, .s4-close .big, .method-quote{
+  font-family:var(--font-sans); font-style:italic; font-weight:800; letter-spacing:-0.045em;
+}
+.it{ font-family:var(--font-sans); font-style:italic; font-weight:800; letter-spacing:-0.03em; }
+.hero-title .it{ font-weight:800; }
+.btn{ border-radius:100px; }
+.trust-item, .door, .sticky-inner{ box-shadow:inset 0 1px 0 rgba(255,255,255,0.14); }
+.hero-title[data-v="coach"]{ font-size:clamp(44px, 8.4vw, 116px); line-height:0.96; }
+@media (max-width:560px){ .hero-title[data-v="coach"] br{ display:none; } }
+
+/* ============ TON PROGRAMME, COMME TU VEUX (lot 2) ============ */
+.prg{position:relative;isolation:isolate}
+.prg .pg-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.prg .pg-halo i{position:absolute;border-radius:50%}
+.pg-grid{display:grid;gap:clamp(36px,6vw,80px);align-items:center}
+@media (min-width:900px){.pg-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}}
+.pg-title{font:italic 800 clamp(32px,5.4vw,64px)/1.02 var(--font-sans);letter-spacing:-.045em;text-wrap:balance}
+.pg-lead{margin-top:16px;max-width:46ch;color:#A9ABA8;font-size:clamp(15px,1.6vw,18px);line-height:1.62;text-wrap:pretty}
+.pg-ways{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:10px}
+.pg-ways li{padding:18px 20px;border:1px solid rgba(255,255,255,.12);border-radius:22px;background:var(--bg-surface);box-shadow:inset 0 1px 0 rgba(255,255,255,.16);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);color:#C9CCC8;font-size:15.5px;line-height:1.55}
+.pg-ways strong{display:block;margin-bottom:2px;color:var(--text-primary);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.pg-tag{display:inline-block;margin-bottom:6px;color:var(--accent-green);font-size:13px;font-weight:700}
+.pg-ways li.soon .pg-tag{color:var(--accent-gold)}
+.pg-sports{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px}
+.pg-sports span{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid rgba(255,255,255,.14);border-radius:100px;background:rgba(255,255,255,.04);color:var(--text-primary);font-size:14.5px;font-weight:600}
+.pg-sports span.soon{color:#A9ABA8}
+.pg-sports span.soon b{margin-left:6px;color:var(--accent-gold);font-size:12px;font-weight:700}
+.pg-phones{position:relative;display:flex;justify-content:center;gap:clamp(12px,2vw,22px)}
+.pg-phones figure{margin:0;width:min(46%,260px);border-radius:34px;overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 40px 80px -40px rgba(0,0,0,.9);background:#0D0F0E}
+.pg-phones figure:nth-child(2){transform:translateY(clamp(24px,5vw,56px))}
+.pg-phones img{display:block;width:100%;height:auto}
+
+/* ============ COMPARER (lot 1, DA V2 : verre + halos, Plus Jakarta italique 800) ============ */
+.cmpx{position:relative;isolation:isolate}
+.cmpx .cx-halo{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cmpx .cx-halo i{position:absolute;border-radius:50%}
+.cmpx .cx-col{width:min(100%,680px);margin-inline:auto}
+.cmpx{--cx-glass:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 55%,rgba(255,255,255,.05));--cx-line:rgba(255,255,255,.12);--cx-hi:inset 0 1px 0 rgba(255,255,255,.18);--cx-blur:blur(18px) saturate(170%);--cx-muted:#A9ABA8;--cx-quiet:#6F716E;font-family:var(--font-sans)}
+.cx-title{font:italic 800 clamp(30px,5.4vw,52px)/1.04 var(--font-sans);letter-spacing:-.04em;text-wrap:balance}
+.cx-lead{margin-top:12px;color:var(--cx-muted);font-size:clamp(15px,1.6vw,17px);line-height:1.6}
+.cx-vs{list-style:none;margin:22px 0 0;padding:0}
+.cx-vs li{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.cx-vs li:first-child{border-top:1px solid rgba(255,255,255,.07)}
+.cx-vs strong{font-size:16.5px;font-weight:700;line-height:1.35;color:var(--text-primary)}
+.cx-us{align-self:start;color:var(--accent-green);font-size:15px;font-weight:800;white-space:nowrap}
+.cx-else{grid-column:1/-1;color:var(--cx-muted);font-size:15px;line-height:1.5}
+.cx-detail{margin-top:20px}
+.cx-detail summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:10px 14px 10px 20px;border:1px solid rgba(62,207,160,.45);border-radius:100px;background:linear-gradient(160deg,rgba(62,207,160,.16),rgba(62,207,160,.05));box-shadow:var(--cx-hi),0 0 28px rgba(62,207,160,.12);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur);color:var(--text-primary);font-size:16px;font-weight:700;cursor:pointer;list-style:none;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.cx-detail summary:hover{border-color:rgba(62,207,160,.8);box-shadow:var(--cx-hi),0 0 36px rgba(62,207,160,.22)}
+.cx-detail summary:active{transform:scale(.985)}
+.cx-detail summary:focus-visible,.cx-seg button:focus-visible,.cx-chips button:focus-visible{outline:2px solid var(--text-primary);outline-offset:3px}
+.cx-detail summary::-webkit-details-marker{display:none}
+.cx-detail summary small{display:block;margin-top:1px;color:var(--cx-muted);font-size:13px;font-weight:500}
+.cx-detail .cx-open{display:none}
+.cx-detail[open] .cx-open{display:block}
+.cx-detail[open] .cx-closed{display:none}
+.cx-chev{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--accent-green);color:#0D0F0E;transition:transform .25s var(--ease)}
+.cx-detail[open] .cx-chev{transform:rotate(180deg)}
+.cx-panel{margin-top:14px;padding:6px 14px 16px;border:1px solid var(--cx-line);border-radius:22px;background:var(--cx-glass);box-shadow:var(--cx-hi);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur)}
+.cx-table{width:100%;margin-top:18px;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
+.cx-table th,.cx-table td{text-align:center;vertical-align:middle}
+.cx-table thead th{padding:0 1px 10px;color:var(--cx-muted);font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.25;hyphens:manual;-webkit-hyphens:manual}
+.cx-table thead th.us{color:var(--accent-green)}
+.cx-table .lbl th{padding:14px 0 6px;border-top:1px solid rgba(255,255,255,.07);text-align:left;font-size:14.5px;font-weight:600;color:#D6D8D5;line-height:1.4}
+.cx-table tbody tr.lbl:first-child th{border-top:0}
+.cx-table .val td{padding:4px 2px 12px;color:var(--cx-muted);font-size:13px;white-space:nowrap}
+.cx-table .val td.us{color:var(--accent-green);font-weight:800}
+.cx-table .val td.soon{color:var(--accent-gold);font-size:11px;font-weight:700}
+.cx-table .part td{padding:0 0 12px;text-align:left;color:var(--cx-quiet);font-size:12.5px;line-height:1.5;white-space:normal}
+@media (max-width:420px){.cx-table thead th{font-size:9.5px}.cx-table .val td{font-size:10.5px;letter-spacing:-.2px;white-space:normal;line-height:1.25}}
+@media (min-width:640px){.cx-table thead th{font-size:13px}.cx-table .val td{font-size:14px}}
+.cx-key{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;color:var(--cx-muted);font-size:13px}
+.cx-note{margin-top:14px;color:var(--cx-quiet);font-size:13px;line-height:1.55}
+.cx-sim{margin-top:34px;padding:24px 20px;border:1px solid var(--cx-line);border-radius:26px;background:var(--cx-glass);box-shadow:var(--cx-hi);-webkit-backdrop-filter:var(--cx-blur);backdrop-filter:var(--cx-blur)}
+.cx-sim h3{font:italic 800 clamp(22px,3vw,28px)/1.15 var(--font-sans);letter-spacing:-.03em}
+.cx-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;padding:4px;border-radius:100px;background:rgba(0,0,0,.35)}
+.cx-seg.two{grid-template-columns:1fr 1fr}
+.cx-seg button{min-height:44px;border:0;border-radius:100px;background:none;color:var(--cx-muted);font:700 14px var(--font-sans);cursor:pointer}
+.cx-seg button[aria-pressed="true"]{background:rgba(255,255,255,.12);color:var(--text-primary);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.cx-bars{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px}
+.cx-bars li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:baseline;font-size:15.5px;color:#C9CCC8}
+.cx-bars b{font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.cx-bar{grid-column:1/-1;height:8px;border-radius:8px;background:rgba(255,255,255,.07)}
+.cx-bar i{display:block;height:100%;border-radius:8px;background:#5C615E;transition:width .45s var(--ease)}
+.cx-bars li.us,.cx-bars li.us b{color:var(--accent-green)}
+.cx-bars li.us span:first-child{font-weight:700}
+.cx-bars li.us .cx-bar i{background:var(--accent-green)}
+.cx-combo{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+.cx-combo-h{font-size:16px;font-weight:700;color:var(--text-primary)}
+.cx-combo-sub{margin-top:2px;color:var(--cx-muted);font-size:14px}
+.cx-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cx-chips button{min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.12);border-radius:100px;background:none;color:var(--cx-muted);font:600 15px var(--font-sans);cursor:pointer}
+.cx-chips button[aria-pressed="true"]{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text-primary)}
+.cx-chips .cx-soon{margin-left:6px;color:var(--accent-gold);font-size:12px;font-weight:700}
+.cx-hint{margin-top:8px;color:var(--cx-muted);font-size:13.5px;line-height:1.5}
+.cx-total{margin-top:16px;font-size:16px;line-height:1.55;color:#C9CCC8}
+.cx-total b{color:var(--text-primary)}
+.cx-total .g{color:var(--accent-green);font-weight:700}
+.cx-total .s{display:block;margin-top:6px;color:var(--cx-muted);font-size:14.5px}
+.cx-cta{margin-top:22px;display:flex;justify-content:center}
 </style>
 <script type="importmap">
 { "imports": {
@@ -1396,6 +1576,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <a class="jump" href="#app" data-i18n="jn_app">L'app</a>
       <a class="jump" href="#avis" data-i18n="jn_avis">Avis</a>
       <a class="jump" href="#fondateur" data-i18n="jn_fondateur">Le fondateur</a>
+      <a class="jump" href="#comparer" data-i18n="jn_comparer">Comparer</a>
       <a class="jump jump-cta" href="#doors" data-i18n="jn_rejoindre">Rejoindre le club</a>
     </div>
   </nav>
@@ -1406,16 +1587,16 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <!-- ============================ 00 · HERO ============================ -->
 <section class="hero wrap" aria-label="Hero">
   <canvas class="hero-3d" id="hero3d" aria-hidden="true"></canvas>
-  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club de mobilité quotidienne</span></span>
+  <span class="eyebrow reveal"><span class="idx">00</span><span data-i18n="hero_eyebrow">Le club qui te met en mouvement</span></span>
 
   <!-- Hero A/B — le HTML statique porte la variante `forced` (cf. const AB).
        Sans JS, c'est ce hook qui s'affiche. -->
   <!-- L'espace avant chaque <br> est VOLONTAIRE : en desktop il est absorbé en fin
        de ligne, et en mobile (où le <br> est masqué) il évite « mobilité,c'est ». -->
-  <h1 class="hero-title reveal" data-v="vision" data-i18n="hero_title_vision">La mobilité, <br>c'est la pratique qui garde <br><span class="em">tes articulations jeunes.</span></h1>
+  <h1 class="hero-title reveal" data-v="coach" data-i18n="hero_title_coach">Ton coach de mouvement, <br><span class="em">dans ta poche.</span></h1>
 
-  <p class="hero-sub reveal" data-i18n="hero_sub_vision">
-    Un entraînement articulaire personnalisé qui s'adapte à ton sport et à ton quotidien — <strong>~8 min par jour, décidées pour toi.</strong>
+  <p class="hero-sub reveal" data-i18n="hero_sub_coach">
+    Mobilité, muscu, course : un plan qui s'adapte à ton corps et à ta semaine. <strong>Tu ouvres, ta séance est prête.</strong>
   </p>
 
   <div class="hero-cta-row reveal">
@@ -1514,8 +1695,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         <div class="reversal-media reveal">
           <div class="shot-wrap">
             <figure class="shot">
-              <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
-                   alt="Écran Aujourd'hui du Mobility Club : la séance du jour, déjà prête, avec bouton Lancer la séance" />
+              <img src="assets/app/v2/today-session-45.jpg" width="1179" height="1474" loading="lazy"
+                   alt="Écran Aujourd'hui du Mobility Club : la séance du jour Lower 2 (mobilité hanches + force), déjà prête, avec bouton Commencer" />
             </figure>
           </div>
           <span class="shot-cap"><span class="dot"></span><span data-i18n="shot_today">Ta séance du jour — déjà là</span></span>
@@ -1588,15 +1769,15 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <p class="voice-swipe reveal" data-i18n="voice_swipe">Balaye pour voir les 3 étapes</p>
     <div class="voice-flow reveal" data-stagger role="list" aria-label="Les trois étapes du coach vocal">
       <figure class="voice-step" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-nub.png" width="880" height="1904" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/today.jpg" width="1179" height="2556" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
         <figcaption><span class="vstep-n">1</span><span data-i18n="voice_s1">Ouvre — le bouton est au centre de ta nav, à portée de pouce.</span></figcaption>
       </figure>
       <figure class="voice-step" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1904" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/voice.jpg" width="1179" height="2556" loading="lazy" alt="Le coach vocal à l'écoute : « Qu'est-ce qu'on change aujourd'hui ? » et exemples de commandes" /></figure></div>
         <figcaption><span class="vstep-n">2</span><span data-i18n="voice_s2">Parle — dis ta contrainte du jour, en langage normal.</span></figcaption>
       </figure>
       <figure class="voice-step lead" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1904" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/voice-adjusted.jpg" width="1179" height="2556" loading="lazy" alt="Le coach a compris « j'ai mal à l'épaule droite » : séance ajustée, l'exercice qui charge l'épaule est retiré, bouton Appliquer" /></figure></div>
         <figcaption><span class="vstep-n">3</span><span data-i18n="voice_s3">C'est fait — il reformule, tu valides. Ta séance s'adapte.</span></figcaption>
       </figure>
     </div>
@@ -1633,8 +1814,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       </div>
       <div class="vc-media reveal">
         <div class="vc-shots">
-          <div class="shot-wrap vc-shot"><figure class="shot"><img src="assets/app/video-send.png" width="1170" height="2532" loading="lazy" alt="Envoi d'une vidéo de ton mouvement au coach depuis l'app" /></figure></div>
-          <div class="shot-wrap vc-shot lead"><figure class="shot"><img src="assets/app/video-coach.png" width="1170" height="2532" loading="lazy" alt="La correction écrite du coach sur ta vidéo" /></figure></div>
+          <div class="shot-wrap vc-shot"><figure class="shot"><img src="assets/app/v2/video-send.jpg" width="1179" height="2556" loading="lazy" alt="Envoi d'une vidéo de ton mouvement au coach depuis l'app" /></figure></div>
+          <div class="shot-wrap vc-shot lead"><figure class="shot"><img src="assets/app/v2/video-coach.jpg" width="1179" height="2556" loading="lazy" alt="La correction écrite du coach sur ta vidéo" /></figure></div>
         </div>
         <span class="shot-cap"><span class="dot"></span><span data-i18n="vc_cap">Tu filmes · le coach corrige · tu progresses</span></span>
       </div>
@@ -1645,6 +1826,33 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <hr class="divider" />
 
 <!-- ============================ 03 · MÉTHODE + DAMIEN ============================ -->
+<!-- ============================ TON PROGRAMME, COMME TU VEUX (lot 2) ============================ -->
+<section class="pad prg" id="programme" aria-label="Ton programme">
+  <div class="pg-halo" aria-hidden="true"><i style="left:-80px;top:80px;width:300px;height:300px;background:#B990E0;opacity:.18;filter:blur(84px)"></i><i style="right:-60px;bottom:60px;width:280px;height:280px;background:#3ECFA0;opacity:.16;filter:blur(80px)"></i></div>
+  <div class="wrap">
+    <div class="pg-grid">
+      <div>
+        <h2 class="pg-title reveal" data-i18n="pg_title">Ton programme, comme tu veux.</h2>
+        <p class="pg-lead reveal" data-i18n="pg_lead">Plus seulement ta mobilité : ton entraînement entier, au même endroit. Le coach organise ta semaine autour de ce que tu fais déjà.</p>
+        <ul class="pg-ways reveal">
+          <li><span class="pg-tag" data-i18n="pg_avail">Disponible</span><strong data-i18n="pg_w1_t">Le club crée ton programme.</strong><span data-i18n="pg_w1_d">À partir de ton bilan articulaire, de ton sport et de ton temps dispo.</span></li>
+          <li><span class="pg-tag" data-i18n="pg_avail2">Disponible</span><strong data-i18n="pg_w2_t">Tu importes le tien.</strong><span data-i18n="pg_w2_d">Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.</span></li>
+          <li class="soon"><span class="pg-tag" data-i18n="pg_soon">Bientôt</span><strong data-i18n="pg_w3_t">Tu crées le tien.</strong><span data-i18n="pg_w3_d">Tes séances, tes exercices, tes semaines, construits par toi.</span></li>
+        </ul>
+        <div class="pg-sports reveal">
+          <span data-i18n="pg_s1">Mobilité</span><span data-i18n="pg_s2">Musculation</span><span data-i18n="pg_s3">Course</span><span class="soon" data-i18n="pg_s4">Données santé<b>bientôt</b></span>
+        </div>
+      </div>
+      <div class="pg-phones reveal">
+        <figure><img src="assets/app/v2/today-session.jpg" width="1179" height="2556" loading="lazy" alt="Écran Aujourd'hui de l'app Mobility Club V2 : séance Lower 2, mobilité et force" /></figure>
+        <figure><img src="assets/app/v2/plan.jpg" width="1179" height="2556" loading="lazy" alt="Écran Plan de l'app Mobility Club V2" /></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <section class="pad" id="fondateur" aria-label="La méthode">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1688,8 +1896,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="s4-showcase">
       <div class="shot-wrap reveal">
         <figure class="shot">
-          <img src="assets/app/onboarding.png" width="1080" height="1350" loading="lazy"
-               alt="Onboarding du Mobility Club : choix du sport principal, dominante d'entraînement et fréquence hebdomadaire" />
+          <img src="assets/app/v2/toi-terrain.jpg" width="1179" height="1710" loading="lazy"
+               alt="Écran Toi du Mobility Club : ton coach (Discret, Équilibré, Proche) et ton terrain (lieux et matériel, sports, créneaux)" />
         </figure>
       </div>
       <div class="reveal">
@@ -1705,21 +1913,12 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <div class="switch-tabs" role="tablist" aria-label="Sports"></div>
       <div class="switch-grid">
         <article class="card switch-card">
-          <div class="mock">
-            <div class="mock-top">
-              <div class="mock-sport"><span class="mock-live"></span><span class="sw-sport">CrossFitter</span></div>
-              <div class="mock-day sw-day">Jour 09</div>
-            </div>
-            <div class="mock-focus-label sw-focuslabel">Priorité du jour</div>
-            <div class="mock-focus sw-focus">Rotation thoracique</div>
-            <div class="bars">
-              <div class="bar-row"><span class="bar-name sw-b1n">Thoracique</span><span class="bar-track"><span class="bar-fill sw-b1f"></span></span><span class="bar-pct sw-b1p">58</span></div>
-              <div class="bar-row"><span class="bar-name sw-b2n">Épaule</span><span class="bar-track"><span class="bar-fill sw-b2f"></span></span><span class="bar-pct sw-b2p">71</span></div>
-            </div>
-            <div class="mock-meta">
-              <div><div class="k sw-mk">WOD du jour</div><div class="v sw-mv">Overhead squat · PR</div></div>
-            </div>
-            <div class="mock-cta"><span class="ic">▶</span><span class="sw-cta">Lancer la séance</span></div>
+          <div class="tc2">
+            <div class="tc2-plan sw-plan">CrossFit · semaine 3</div>
+            <div class="tc2-title sw-title">Gym day</div>
+            <div class="tc2-blk mob"><div class="tc2-k sw-mobk">Mobilité · thoracique</div><div class="tc2-v sw-mobv">Rotation thoracique au sol · Open book · Extension sur rouleau</div></div>
+            <div class="tc2-blk"><div class="tc2-k sw-k2">WOD</div><div class="tc2-v sw-v2">Overhead squat · Toes to bar · Double unders</div></div>
+            <div class="tc2-actions"><span class="tc2-det sw-det">Détail</span><span class="tc2-go sw-cta">Commencer</span></div>
           </div>
           <div class="card-caption"><span class="sw-cap">WOD · rotation thoracique · PR</span></div>
         </article>
@@ -1748,8 +1947,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="s5-proof">
       <div class="shot-wrap reveal">
         <figure class="shot">
-          <img src="assets/app/progression.png" width="1080" height="1350" loading="lazy"
-               alt="Écran Progression du Mobility Club : score global, évolution +14 points et radar mobilité baseline vs aujourd'hui" />
+          <img src="assets/app/v2/bilan-45.jpg" width="1179" height="1474" loading="lazy"
+               alt="Bilan articulaire du Mobility Club : score 72, +9 points, radar des cinq zones diagnostic vs aujourd'hui" />
         </figure>
       </div>
       <div class="reveal">
@@ -1797,16 +1996,11 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 
 <hr class="divider" />
 
-<!-- ============================ ✦ WHY-SCALE — POURQUOI UN PRODUIT ============================ -->
-<section class="pad whyscale" aria-label="Pourquoi un produit">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow"><span class="idx">✦</span><span data-i18n="ws_eyebrow">Pourquoi un produit, et pas juste du coaching</span></span>
-    </div>
-    <p class="whyscale-lead reveal-lines" data-split-lines data-i18n="ws_lead">J'ai vu des membres arriver d'applications à des millions d'utilisateurs, sans résultats. Et obtenir, avec quelques centaines de membres chez nous, ce qu'ils cherchaient depuis des années.</p>
-    <p class="whyscale-p reveal" data-i18n="ws_p1">Le jour où tu comprends que ta méthode aide plus de gens que les mastodontes du marché, continuer à accompagner une personne à la fois devient une forme de gâchis.</p>
-    <p class="whyscale-p accent reveal" data-i18n="ws_p2">Alors j'ai appris à coder. Pour mettre cette méthode devant des millions de personnes — pas quelques centaines.</p>
-  </div>
+<!-- ============================ COMPARER (comparatif + simulateur, données = /bascule, relevé du 23/10/2026,
+     sources : docs/bascule-etude-marche-2026-10-23.md). Rendu par renderCompare(lang). ============================ -->
+<section class="pad cmpx" id="comparer" aria-label="Comparer">
+  <div class="cx-halo" aria-hidden="true"><i style="right:-60px;top:40px;width:280px;height:280px;background:#3ECFA0;opacity:.16;filter:blur(80px)"></i><i style="left:-80px;bottom:200px;width:300px;height:300px;background:#B990E0;opacity:.16;filter:blur(84px)"></i></div>
+  <div class="wrap"><div class="cx-col" id="cmpRoot"></div></div>
 </section>
 
 <hr class="divider" />
@@ -1821,13 +2015,13 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="diag-preview reveal">
       <div class="shot-wrap reveal">
         <figure class="shot">
-          <img src="assets/app/diagnostic-result.png" width="1290" height="2796" loading="lazy"
-               alt="Écran de résultat du Mobility Diagnostic : radar 5 zones, score 86/100, « Base solide »" />
+          <img src="assets/app/v2/diag-bilan.jpg" width="1179" height="2556" loading="lazy"
+               alt="Écran de résultat du diagnostic : radar 5 zones, score 81/100, « Base solide », chevilles à surveiller" />
         </figure>
       </div>
       <div>
         <p class="s4-lead" data-i18n="diag_lead"><span class="dim">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.</p>
-        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="diag_cap">Un vrai bilan de membre — score 86</span></span>
+        <span class="shot-cap" style="margin-top:22px"><span class="dot"></span><span data-i18n="diag_cap">Ton bilan, en 10 minutes — dans l'app</span></span>
       </div>
     </div>
 
@@ -1902,6 +2096,175 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 </footer>
 
 <!-- Lenis smooth-scroll (dégradation gracieuse si le CDN échoue → scroll natif) -->
+<script>
+/* Comparer — même données que /bascule (relevé du 23/10/2026). « — » = non trouvé dans leur documentation, jamais « n'existe pas ». */
+(function(){
+  var APPS = ['Mobility Club','Plia&shy;bility','GOWOD','Fitbod','Free&shy;letics','Hevy','Runna','Ladder'];
+  var T = {
+    fr: {
+      title: 'Ce que tu ne trouves pas ailleurs',
+      lead: 'Comparé à Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna et Ladder.',
+      inc: 'Inclus',
+      vs: [
+        ['Ton geste corrigé en vidéo par un vrai coach', 'Inclus', 'Ailleurs : aucune des 7.'],
+        ['Un coach vocal qui ajuste ta séance', 'Inclus', 'Ailleurs : aucune. Runna et Ladder te parlent, sans changer la séance. Freeletics ajuste la séance sur ton retour écrit, sans voix.'],
+        ['Ton programme importé (PDF, photo, texte)', 'Inclus', 'Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.'],
+        ['Un bilan articulaire de départ', 'Inclus', 'Ailleurs : Pliability et GOWOD.'],
+        ['Un programme créé pour toi', 'Inclus', 'Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.'],
+        ['Accès à vie', '249 €', 'Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.']
+      ],
+      open: 'Voir le tableau détaillé', close: 'Masquer le tableau', sub: 'Fonctions et prix des 8 applis',
+      rows: ['Un programme créé pour toi, personnalisé','Importer ton programme (PDF, photo, texte)','Créer ton propre programme','Bilan articulaire de départ','Coach vocal qui ajuste ta séance','Ton geste corrigé en vidéo par un vrai coach','Accès à vie','Prix au mois','Prix sur un an'],
+      soon: 'bientôt',
+      parts: {
+        0: ['◐ Hevy : seulement via ChatGPT, pas dans l\'appli','◐ Ladder : t\'oriente vers une équipe, programme commun à tous'],
+        1: ['◐ Fitbod : une séance en photo, sur Android seulement','◐ Hevy : via un outil externe, pas dans l\'appli'],
+        2: ['◐ Fitbod : des séances, pas un cycle de semaines','◐ Freeletics : des séances à toi, à côté du plan de son coach IA','◐ Hevy : des routines, sans semaines distinctes','◐ Runna : tu déplaces les séances de leur plan'],
+        4: ['◐ Freeletics : ajuste la séance sur ton retour écrit, sans voix','◐ Runna : annonces d\'allure, la séance ne change pas','◐ Ladder : coach dans l\'oreille, la séance ne change pas'],
+        6: ['◐ Freeletics : accès à vie sur son site, prix non publié'],
+        7: ['— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois']
+      },
+      key: ['● oui','◐ en partie','— non trouvé dans leur documentation'],
+      note: 'Relevé le 23 octobre 2026 sur les sites, centres d\'aide et fiches App Store France de chaque appli. Prix : le plus bas affiché sur chaque fiche. Runna : prix de l\'App Store repris par plusieurs comparatifs, durée non affichée sur sa fiche.',
+      simT: 'Ce que tu paies sur la durée',
+      years: function(y){ return y > 1 ? y + ' ans' : '1 an'; },
+      us: 'Mobility Club à vie', hevy: 'Hevy, à vie',
+      comboH: 'Et si tu prenais une appli par besoin ?', comboSub: 'Coche ce que tu cherches.',
+      needs: { mobilite: 'Mobilité', muscu: 'Musculation', course: 'Course', sante: 'Tracker tes données santé' },
+      gen: 'Générique', ind: 'Individualisé',
+      hint: { gen: 'Un programme tout fait, le même pour tous.', ind: 'Un plan créé pour toi, selon ton niveau et tes objectifs.' },
+      over: 'sur', all: 'Tout ça dans le club, à vie : 249 €, une fois.',
+      santeLine: 'Tracker tes données santé : bientôt dans le club, avec WHOOP.',
+      empty: 'Coche tes besoins pour voir le total.',
+      cta: 'Devenir membre', locale: 'fr-FR', colon: ' : '
+    },
+    en: {
+      title: 'What you won\'t find anywhere else',
+      lead: 'Compared with Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna and Ladder.',
+      inc: 'Included',
+      vs: [
+        ['Your form corrected on video by a real coach', 'Included', 'Elsewhere: none of the 7.'],
+        ['A voice coach that adjusts your session', 'Included', 'Elsewhere: none. Runna and Ladder talk to you without changing the session. Freeletics adjusts the session from your written feedback, no voice.'],
+        ['Import your own program (PDF, photo, text)', 'Included', 'Elsewhere: partly. Fitbod, one session from a photo on Android. Hevy, through an external tool.'],
+        ['A starting joint assessment', 'Included', 'Elsewhere: Pliability and GOWOD.'],
+        ['A program built for you', 'Included', 'Elsewhere: Pliability, GOWOD, Fitbod, Freeletics and Runna.'],
+        ['Lifetime access', '€249', 'Elsewhere: Hevy (€89.99), program only: no coach, no mobility, no joint assessment. Freeletics, on its website, price not published.']
+      ],
+      open: 'See the detailed table', close: 'Hide the table', sub: 'Features and prices of 8 apps',
+      rows: ['A personalised program built for you','Import your program (PDF, photo, text)','Build your own program','Starting joint assessment','Voice coach that adjusts your session','Form corrected on video by a real coach','Lifetime access','Monthly price','Yearly price'],
+      soon: 'soon',
+      parts: {
+        0: ['◐ Hevy: only through ChatGPT, not in the app','◐ Ladder: points you to a team, same program for everyone'],
+        1: ['◐ Fitbod: one session from a photo, Android only','◐ Hevy: through an external tool, not in the app'],
+        2: ['◐ Fitbod: sessions, not a multi-week cycle','◐ Freeletics: your own sessions, next to its AI coach plan','◐ Hevy: routines, no distinct weeks','◐ Runna: you move sessions around their plan'],
+        4: ['◐ Freeletics: adjusts the session from your written feedback, no voice','◐ Runna: pace cues, the session doesn\'t change','◐ Ladder: coach in your ear, the session doesn\'t change'],
+        6: ['◐ Freeletics: lifetime access on its website, price not published'],
+        7: ['— Freeletics: no monthly plan, only 3, 6 or 12 months']
+      },
+      key: ['● yes','◐ partly','— not found in their documentation'],
+      note: 'Checked on 23 October 2026 on each app\'s website, help centre and French App Store page. Prices: the lowest shown on each page. Runna: App Store price reported by several comparisons, duration not shown on its page.',
+      simT: 'What you pay over time',
+      years: function(y){ return y > 1 ? y + ' years' : '1 year'; },
+      us: 'Mobility Club, lifetime', hevy: 'Hevy, lifetime',
+      comboH: 'What if you used one app per need?', comboSub: 'Tick what you\'re looking for.',
+      needs: { mobilite: 'Mobility', muscu: 'Strength training', course: 'Running', sante: 'Track your health data' },
+      gen: 'Generic', ind: 'Individualised',
+      hint: { gen: 'A ready-made program, the same for everyone.', ind: 'A plan built for you, based on your level and goals.' },
+      over: 'over', all: 'All of it in the club, for life: €249, once.',
+      santeLine: 'Track your health data: coming soon to the club, with WHOOP.',
+      empty: 'Tick your needs to see the total.',
+      cta: 'Become a member', locale: 'en-IE', colon: ': '
+    }
+  };
+  // ordre des colonnes : MC, Pliability, GOWOD, Fitbod, Freeletics, Hevy, Runna, Ladder
+  var VALS = [
+    ['●','●','●','●','●','◐','●','◐'],
+    ['●','—','—','◐','—','◐','—','—'],
+    ['SOON','●','—','◐','◐','◐','◐','—'],
+    ['●','●','●','—','—','—','—','—'],
+    ['●','—','—','—','◐','—','◐','◐'],
+    ['●','—','—','—','—','—','—','—'],
+    [249,'—','—','—','◐',89.99,'—','—'],
+    [25,22.99,9.29,13.49,'—',3.49,19.99,14.99],
+    [220,199.99,84.99,81.99,79.99,26.49,119.99,94.99]
+  ];
+  var OUTILS = [
+    { k: 'us', us: true, cout: function(){ return 249; } },
+    { n: 'Pliability', cout: function(y){ return 199.99 * y; } },
+    { n: 'Runna', cout: function(y){ return 119.99 * y; } },
+    { n: 'Ladder', cout: function(y){ return 94.99 * y; } },
+    { n: 'GOWOD', cout: function(y){ return 84.99 * y; } },
+    { n: 'Fitbod', cout: function(y){ return 81.99 * y; } },
+    { n: 'Freeletics', cout: function(y){ return 79.99 * y; } },
+    { k: 'hevy', cout: function(){ return 89.99; } }
+  ];
+  var BESOINS = [
+    { id: 'mobilite', gen: { app: 'GOWOD', c: function(y){ return 84.99 * y; } }, ind: { app: 'GOWOD', c: function(y){ return 84.99 * y; } } },
+    { id: 'muscu', gen: { app: 'Hevy', c: function(y){ return Math.min(26.49 * y, 89.99); } }, ind: { app: 'Fitbod', c: function(y){ return 81.99 * y; } } },
+    { id: 'course', gen: { app: 'Runna', c: function(y){ return 119.99 * y; } }, ind: { app: 'Runna', c: function(y){ return 119.99 * y; } } },
+    { id: 'sante', soon: true }
+  ];
+  var st = { lang: 'fr', years: 3, mode: 'ind', pick: { mobilite: true, muscu: true } };
+  var root = document.getElementById('cmpRoot');
+  if (!root) return;
+  function eur(n, t){ return n.toLocaleString(t.locale, { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  function cell(v, t){ return v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : v); }
+  function build(){
+    var t = T[st.lang], i;
+    var vs = t.vs.map(function(r){ return '<li><strong>' + r[0] + '</strong><span class="cx-us">' + r[1] + '</span><span class="cx-else">' + r[2] + '</span></li>'; }).join('');
+    var head = '<tr>' + APPS.map(function(a, j){ return '<th scope="col"' + (j ? '' : ' class="us"') + '>' + a + '</th>'; }).join('') + '</tr>';
+    var body = '';
+    for (i = 0; i < t.rows.length; i++){
+      body += '<tr class="lbl"><th scope="colgroup" colspan="8">' + t.rows[i] + '</th></tr>';
+      body += '<tr class="val">' + VALS[i].map(function(v, j){ return '<td' + (j ? '' : (v === 'SOON' ? ' class="us soon"' : ' class="us"')) + '>' + cell(v, t) + '</td>'; }).join('') + '</tr>';
+      if (t.parts[i]) body += '<tr class="part"><td colspan="8">' + t.parts[i].join('<br>') + '</td></tr>';
+    }
+    var wasOpen = root.querySelector('.cx-detail') && root.querySelector('.cx-detail').open;
+    root.innerHTML =
+      '<h2 class="cx-title">' + t.title + '</h2><p class="cx-lead">' + t.lead + '</p>' +
+      '<ul class="cx-vs">' + vs + '</ul>' +
+      '<details class="cx-detail"' + (wasOpen ? ' open' : '') + '><summary><span><span class="cx-closed">' + t.open + '</span><span class="cx-open">' + t.close + '</span><small>' + t.sub + '</small></span><span class="cx-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>' +
+      '<div class="cx-panel"><table class="cx-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' +
+      '<p class="cx-key">' + t.key.map(function(k){ return '<span>' + k + '</span>'; }).join('') + '</p></div></details>' +
+      '<p class="cx-note">' + t.note + '</p>' +
+      '<div class="cx-sim"><h3>' + t.simT + '</h3>' +
+      '<div class="cx-seg" data-g="y" role="group">' + [1,2,3,5].map(function(y){ return '<button type="button" data-y="' + y + '">' + t.years(y) + '</button>'; }).join('') + '</div>' +
+      '<ul class="cx-bars" data-g="bars"></ul>' +
+      '<div class="cx-combo"><p class="cx-combo-h">' + t.comboH + '</p><p class="cx-combo-sub">' + t.comboSub + '</p>' +
+      '<div class="cx-chips" data-g="chips">' + BESOINS.map(function(b){ return '<button type="button" data-id="' + b.id + '">' + t.needs[b.id] + (b.soon ? '<span class="cx-soon">' + t.soon + '</span>' : '') + '</button>'; }).join('') + '</div>' +
+      '<div class="cx-seg two" data-g="m" role="group"><button type="button" data-m="gen">' + t.gen + '</button><button type="button" data-m="ind">' + t.ind + '</button></div>' +
+      '<p class="cx-hint" data-g="hint"></p><p class="cx-total" data-g="total"></p></div></div>' +
+      '<div class="cx-cta"><a href="/devenir-membre" class="btn btn-primary" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
+    draw();
+  }
+  function q(g){ return root.querySelector('[data-g="' + g + '"]'); }
+  function draw(){
+    var t = T[st.lang];
+    q('y').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(Number(b.dataset.y) === st.years)); });
+    q('m').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.m === st.mode)); });
+    q('chips').querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(!!st.pick[b.dataset.id])); });
+    q('hint').textContent = t.hint[st.mode];
+    var rows = OUTILS.map(function(o){ return { us: o.us, nom: o.k ? t[o.k] : o.n, v: o.cout(st.years) }; }).sort(function(a, b){ return a.v - b.v; });
+    var max = Math.max.apply(null, rows.map(function(r){ return r.v; }));
+    q('bars').innerHTML = rows.map(function(r){ return '<li class="' + (r.us ? 'us' : '') + '"><span>' + r.nom + '</span><b>' + eur(Math.round(r.v * 100) / 100, t) + '</b><span class="cx-bar"><i style="width:' + Math.max(2, r.v / max * 100) + '%"></i></span></li>'; }).join('');
+    var sel = BESOINS.filter(function(b){ return st.pick[b.id] && !b.soon; });
+    var soon = BESOINS.some(function(b){ return st.pick[b.id] && b.soon; });
+    var tot = Math.round(sel.reduce(function(n, b){ return n + b[st.mode].c(st.years); }, 0) * 100) / 100;
+    var s = soon ? '<span class="s">' + t.santeLine + '</span>' : '';
+    q('total').innerHTML = sel.length
+      ? sel.map(function(b){ return t.needs[b.id] + ' (' + b[st.mode].app + ')'; }).join(' + ') + ' ' + t.over + ' ' + t.years(st.years) + t.colon + '<b>' + eur(tot, t) + '</b>.<br><span class="g">' + t.all + '</span>' + s
+      : (soon ? s : t.empty);
+  }
+  root.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.y){ st.years = Number(b.dataset.y); draw(); }
+    else if (b.dataset.m){ st.mode = b.dataset.m; draw(); }
+    else if (b.dataset.id){ st.pick[b.dataset.id] = !st.pick[b.dataset.id]; draw(); }
+  });
+  window.renderCompare = function(lang){ st.lang = T[lang] ? lang : 'fr'; build(); };
+  build();
+})();
+</script>
 <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
 <script>
 /* ============================================================
@@ -1927,8 +2290,8 @@ const LINKS = {
    ============================================================ */
 const AB = {
   enabled: false,
-  forced:  'vision',                  // 'vision' = hook articulations jeunes
-  variants: ['vision', 'friction'],   // 'friction' = hook « décidé pour toi »
+  forced:  'coach',                   // 'coach' = « Ton coach de mouvement, dans ta poche » (V2, 23/10/2026)
+  variants: ['coach', 'vision', 'friction'],   // 'vision' = articulations jeunes · 'friction' = « décidé pour toi »
 };
 
 /* ============================================================
@@ -2077,8 +2440,17 @@ function countUp(el){
 const I18N = {
   fr: {
     wm_tag: '/ MANIFESTE',
-    jn_app: "L'app", jn_avis: 'Avis', jn_fondateur: 'Le fondateur', jn_rejoindre: 'Rejoindre le club',
-    hero_eyebrow: 'Le club de mobilité quotidienne',
+    jn_app: "L'app", jn_avis: 'Avis', jn_fondateur: 'Le fondateur', jn_comparer: 'Comparer', jn_rejoindre: 'Rejoindre le club',
+    hero_eyebrow: 'Le club qui te met en mouvement',
+    pg_title: 'Ton programme, comme tu veux.',
+    pg_lead: "Plus seulement ta mobilité : ton entraînement entier, au même endroit. Le coach organise ta semaine autour de ce que tu fais déjà.",
+    pg_avail: 'Disponible', pg_avail2: 'Disponible', pg_soon: 'Bientôt',
+    pg_w1_t: 'Le club crée ton programme.', pg_w1_d: "À partir de ton bilan articulaire, de ton sport et de ton temps dispo.",
+    pg_w2_t: 'Tu importes le tien.', pg_w2_d: "Celui de ton coach ou celui que tu as acheté : PDF, photo ou texte. Ta mobilité s'organise autour.",
+    pg_w3_t: 'Tu crées le tien.', pg_w3_d: 'Tes séances, tes exercices, tes semaines, construits par toi.',
+    pg_s1: 'Mobilité', pg_s2: 'Musculation', pg_s3: 'Course', pg_s4: 'Données santé<b>bientôt</b>',
+    hero_title_coach: "Ton coach de mouvement, <br><span class=\"em\">dans ta poche.</span>",
+    hero_sub_coach: "Mobilité, muscu, course : un plan qui s'adapte à ton corps et à ta semaine. <strong>Tu ouvres, ta séance est prête.</strong>",
     // Hero A/B — deux portes d'entrée. `vision` = enjeu long terme (articulations
     // jeunes), `friction` = l'insight qui nous différencie (décidé pour toi).
     // Les deux sous-titres gardent le « comment » : ~8 min/jour décidées pour toi.
@@ -2200,7 +2572,7 @@ const I18N = {
 
     s6_eyebrow: 'Les 3 portes',
     diag_lead: "<span class=\"dim\">Avant de bouger,</span> mesure exactement où tu en es. Le Mobility Diagnostic scanne tes 5 zones et te donne un score — gratuit, en 10 minutes.",
-    diag_cap: 'Un vrai bilan de membre — score 86',
+    diag_cap: "Ton bilan, en 10 minutes — dans l'app",
     tag_free: 'Gratuit', tag_product: 'Le produit',
     door1_desc: "Mesure où tu en es. Ton point de départ, articulation par articulation.",
     door2_desc: "L'outil de séance. Guidé, minuté, sans friction. Tu suis, tu bouges.",
@@ -2208,7 +2580,7 @@ const I18N = {
     door_go: 'Commencer',
     door_go_club: 'Rejoindre',
     pricing_k: 'Deux façons de rejoindre',
-    pricing_v: "<b>Essai gratuit 7 jours</b> puis <b>25 $/mois</b>, ou <b>197 €</b> pour un an",
+    pricing_v: "<b>Essai gratuit 7 jours</b> puis <b>25 €/mois</b>, ou <b>220 €</b> pour un an",
     pricing_then: "l'annuel est un paiement unique — aucun renouvellement automatique",
     plan_cta: 'Devenir membre',
     plan_per_mo: '/mois',
@@ -2216,11 +2588,11 @@ const I18N = {
     plan_flex: 'Essai gratuit 7 jours · sans engagement',
     plan_save: 'Un an d\'accès, sans reconduction',
     plan_reco: 'Recommandé',
-    plan_permo: '≈ 16,42€/mois · ou 4× 49,25€ sans frais',
+    plan_permo: '≈ 18,33 €/mois',
     guarantee_badge: 'Garantie progression',
     guarantee_txt: "Fais tes séances pendant 90 jours. Si ton score articulaire n'a pas progressé au retest, <b>on prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</b> On peut le promettre parce qu'on le mesure.",
     nav_cta: 'Devenir membre',
-    sticky_txt: "<b>Le Club qui garde tes articulations jeunes.</b>",
+    sticky_txt: "<b>Ton coach de mouvement, dans ta poche.</b>",
     sticky_btn: 'Devenir membre',
     trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
     trust_2k: 'Sans engagement', trust_2v: 'Tu annules quand tu veux',
@@ -2233,8 +2605,17 @@ const I18N = {
 
   en: {
     wm_tag: '/ MANIFESTO',
-    jn_app: 'The app', jn_avis: 'Reviews', jn_fondateur: 'The founder', jn_rejoindre: 'Join the club',
-    hero_eyebrow: 'The daily mobility club',
+    jn_app: 'The app', jn_avis: 'Reviews', jn_fondateur: 'The founder', jn_comparer: 'Compare', jn_rejoindre: 'Join the club',
+    hero_eyebrow: 'The club that gets you moving',
+    pg_title: 'Your program, your way.',
+    pg_lead: "Not just your mobility: your whole training, in one place. The coach builds your week around what you already do.",
+    pg_avail: 'Available', pg_avail2: 'Available', pg_soon: 'Coming soon',
+    pg_w1_t: 'The club builds your program.', pg_w1_d: 'From your joint assessment, your sport and the time you have.',
+    pg_w2_t: 'Import your own.', pg_w2_d: "Your coach's or one you bought: PDF, photo or text. Your mobility fits around it.",
+    pg_w3_t: 'Build your own.', pg_w3_d: 'Your sessions, your exercises, your weeks, built by you.',
+    pg_s1: 'Mobility', pg_s2: 'Strength', pg_s3: 'Running', pg_s4: 'Health data<b>soon</b>',
+    hero_title_coach: "Your movement coach, <br><span class=\"em\">in your pocket.</span>",
+    hero_sub_coach: "Mobility, strength, running: a plan that adapts to your body and your week. <strong>Open the app, your session is ready.</strong>",
     hero_title_vision: "Mobility is <br>the practice that keeps <br><span class=\"em\">your joints young.</span>",
     hero_sub_vision: "Personalised joint training that adapts to your sport and your schedule — <strong>~8 min a day, decided for you.</strong>",
     hero_title_friction: "Your mobility.<br>Decided for you.<br><span class=\"em\">Every day.</span>",
@@ -2353,7 +2734,7 @@ const I18N = {
 
     s6_eyebrow: 'The 3 doors',
     diag_lead: "<span class=\"dim\">Before you move,</span> measure exactly where you stand. The Mobility Diagnostic scans your 5 zones and gives you a score — free, in 10 minutes.",
-    diag_cap: 'A real member report — score 86',
+    diag_cap: 'Your report, in 10 minutes — in the app',
     tag_free: 'Free', tag_product: 'The product',
     door1_desc: 'Measure where you stand. Your starting point, joint by joint.',
     door2_desc: 'The session tool. Guided, timed, frictionless. You follow, you move.',
@@ -2361,7 +2742,7 @@ const I18N = {
     door_go: 'Start',
     door_go_club: 'Join',
     pricing_k: 'Two ways to join',
-    pricing_v: '<b>7-day free trial</b> then <b>$25/mo</b>, or <b>€197</b> for a year',
+    pricing_v: '<b>7-day free trial</b> then <b>€25/mo</b>, or <b>€220</b> for a year',
     pricing_then: 'the yearly plan is a one-off payment — it never auto-renews',
     plan_cta: 'Become a member',
     plan_per_mo: '/mo',
@@ -2369,11 +2750,11 @@ const I18N = {
     plan_flex: '7-day free trial · no commitment',
     plan_save: 'One year of access, no auto-renewal',
     plan_reco: 'Recommended',
-    plan_permo: '≈ €16.42/mo · or 4× €49.25 interest-free',
+    plan_permo: '≈ €18.33/mo',
     guarantee_badge: 'Progress guarantee',
     guarantee_txt: "Train for 90 days. If your joint score hasn't improved at retest, <b>we extend your access for free until it does.</b> We can promise it because we measure it.",
     nav_cta: 'Become a member',
-    sticky_txt: "<b>The Club that keeps your joints young.</b>",
+    sticky_txt: "<b>Your movement coach, in your pocket.</b>",
     sticky_btn: 'Become a member',
     trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
     trust_2k: 'No commitment', trust_2v: 'Cancel whenever you want',
@@ -2406,6 +2787,8 @@ function setLang(lang){
       splitLines(el);                   // si l'élément a déjà .in, les lignes s'affichent aussitôt
     });
   }
+
+  if (window.renderCompare) window.renderCompare(lang);
 
   // toggle UI state
   document.querySelectorAll('.lang button').forEach(b => {
@@ -2720,31 +3103,26 @@ if (prefersReduced) {
   if (!tabsEl || !card) return;
 
   const SPORTS = [
-    { key:'crossfit', tab:{fr:'CrossFitter',en:'CrossFitter'}, day:{fr:'Jour 09',en:'Day 09'},
-      focus:{fr:'Rotation thoracique',en:'Thoracic rotation'},
-      b1:{n:{fr:'Thoracique',en:'Thoracic'},p:58}, b2:{n:{fr:'Épaule',en:'Shoulder'},p:71},
-      mk:{fr:'WOD du jour',en:"Today's WOD"}, mv:{fr:'Overhead squat · PR',en:'Overhead squat · PR'},
+    { key:'crossfit', tab:{fr:'CrossFitter',en:'CrossFitter'}, plan:{fr:'CrossFit · semaine 3',en:'CrossFit · week 3'}, title:{fr:'Gym day',en:'Gym day'},
+      mobk:{fr:'Mobilité · thoracique',en:'Mobility · thoracic'}, mobv:{fr:'Rotation thoracique au sol · Open book · Extension sur rouleau',en:'Floor thoracic rotation · Open book · Foam roller extension'},
+      k2:{fr:'WOD',en:'WOD'}, v2:{fr:'Overhead squat · Toes to bar · Double unders',en:'Overhead squat · Toes to bar · Double unders'},
       cap:{fr:'WOD · rotation thoracique',en:'WOD · thoracic rotation'} },
-    { key:'runner', tab:{fr:'Coureur',en:'Runner'}, day:{fr:'Jour 14',en:'Day 14'},
-      focus:{fr:'Mobilité de cheville',en:'Ankle mobility'},
-      b1:{n:{fr:'Cheville',en:'Ankle'},p:82}, b2:{n:{fr:'Hanche',en:'Hip'},p:64},
-      mk:{fr:'Prochaine course',en:'Next race'}, mv:{fr:'Dimanche · 12 km',en:'Sunday · 12 km'},
-      cap:{fr:'Volume hebdo · cheville',en:'Weekly volume · ankle'} },
-    { key:'football', tab:{fr:'Footballeur',en:'Football'}, day:{fr:'Jour 21',en:'Day 21'},
-      focus:{fr:'Adducteurs',en:'Adductors'},
-      b1:{n:{fr:'Adducteurs',en:'Adductors'},p:49}, b2:{n:{fr:'Hanche',en:'Hip'},p:68},
-      mk:{fr:'Match',en:'Match'}, mv:{fr:'Samedi · récupération',en:'Saturday · recovery'},
-      cap:{fr:'Match week-end · adducteurs',en:'Weekend match · adductors'} },
-    { key:'padel', tab:{fr:'Padel',en:'Padel'}, day:{fr:'Jour 06',en:'Day 06'},
-      focus:{fr:'Rotation + épaule',en:'Rotation + shoulder'},
-      b1:{n:{fr:'Thoracique',en:'Thoracic'},p:61}, b2:{n:{fr:'Épaule',en:'Shoulder'},p:55},
-      mk:{fr:'Prochain match',en:'Next match'}, mv:{fr:'Mardi · double',en:'Tuesday · doubles'},
-      cap:{fr:'Explosivité · épaule',en:'Power · shoulder'} },
-    { key:'cyclist', tab:{fr:'Cycliste',en:'Cyclist'}, day:{fr:'Jour 18',en:'Day 18'},
-      focus:{fr:'Hanches + bas du dos',en:'Hips + lower back'},
-      b1:{n:{fr:'Hanche',en:'Hip'},p:70}, b2:{n:{fr:'Bas du dos',en:'Lower back'},p:52},
-      mk:{fr:'Prochaine sortie',en:'Next ride'}, mv:{fr:'Dimanche · 80 km',en:'Sunday · 80 km'},
-      cap:{fr:'Posture · hanches',en:'Posture · hips'} }
+    { key:'runner', tab:{fr:'Coureur',en:'Runner'}, plan:{fr:'Prépa 10 km · semaine 5',en:'10K plan · week 5'}, title:{fr:'Seuil',en:'Threshold'},
+      mobk:{fr:'Mobilité · chevilles',en:'Mobility · ankles'}, mobv:{fr:'Dorsiflexion genou au mur · Mollet excentrique · Rotation de hanche 90/90',en:'Knee-to-wall dorsiflexion · Eccentric calf · 90/90 hip rotation'},
+      k2:{fr:'Course',en:'Run'}, v2:{fr:'15′ échauffement · 3 × 8′ au seuil · 10′ retour au calme',en:'15′ warm-up · 3 × 8′ threshold · 10′ cool-down'},
+      cap:{fr:'Course de dimanche · cheville',en:'Sunday race · ankle'} },
+    { key:'football', tab:{fr:'Footballeur',en:'Football'}, plan:{fr:'Saison · J-2 avant le match',en:'Season · 2 days to match'}, title:{fr:'Activation',en:'Activation'},
+      mobk:{fr:'Mobilité · adducteurs',en:'Mobility · adductors'}, mobv:{fr:'Copenhague assisté · Adducteur en papillon · Fente latérale',en:'Assisted Copenhagen · Butterfly adductor · Lateral lunge'},
+      k2:{fr:'Terrain',en:'Pitch'}, v2:{fr:'Sprints courts · Changements d\u2019appui · Frappes',en:'Short sprints · Cutting drills · Shooting'},
+      cap:{fr:'Match du week-end · adducteurs',en:'Weekend match · adductors'} },
+    { key:'padel', tab:{fr:'Padel',en:'Padel'}, plan:{fr:'Padel · semaine 6',en:'Padel · week 6'}, title:{fr:'Haut du corps',en:'Upper body'},
+      mobk:{fr:'Mobilité · épaules',en:'Mobility · shoulders'}, mobv:{fr:'Rotation externe · Rotation thoracique · Extension thoracique',en:'External rotation · Thoracic rotation · Thoracic extension'},
+      k2:{fr:'Force',en:'Strength'}, v2:{fr:'Rotation au câble · Développé haltère · Face pull',en:'Cable rotation · Dumbbell press · Face pull'},
+      cap:{fr:'Match de mardi · épaule',en:'Tuesday match · shoulder'} },
+    { key:'cyclist', tab:{fr:'Cycliste',en:'Cyclist'}, plan:{fr:'Cyclisme · semaine 4',en:'Cycling · week 4'}, title:{fr:'Bas du corps',en:'Lower body'},
+      mobk:{fr:'Mobilité · hanches',en:'Mobility · hips'}, mobv:{fr:'Couch stretch · Flexion de hanche · Bas du dos en flexion',en:'Couch stretch · Hip flexion · Lower back flexion'},
+      k2:{fr:'Force',en:'Strength'}, v2:{fr:'Split squat · Soulevé de terre roumain · Gainage',en:'Split squat · Romanian deadlift · Plank'},
+      cap:{fr:'Sortie de dimanche · hanches',en:'Sunday ride · hips'} }
   ];
 
   const q = s => card.querySelector(s);
@@ -2755,18 +3133,13 @@ if (prefersReduced) {
     const s = SPORTS.find(x => x.key === key) || SPORTS[0];
     cur = key;
     const L = lang(), dict = I18N[L] || I18N.fr;
-    q('.sw-sport').textContent = s.tab[L];
-    q('.sw-day').textContent = s.day[L];
-    q('.sw-focuslabel').textContent = dict.focus_label;
-    q('.sw-focus').textContent = s.focus[L];
-    q('.sw-b1n').textContent = s.b1.n[L]; q('.sw-b1p').textContent = s.b1.p;
-    q('.sw-b2n').textContent = s.b2.n[L]; q('.sw-b2p').textContent = s.b2.p;
-    q('.sw-mk').textContent = s.mk[L]; q('.sw-mv').textContent = s.mv[L];
-    q('.sw-cta').textContent = dict.mock_cta;
+    q('.sw-plan').textContent = s.plan[L];
+    q('.sw-title').textContent = s.title[L];
+    q('.sw-mobk').textContent = s.mobk[L]; q('.sw-mobv').textContent = s.mobv[L];
+    q('.sw-k2').textContent = s.k2[L]; q('.sw-v2').textContent = s.v2[L];
+    q('.sw-det').textContent = L === 'en' ? 'Details' : 'Détail';
+    q('.sw-cta').textContent = L === 'en' ? 'Start' : 'Commencer';
     q('.sw-cap').textContent = s.cap[L];
-    // width ET data-w cohérents : le reveal (bar-fill → data-w) ne remet plus à 0
-    q('.sw-b1f').dataset.w = s.b1.p + '%'; q('.sw-b1f').style.width = s.b1.p + '%';
-    q('.sw-b2f').dataset.w = s.b2.p + '%'; q('.sw-b2f').style.width = s.b2.p + '%';
     tabsEl.querySelectorAll('.switch-tab').forEach(b => {
       const on = b.dataset.sport === key;
       b.classList.toggle('is-active', on);
@@ -2855,38 +3228,35 @@ if (prefersReduced) {
   ];
   let side='D', lvl={D:3, G:3};
   const diagScore = () => Math.round(46 + ((lvl.D+lvl.G)/2)/4*40);
-  function diagFrame(){ const img=stageD.querySelector('#tdimg'); if(!img) return; img.src='assets/app/diag-p'+(lvl[side]+1)+'.jpg'; }
-  function leadTxt(){ return tr('TON NIVEAU · ','YOUR LEVEL · ')+(side==='D'?tr('CÔTÉ DROIT','RIGHT'):tr('CÔTÉ GAUCHE','LEFT'))+' · '+tr('GLISSE JUSQU\'À TON AMPLITUDE','SLIDE TO YOUR RANGE'); }
+  function diagFrame(){ const img=stageD.querySelector('#tdimg'); if(!img) return; img.src='assets/app/v2/diag/p'+(lvl[side]+1)+'.jpg'; }
   function diagUpdate(){
     const q=s=>stageD.querySelector(s), v=lvl[side];
+    stageD.setAttribute('data-side', side==='D'?'droit':'gauche');
     if(q('#tdpal')) q('#tdpal').textContent=PALLIERS[v][L()];
-    if(q('#tdbadge')) q('#tdbadge').textContent='● '+tr('PALIER ','TIER ')+(v+1);
-    if(q('#tdscore')) q('#tdscore').textContent=diagScore();
-    if(q('#tdlead')) q('#tdlead').textContent=leadTxt();
+    if(q('#tdnum')) q('#tdnum').innerHTML=(v+1)+'<small>/5</small>';
     const sl=q('#tdslide'); if(sl){ sl.value=v; sl.style.setProperty('--fill',(v*25)+'%'); }
-    const sc=q('#tdscale'); if(sc) sc.innerHTML=[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('');
-    stageD.querySelectorAll('.td-tab').forEach(t=>t.classList.toggle('on',t.getAttribute('data-side')===side));
+    stageD.querySelectorAll('.dg2-side').forEach(t=>t.classList.toggle('on',t.getAttribute('data-side')===side));
     diagFrame(); tourNote();
   }
   function renderDiag(){
     const v=lvl[side];
+    stageD.classList.add('dg2'); stageD.setAttribute('data-side', side==='D'?'droit':'gauche');
     stageD.innerHTML =
-      '<div class="td-instr">'+DIAG_INSTR[L()]+'</div>'+
-      '<div class="td-tabs"><button class="td-tab'+(side==='D'?' on':'')+'" data-side="D">'+tr('Côté droit','Right side')+'</button><button class="td-tab'+(side==='G'?' on':'')+'" data-side="G">'+tr('Côté gauche','Left side')+'</button></div>'+
-      '<div class="td-lead" id="tdlead">'+leadTxt()+'</div>'+
-      '<div class="td-video-wrap"><img class="td-frame" id="tdimg" src="assets/app/diag-p'+(v+1)+'.jpg" alt="'+tr('Test épaule flexion','Shoulder flexion test')+'"><span class="td-badge" id="tdbadge">● '+tr('PALIER ','TIER ')+(v+1)+'</span></div>'+
-      '<div class="td-pal" id="tdpal">'+PALLIERS[v][L()]+'</div>'+
-      '<input type="range" class="mc-slider" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide">'+
-      '<div class="td-scale" id="tdscale">'+[1,2,3,4,5].map((n,i)=>'<span class="'+(i===v?'on':'')+'">'+n+'</span>').join('')+'</div>'+
-      '<div class="td-score"><div class="k">'+tr('SCORE ÉPAULE','SHOULDER SCORE')+'</div><div class="v"><b id="tdscore">'+diagScore()+'</b><span>/100</span></div></div>';
-    stageD.querySelectorAll('.td-tab').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
+      '<div class="dg2-top"><span class="dg2-prog"><i></i></span><span class="dg2-step">'+tr('Étape 1 / 28','Step 1 / 28')+'</span></div>'+
+      '<div class="dg2-eyebrow">'+tr('Épaule · Passif','Shoulder · Passive')+'</div>'+
+      '<h3 class="dg2-title">'+tr('Flexion d\'épaule','Shoulder flexion')+'</h3>'+
+      '<div class="dg2-photo"><img id="tdimg" src="assets/app/v2/diag/p'+(v+1)+'.jpg" alt="'+tr('Test de flexion d\'épaule, photo du palier','Shoulder flexion test, tier photo')+'">'+
+        '<div class="dg2-sides"><button class="dg2-side'+(side==='D'?' on':'')+'" data-side="D"><i></i>'+tr('Côté droit','Right side')+'</button><button class="dg2-side'+(side==='G'?' on':'')+'" data-side="G"><i></i>'+tr('Côté gauche','Left side')+'</button></div></div>'+
+      '<div class="dg2-sl"><div class="dg2-read"><span class="dg2-num" id="tdnum">'+(v+1)+'<small>/5</small></span><span class="dg2-lbl" id="tdpal">'+PALLIERS[v][L()]+'</span></div>'+
+        '<input type="range" class="dg2-range" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide" aria-label="'+tr('Ton amplitude','Your range')+'"></div>';
+    stageD.querySelectorAll('.dg2-side').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
     const s=stageD.querySelector('#tdslide'); if(s) s.oninput=e=>{ lvl[side]=+e.target.value; diagUpdate(); };
   }
 
   /* ---------- ÉTAPE 2 · calendrier drag & drop ---------- */
-  const DAYS={fr:['LUN','MAR','MER','JEU','VEN','SAM','DIM'],en:['MON','TUE','WED','THU','FRI','SAT','SUN']};
+  const DAYS={fr:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
   const DAYLBL={fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'],en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']};
-  const SLOTLBL={fr:['MATIN','MIDI','SOIR'],en:['MORN','NOON','EVE']};
+  const SLOTLBL={fr:['Matin','Midi','Soir'],en:['Morning','Noon','Evening']};
   const ZONES=[{fr:'Épaules',en:'Shoulders'},{fr:'Hanches',en:'Hips'},{fr:'Chevilles',en:'Ankles'},{fr:'Colonne',en:'Spine'},{fr:'Thoracique',en:'Thoracic'}];
   const FAM={force:'#C9C7C0',course:'#7FB2E8',velo:'#9FD0E8',combat:'#C99BE0',raquette:'#E0B36B',collectif:'#8FD9A8',eau:'#7FCBD9',souplesse:'#E0A8C8',autre:'#E89B7F'};
   const FAMLBL={force:{fr:'Force',en:'Strength'},course:{fr:'Course',en:'Running'},velo:{fr:'Cyclisme',en:'Cycling'},combat:{fr:'Combat',en:'Combat'},raquette:{fr:'Raquette',en:'Racket'},collectif:{fr:'Collectif',en:'Team'},eau:{fr:'Eau',en:'Water'},souplesse:{fr:'Souplesse',en:'Flex'},autre:{fr:'Autre',en:'Other'}};
@@ -2906,15 +3276,16 @@ if (prefersReduced) {
         cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>'; }
       grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>'; }
     const tokens=palette.map((id,i)=>{const c=catf(id);return '<div class="scal-ptoken'+(i===0&&!sessions.length?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
+    stageC.classList.add('cal2');
     stageC.innerHTML=
-      '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('TON CALENDRIER SPORT','YOUR SPORT CALENDAR')+'</div>'+
+      '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('Ton calendrier sport','Your sport calendar')+'</div>'+
       '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
       '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻','↻')+'</span></div>'+
       '<div class="scal-gridwrap"><div class="scal-ghead"><span></span><span>'+sl[0]+'</span><span>'+sl[1]+'</span><span>'+sl[2]+'</span></div>'+grid+'</div>'+
       '<div class="scal-tray"><div class="scal-search"><span class="si">⌕</span><input id="scalq" placeholder="'+tr('Ajoute un sport…','Add a sport…')+'" autocomplete="off" value="'+query.replace(/"/g,'&quot;')+'"></div><div class="scal-searchres" id="scalres"></div>'+
       '<div class="scal-tray-head" style="margin-top:11px"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse','drag')+'</span></span><span class="thb">'+sessions.length+' '+tr('placé','placed')+(sessions.length>1?'s':'')+'</span></div>'+
       '<div class="scal-palette">'+tokens+'</div>'+
-      '<div class="scal-token'+(sessions.length&&!mob.length?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('GLISSE-MOI · MANUEL','DRAG ME · MANUAL')+'</div></div><span class="tk-grab">⠿</span></div></div>';
+      '<div class="scal-token'+(sessions.length&&!mob.length?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('Glisse-la dans ta semaine','Drag it into your week')+'</div></div><span class="tk-grab">⠿</span></div></div>';
     calAttach(); calResults();
   }
   function calResults(){ const box=stageC.querySelector('#scalres'); if(!box)return; const q=query.trim().toLowerCase();
@@ -2962,13 +3333,13 @@ if (prefersReduced) {
   /* rend le contenu de chaque carte une seule fois (re-appelé au changement de langue) */
   function renderAll(){
     stageD.classList.remove('is-shot'); renderDiag();
-    renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
+    renderImg(cards[1],'assets/app/v2/diag-bilan.jpg', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[3],'assets/app/seance-jour.png', tr('Programme généré','Program built'));
-    renderImg(cards[4],'assets/app/voice-understood.png', tr('Le coach a compris','The coach understood'));
-    renderImg(cards[5],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
-    renderImg(cards[6],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
-    renderImg(cards[7],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+    renderImg(cards[3],'assets/app/v2/today-session.jpg', tr('Programme généré','Program built'));
+    renderImg(cards[4],'assets/app/v2/voice-adjusted.jpg', tr('Séance ajustée par le coach','Session adjusted by the coach'));
+    renderImg(cards[5],'assets/app/v2/video-send.jpg',  tr('Envoi vidéo au coach','Send video to coach'));
+    renderImg(cards[6],'assets/app/v2/video-coach.jpg', tr('Correction du coach','Coach feedback'));
+    renderImg(cards[7],'assets/app/v2/progress.jpg', tr('Tes progrès','Your progress'));
   }
 
   /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
@@ -3017,7 +3388,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','seance-jour','voice-understood','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'+ASSET_V; });
+  ['v2/diag-bilan.jpg','v2/today-session.jpg','v2/voice-adjusted.jpg','v2/video-send.jpg','v2/video-coach.jpg','v2/progress.jpg'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));

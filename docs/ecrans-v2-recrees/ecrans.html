@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=393">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:393px;height:852px;background:#0D0F0E;color:#F5F5F3;font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.scr{position:relative;width:393px;height:852px;overflow:hidden;padding:0 16px;display:none}
+.scr.on{display:flex;flex-direction:column}
+.halo{position:absolute;left:-16px;right:-16px;top:0;height:420px;z-index:0;pointer-events:none}
+.halo i{position:absolute;border-radius:50%}
+.z{position:relative;z-index:1}
+.glass{position:relative;border-radius:28px;border:1px solid rgba(255,255,255,.14);
+ background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03) 45%,rgba(255,255,255,.05));
+ backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 24px rgba(255,255,255,.04),0 20px 50px rgba(0,0,0,.45)}
+.flat{border-radius:24px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035)}
+.top{display:flex;align-items:center;gap:12px;padding-top:20px}
+.circ{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);flex-shrink:0}
+.h1{font-size:30px;font-weight:800;font-style:italic;letter-spacing:-.035em;line-height:1.05}
+.sub{font-size:14.5px;line-height:1.5;color:rgba(245,245,243,.62)}
+.sub b{color:#F5F5F3;font-weight:700}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:100px;font-size:12.5px;font-weight:700;border:1px solid rgba(255,255,255,.14);background:rgba(13,15,14,.55)}
+.dot{width:7px;height:7px;border-radius:50%}
+.btn{display:flex;align-items:center;justify-content:center;height:56px;border-radius:100px;background:#6CCFA6;color:#0D0F0E;font-size:16px;font-weight:800;box-shadow:0 12px 34px -14px rgba(62,207,160,.65)}
+.btn2{display:flex;align-items:center;justify-content:center;gap:9px;height:54px;border-radius:100px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);font-size:15px;font-weight:700}
+.ava{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-style:italic;font-size:17px;background:#1F1A27;border:1.5px solid rgba(185,144,224,.55);color:#E6D6F5;flex-shrink:0}
+.lbl{font-size:12.5px;font-weight:600;color:rgba(245,245,243,.5)}
+.media{position:relative;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 50px rgba(0,0,0,.45);background:#141715}
+.media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.media .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,15,14,.05) 40%,rgba(13,15,14,.75))}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;color:rgba(245,245,243,.85)}
+.chk svg{flex-shrink:0;margin-top:1px}
+.row{display:flex;align-items:center;gap:12px}
+</style></head><body>
+
+<!-- ===== 1 · Vidéo envoyée ===== -->
+<section class="scr" id="send">
+  <div class="halo"><i style="left:-10px;top:40px;width:240px;height:240px;background:#3ECFA0;opacity:.45;filter:blur(60px)"></i><i style="right:-20px;top:170px;width:220px;height:220px;background:#B990E0;opacity:.42;filter:blur(60px)"></i></div>
+  <div class="top z"><span class="circ"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F5F3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></div>
+  <div class="z" style="margin-top:22px">
+    <div class="media" style="height:300px">
+      <img data-src="p4.jpg" alt="">
+      <div class="shade"></div>
+      <span class="pill" style="position:absolute;left:14px;top:14px"><span class="dot" style="background:#3ECFA0;box-shadow:0 0 8px #3ECFA0"></span>Envoyée</span>
+      <span style="position:absolute;left:16px;bottom:14px;font-size:13px;font-weight:700;color:rgba(245,245,243,.9)">Flexion d'épaule · 0:14</span>
+    </div>
+  </div>
+  <div class="z" style="margin-top:26px">
+    <h1 class="h1">C'est envoyé.<br>Damien te répond bientôt.</h1>
+    <p class="sub" style="margin-top:12px">Il regarde ton mouvement et t'écrit sa correction. Tu la retrouves dans <b>Progrès</b>.</p>
+  </div>
+  <div class="glass z row" style="margin-top:22px;padding:16px 16px">
+    <span class="ava">D</span>
+    <div style="flex:1;min-width:0"><div style="font-size:15.5px;font-weight:700">Damien · coach</div><div class="lbl" style="margin-top:2px">Répond en général sous 48 h</div></div>
+    <span class="pill" style="font-size:12px;color:rgba(245,245,243,.8)"><span class="dot" style="background:#E8A020"></span>En attente</span>
+  </div>
+  <div class="z" style="margin-top:auto;padding-bottom:30px">
+    <div class="btn">Voir mes vidéos et retours</div>
+    <div style="text-align:center;margin-top:16px;font-size:15px;font-weight:700;color:rgba(245,245,243,.6)">Terminé</div>
+  </div>
+</section>
+
+<!-- ===== 2 · Retour du coach ===== -->
+<section class="scr" id="coach">
+  <div class="halo"><i style="left:-30px;top:10px;width:230px;height:230px;background:#3ECFA0;opacity:.40;filter:blur(60px)"></i><i style="right:-30px;top:330px;width:220px;height:220px;background:#B990E0;opacity:.40;filter:blur(62px)"></i><i style="left:150px;top:420px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div>
+  <div class="top z">
+    <span class="circ"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F5F3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span>
+    <h1 class="h1" style="font-size:26px;flex:1">Retour du coach</h1>
+  </div>
+  <div class="z" style="margin-top:16px">
+    <div class="media" style="height:212px">
+      <img data-src="p5.jpg" alt="" style="object-position:center 28%">
+      <div class="shade"></div>
+      <span class="pill" style="position:absolute;left:14px;top:14px;color:#BFF0DD;border-color:rgba(62,207,160,.45)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3ECFA0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Commenté</span>
+      <span style="position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;display:grid;place-items:center;background:rgba(13,15,14,.5);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px)"><svg width="20" height="20" viewBox="0 0 24 24" fill="#F5F5F3"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+      <span style="position:absolute;left:16px;bottom:13px;font-size:13px;font-weight:700;color:rgba(245,245,243,.92)">Flexion d'épaule · aujourd'hui</span>
+      <span style="position:absolute;right:16px;bottom:13px;font-size:13px;font-weight:700;color:rgba(245,245,243,.7);font-variant-numeric:tabular-nums">0:14</span>
+    </div>
+  </div>
+  <div class="glass z" style="margin-top:14px;padding:18px 18px 16px">
+    <div class="row"><span class="ava">D</span><div><div style="font-size:15.5px;font-weight:700">Damien · coach</div><div class="lbl" style="margin-top:2px">Retour écrit · il y a 2 h</div></div></div>
+    <p style="margin-top:14px;font-size:15px;line-height:1.5;color:rgba(245,245,243,.9)">Belle amplitude. Sur la fin, ton dos décolle du mur : <b style="color:#F5F5F3">tu compenses avec les lombaires</b> au lieu d'aller chercher l'épaule. Ralentis la dernière portion et garde le dos plaqué, tu sentiras la différence tout de suite.</p>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+      <div class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3ECFA0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Ralentis la fin du mouvement, sur 4 temps</div>
+      <div class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3ECFA0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Dos plaqué au mur, côtes basses</div>
+    </div>
+  </div>
+  <div class="flat z row" style="margin-top:12px;padding:14px 16px">
+    <div style="flex:1"><div class="lbl">Ajouté à ta séance de demain</div><div style="margin-top:3px;font-size:15px;font-weight:700">Rotation externe en flexion</div></div>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(245,245,243,.5)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </div>
+  <div class="z" style="margin-top:auto;padding-bottom:30px">
+    <div class="btn2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F5F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10.5l5-3v9l-5-3"/></svg>Renvoyer une vidéo</div>
+  </div>
+</section>
+
+<!-- ===== 3 · Ton bilan (résultat du diagnostic) ===== -->
+<section class="scr" id="bilan">
+  <div class="halo"><i style="left:-20px;top:90px;width:250px;height:250px;background:#3ECFA0;opacity:.42;filter:blur(62px)"></i><i style="right:-30px;top:240px;width:220px;height:220px;background:#B990E0;opacity:.38;filter:blur(62px)"></i><i style="left:150px;top:330px;width:150px;height:150px;background:#E8A020;opacity:.22;filter:blur(55px)"></i></div>
+  <div class="top z" style="justify-content:space-between">
+    <div><div class="lbl">Bilan complet · 24 octobre</div><h1 class="h1" style="margin-top:2px">Ton bilan</h1></div>
+    <span class="circ"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F5F5F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></span>
+  </div>
+  <div class="glass z" style="margin-top:16px;padding:16px 14px 14px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span class="lbl">Score articulaire</span><span style="font-size:34px;font-weight:800;font-style:italic;letter-spacing:-1.5px;line-height:1">81<small style="font-size:14px;font-style:normal;color:#5E615E;margin-left:2px">/100</small></span></div>
+    <svg id="radar" width="331" height="236" viewBox="0 0 331 236" style="display:block;margin-top:2px"></svg>
+    <div style="text-align:center;margin-top:2px"><span style="font-size:21px;font-weight:800;font-style:italic;letter-spacing:-.02em;color:#3ECFA0">Base solide.</span></div>
+    <p class="sub" style="text-align:center;font-size:13.5px;margin-top:4px">Souplesse et mobilité au rendez-vous.<br>On passe à la performance.</p>
+  </div>
+  <div class="z" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+    <div class="flat" style="padding:12px 13px"><div class="lbl" style="font-size:11.5px">Souplesse</div><div style="margin-top:4px;font-size:22px;font-weight:800;font-style:italic;letter-spacing:-.5px">88</div></div>
+    <div class="flat" style="padding:12px 13px"><div class="lbl" style="font-size:11.5px">Mobilité</div><div style="margin-top:4px;font-size:22px;font-weight:800;font-style:italic;letter-spacing:-.5px">85</div></div>
+    <div class="flat" style="padding:12px 13px"><div class="lbl" style="font-size:11.5px">Déficit</div><div style="margin-top:4px;font-size:22px;font-weight:800;font-style:italic;letter-spacing:-.5px">3<small style="font-size:12px;font-style:normal;color:#5E615E;margin-left:3px">pts</small></div></div>
+  </div>
+  <div class="flat z" style="margin-top:10px;padding:14px 16px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:15px;font-weight:700">Chevilles <span style="font-weight:600;color:rgba(245,245,243,.5)">· dorsiflexion</span></div><span class="pill" style="padding:5px 10px;font-size:11.5px;color:#F2C46B;border-color:rgba(232,160,32,.45)">À surveiller</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:13px;font-weight:700"><span style="color:#E8A020">Droite</span><span style="font-variant-numeric:tabular-nums">100</span></div>
+    <div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:6px"><div style="width:100%;height:100%;border-radius:3px;background:#E8A020;box-shadow:0 0 12px rgba(232,160,32,.6)"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13px;font-weight:700"><span style="color:#B990E0">Gauche</span><span style="font-variant-numeric:tabular-nums">80</span></div>
+    <div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:6px"><div style="width:80%;height:100%;border-radius:3px;background:#B990E0;box-shadow:0 0 12px rgba(185,144,224,.6)"></div></div>
+  </div>
+  <div class="z" style="margin-top:auto;padding-bottom:30px"><div class="btn">Voir mon programme</div></div>
+</section>
+
+<script>
+const q=new URLSearchParams(location.search).get('s')||'send';
+document.getElementById(q).classList.add('on');
+document.querySelectorAll('img[data-src]').forEach(i=>i.src=i.dataset.src);
+// radar 5 axes (comme le bilan de l'app V2) — zone à surveiller en or
+const Z=[['Épaules',82],['Hanches',88],['Chevilles',72,1],['Colonne',84],["Ch. post.",78]];
+const cx=165.5,cy=124,R=72,svg=document.getElementById('radar');const ang=i=>-Math.PI/2+i*2*Math.PI/5;
+const P=(i,r)=>[cx+Math.cos(ang(i))*r,cy+Math.sin(ang(i))*r];
+let h='';[.25,.5,.75,1].forEach(f=>{h+='<polygon points="'+Z.map((_,i)=>P(i,R*f).join(',')).join(' ')+'" fill="none" stroke="rgba(255,255,255,'+(f===1?.14:.07)+'" stroke-width="1"/>';});
+Z.forEach((_,i)=>{const[x,y]=P(i,R);h+='<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="rgba(255,255,255,.07)"/>';});
+const base=[70,80,64,74,70];
+h+='<polygon points="'+Z.map((z,i)=>P(i,R*base[i]/100).join(',')).join(' ')+'" fill="none" stroke="rgba(245,245,243,.35)" stroke-width="1.2" stroke-dasharray="3 3"/>';
+h+='<polygon points="'+Z.map((z,i)=>P(i,R*z[1]/100).join(',')).join(' ')+'" fill="rgba(62,207,160,.16)" stroke="#3ECFA0" stroke-width="2" stroke-linejoin="round" style="filter:drop-shadow(0 0 8px rgba(62,207,160,.5))"/>';
+Z.forEach((z,i)=>{const[x,y]=P(i,R*z[1]/100);h+='<circle cx="'+x+'" cy="'+y+'" r="'+(z[2]?5:3.5)+'" fill="'+(z[2]?'#E8A020':'#3ECFA0')+'"'+(z[2]?' style="filter:drop-shadow(0 0 6px #E8A020)"':'')+'/>';
+ const[lx,ly]=P(i,R+22);const anc=Math.abs(lx-cx)<8?'middle':(lx<cx?'end':'start');
+ h+='<text x="'+lx+'" y="'+(ly+4)+'" text-anchor="'+anc+'" font-family="Plus Jakarta Sans" font-size="12.5" font-weight="700" fill="'+(z[2]?'#F2C46B':'rgba(245,245,243,.72)')+'">'+z[0]+' <tspan fill="'+(z[2]?'#F2C46B':'#F5F5F3')+'" font-weight="800">'+z[1]+'</tspan></text>';});
+svg.innerHTML=h;
+</script>
+</body></html>
