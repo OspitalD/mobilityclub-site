@@ -1619,8 +1619,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         <div class="reversal-media reveal">
           <div class="shot-wrap">
             <figure class="shot">
-              <img src="assets/app/today.png" width="1080" height="1350" loading="lazy"
-                   alt="Écran Aujourd'hui du Mobility Club : la séance du jour, déjà prête, avec bouton Lancer la séance" />
+              <img src="assets/app/v2/today-session-45.jpg" width="1179" height="1474" loading="lazy"
+                   alt="Écran Aujourd'hui du Mobility Club : la séance du jour Lower 2 (mobilité hanches + force), déjà prête, avec bouton Commencer" />
             </figure>
           </div>
           <span class="shot-cap"><span class="dot"></span><span data-i18n="shot_today">Ta séance du jour — déjà là</span></span>
@@ -1693,15 +1693,15 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <p class="voice-swipe reveal" data-i18n="voice_swipe">Balaye pour voir les 3 étapes</p>
     <div class="voice-flow reveal" data-stagger role="list" aria-label="Les trois étapes du coach vocal">
       <figure class="voice-step" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-nub.png" width="880" height="1904" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/today.jpg" width="1179" height="2556" loading="lazy" alt="L'écran Aujourd'hui avec le bouton micro violet au centre de la barre de navigation" /></figure></div>
         <figcaption><span class="vstep-n">1</span><span data-i18n="voice_s1">Ouvre — le bouton est au centre de ta nav, à portée de pouce.</span></figcaption>
       </figure>
       <figure class="voice-step" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-listen.png" width="880" height="1904" loading="lazy" alt="Le coach vocal à l'écoute — exemples de commandes et onde vocale violette" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/voice.jpg" width="1179" height="2556" loading="lazy" alt="Le coach vocal à l'écoute : « Qu'est-ce qu'on change aujourd'hui ? » et exemples de commandes" /></figure></div>
         <figcaption><span class="vstep-n">2</span><span data-i18n="voice_s2">Parle — dis ta contrainte du jour, en langage normal.</span></figcaption>
       </figure>
       <figure class="voice-step lead" role="listitem">
-        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/voice-understood.png" width="880" height="1904" loading="lazy" alt="Le coach a compris : « j'ai mal à l'épaule droite » → séance allégée, bouton Confirmer" /></figure></div>
+        <div class="shot-wrap voice-shot"><figure class="shot"><img data-voice-shot src="assets/app/v2/voice-adjusted.jpg" width="1179" height="2556" loading="lazy" alt="Le coach a compris « j'ai mal à l'épaule droite » : séance ajustée, l'exercice qui charge l'épaule est retiré, bouton Appliquer" /></figure></div>
         <figcaption><span class="vstep-n">3</span><span data-i18n="voice_s3">C'est fait — il reformule, tu valides. Ta séance s'adapte.</span></figcaption>
       </figure>
     </div>
@@ -1880,8 +1880,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     <div class="s5-proof">
       <div class="shot-wrap reveal">
         <figure class="shot">
-          <img src="assets/app/progression.png" width="1080" height="1350" loading="lazy"
-               alt="Écran Progression du Mobility Club : score global, évolution +14 points et radar mobilité baseline vs aujourd'hui" />
+          <img src="assets/app/v2/bilan-45.jpg" width="1179" height="1474" loading="lazy"
+               alt="Bilan articulaire du Mobility Club : score 72, +9 points, radar des cinq zones diagnostic vs aujourd'hui" />
         </figure>
       </div>
       <div class="reveal">
@@ -3280,11 +3280,11 @@ if (prefersReduced) {
     stageD.classList.remove('is-shot'); renderDiag();
     renderImg(cards[1],'assets/app/diagnostic-result.png', tr('Résultat du diagnostic','Diagnostic result'));
     stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[3],'assets/app/seance-jour.png', tr('Programme généré','Program built'));
-    renderImg(cards[4],'assets/app/voice-understood.png', tr('Le coach a compris','The coach understood'));
+    renderImg(cards[3],'assets/app/v2/today-session.jpg', tr('Programme généré','Program built'));
+    renderImg(cards[4],'assets/app/v2/voice-adjusted.jpg', tr('Séance ajustée par le coach','Session adjusted by the coach'));
     renderImg(cards[5],'assets/app/video-send.png',  tr('Envoi vidéo au coach','Send video to coach'));
     renderImg(cards[6],'assets/app/video-coach.png', tr('Correction du coach','Coach feedback'));
-    renderImg(cards[7],'assets/app/progression.png', tr('Retest J+30','Retest D+30'));
+    renderImg(cards[7],'assets/app/v2/progress.jpg', tr('Tes progrès','Your progress'));
   }
 
   /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
@@ -3333,7 +3333,7 @@ if (prefersReduced) {
     refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
 
-  ['diagnostic-result','seance-jour','voice-understood','video-send','video-coach','progression'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+'.png'+ASSET_V; });
+  ['diagnostic-result.png','v2/today-session.jpg','v2/voice-adjusted.jpg','video-send.png','video-coach.png','v2/progress.jpg'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; });
   nextBtn.addEventListener('click',()=>{ goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
