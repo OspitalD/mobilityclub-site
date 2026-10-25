@@ -15,7 +15,7 @@
 //                              scripts/paypal-provision-token-to-blob.sh (dashboard)
 //   DASHBOARD_ORIGIN           optionnel, défaut https://app.mobilityclub.co
 //   PAYPAL_PLANS_ABONNEMENT    optionnel, plan_id acceptés séparés par des virgules,
-//                              défaut = les trois plans de PLANS ci-dessous
+//                              défaut = tous les plans de PLANS ci-dessous
 
 import { getStore } from '@netlify/blobs';
 import { envoyerEmail } from './methode-ikea.js';
@@ -23,6 +23,8 @@ import { envoyerEmail } from './methode-ikea.js';
 export const PLAN_MENSUEL = 'P-43F663568B911461GNLNCJBY';
 export const PLAN_MENSUEL_BASCULE = 'P-17C64877T6348331UNLCQIVI';
 export const PLAN_ANNUEL = 'P-4VH08043D1618690PNJJ2Z5A';
+export const PLAN_MENSUEL_V2 = 'P-3X034647B5061360HNLPBCDY';
+export const PLAN_ANNUEL_V2 = 'P-7PX93930RS848432UNLPBCEA';
 export const ESSAI_JOURS = 7;
 
 // Ce que chaque plan promet. `mois` = durée d'une période payée, `essai` = jours
@@ -30,10 +32,14 @@ export const ESSAI_JOURS = 7;
 //   • P-43F… 25 €/mois APRÈS 7 jours gratuits (/devenir-membre)
 //   • P-17C… 25 €/mois SANS essai (/bascule, anciens abonnés Skool)
 //   • P-4VH… 220 €/an (/bascule et /devenir-membre)
+//   • P-3X0… 30 €/mois APRÈS 7 jours gratuits (prix V2, après la fenêtre de lancement)
+//   • P-7PX… 275 €/an (prix V2)
 export const PLANS = Object.freeze({
   [PLAN_MENSUEL]: { formule: 'mensuel', mois: 1, essai: ESSAI_JOURS },
   [PLAN_MENSUEL_BASCULE]: { formule: 'mensuel', mois: 1, essai: 0 },
   [PLAN_ANNUEL]: { formule: 'annuel', mois: 12, essai: 0 },
+  [PLAN_MENSUEL_V2]: { formule: 'mensuel', mois: 1, essai: ESSAI_JOURS },
+  [PLAN_ANNUEL_V2]: { formule: 'annuel', mois: 12, essai: 0 },
 });
 // Plan inconnu de PLANS mais déclaré par variable : traité comme un mensuel sans essai.
 export const planDe = (planId) => PLANS[planId] || { formule: 'mensuel', mois: 1, essai: 0 };

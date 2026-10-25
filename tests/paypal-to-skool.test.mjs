@@ -31,7 +31,7 @@ mock.module('@netlify/blobs', {
 const { handler, decider, memeMontant, emailValide, montantsAttendus, estMontantLifetime } = await import(
   '../netlify/functions/paypal-to-skool.js'
 );
-const { deciderAbonnement, finDeDroit, PLAN_MENSUEL, PLAN_MENSUEL_BASCULE, PLAN_ANNUEL } = await import('../netlify/lib/acces-app.js');
+const { deciderAbonnement, finDeDroit, PLAN_MENSUEL, PLAN_MENSUEL_BASCULE, PLAN_ANNUEL, PLANS, planDe } = await import('../netlify/lib/acces-app.js');
 const { choisirIntention } = await import('../netlify/lib/bascule-journal.js');
 const { handler: journalHandler } = await import('../netlify/functions/bascule-journal.js');
 const { coupuresEchues } = await import('../netlify/functions/paypal-coupures.js');
@@ -124,9 +124,11 @@ test('memeMontant : « 197 », « 197.0 », « 197.00 » sont le même montant',
   for (const v of ['196.99', '1970', '', null, 'abc']) assert.ok(!memeMontant(v, '197.00'), String(v));
 });
 
-test('estMontantLifetime : seuls les deux paliers 199 € et 249 € alimentent le stock', () => {
+test('estMontantLifetime : les paliers 199 €, 249 € et le prix V2 350 € alimentent le stock', () => {
   assert.ok(estMontantLifetime('199'));
   assert.ok(estMontantLifetime('249.00'));
+  assert.ok(estMontantLifetime('350.00'));
+  assert.ok(estMontantLifetime('350'));
   for (const v of ['100.00', '197.00', '9.00', null]) assert.ok(!estMontantLifetime(v), String(v));
 });
 
@@ -606,6 +608,17 @@ test('plans de la bascule acceptés par défaut, sans variable', () => {
   delete process.env.PAYPAL_PLANS_ABONNEMENT;
   assert.equal(deciderAbonnement(abo(ACT, { plan: PLAN_MENSUEL_BASCULE })).geste, 'activer');
   assert.equal(deciderAbonnement(abo(ACT, { plan: PLAN_ANNUEL })).geste, 'activer');
+  if (garde !== undefined) process.env.PAYPAL_PLANS_ABONNEMENT = garde;
+});
+
+test('plans V2 (30 €/mois avec essai, 275 €/an) connus et acceptés par défaut', () => {
+  assert.deepEqual(PLANS['P-3X034647B5061360HNLPBCDY'], { formule: 'mensuel', mois: 1, essai: 7 });
+  assert.deepEqual(PLANS['P-7PX93930RS848432UNLPBCEA'], { formule: 'annuel', mois: 12, essai: 0 });
+  assert.equal(planDe('P-7PX93930RS848432UNLPBCEA').mois, 12);
+  const garde = process.env.PAYPAL_PLANS_ABONNEMENT;
+  delete process.env.PAYPAL_PLANS_ABONNEMENT;
+  assert.equal(deciderAbonnement(abo(ACT, { plan: 'P-3X034647B5061360HNLPBCDY' })).geste, 'activer');
+  assert.equal(deciderAbonnement(abo(ACT, { plan: 'P-7PX93930RS848432UNLPBCEA' })).geste, 'activer');
   if (garde !== undefined) process.env.PAYPAL_PLANS_ABONNEMENT = garde;
 });
 

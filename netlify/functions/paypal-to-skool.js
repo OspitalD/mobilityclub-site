@@ -53,7 +53,10 @@ import { journaliser, rapprocherSkool } from '../lib/bascule-journal.js';
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
 // campagne est ouverte, tandis que cette liste décide quelles captures doivent
 // alimenter le stock public des séries.
-export const MONTANTS_LIFETIME = TIER_PRICES.map((price) => Number(price).toFixed(2));
+// 350 € = prix Lifetime de la phase V2 (après la fenêtre de lancement), servi par
+// lifetime-checkout quel que soit le palier : ces ventes comptent aussi dans le stock.
+export const PRIX_LIFETIME_V2 = 350;
+export const MONTANTS_LIFETIME = [...new Set([...TIER_PRICES, PRIX_LIFETIME_V2].map((price) => Number(price).toFixed(2)))];
 
 export const estMontantLifetime = (montant) =>
   MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));
