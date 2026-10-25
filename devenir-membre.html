@@ -499,8 +499,10 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   <section class="section closing" id="offre">
     <div class="wrap">
       <span class="eyebrow"><span data-tier-available>10</span> pass à <span data-offre-prix="vie">249</span> € disponibles</span>
-      <h2>Le prix monte par <span>séries de 20.</span></h2>
-      <p class="closing-sub">Chaque carnet contient 20 Lifetime Pass numérotés et nominatifs. Quand une série est complète, la suivante ouvre à un tarif supérieur.</p>
+      <h2 data-offre-phase="fenetre">Le prix monte par <span>séries de 20.</span></h2>
+      <p class="closing-sub" data-offre-phase="fenetre">Chaque carnet contient 20 Lifetime Pass numérotés et nominatifs. Quand une série est complète, la suivante ouvre à un tarif supérieur.</p>
+      <h2 data-offre-phase="v2" hidden>Un paiement. <span>Le Club à vie.</span></h2>
+      <p class="closing-sub" data-offre-phase="v2" hidden>Chaque Lifetime Pass est numéroté et nominatif. Tu paies une fois, sans abonnement derrière.</p>
       <div class="closing-box" data-price-protected>
         <div class="closing-row">
           <div class="closing-price"><span>€</span><b data-current-price data-offre-prix="vie">249</b><small>ou 4× via PayPal</small></div>
@@ -537,7 +539,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il quand la série est complète ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Une nouvelle série de 20 Lifetime Pass pourra ouvrir à un tarif supérieur. L’abonnement avec 7 jours d’essai gratuit reste disponible en parallèle.</p></div></div>
+          <div class="faq-a"><div class="faq-a-inner"><p><span data-offre-phase="fenetre">Une nouvelle série de 20 Lifetime Pass pourra ouvrir à un tarif supérieur. </span><span data-offre-phase="v2" hidden>Les tickets encore libres s’affichent en direct ; quand il n’en reste plus, la série est fermée. </span>L’abonnement avec 7 jours d’essai gratuit reste disponible en parallèle.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Comment vais-je recevoir mon accès ?</button>
@@ -564,6 +566,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   var IDENTITY_KEY='mc_lifetime_identity',CONFIRMED_KEY='mc_lifetime_confirmed_ticket';
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+  function phaseV2(){return document.documentElement.getAttribute('data-offre')==='v2';}
   function all(sel){return document.querySelectorAll(sel);}
   function setText(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function cleanName(value){return String(value||'').trim().replace(/\s+/g,' ').slice(0,40);}
@@ -630,9 +633,9 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
     var total=Math.max(1,Number(data.total)||C.TOTAL),sold=Math.max(0,Math.min(Number(data.sold)||0,total)),remaining=Math.max(0,total-sold),tierRemaining=Array.isArray(data.tickets)?data.tickets.filter(function(item){return item.status==='available';}).length:Math.max(0,C.PREMIER_PALIER-(Number(data.tier_sold)||0));
     setText('[data-price]',data.price);setText('[data-current-price]',data.price);setText('[data-tier-name]','Série '+pad(data.tier)+' · Tickets 01 → 20');setText('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));setText('[data-tier-available]',tierRemaining);
-    setText('[data-stock-count]',sold+' / '+total+' partis');setText('[data-stock-status]',remaining?tierRemaining+' pass à '+data.price+' € disponibles':'Cette série est complète');setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':'Série complète · prochain tarif à venir');
+    setText('[data-stock-count]',sold+' / '+total+' partis');setText('[data-stock-status]',remaining?tierRemaining+' pass à '+data.price+' € disponibles':'Cette série est complète');setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':phaseV2()?'Série complète':'Série complète · prochain tarif à venir');
     document.querySelector('[data-stock-fill]').style.width=((sold/total)*100)+'%';document.querySelector('.stock-meter').setAttribute('aria-valuemax',total);document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);renderTickets(data);
-    if(data.sold_out){setText('[data-take-label]','Cette série est complète');setText('[data-take-message]','La série suivante ouvrira à un tarif supérieur.');}
+    if(data.sold_out){setText('[data-take-label]','Cette série est complète');setText('[data-take-message]',phaseV2()?'Tous les tickets de cette série sont attribués.':'La série suivante ouvrira à un tarif supérieur.');}
     else if(message){setText('[data-take-label]',message.label);setText('[data-take-message]',message.body);}
     else if(selected!==null){setText('[data-take-label]',fullName()+' · ticket '+pad(selected));setText('[data-take-message]','Ton nom est imprimé. Le ticket sera bloqué 10 minutes pendant ton paiement.');}
     else{setText('[data-take-label]','Choisis ton numéro');setText('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');}
@@ -644,7 +647,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   function startCheckout(){
     if(!current||selected===null||checkoutBusy||statusOf(selected)!=='available')return;
     var choice=selected,tier=current.tier,price=current.price;checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
-    checkoutRequest({action:'create',ticket:choice,return_path:'/devenir-membre'}).then(function(result){if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');track('checkout_started',{ticket:pad(choice),tier:tier,price:price});window.location.assign(result.data.approve_url);}).catch(function(){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans un instant.'});});
+    checkoutRequest({action:'create',ticket:choice,return_path:'/devenir-membre'}).then(function(result){if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}if(result.status===503&&result.data.error==='price_not_configured'){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans quelques minutes ou écris-nous à founder@mobilityclub.co.'});return;}if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');track('checkout_started',{ticket:pad(choice),tier:tier,price:price});window.location.assign(result.data.approve_url);}).catch(function(){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans un instant.'});});
   }
   function cleanUrl(){window.history.replaceState({},'',window.location.pathname);}
   function handlePaypalReturn(){
@@ -676,7 +679,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   var choices=all('[data-access-choice]');for(var k=0;k<choices.length;k++)choices[k].addEventListener('click',function(){track('plan_clicked',{plan:this.getAttribute('data-plan')||this.getAttribute('data-access-choice')});});
   var demos=all('[data-demo-video]');for(var d=0;d<demos.length;d++){var trigger=demos[d].querySelector('.demo-video-trigger');if(trigger)trigger.addEventListener('click',function(){var shell=this.closest('[data-demo-video]'),frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/OWbtepb1e88?autoplay=1&rel=0';frame.title='Démonstration vidéo de Mobility Club';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.referrerPolicy='strict-origin-when-cross-origin';frame.allowFullscreen=true;shell.replaceChildren(frame);track('cta_clicked',{cta:'demo_video_play'});});}
   track('page_view');
-  load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
+  load().then(handlePaypalReturn);if(window.MCOffre)window.MCOffre.onChange(function(){if(current)render(current);});window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 })();
 </script>
 </body>

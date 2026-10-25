@@ -11,7 +11,7 @@ import { PLANS } from '../netlify/lib/offre-v2.js';
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
-const PAGES = { '/': 'index.html', '/devenir-membre': 'devenir-membre.html', '/bascule': 'bascule.html', '/lifetime': 'lifetime.html' };
+const PAGES = { '/': 'index.html', '/devenir-membre': 'devenir-membre.html', '/bascule': 'bascule.html', '/lifetime': 'lifetime.html', '/mon-ticket': 'mon-ticket.html' };
 
 const server = http.createServer(async (req, res) => {
   const path = new URL(req.url, 'http://x').pathname;
@@ -31,7 +31,7 @@ const verifier = (ok, msg) => { if (!ok) echecs.push(msg); console.log(ok ? 'ok 
 
 const anciens = [PLANS.ancien.mensuel, PLANS.ancien.annuel, 'P-17C64877T6348331UNLCQIVI', 'KT93SVXG954UE', '5LSVN4S2KGSM4'].map((l) => l.split(/[=/]/).pop());
 
-async function ouvrir(chemin, { fin, serveurEnPanne = false }) {
+async function ouvrir(chemin, { fin, serveurEnPanne = false, stock = null, checkout = null }) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.route('**/*', (route) => {
     const u = route.request().url();
@@ -45,13 +45,35 @@ async function ouvrir(chemin, { fin, serveurEnPanne = false }) {
     await route.fulfill({ status: 200, contentType: 'application/json', body: await r.text(), headers: { 'cache-control': 'no-store' } });
   });
   // Stocks Lifetime : on laisse le serveur répondre au prix de la phase.
-  await page.route('**/.netlify/functions/lifetime-tickets', (route) => route.abort());
+  await page.route('**/.netlify/functions/lifetime-tickets', (route) => (stock
+    ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(stock) })
+    : route.abort()));
+  if (checkout) await page.route('**/.netlify/functions/lifetime-checkout', (route) => route.fulfill(checkout));
   await page.addInitScript((f) => { window.MC_OFFRE_FIN = f; }, fin);
   await page.goto(base + chemin, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.getAttribute('data-offre'), null, { timeout: 5000 });
   await page.waitForTimeout(300);
   return page;
 }
+// Texte présent dans le DOM rendu (display:none exclu ; visibility:hidden inclus : il sera révélé).
+const texteRendu = (page) => page.evaluate(() => {
+  const out = [];
+  const marche = (n) => {
+    if (n.nodeType === 3) { out.push(n.textContent); return; }
+    if (n.nodeType !== 1 || /^(SCRIPT|STYLE|TEMPLATE)$/.test(n.tagName)) return;
+    if (getComputedStyle(n).display === 'none') return;
+    for (const c of n.childNodes) marche(c);
+  };
+  marche(document.body);
+  return out.join(' ').replace(/\s+/g, ' ');
+});
+const stockFaux = (prix, soldOut = false) => {
+  const pris = soldOut ? 20 : 3;
+  return {
+    live: true, tier: 2, price: prix, tier_sold: pris, sold: 20 + pris, total: 40, remaining: 20 - pris, sold_out: soldOut,
+    tickets: Array.from({ length: 20 }, (_, i) => ({ number: i + 1, status: i < pris ? 'sold' : 'available' })),
+  };
+};
 const hrefs = (page) => page.$$eval('a[href]', (as) => as.map((a) => a.getAttribute('href')));
 const PASSE = '2000-01-01T00:00:00.000Z';
 const FUTUR = '2099-01-01T00:00:00.000Z';
@@ -87,6 +109,53 @@ for (const [phase, fin, attendu] of [['v2', PASSE, { m: '30', a: '275', v: '350'
   const cta = await p.$$eval('[data-offre-lien="achat"]', (as) => as.map((a) => a.getAttribute('href')));
   verifier(cta.length === 6 && cta.every((h) => h === (phase === 'v2' ? '/devenir-membre' : '/lancement')), `accueil [${phase}] 6 CTA -> ${phase === 'v2' ? '/devenir-membre' : '/lancement'} (${cta.join(',')})`);
   await p.close();
+}
+
+// Textes Lifetime : en v2, rien ne promet une hausse par série ni ne cite « N/20 tickets à 350 € déjà pris »
+// (les tickets déjà vendus l'ont été à 249 €). Stock simulé à 350 €, série ouverte puis complète.
+const INTERDITS_V2 = ['Puis le prix monte', 'tickets à 350 € déjà pris', 'tarif supérieur', 'Le prix monte par', 'prochain tarif'];
+for (const soldOut of [false, true]) {
+  for (const chemin of ['/lifetime', '/devenir-membre', '/mon-ticket']) {
+    const pg = await ouvrir(chemin, { fin: PASSE, stock: stockFaux(350, soldOut) });
+    const t = await texteRendu(pg);
+    const trouves = INTERDITS_V2.filter((x) => t.includes(x));
+    verifier(!trouves.length, `${chemin} [v2${soldOut ? ', série complète' : ''}] aucun texte de hausse de prix (${trouves.join(' | ') || 'rien'})`);
+    await pg.close();
+  }
+}
+{
+  const pg = await ouvrir('/lifetime', { fin: FUTUR, stock: stockFaux(249) });
+  const t = await texteRendu(pg);
+  verifier(t.includes('Puis le prix monte') && t.includes('tickets à 249 € déjà pris'), '/lifetime [fenetre] textes de série conservés');
+  await pg.close();
+}
+
+// mon-ticket : prix de la phase (stock injoignable), meta sans prix.
+for (const [phase, fin, v] of [['v2', PASSE, '350'], ['fenetre', FUTUR, '249']]) {
+  const pg = await ouvrir('/mon-ticket', { fin });
+  const prix = await pg.$$eval('[data-price]', (els) => els.map((e) => e.textContent.trim()));
+  verifier(prix.length >= 3 && prix.every((x) => x === v), `mon-ticket [${phase}] prix ${v} (${prix.join(',')})`);
+  const meta = await pg.$eval('meta[name="description"]', (m) => m.content);
+  verifier(!/\d+\s*€/.test(meta), `mon-ticket [${phase}] meta description sans prix`);
+  await pg.close();
+}
+
+// lifetime-checkout 503 price_not_configured : message clair, pas l'erreur générique.
+{
+  const pg = await ouvrir('/lifetime', {
+    fin: PASSE,
+    stock: stockFaux(350),
+    checkout: { status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'price_not_configured', price: 350 }) },
+  });
+  await pg.fill('input[name="first_name"]', 'Jeanne');
+  await pg.fill('input[name="last_name"]', 'Essai');
+  await pg.click('[data-identity-submit]');
+  await pg.click('[data-ticket-number="5"]');
+  await pg.locator('[data-pay]:visible').first().click();
+  await pg.waitForFunction(() => /indisponible/i.test(document.querySelector('[data-take-label]').textContent), null, { timeout: 5000 });
+  const msg = await pg.innerText('[data-take-message]');
+  verifier(/quelques minutes/.test(msg) && /écris-nous/i.test(msg), `lifetime 503 price_not_configured : message clair (« ${msg} »)`);
+  await pg.close();
 }
 
 // repli : fetch en panne, page ouverte après la fin => jamais d'ancien plan

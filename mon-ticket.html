@@ -8,17 +8,17 @@
 window.MC_LIFETIME = {
   TOTAL: 40,
   TIER_SIZE: 20,
-  PRICE_1: 199,
-  PRICE_2: 249,
+  // Prix : plus ici. Le serveur dit le prix (lifetime-tickets) et la phase (offre-v2).
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
   POLL_MS: 8000
 };
 </script>
+<script src="/assets/js/offre-v2.js"></script>
 
 <title>Mon ticket — Mobility Club</title>
 <meta name="robots" content="noindex, nofollow, noarchive" />
-<meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle à 249 €. Un paiement, l’accès au cœur du Club à vie." />
+<meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle. Un paiement, l’accès au cœur du Club à vie." />
 <meta property="og:title" content="Mon ticket — Mobility Club" />
 <meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
 <meta property="og:type" content="website" />
@@ -299,7 +299,7 @@ details[open] summary::after{content:"×"}
       <div class="copy">
         <h1>Ton ticket pour le Club.</h1>
         <p class="lede">Choisis ton numéro, puis règle ton accès à vie sur PayPal.</p>
-        <p class="ticket-price"><b><span data-price>249</span> € en 1 fois</b><br>ou <b>4 × <span data-installment>62,25</span> €</b> via PayPal</p>
+        <p class="ticket-price"><b><span data-price data-offre-prix="vie">249</span> € en 1 fois</b><br>ou <b>4 × <span data-installment data-offre-prix="vie-4x">62,25</span> €</b> via PayPal</p>
         <p class="payment-terms">Paiement en 4 fois sous réserve d’éligibilité et d’acceptation par PayPal. Aucun abonnement.</p>
       </div>
 
@@ -325,8 +325,8 @@ details[open] summary::after{content:"×"}
         <div class="ticket-experience" data-ticket-experience aria-hidden="true" hidden>
           <div class="ticket-board" data-ticket-board tabindex="-1">
             <header class="board-head">
-              <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · 249 €</b></div>
-              <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
+              <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · <span data-offre-prix="vie">249</span> €</b></div>
+              <div class="board-price"><span>€</span><b data-price data-offre-prix="vie">249</b><small>ou 4 × <span data-installment data-offre-prix="vie-4x">62,25</span> € via PayPal</small></div>
               <div class="board-remaining" data-remaining>Vérification du stock…</div>
             </header>
             <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
@@ -353,7 +353,7 @@ details[open] summary::after{content:"×"}
 </div>
 
 <div class="mobile-action">
-  <div class="mobile-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
+  <div class="mobile-price"><span>€</span><b data-price data-offre-prix="vie">249</b><small>ou 4 × <span data-installment data-offre-prix="vie-4x">62,25</span> € via PayPal</small></div>
   <button class="buy off" type="button" data-claim disabled>Vérification…</button>
   <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
 </div>
@@ -371,6 +371,7 @@ details[open] summary::after{content:"×"}
   var CONFIRMED_KEY='mc_lifetime_confirmed_ticket';
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+  function phaseV2(){return document.documentElement.getAttribute('data-offre')==='v2';}
   function all(sel){return document.querySelectorAll(sel);}
   function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function setVisible(sel,show){var els=all(sel);for(var i=0;i<els.length;i++)els[i].classList.toggle('is-hidden',!show);}
@@ -484,8 +485,8 @@ details[open] summary::after{content:"×"}
     renderTickets(data);
     if(data.sold_out){
       text('[data-take-label]','Cette série est complète');
-      text('[data-take-message]','La série suivante ouvrira à un tarif supérieur.');
-      text('[data-action-note]','Série complète · prochain tarif à venir');
+      text('[data-take-message]',phaseV2()?'Tous les tickets de cette série sont attribués.':'La série suivante ouvrira à un tarif supérieur.');
+      text('[data-action-note]',phaseV2()?'Série complète':'Série complète · prochain tarif à venir');
     }else if(message){
       text('[data-take-label]',message.label);text('[data-take-message]',message.body);
       text('[data-action-note]','Stock PayPal vérifié · aucun ticket fantôme');
@@ -534,7 +535,7 @@ details[open] summary::after{content:"×"}
     checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
     checkoutRequest({action:'create',ticket:choice,return_path:'/mon-ticket'}).then(function(result){
       if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}
-      if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
+      if(result.status===503&&result.data.error==='price_not_configured'){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans quelques minutes ou écris-nous à founder@mobilityclub.co.'});return;}if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
       track('checkout_started',{ticket:pad(choice),tier:tier,price:price});
       window.location.assign(result.data.approve_url);
     }).catch(function(){
@@ -570,7 +571,7 @@ details[open] summary::after{content:"×"}
   var paypalMode=new URLSearchParams(window.location.search).get('paypal');
   if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);
   var pays=all('[data-pay]');for(var i=0;i<pays.length;i++)pays[i].addEventListener('click',startCheckout);
-  load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
+  load().then(handlePaypalReturn);if(window.MCOffre)window.MCOffre.onChange(function(){if(current)render(current);});window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 
   var TRACK_URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}

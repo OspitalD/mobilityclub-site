@@ -262,13 +262,15 @@ details[open] summary::after{content:"×"}
     <section class="hero">
       <div class="copy">
         <span class="eyebrow">Lifetime Pass · série 02</span>
-        <h1>20 tickets par série.<br><span>Puis le prix monte.</span></h1>
+        <h1 data-offre-phase="fenetre">20 tickets par série.<br><span>Puis le prix monte.</span></h1>
+        <h1 data-offre-phase="v2" hidden>Un paiement.<br><span>Le Club à vie.</span></h1>
         <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
         <div class="proof-line">
           <span><b>11 personnes</b> l’ont fait il y a un an</span>
           <span data-offre-phase="fenetre"><b>20 tickets à 199 €</b> déjà attribués</span>
           <span data-price-reveal><b><span data-price data-offre-prix="vie">249</span> €</b> en 1 fois</span>
-          <span data-price-reveal><b><span data-tier-sold>…</span>/20 tickets à <span data-price data-offre-prix="vie">249</span> €</b> déjà pris</span>
+          <span data-price-reveal data-offre-phase="fenetre"><b><span data-tier-sold>…</span>/20 tickets à <span data-price data-offre-prix="vie">249</span> €</b> déjà pris</span>
+          <span data-price-reveal data-offre-phase="v2" hidden><b>Numéroté</b> et nominatif</span>
           <span data-price-reveal><b>4 × <span data-installment data-offre-prix="vie-4x">62,25</span> €</b> via PayPal</span>
         </div>
       </div>
@@ -354,6 +356,7 @@ details[open] summary::after{content:"×"}
   var CONFIRMED_KEY='mc_lifetime_confirmed_ticket';
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
+  function phaseV2(){return document.documentElement.getAttribute('data-offre')==='v2';}
   function all(sel){return document.querySelectorAll(sel);}
   function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function setVisible(sel,show){var els=all(sel);for(var i=0;i<els.length;i++)els[i].classList.toggle('is-hidden',!show);}
@@ -467,8 +470,8 @@ details[open] summary::after{content:"×"}
     renderTickets(data);
     if(data.sold_out){
       text('[data-take-label]','Cette série est complète');
-      text('[data-take-message]','La série suivante ouvrira à un tarif supérieur.');
-      text('[data-action-note]','Série complète · prochain tarif à venir');
+      text('[data-take-message]',phaseV2()?'Tous les tickets de cette série sont attribués.':'La série suivante ouvrira à un tarif supérieur.');
+      text('[data-action-note]',phaseV2()?'Série complète':'Série complète · prochain tarif à venir');
     }else if(message){
       text('[data-take-label]',message.label);text('[data-take-message]',message.body);
       text('[data-action-note]','Stock PayPal vérifié · aucun ticket fantôme');
@@ -517,7 +520,7 @@ details[open] summary::after{content:"×"}
     checkoutBusy=true;render(current);track('plan_clicked',{plan:'lifetime_'+price+'_tier_'+tier+'_ticket_'+pad(choice)});
     checkoutRequest({action:'create',ticket:choice}).then(function(result){
       if(result.status===409){selected=null;checkoutBusy=false;return load({label:'Ce ticket vient d’être pris',body:'Choisis un autre numéro libre.'});}
-      if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
+      if(result.status===503&&result.data.error==='price_not_configured'){checkoutBusy=false;render(current,{label:'Paiement momentanément indisponible',body:'Ton ticket n’a pas été bloqué. Réessaie dans quelques minutes ou écris-nous à founder@mobilityclub.co.'});return;}if(!result.ok||!result.data.approve_url)throw new Error(result.data.error||'checkout');
       track('checkout_started',{ticket:pad(choice),tier:tier,price:price});
       window.location.assign(result.data.approve_url);
     }).catch(function(){
@@ -553,7 +556,7 @@ details[open] summary::after{content:"×"}
   var paypalMode=new URLSearchParams(window.location.search).get('paypal');
   if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);
   var pays=all('[data-pay]');for(var i=0;i<pays.length;i++)pays[i].addEventListener('click',startCheckout);
-  load().then(handlePaypalReturn);window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
+  load().then(handlePaypalReturn);if(window.MCOffre)window.MCOffre.onChange(function(){if(current)render(current);});window.setInterval(function(){if(!checkoutBusy)load();},C.POLL_MS);
 
   var TRACK_URL='/.netlify/functions/track-site-event';
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
