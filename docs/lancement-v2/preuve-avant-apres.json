@@ -1,0 +1,32 @@
+{
+  "date_calcul": "2026-10-25",
+  "source": "Netlify Blobs, lecture seule via `netlify blobs:list/get`. Store `diagnostics_history` (un enregistrement par bilan, champs completed_at, profile.score_global, profile.zones.*.global, version) ; store `users` lu uniquement pour repérer les comptes de test (email, tier, drapeaux test). Premier bilan = plus ancien enregistrement du membre, retest = plus récent.",
+  "n_membres_avec_2_bilans": 15,
+  "n_membres_avec_2_enregistrements_bruts": 78,
+  "n_exclus": 3,
+  "exclusions_detail": "3 comptes de test/internes (emails de Damien ou motif test/demo) exclus sur 78 membres ayant au moins 2 enregistrements. 60 autres membres écartés car leurs 2 enregistrements sont séparés de moins de 7 jours (même jour, doublons de passage, pas un retest). 10 des 78 n'ont pas de fiche dans le store users (identifiés via l'enregistrement du bilan lui-même).",
+  "score_global_moyen_avant": 53.5,
+  "score_global_moyen_apres": 55.4,
+  "delta_moyen_points": 1.9,
+  "delta_median_points": -1,
+  "ic95_delta_moyen_points": [-2.8, 6.6],
+  "part_en_progres": 46.7,
+  "part_en_baisse": 53.3,
+  "delai_median_jours_entre_bilans": 44,
+  "par_zone": {
+    "epaule": -4.5,
+    "hanche": 4.5,
+    "chaine_posterieure": -6.0,
+    "cheville": -0.8,
+    "colonne": 4.9
+  },
+  "utilisable": true,
+  "preuve_recommandee": false,
+  "verdict": "n=15 atteint le seuil technique (>=10) mais le résultat ne démontre PAS de progression : médiane -1 point, 46,7 % en progrès, intervalle de confiance à 95 % du delta moyen [-2,8 ; +6,6] qui contient 0, zones contradictoires. Ne pas afficher 'les membres progressent de X points' sur la page de vente. Retirer la preuve plutôt que l'estimer.",
+  "limites": "Échantillon petit (15). Pas de groupe témoin. Rien n'indique que les membres aient suivi le programme entre les bilans (adhésion non mesurée ici). Auto-sélection : seuls ceux qui refont le bilan sont comptés. Le bilan est un test auto-filmé/auto-évalué dont le bruit de mesure peut dépasser 5 points. Sans filtre de 7 jours, 75 membres apparaissent à +0,6 pt mais ce sont des doublons du même jour, non retenus. Bilans tous en version v2, pas de mélange de barèmes. Scores par zone calculés sur les mêmes 15 membres.",
+  "sensibilite_filtre_delai_minimum": {
+    "aucun_filtre_n75": {"delta_moyen": 0.6, "mediane": 0},
+    "au_moins_1_jour_n16": {"delta_moyen": 1.9, "mediane": 0.5, "part_en_progres": 50},
+    "au_moins_7_jours_n15": {"delta_moyen": 1.9, "mediane": -1, "part_en_progres": 46.7}
+  }
+}
