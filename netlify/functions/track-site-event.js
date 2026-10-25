@@ -24,6 +24,7 @@ const EVENTS = new Set([
   'offer_viewed',       // page de lancement : l'offre est entrée dans le viewport
   'video_played',       // page de lancement : lecture d'une vidéo
   'faq_opened',         // page de lancement : ouverture d'une question de la FAQ
+  'simulator_used',     // page de lancement : curseur du simulateur de coût déplacé (une fois)
 ]);
 
 const VARIANTS = new Set(['vision', 'friction', 'coach', 'lancement']);
@@ -33,7 +34,7 @@ const MAX_VAL = 64;
 
 // N'accepte que des props scalaires courtes et connues. Pas d'objets imbriqués,
 // pas d'email, pas de texte libre : ce store ne doit jamais devenir un puits à PII.
-const ALLOWED_PROPS = new Set(['cta', 'door', 'plan', 'lang', 'path', 'ticket', 'tier', 'price']);
+const ALLOWED_PROPS = new Set(['cta', 'door', 'plan', 'lang', 'path', 'ticket', 'tier', 'price', 'months']);
 
 const sanitize = (props) => {
   if (!props || typeof props !== 'object' || Array.isArray(props)) return {};

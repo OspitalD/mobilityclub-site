@@ -58,3 +58,13 @@ test('les événements de la page de lancement et sa variante sont acceptés et 
   // La whitelist reste fermée : un événement non prévu est toujours refusé.
   assert.equal((await envoyer('inconnu', {})).statusCode, 400);
 });
+
+test('le simulateur de la page de lancement est mesuré (durée choisie, rien d’autre)', async () => {
+  records.length = 0;
+  const response = await handler({
+    httpMethod: 'POST', headers: {},
+    body: JSON.stringify({ event: 'simulator_used', variant: 'lancement', vid: 'abcd1234', props: { path: '/lancement', months: 24, texte: 'libre' } }),
+  });
+  assert.equal(response.statusCode, 200);
+  assert.deepEqual(records[0].value.props, { path: '/lancement', months: '24' });
+});
