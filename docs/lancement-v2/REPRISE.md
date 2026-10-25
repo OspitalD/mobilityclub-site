@@ -59,3 +59,13 @@ Vérifier ce qui a été commité avec `git -C ~/Projects/mc-worktrees/site-lanc
 - Décisions Damien : Lifetime V2 = série 3 de 20 tickets à 350 € (A12) ; bootcamp fermé (302 → /lancement) ; refonte « fracture V1 → V2 » = section B1–B8 du CONTRAT (phrase « La mobilité au cœur de ton entraînement. », deux vidéos séparées, comparateur « Ce que tu perds en jonglant » sans cumul gonflé, captures floutées d'apps de mouvement, publication quand TOUT est prêt, face cam de Damien incluse).
 - EN COURS : Lot V (vidéo motion, projet docs/lancement-v2/video-v2/, mêmes noms dans assets/video/ + 9x16-v2) et Lot P (réécriture lancement.html + comparateur + /lancement dans verif-offre-pages.mjs). Si perdus : relancer depuis B1–B8.
 - Ensuite : relecture adverse V et P → corrections → intégration (filet complet) → aperçu à Damien → attendre sa face cam → OK de publication.
+
+---
+
+## LIVE — 25/10 ~16 h 40 Paris (main = c007828, deploy 6ade22843ca708b9fa9c713c)
+- /lancement en prod, fin de fenêtre 2026-10-26T15:45:00Z. Offre C1–C6 (à vie en phare 4 × 62,25 € / 249 €, mensuel 25 € sans essai P-17C ; après : 350 € et 30 € sans essai P-3H171898NK2522001NLPCAUI). PAYPAL_MONTANTS_ACCEPTES contient 350.00. Vérifié en prod (offre-v2 phase fenetre, liens, vidéo, /bootcamp 302).
+- RESTE :
+  1. Bulle face cam : un agent montait /Users/damienospital/Downloads/IMG_6137.MOV → assets/video/facecam-9x16.*, facecam-bulle.*, assets/js/bulle-facecam.js, docs/lancement-v2/facecam/ (transcript + demo.html). Vérifier ce qui est commité (`git log`), lire le transcript (passages contraires au contrat C6 ?), intégrer la bulle dans lancement.html (script en fin de body), vérif Chromium 375/1280 + Lighthouse, puis 2e deploy SUR OK DE DAMIEN (le classifieur bloque push main / deploy : lui donner les commandes, cf. ci-dessus « Publier »).
+  2. Damien clique les boutons PayPal de /lancement (montants, récurrence).
+  3. Après 26/10 15:45Z : vérifier phase v2 en prod (prix 30/350, plus aucun ancien plan, pas de compteur) ; Damien désactive P-43F, P-4VH, P-17C + liens KT93SVXG954UE / 5LSVN4S2KGSM4.
+  4. Mettre en ligne la branche feat/paypal-abonnement-app (~/Projects/mobilityclub-site-paypal-app, c78cbcb) pour l'accès app auto des abonnés V2 — d'ici là, manuel.
