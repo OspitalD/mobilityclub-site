@@ -12,7 +12,9 @@ export const PLANS = {
   ancien: {
     mensuel: PAYPAL_PLAN('P-43F663568B911461GNLNCJBY'), // 25 €/mois, essai 7 j
     annuel: PAYPAL_PLAN('P-4VH08043D1618690PNJJ2Z5A'), // 220 €/an
-    vie: '/lifetime',
+    // Pendant la fenêtre : lien de paiement PayPal direct à 249 € (décision Damien 25/10 : /lifetime
+    // affichait « complet », l'achat doit rester possible sans passer par les tickets).
+    vie: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
     mensuel_fixe: PAYPAL_PLAN('P-17C64877T6348331UNLCQIVI'), // 25 €/mois SANS essai (/lancement, C3)
   },
   // Un plan à null bloque le deploy via tests/offre-v2-deploy.test.mjs, pas via une vérification à l'exécution.
