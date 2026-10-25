@@ -3,19 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Mobility Club V2 — Offre de lancement</title>
-<meta name="description" content="Mobility Club V2 : ton coach de mouvement, dans ta poche. Bilan articulaire, coach vocal, correction vidéo par un humain. Offre de lancement, prix verrouillé." />
+<title>Mobility Club V2 — Ton coach de mouvement, dans ta poche</title>
+<meta name="description" content="Mobility Club V2 : ton coach de mouvement, dans ta poche. Bilan articulaire, coach vocal, correction vidéo par un humain. Mensuel, annuel ou à vie." />
 <meta name="theme-color" content="#0D0F0E" />
 <meta name="robots" content="index,follow" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Mobility Club V2 — Ton coach de mouvement, dans ta poche" />
-<meta property="og:description" content="Bilan articulaire, coach vocal, correction vidéo par un humain. Offre de lancement : prix verrouillé." />
+<meta property="og:description" content="Bilan articulaire, coach vocal, correction vidéo par un humain." />
 <meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-fenetre.jpg" />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
 <link rel="preload" as="image" href="/assets/video/lancement-16x9-fenetre.jpg" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="/assets/js/offre-v2.js"></script>
+<script>
+/* Phase connue avant le premier rendu (horloge locale, même fin embarquée) : en phase v2,
+   le compteur de la fenêtre n’est jamais peint. offre-v2.js confirme ensuite avec le serveur. */
+try { if (window.MC_OFFRE_FIN && Date.now() >= Date.parse(window.MC_OFFRE_FIN)) document.documentElement.setAttribute("data-offre", "v2"); } catch (e) {}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
 <style>
 :root{
@@ -57,6 +63,7 @@ p{color:var(--text-secondary);}
 .langbar{display:flex;justify-content:flex-end;padding-top:16px;}
 .lang{font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--text-secondary);background:transparent;border:1px solid var(--glass-border);border-radius:100px;padding:6px 14px;cursor:pointer;}
 .lang:hover{color:var(--text-primary);}
+html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 
 /* boutons */
 .cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 28px;border-radius:100px;font-weight:700;font-size:16px;text-decoration:none;font-family:inherit;border:1px solid transparent;cursor:pointer;transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s;}
@@ -150,10 +157,7 @@ footer a:hover{color:var(--text-primary);}
     <h1 >Mobility Club <span>V2</span></h1>
     <p class="promise" data-i18n="promise">Ton coach de mouvement, dans ta poche.</p>
     <div class="video" id="video">
-      <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2">
-        <source src="/assets/video/lancement-16x9-fenetre.webm" type="video/webm" />
-        <source src="/assets/video/lancement-16x9-fenetre.mp4" type="video/mp4" />
-      </video>
+      <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2"></video>
     </div>
     <div class="count" data-offre-phase="fenetre">
       <div class="t" data-offre-compteur aria-live="off">24:00:00</div>
@@ -183,7 +187,7 @@ footer a:hover{color:var(--text-primary);}
         <p data-i18n="f3_p">Une douleur, de la fatigue, peu de temps : tu le dis, la séance change.</p>
       </div>
     </div>
-    <p class="vs reveal"><span data-i18n="vs">Sur les 7 applis que nous avons comparées, aucune ne réunit ces trois points.</span><small data-i18n="vs_src">D’après leur documentation publique, relevé du 23/10/2026.</small></p>
+    <p class="vs reveal"><span data-i18n="vs">Sur les 7 applis que nous avons comparées, nous n’en avons trouvé aucune qui réunisse ces trois points.</span><small data-i18n="vs_src">D’après leur documentation publique, relevé du 23/10/2026.</small></p>
   </div>
 </section>
 
@@ -221,7 +225,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_m">Mensuel</div>
         <div class="price"><span data-offre-prix="mensuel">25</span> €<small data-i18n="per_month">/mois</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
         <p class="note" data-i18n="p_m_note">Essai de 7 jours, puis abonnement mensuel.</p>
         <a class="cta ghost" href="/devenir-membre" data-offre-lien="mensuel" data-i18n="cta_m">Essayer 7 jours</a>
       </div>
@@ -229,7 +233,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_a">Annuel</div>
         <div class="price"><span data-offre-prix="annuel">220</span> €<small data-i18n="per_year">/an</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
         <p class="note"><span data-i18n="p_a_note">Soit</span> <span data-offre-prix="annuel-mois" data-offre-eur>18,33 €</span> <span data-i18n="per_month_short">par mois.</span></p>
         <a class="cta primary" href="/devenir-membre" data-offre-lien="annuel" data-i18n="cta_a">Choisir l’annuel</a>
       </div>
@@ -237,7 +241,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_v">À vie</div>
         <div class="price"><span data-offre-prix="vie">249</span> €<small data-i18n="once">une fois</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="vie">350</span> €</b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="vie">350</span> €</b></div>
         <p class="note" data-i18n="p_v_note">Un seul paiement, accès à vie.</p>
         <a class="cta ghost" href="/lifetime" data-offre-lien="vie" data-i18n="cta_v">Prendre l’accès à vie</a>
       </div>
@@ -250,7 +254,8 @@ footer a:hover{color:var(--text-primary);}
   <div class="wrap">
     <h2 class="reveal" style="text-align:center" data-i18n="faq_h">Questions fréquentes</h2>
     <div class="faq reveal">
-      <details data-q="prix"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il ?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24 h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
+      <details data-q="prix" data-offre-phase="fenetre"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il ?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24 h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
+      <details data-q="prix_v2" data-offre-phase="v2" style="display:none" hidden><summary data-i18n="q_prix_v">Le prix peut-il changer ?</summary><p data-i18n="a_prix_v">Le prix de ton abonnement reste le tien tant qu’il court. L’accès à vie se paie une seule fois.</p></details>
       <details data-q="temps"><summary data-i18n="q_temps">Combien de temps par jour ?</summary><p data-i18n="a_temps">Quelques minutes par jour. Tu ouvres l’app, la séance est prête : rien à choisir, rien à préparer.</p></details>
       <details data-q="souplesse"><summary data-i18n="q_souplesse">Je ne suis pas souple, c’est pour moi ?</summary><p data-i18n="a_souplesse">Oui, c’est justement pour toi. Le programme part de ton bilan : il démarre là où tu en es, pas là où il faudrait être.</p></details>
       <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter ?</summary><p data-i18n="a_annul">Le mensuel et l’annuel s’annulent à tout moment depuis ton compte PayPal. L’essai de 7 jours du mensuel te laisse essayer avant de payer. Tu disposes aussi du délai légal de rétractation de 14 jours.</p></details>
@@ -266,7 +271,6 @@ footer a:hover{color:var(--text-primary);}
   </div>
 </footer>
 
-<script src="/assets/js/offre-v2.js"></script>
 <script>
 /* Dictionnaire : le français est lu dans le DOM au chargement (source unique du texte FR),
    l’anglais est ci-dessous. Chaînes en guillemets doubles ou apostrophe typographique uniquement. */
@@ -286,10 +290,10 @@ var I18N = {
     f2_p: "You film your movement, a coach watches it and answers you.",
     f3_t: "Your session adapts to what you say",
     f3_p: "Pain, fatigue, little time: you say it, the session changes.",
-    vs: "Of the 7 apps we compared, none combines these three.",
+    vs: "Of the 7 apps we compared, we found none that combines all three.",
     vs_src: "Based on their public documentation, checked on 23/10/2026.",
     n_members: "members",
-    n_feedback: "member feedbacks",
+    n_feedback: "member reviews",
     q1: "Tonight, my first pain-free session. After nearly 5 years of holding back and hurting the moment I walked past 500 m, I keep pushing my limits.",
     q2: "After two weeks, I can finally touch my toes with straight legs — for the first time in my life.",
     q3: "I was afraid the sessions would take too long. The call with Damien reassured me: you fit mobility around your life, not the other way around.",
@@ -309,6 +313,8 @@ var I18N = {
     faq_h: "Frequently asked questions",
     q_prix: "Why is the price going up?",
     a_prix: "The launch price is reserved for the 24-hour window. When the countdown ends, the plans move to the V2 price. The price you take now stays yours as long as your subscription runs.",
+    q_prix_v: "Can the price change?",
+    a_prix_v: "Your subscription price stays yours as long as it runs. Lifetime access is paid once.",
     q_temps: "How much time per day?",
     a_temps: "A few minutes a day. You open the app, the session is ready: nothing to choose, nothing to prepare.",
     q_souplesse: "I am not flexible, is this for me?",
@@ -318,7 +324,11 @@ var I18N = {
     f_priv: "Privacy"
   }
 };
-var TITLES = { fr: "Mobility Club V2 — Offre de lancement", en: "Mobility Club V2 — Launch offer" };
+var TITLES = {
+  fenetre: { fr: "Mobility Club V2 — Offre de lancement", en: "Mobility Club V2 — Launch offer" },
+  v2: { fr: "Mobility Club V2 — Ton coach de mouvement, dans ta poche", en: "Mobility Club V2 — Your movement coach, in your pocket" }
+};
+function phaseCourante() { return (window.MCOffre && MCOffre.etat() && MCOffre.etat().phase) || "v2"; }
 var LANG = "fr";
 
 (function () {
@@ -338,23 +348,17 @@ function setLang(l) {
   for (i = 0; i < nodes.length; i++) { k = nodes[i].getAttribute("data-i18n"); if (dict[k] != null) nodes[i].innerHTML = dict[k]; }
   var alts = document.querySelectorAll("[data-i18n-alt]");
   for (i = 0; i < alts.length; i++) { k = alts[i].getAttribute("data-i18n-alt"); if (dict[k] != null) alts[i].setAttribute("alt", dict[k]); }
-  document.title = TITLES[l];
+  document.title = TITLES[phaseCourante()][l];
   document.getElementById("lang").textContent = l === "fr" ? "EN" : "FR";
   try { localStorage.setItem("mc_lang", l); } catch (e) { /* stockage refusé : on continue */ }
-  if (window.MCOffre && MCOffre.etat()) remplirPost(MCOffre.etat());
+  /* ré-applique l’offre : les montants se formatent selon la langue (18,33 / 18.33) */
+  if (window.MCOffre && MCOffre.etat()) MCOffre.appliquerOffre(MCOffre.etat());
 }
 document.getElementById("lang").addEventListener("click", function () { setLang(LANG === "fr" ? "en" : "fr"); });
 
-/* prix d’après le compteur : lus de l’état serveur (prix_v2), le HTML ne porte que le repli */
-function fmtPrix(n) { var s = (Math.round(n * 100) / 100).toFixed(2).replace(".", ","); return s.slice(-3) === ",00" ? s.slice(0, -3) : s; }
-function remplirPost(e) {
-  if (!e || !e.prix_v2) return;
-  var els = document.querySelectorAll("[data-post]");
-  for (var i = 0; i < els.length; i++) { var v = e.prix_v2[els[i].getAttribute("data-post")]; if (v != null) els[i].textContent = fmtPrix(v); }
-}
-
 /* vidéo : fenêtre ou V2 */
-var videoPhase = "fenetre";
+/* Aucune <source> dans le HTML : la phase choisit la vidéo, une seule est téléchargée. */
+var videoPhase = null;
 function videoPour(phase) {
   if (phase === videoPhase) return;
   videoPhase = phase;
@@ -388,7 +392,8 @@ function track(event, props) {
   try { stored = localStorage.getItem("mc_lang"); } catch (e) {}
   if (stored === "en") setLang("en");
 
-  if (window.MCOffre) MCOffre.onChange(function (e) { videoPour(e.phase); remplirPost(e); });
+  if (window.MCOffre) MCOffre.onChange(function (e) { videoPour(e.phase); document.title = TITLES[e.phase === "fenetre" ? "fenetre" : "v2"][LANG]; });
+  else videoPour("fenetre"); /* script d’offre absent : phase inconnue, vidéo de la fenêtre par défaut */
 
   /* reveal */
   var rv = document.querySelectorAll(".reveal");
@@ -410,9 +415,16 @@ function track(event, props) {
     io2.observe(offre);
   }
 
-  /* première lecture vidéo */
-  var hv = document.getElementById("hv"), played = false;
-  hv.addEventListener("playing", function () { if (!played) { played = true; track("video_played", { path: "/lancement" }); } });
+  /* vidéo regardée : 5 s de lecture réelle cumulée (l’autoplay muet seul ne compte pas), une fois */
+  var hv = document.getElementById("hv"), played = false, vu = 0, dernier = null;
+  hv.addEventListener("timeupdate", function () {
+    if (played) return;
+    var t = hv.currentTime;
+    if (dernier !== null && t > dernier && t - dernier < 1.5) vu += t - dernier; /* boucle, saut ou changement de source : ignorés */
+    dernier = t;
+    if (vu >= 5) { played = true; track("video_played", { path: "/lancement" }); }
+  });
+  hv.addEventListener("emptied", function () { dernier = null; });
 
   /* FAQ */
   var ds = document.querySelectorAll("details[data-q]");

@@ -1,7 +1,8 @@
 /* Offre de lancement V2 côté navigateur. Sans module, sans dépendance.
    Source de vérité = GET /.netlify/functions/offre-v2 ; ce script ne fait que
    l'afficher. Attributs : data-offre-prix="mensuel|annuel|vie|annuel-mois|vie-4x"
-   (+ data-offre-eur pour suffixer " €"), data-offre-lien, data-offre-phase,
+   (+ data-offre-eur pour suffixer " €"), data-offre-prix-v2="mensuel|annuel|vie"
+   (prix d'après la fenêtre, lus de e.prix_v2), data-offre-lien, data-offre-phase,
    data-offre-compteur. window.MC_OFFRE_FIN (ISO) = heure de fin embarquée. */
 (function () {
   'use strict';
@@ -19,9 +20,11 @@
   var timerFin = null;
   var timerTick = null;
 
+  // Séparateur décimal selon la langue de la page : 18,33 (fr) / 18.33 (en).
   function fmt(n) {
-    var s = (Math.round(n * 100) / 100).toFixed(2).replace('.', ',');
-    return s.slice(-3) === ',00' ? s.slice(0, -3) : s;
+    var sep = /^en/i.test(document.documentElement.lang || '') ? '.' : ',';
+    var s = (Math.round(n * 100) / 100).toFixed(2).replace('.', sep);
+    return s.slice(-3) === sep + '00' ? s.slice(0, -3) : s;
   }
   function maintenant() { return Date.now() + decalage; }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -74,6 +77,11 @@
     for (i = 0; i < els.length; i++) {
       v = valeurPrix(els[i].getAttribute('data-offre-prix'), e);
       if (v != null) els[i].textContent = v + (els[i].hasAttribute('data-offre-eur') ? ' €' : '');
+    }
+    els = document.querySelectorAll('[data-offre-prix-v2]');
+    for (i = 0; i < els.length; i++) {
+      v = e.prix_v2 && e.prix_v2[els[i].getAttribute('data-offre-prix-v2')];
+      if (v != null) els[i].textContent = fmt(v);
     }
     els = document.querySelectorAll('[data-offre-lien]');
     for (i = 0; i < els.length; i++) {
