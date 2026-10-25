@@ -8,16 +8,16 @@
 window.MC_LIFETIME = {
   TOTAL: 40,
   TIER_SIZE: 20,
-  PRICE_1: 199,
-  PRICE_2: 249,
+  // Prix : plus ici. Le serveur dit le prix (lifetime-tickets) et la phase (offre-v2).
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
   POLL_MS: 8000
 };
 </script>
+<script src="/assets/js/offre-v2.js"></script>
 
 <title>Lifetime Tickets — Mobility Club</title>
-<meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle à 249 €. Un paiement, l’accès au cœur du Club à vie." />
+<meta name="description" content="Choisis ton Lifetime Pass Mobility Club dans la série actuelle. Un paiement, l’accès au cœur du Club à vie." />
 <meta property="og:title" content="Lifetime Tickets — Mobility Club" />
 <meta property="og:description" content="Prends ton ticket. Tu paies une fois, tu gardes Mobility Club à vie." />
 <meta property="og:type" content="website" />
@@ -266,10 +266,10 @@ details[open] summary::after{content:"×"}
         <p class="lede">Tu paies Mobility Club une fois. Tu gardes le cœur du Club à vie : bilans, séances personnalisées, programmes et évolutions normales. <strong>Aucun abonnement derrière.</strong></p>
         <div class="proof-line">
           <span><b>11 personnes</b> l’ont fait il y a un an</span>
-          <span><b>20 tickets à 199 €</b> déjà attribués</span>
-          <span data-price-reveal><b><span data-price>249</span> €</b> en 1 fois</span>
-          <span data-price-reveal><b><span data-tier-sold>…</span>/20 tickets à <span data-price>249</span> €</b> déjà pris</span>
-          <span data-price-reveal><b>4 × <span data-installment>62,25</span> €</b> via PayPal</span>
+          <span data-offre-phase="fenetre"><b>20 tickets à 199 €</b> déjà attribués</span>
+          <span data-price-reveal><b><span data-price data-offre-prix="vie">249</span> €</b> en 1 fois</span>
+          <span data-price-reveal><b><span data-tier-sold>…</span>/20 tickets à <span data-price data-offre-prix="vie">249</span> €</b> déjà pris</span>
+          <span data-price-reveal><b>4 × <span data-installment data-offre-prix="vie-4x">62,25</span> €</b> via PayPal</span>
         </div>
       </div>
 
@@ -295,8 +295,8 @@ details[open] summary::after{content:"×"}
         <div class="ticket-experience" data-ticket-experience aria-hidden="true" hidden>
           <div class="ticket-board" data-ticket-board tabindex="-1">
             <header class="board-head">
-              <div class="board-tier">Lot actuel<b data-tier-name>Série 02 · 249 €</b></div>
-              <div class="board-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
+              <div class="board-tier">Lot actuel<b data-tier-name>Série 02</b></div>
+              <div class="board-price"><span>€</span><b data-price data-offre-prix="vie">249</b><small>ou 4 × <span data-installment data-offre-prix="vie-4x">62,25</span> € via PayPal</small></div>
               <div class="board-remaining" data-remaining>Vérification du stock…</div>
             </header>
             <div class="ticket-grid" data-ticket-grid aria-label="Les 20 tickets du lot actuel"></div>
@@ -336,7 +336,7 @@ details[open] summary::after{content:"×"}
 </div>
 
 <div class="mobile-action">
-  <div class="mobile-price"><span>€</span><b data-price>249</b><small>ou 4 × <span data-installment>62,25</span> € via PayPal</small></div>
+  <div class="mobile-price"><span>€</span><b data-price data-offre-prix="vie">249</b><small>ou 4 × <span data-installment data-offre-prix="vie-4x">62,25</span> € via PayPal</small></div>
   <button class="buy off" type="button" data-claim disabled>Vérification…</button>
   <button class="buy is-hidden" type="button" data-pay data-plan="lifetime_loading">Réserver et payer →</button>
 </div>
