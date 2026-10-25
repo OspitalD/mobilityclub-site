@@ -13,17 +13,24 @@ export const PLANS = {
     mensuel: PAYPAL_PLAN('P-43F663568B911461GNLNCJBY'), // 25 €/mois, essai 7 j
     annuel: PAYPAL_PLAN('P-4VH08043D1618690PNJJ2Z5A'), // 220 €/an
     vie: '/lifetime',
+    mensuel_fixe: PAYPAL_PLAN('P-17C64877T6348331UNLCQIVI'), // 25 €/mois SANS essai (/lancement, C3)
   },
   // Un plan à null bloque le deploy via tests/offre-v2-deploy.test.mjs, pas via une vérification à l'exécution.
   v2: {
     mensuel: PAYPAL_PLAN('P-3X034647B5061360HNLPBCDY'), // 30 €/mois, essai 7 j
     annuel: PAYPAL_PLAN('P-7PX93930RS848432UNLPBCEA'), // 275 €/an
     vie: '/lifetime',
+    // 30 €/mois SANS essai (/lancement, C3) : plan à créer par Damien. null => deploy bloqué
+    // (tests/offre-v2-deploy.test.mjs) et la page renvoie vers /devenir-membre, jamais vers un ancien plan.
+    mensuel_fixe: null,
   },
 };
 
 export const PRIX_FENETRE = { mensuel: 25, annuel: 220, vie: 249 };
 export const PRIX_V2 = { mensuel: 30, annuel: 275, vie: 350 };
+
+// Paiement en 4 fois PayPal de l'accès à vie, arrondi au centime (62,25 / 87,50).
+const avec4x = (prix) => ({ ...prix, vie_4x: Math.round((prix.vie * 100) / 4) / 100 });
 
 // Lu à chaque appel (pas à l'import) : le test de bascule pose l'override
 // après le chargement du module.
@@ -44,13 +51,14 @@ export const etatOffre = (now = Date.now()) => {
     phase,
     fin,
     maintenant: new Date(maintenant).toISOString(),
-    prix: phase === 'v2' ? { ...PRIX_V2 } : { ...PRIX_FENETRE },
-    prix_v2: { ...PRIX_V2 },
+    prix: avec4x(phase === 'v2' ? PRIX_V2 : PRIX_FENETRE),
+    prix_v2: avec4x(PRIX_V2),
     liens: {
       // Plan V2 pas encore créé : on renvoie vers la page d'achat plutôt que vers un ancien plan.
       mensuel: plans.mensuel ?? '/devenir-membre',
       annuel: plans.annuel ?? '/devenir-membre',
       vie: plans.vie,
+      mensuel_fixe: plans.mensuel_fixe ?? '/devenir-membre',
     },
   };
 };

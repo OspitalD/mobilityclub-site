@@ -1,8 +1,9 @@
 /* Offre de lancement V2 côté navigateur. Sans module, sans dépendance.
    Source de vérité = GET /.netlify/functions/offre-v2 ; ce script ne fait que
    l'afficher. Attributs : data-offre-prix="mensuel|annuel|vie|annuel-mois|vie-4x"
-   (+ data-offre-eur pour suffixer " €"), data-offre-prix-v2="mensuel|annuel|vie"
-   (prix d'après la fenêtre, lus de e.prix_v2), data-offre-lien, data-offre-phase,
+   (+ data-offre-eur pour suffixer " €"), data-offre-prix-v2="mensuel|annuel|vie|vie-4x"
+   (prix d'après la fenêtre, lus de e.prix_v2), data-offre-lien="mensuel|annuel|vie|mensuel_fixe|achat",
+   data-offre-phase,
    data-offre-compteur. window.MC_OFFRE_FIN (ISO) = heure de fin embarquée. */
 (function () {
   'use strict';
@@ -42,14 +43,14 @@
       prix: PRIX[phase],
       prix_v2: PRIX.v2,
       liens: phase === 'v2'
-        ? { mensuel: '/devenir-membre', annuel: '/devenir-membre', vie: '/lifetime' }
+        ? { mensuel: '/devenir-membre', annuel: '/devenir-membre', vie: '/lifetime', mensuel_fixe: '/devenir-membre' }
         : null, // fenêtre : on garde les href du HTML (les anciens plans)
       local: true
     };
   }
 
-  function valeurPrix(cle, e) {
-    var p = e.prix;
+  function valeurPrix(cle, e, p) {
+    p = p || e.prix;
     if (cle === 'annuel-mois') return fmt(p.annuel / 12);
     if (cle === 'vie-4x') return fmt(p.vie / 4);
     return p[cle] == null ? null : fmt(p[cle]);
@@ -80,8 +81,8 @@
     }
     els = document.querySelectorAll('[data-offre-prix-v2]');
     for (i = 0; i < els.length; i++) {
-      v = e.prix_v2 && e.prix_v2[els[i].getAttribute('data-offre-prix-v2')];
-      if (v != null) els[i].textContent = fmt(v);
+      v = e.prix_v2 ? valeurPrix(els[i].getAttribute('data-offre-prix-v2'), e, e.prix_v2) : null;
+      if (v != null) els[i].textContent = v;
     }
     els = document.querySelectorAll('[data-offre-lien]');
     for (i = 0; i < els.length; i++) {

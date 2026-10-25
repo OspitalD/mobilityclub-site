@@ -10,7 +10,10 @@ afterEach(() => { delete process.env.OFFRE_V2_FIN; });
 test('avant la fin : phase fenetre, prix 25/220/249, liens anciens plans', () => {
   const e = etatOffre(fin - 1000);
   assert.equal(e.phase, 'fenetre');
-  assert.deepEqual(e.prix, { mensuel: 25, annuel: 220, vie: 249 });
+  assert.deepEqual(e.prix, { mensuel: 25, annuel: 220, vie: 249, vie_4x: 62.25 });
+  assert.equal(e.liens.mensuel_fixe, PLANS.ancien.mensuel_fixe);
+  assert.match(e.liens.mensuel_fixe, /plan_id=P-17C64877T6348331UNLCQIVI$/);
+  assert.equal(e.prix_v2.vie_4x, 87.5);
   assert.equal(e.liens.mensuel, PLANS.ancien.mensuel);
   assert.equal(e.liens.annuel, PLANS.ancien.annuel);
   assert.equal(e.fin, FIN_FENETRE);
@@ -24,11 +27,14 @@ test('à la seconde exacte de la fin : phase v2 (fenêtre close)', () => {
 test('après la fin : prix 30/275/350 et AUCUN ancien plan dans les liens', () => {
   const e = etatOffre(fin + 1000);
   assert.equal(e.phase, 'v2');
-  assert.deepEqual(e.prix, { mensuel: 30, annuel: 275, vie: 350 });
+  assert.deepEqual(e.prix, { mensuel: 30, annuel: 275, vie: 350, vie_4x: 87.5 });
   const rendu = JSON.stringify(e.liens);
   assert.ok(!rendu.includes(PLANS.ancien.mensuel.split('=')[1]));
   assert.ok(!rendu.includes(PLANS.ancien.annuel.split('=')[1]));
   assert.equal(e.liens.vie, '/lifetime');
+  assert.ok(!rendu.includes('P-17C64877T6348331UNLCQIVI'), 'mensuel fixe 25 € jamais rendu en v2');
+  // Tant que le plan 30 € sans essai n'existe pas : page d'achat, jamais l'ancien plan.
+  assert.equal(e.liens.mensuel_fixe, PLANS.v2.mensuel_fixe ?? '/devenir-membre');
 });
 
 test('après la fin : les liens sont les plans V2 (essai 7 j / 275 €), jamais un lien vide', () => {
