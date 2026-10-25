@@ -51,3 +51,11 @@ Vérifier ce qui a été commité avec `git -C ~/Projects/mc-worktrees/site-lanc
 - Damien rejette le style « IA » : pas de cartes dans des cartes, pas d'icônes en pastilles, pas d'eyebrows mono.
 - Chaînes JS : guillemets doubles ou apostrophe typographique ’.
 - Commits par nom de fichier, jamais `git add -A`.
+
+---
+
+## Point du 25/10 fin d'après-midi (session suivante)
+- FAIT et vérifié (108/108 site, 105/105 paypal-app, verif-offre-pages vert, LCP 2,2 s) : lots 1–3, relectures adverses lot 1 + page, corrections (commits 7d46386 → bef2f6b) ; dépôt paypal-app : plans V2 reconnus (c78cbcb, branche feat/paypal-abonnement-app, local).
+- Décisions Damien : Lifetime V2 = série 3 de 20 tickets à 350 € (A12) ; bootcamp fermé (302 → /lancement) ; refonte « fracture V1 → V2 » = section B1–B8 du CONTRAT (phrase « La mobilité au cœur de ton entraînement. », deux vidéos séparées, comparateur « Ce que tu perds en jonglant » sans cumul gonflé, captures floutées d'apps de mouvement, publication quand TOUT est prêt, face cam de Damien incluse).
+- EN COURS : Lot V (vidéo motion, projet docs/lancement-v2/video-v2/, mêmes noms dans assets/video/ + 9x16-v2) et Lot P (réécriture lancement.html + comparateur + /lancement dans verif-offre-pages.mjs). Si perdus : relancer depuis B1–B8.
+- Ensuite : relecture adverse V et P → corrections → intégration (filet complet) → aperçu à Damien → attendre sa face cam → OK de publication.
