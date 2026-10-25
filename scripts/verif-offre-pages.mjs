@@ -107,19 +107,32 @@ for (const [phase, fin, attendu] of [['v2', PASSE, { m: '30', a: '275', v: '350'
   verifier(prixLifetime.length >= 4 && prixLifetime.every((t) => t === attendu.v), `lifetime [${phase}] prix ${attendu.v} affiché sans stock (${prixLifetime.join(',')})`);
   await p.close();
 
-  // lancement : prix + « verrouillé » en fenêtre, « La V2 est lancée » en v2, href des plans, vidéo de la phase, compteur masqué en v2
+  // lancement (C1–C4) : deux choix seulement, à vie en phare (4 × prix/4) + mensuel fixe SANS essai ; jamais d’annuel ni d’« essai »
   p = await ouvrir('/lancement', { fin });
   texte = await p.innerText('#offre');
-  const prixL = await p.$$eval('#offre [data-offre-prix="mensuel"], #offre [data-offre-prix="annuel"], #offre [data-offre-prix="vie"]', (els) => els.map((e) => e.textContent.trim()));
-  verifier(prixL.join('/') === `${attendu.m}/${attendu.a}/${attendu.v}`, `lancement [${phase}] prix ${prixL.join('/')}`);
-  if (phase === 'fenetre') verifier(/verrouillé/.test(texte) && texte.includes('Dès la fin du compteur'), 'lancement [fenetre] « verrouillé » + prix d’après');
-  else verifier(texte.includes('La V2 est lancée') && !/verrouillé/.test(texte), 'lancement [v2] « La V2 est lancée », aucun « verrouillé »');
+  const prixL = await p.$$eval('#offre [data-offre-prix="mensuel"], #offre [data-offre-prix="vie"], #offre [data-offre-prix="vie-4x"]', (els) => els.map((e) => e.textContent.trim()));
+  const quatre = phase === 'v2' ? '87,50' : '62,25';
+  verifier(prixL.join('/') === `${quatre}/${attendu.v}/${attendu.m}`, `lancement [${phase}] prix ${prixL.join('/')} (4 ×, vie, mensuel)`);
+  verifier(!(await p.$$('#offre [data-offre-prix="annuel"], #offre [data-offre-lien="annuel"], #offre [data-offre-lien="mensuel"]')).length, `lancement [${phase}] deux choix : ni annuel ni mensuel avec essai`);
+  const toutTexte = await texteRendu(p);
+  verifier(!/essai|annuel|\/an\b/i.test(texte) && !/essai/i.test(toutTexte), `lancement [${phase}] aucun « essai » sur la page, aucun annuel dans l’offre`);
+  if (phase === 'fenetre') verifier(/verrouillé/.test(texte) && texte.includes('Dès la fin du compteur') && texte.includes('4 × 87,50'), 'lancement [fenetre] « verrouillé » + prix d’après (350 € / 4 × 87,50 €, 30 €/mois)');
+  else verifier(texte.includes('La V2 est lancée') && !/verrouillé|Dès la fin du compteur/.test(texte), 'lancement [v2] « La V2 est lancée », ni « verrouillé » ni prix d’après');
   const lienL = await p.$$eval('[data-offre-lien]', (as) => Object.fromEntries(as.map((a) => [a.dataset.offreLien, a.getAttribute('href')])));
-  const attenduL = phase === 'v2' ? { mensuel: PLANS.v2.mensuel, annuel: PLANS.v2.annuel, vie: '/lifetime' } : { mensuel: PLANS.ancien.mensuel, annuel: PLANS.ancien.annuel, vie: '/lifetime' };
-  verifier(Object.keys(attenduL).every((k) => lienL[k] === attenduL[k]), `lancement [${phase}] href ${JSON.stringify(lienL)}`);
+  const attenduL = { mensuel_fixe: phase === 'v2' ? (PLANS.v2.mensuel_fixe ?? '/devenir-membre') : PLANS.ancien.mensuel_fixe, vie: '/lifetime' };
+  verifier(Object.keys(attenduL).every((k) => lienL[k] === attenduL[k]) && Object.keys(lienL).length === 2, `lancement [${phase}] href ${JSON.stringify(lienL)}`);
   if (phase === 'v2') {
     const dom = await p.content();
     verifier(!/P-43F|P-4VH|P-17C|KT93/.test(dom) && !(await hrefs(p)).some((l) => anciens.some((x) => l.includes(x))), 'lancement [v2] aucun ancien plan dans le DOM');
+  }
+  // simulateur : montants calculés depuis l’offre servie
+  for (const mois of [6, 10, 24]) {
+    await p.$eval('#sim-r', (r, v) => { r.value = v; r.dispatchEvent(new Event('input', { bubbles: true })); }, mois);
+    const barres = await p.$$eval('#sim-bars b', (bs) => bs.map((b) => Number(b.dataset.v)));
+    const say = (await p.innerText('#sim-say')).replace(/\s/g, ' ');
+    const att = phase === 'v2' ? [350, 30 * mois] : [249, 350, 25 * mois, 30 * mois];
+    const seuil = phase === 'v2' ? 12 : 10;
+    verifier(JSON.stringify(barres) === JSON.stringify(att) && say.includes(`dès le ${seuil}`) && (phase === 'v2' ? !say.includes('101') : say.includes('101 €')), `lancement [${phase}] simulateur ${mois} mois : ${barres.join('/')} — ${say}`);
   }
   const src = await p.$eval('#hv', async (v) => { for (let i = 0; i < 40 && !v.currentSrc; i++) await new Promise((r) => setTimeout(r, 50)); return v.currentSrc; });
   verifier(src.includes(`lancement-16x9-${phase}.`), `lancement [${phase}] vidéo ${src.split('/').pop()}`);
