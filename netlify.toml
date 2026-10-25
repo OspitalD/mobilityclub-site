@@ -56,18 +56,18 @@
 
 # ── Bootcamp : FERMÉ (décision 2026-10-25) ────────────────────────────────────
 # La page proposait l'abonnement P-17C… ; elle n'est plus publiée (dossier retiré).
-# 301 : fermeture définitive. force = true : la règle s'applique même si un fichier
+# 302 (pas 301) : /lancement est une page temporaire, un 301 resterait en cache navigateur. force = true : la règle s'applique même si un fichier
 # bootcamp/ revenait par erreur dans le dépôt.
 [[redirects]]
   from = "/bootcamp"
   to = "/lancement"
-  status = 301
+  status = 302
   force = true
 
 [[redirects]]
   from = "/bootcamp/*"
   to = "/lancement"
-  status = 301
+  status = 302
   force = true
 
 # En-têtes de sécurité de base (site statique, aucune donnée sensible)

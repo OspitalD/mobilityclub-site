@@ -21,13 +21,13 @@ const redirections = (toml) =>
     return r;
   });
 
-test('/bootcamp et /bootcamp/* → /lancement en 301, forcé (le fichier statique ne masque pas la règle)', async () => {
+test('/bootcamp et /bootcamp/* → /lancement en 302, forcé (le fichier statique ne masque pas la règle)', async () => {
   const regles = redirections(await readFile(join(ROOT, 'netlify.toml'), 'utf8'));
   for (const from of ['/bootcamp', '/bootcamp/*']) {
     const r = regles.find((x) => x.from === from);
     assert.ok(r, `règle manquante pour ${from}`);
     assert.equal(r.to, '/lancement');
-    assert.equal(r.status, 301);
+    assert.equal(r.status, 302);
     assert.equal(r.force, true);
   }
 });
