@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Mobility Club V2 — Ton coach de mouvement, dans ta poche</title>
-<meta name="description" content="Mobility Club V2 : ton coach de mouvement, dans ta poche. Bilan articulaire, coach vocal, correction vidéo par un humain. Mensuel, annuel ou à vie." />
+<title>Mobility Club V2 — La mobilité au cœur de ton entraînement</title>
+<meta name="description" content="Mobility Club V2 : la mobilité au cœur de ton entraînement. Une seule app pour tout ce qui touche au mouvement : tu importes ton programme de salle et de course, tu suis tes progrès, la mobilité s’y insère et s’adapte." />
 <meta name="theme-color" content="#0D0F0E" />
 <meta name="robots" content="index,follow" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Mobility Club V2 — Ton coach de mouvement, dans ta poche" />
-<meta property="og:description" content="Bilan articulaire, coach vocal, correction vidéo par un humain." />
+<meta property="og:title" content="Mobility Club V2 — La mobilité au cœur de ton entraînement" />
+<meta property="og:description" content="Une seule app pour tout ce qui touche au mouvement : ton programme de salle et de course, tes progrès, et la mobilité qui s’y insère." />
 <meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-fenetre.jpg" />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
@@ -46,18 +46,21 @@ body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-
 body::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     radial-gradient(60% 420px at 85% 0%, rgba(62,207,160,.16), transparent 70%),
-    radial-gradient(50% 520px at 0% 38%, rgba(185,144,224,.12), transparent 70%),
-    radial-gradient(55% 480px at 100% 70%, rgba(232,160,32,.09), transparent 70%);}
+    radial-gradient(50% 520px at 0% 30%, rgba(185,144,224,.12), transparent 70%),
+    radial-gradient(55% 480px at 100% 55%, rgba(62,207,160,.08), transparent 70%),
+    radial-gradient(55% 480px at 0% 80%, rgba(232,160,32,.07), transparent 70%);}
 a{color:inherit;}
 img,video{display:block;max-width:100%;}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
 section{padding:clamp(48px,8vw,96px) 0;}
 h1,h2,h3{font-style:italic;font-weight:800;letter-spacing:-0.02em;line-height:1.08;}
-h1{font-size:clamp(38px,7.2vw,76px);}
+h1{font-size:clamp(34px,6.6vw,70px);letter-spacing:-0.035em;text-wrap:balance;}
 h2{font-size:clamp(28px,4.4vw,44px);margin-bottom:clamp(20px,3vw,32px);text-wrap:balance;}
 h3{font-size:clamp(18px,2vw,22px);text-wrap:balance;}
 p{color:var(--text-secondary);}
-.glass{background:var(--bg-surface);border:1px solid var(--glass-border);border-radius:26px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.glass{background:var(--bg-surface);border:1px solid var(--glass-border);border-radius:26px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);}
+.center{text-align:center;}
+.lead{font-size:clamp(16px,1.8vw,19px);max-width:46ch;margin:0 auto;text-wrap:balance;}
 
 /* langue */
 .langbar{display:flex;justify-content:flex-end;padding-top:16px;}
@@ -73,27 +76,64 @@ html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 .cta.ghost:hover{border-color:var(--accent-green);color:var(--accent-green);}
 .cta:focus-visible,summary:focus-visible,.lang:focus-visible{outline:2px solid var(--accent-green);outline-offset:3px;}
 
-/* hero */
-.hero{padding-top:clamp(24px,5vw,56px);text-align:center;}
+/* 1. hero */
+.hero{padding-top:clamp(12px,4vw,48px);text-align:center;}
+.kicker{font-size:clamp(15px,1.6vw,17px);font-weight:700;color:var(--text-primary);margin-bottom:clamp(10px,1.6vw,16px);}
+.kicker span{color:var(--accent-green);}
+.hero h1{max-width:16ch;margin:0 auto;}
 .hero h1 span{color:var(--accent-green);}
-.promise{font-size:clamp(18px,2.4vw,24px);color:var(--text-primary);font-weight:600;margin:16px auto 0;max-width:34ch;text-wrap:balance;}
-.video{margin:clamp(28px,4vw,44px) auto 0;max-width:880px;aspect-ratio:16/9;border-radius:28px;overflow:hidden;border:1px solid var(--glass-border);background:#111412;}
+.promise{font-size:clamp(16px,2vw,20px);margin:14px auto 0;max-width:40ch;text-wrap:balance;}
+.video{margin:clamp(20px,4vw,40px) auto 0;max-width:min(880px, max(520px, calc((100svh - 500px) * 16 / 9)));aspect-ratio:16/9;border-radius:28px;overflow:hidden;border:1px solid var(--glass-border);background:#111412;}
 .video video{width:100%;height:100%;object-fit:cover;}
-.count{margin-top:clamp(24px,4vw,36px);}
-.count .t{font-size:clamp(40px,8vw,72px);font-weight:800;font-style:italic;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:var(--accent-gold);line-height:1;}
-.count p{margin-top:8px;font-size:14px;}
-.hero .cta{margin-top:clamp(22px,3vw,32px);}
+.count{margin-top:clamp(18px,4vw,36px);}
+.count .t{font-size:clamp(36px,8vw,72px);font-weight:800;font-style:italic;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:var(--accent-gold);line-height:1;}
+.count p{margin-top:6px;font-size:14px;}
+.hero .cta{margin-top:clamp(16px,3vw,32px);}
 
-/* faits */
-.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,48px);}
-.fact{display:flex;flex-direction:column;gap:16px;}
-.fact img{width:100%;max-width:240px;height:auto;aspect-ratio:1179/2556;border-radius:26px;border:1px solid var(--glass-border);margin:0 auto;background:#111412;}
-.fact h3{margin-top:4px;}
-.fact p{font-size:15px;}
-.vs{margin-top:clamp(32px,5vw,56px);text-align:center;font-size:clamp(17px,2.2vw,22px);font-weight:600;color:var(--text-primary);text-wrap:balance;}
-.vs small{display:block;margin-top:6px;font-size:12px;font-weight:400;color:var(--text-tertiary);}
+/* 2. fracture */
+.split{display:grid;grid-template-columns:1fr 1fr;margin-top:clamp(8px,2vw,16px);}
+.split > div{padding:4px clamp(20px,4vw,52px);}
+.split > div:first-child{padding-left:0;}
+.split > div + div{border-left:1px solid var(--hair);padding-right:0;}
+.split .v{display:block;font-size:clamp(56px,9vw,108px);font-weight:800;font-style:italic;line-height:.9;letter-spacing:-0.05em;}
+.split .v1 .v{color:#3a3d3b;}
+.split .v2 .v{color:var(--accent-green);}
+.split h3{margin:18px 0 12px;font-size:clamp(24px,3.2vw,34px);letter-spacing:-0.03em;}
+.split .v1 h3{color:var(--text-secondary);}
+.split p{font-size:clamp(15px,1.6vw,17px);max-width:38ch;}
+.enemy{margin:clamp(40px,6vw,72px) auto 0;text-align:center;font-size:clamp(19px,2.6vw,26px);font-weight:600;color:var(--text-primary);max-width:34ch;text-wrap:balance;line-height:1.35;}
+.enemy b{color:var(--accent-gold);font-weight:700;}
 
-/* preuve */
+/* 3. hub */
+.hub-head{text-align:center;max-width:760px;margin:0 auto clamp(36px,6vw,64px);}
+.hub-head h2{margin-bottom:16px;}
+.hub-head .lead b{color:var(--text-primary);font-weight:600;}
+.bricks{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(40px,5vw,64px) clamp(24px,4vw,48px);}
+.brick{display:flex;flex-direction:column;gap:14px;}
+.brick img{width:100%;max-width:220px;height:auto;aspect-ratio:560/1214;object-fit:cover;object-position:top;border-radius:24px;border:1px solid var(--glass-border);margin:0 auto 6px;background:#111412;}
+.brick p{font-size:15px;}
+.brick .soon{color:var(--accent-gold);font-weight:600;}
+
+/* 4. comparateur */
+.cmp-head{text-align:center;max-width:760px;margin:0 auto clamp(28px,4vw,44px);}
+.cmp-head h2{margin-bottom:14px;}
+.cmp{max-width:900px;margin:0 auto;padding:clamp(8px,1.5vw,14px) clamp(18px,3vw,36px);}
+.row{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:8px 24px;padding:16px 0;border-top:1px solid var(--hair);align-items:baseline;}
+.row:first-child{border-top:0;}
+.row.th{padding:14px 0 10px;font-size:14px;font-weight:700;color:var(--text-secondary);}
+.row.th small{display:block;font-weight:500;font-size:12.5px;color:var(--text-tertiary);}
+.row.th .us{color:var(--accent-green);}
+.row .f{font-weight:700;font-size:16px;line-height:1.35;color:var(--text-primary);}
+.row .sep{font-size:14.5px;color:var(--text-secondary);line-height:1.45;}
+.row .us{font-size:14.5px;font-weight:700;color:var(--accent-green);line-height:1.45;}
+.m-lbl{display:none;}
+.cmp-note{max-width:900px;margin:14px auto 0;font-size:13px;color:var(--text-tertiary);line-height:1.55;}
+.cmp-price{max-width:900px;margin:clamp(28px,4vw,40px) auto 0;font-size:15px;line-height:1.6;}
+.cmp-price b{color:var(--text-primary);font-weight:700;}
+.cmp-price small{display:block;margin-top:8px;font-size:13px;color:var(--text-tertiary);}
+.cmp-loss{max-width:30ch;margin:clamp(28px,4vw,44px) auto 0;text-align:center;font-size:clamp(19px,2.6vw,26px);font-weight:600;color:var(--text-primary);line-height:1.35;text-wrap:balance;}
+
+/* 5. preuve */
 .numbers{display:flex;gap:clamp(24px,6vw,72px);flex-wrap:wrap;margin-bottom:clamp(28px,4vw,44px);}
 .numbers b{display:block;font-size:clamp(40px,6vw,64px);font-weight:800;font-style:italic;color:var(--accent-green);line-height:1;}
 .numbers span{font-size:14px;color:var(--text-secondary);}
@@ -102,7 +142,7 @@ html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 .quotes q{display:block;quotes:none;font-size:15px;color:var(--text-primary);}
 .quotes cite{display:block;margin-top:10px;font-size:13px;font-style:normal;font-weight:700;color:var(--text-secondary);}
 
-/* offre */
+/* 6. offre */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,24px);align-items:stretch;}
 .plan{padding:clamp(22px,3vw,32px);display:flex;flex-direction:column;gap:10px;}
 .plan .name{font-weight:700;font-size:15px;color:var(--text-secondary);}
@@ -116,7 +156,7 @@ html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 .offer-top .count{margin:0 0 clamp(24px,4vw,40px);}
 .offer-top h2{margin-bottom:20px;}
 
-/* faq */
+/* 7. faq */
 .faq{max-width:760px;margin:0 auto;}
 details{border-top:1px solid var(--hair);}
 details:last-child{border-bottom:1px solid var(--hair);}
@@ -136,14 +176,25 @@ footer a:hover{color:var(--text-primary);}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important;}html{scroll-behavior:auto;}}
 
 @media (max-width:820px){
-  .facts{grid-template-columns:1fr;gap:28px;}
-  .fact{display:grid;grid-template-columns:116px 1fr;gap:4px 18px;align-items:start;}
-  .fact img{grid-row:1 / span 2;max-width:116px;border-radius:18px;margin:0;}
-  .fact h3{margin-top:0;align-self:end;}
+  .split{grid-template-columns:1fr;}
+  .split > div{padding:0;}
+  .split > div + div{border-left:0;border-top:1px solid var(--hair);margin-top:28px;padding-top:28px;}
+  .split h3{margin:12px 0 8px;}
+  .bricks{grid-template-columns:1fr;gap:32px;}
+  .brick{display:grid;grid-template-columns:112px 1fr;gap:6px 18px;align-items:start;}
+  .brick img{grid-row:1 / span 2;max-width:112px;border-radius:16px;margin:0;}
+  .brick h3{align-self:end;}
   .quotes{grid-template-columns:1fr;}
   .plans{grid-template-columns:1fr;}
   .plan .cta{margin-top:6px;}
   .video{border-radius:20px;}
+}
+@media (max-width:700px){
+  .row{grid-template-columns:1fr;gap:6px;}
+  .row.th{display:none;}
+  .row:nth-child(2){border-top:0;}
+  .m-lbl{display:inline;font-weight:600;color:var(--text-tertiary);}
+  .row .us .m-lbl{color:rgba(62,207,160,.7);}
 }
 </style>
 </head>
@@ -154,8 +205,9 @@ footer a:hover{color:var(--text-primary);}
 <!-- 1. HERO -->
 <section class="hero" aria-label="Mobility Club V2">
   <div class="wrap">
-    <h1 >Mobility Club <span>V2</span></h1>
-    <p class="promise" data-i18n="promise">Ton coach de mouvement, dans ta poche.</p>
+    <p class="kicker">Mobility Club <span>V2</span></p>
+    <h1 data-i18n="h1">La mobilité <span>au cœur</span> de ton entraînement.</h1>
+    <p class="promise" data-i18n="promise">Une seule app pour tout ce qui touche au mouvement.</p>
     <div class="video" id="video">
       <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2"></video>
     </div>
@@ -167,31 +219,124 @@ footer a:hover{color:var(--text-primary);}
   </div>
 </section>
 
-<!-- 2. MOAT -->
-<section aria-label="Ce que la V2 change">
+<!-- 2. LA FRACTURE -->
+<section id="fracture" aria-label="V1 et V2">
   <div class="wrap">
-    <div class="facts">
-      <div class="fact reveal">
-        <img src="/assets/lancement/bilan.jpg" width="560" height="1214" loading="lazy" alt="Écran Ton bilan : score articulaire et radar des zones" data-i18n-alt="alt_bilan" />
-        <h3 data-i18n="f1_t">Ton corps mesuré, puis re‑mesuré</h3>
-        <p data-i18n="f1_p">Un bilan articulaire de départ, refait régulièrement : tu vois ce qui bouge vraiment.</p>
+    <div class="split">
+      <div class="v1 reveal">
+        <span class="v" aria-hidden="true">V1</span>
+        <h3 data-i18n="v1_t">La mobilité en plus.</h3>
+        <p data-i18n="v1_p">Une app de plus, une tâche de plus. Le jour où le temps manque, c’est elle qui passe à la trappe.</p>
       </div>
-      <div class="fact reveal">
-        <img src="/assets/lancement/coach.jpg" width="560" height="1214" loading="lazy" alt="Écran de retour vidéo d’un coach" data-i18n-alt="alt_coach" />
-        <h3 data-i18n="f2_t">Un humain regarde ton geste</h3>
-        <p data-i18n="f2_p">Tu filmes ton mouvement, un coach le regarde et te répond.</p>
-      </div>
-      <div class="fact reveal">
-        <img src="/assets/lancement/voix.jpg" width="560" height="1214" loading="lazy" alt="Écran de séance ajustée à la voix" data-i18n-alt="alt_voix" />
-        <h3 data-i18n="f3_t">Ta séance s’adapte à ce que tu dis</h3>
-        <p data-i18n="f3_p">Une douleur, de la fatigue, peu de temps : tu le dis, la séance change.</p>
+      <div class="v2 reveal">
+        <span class="v" aria-hidden="true">V2</span>
+        <h3 data-i18n="v2_t">La mobilité au cœur.</h3>
+        <p data-i18n="v2_p">Tu importes ton programme de salle et de course, tu suis tes progrès. La mobilité s’y insère et s’adapte à ce que tu fais ce jour‑là.</p>
       </div>
     </div>
-    <p class="vs reveal"><span data-i18n="vs">Sur les 7 applis que nous avons comparées, nous n’en avons trouvé aucune qui réunisse ces trois points.</span><small data-i18n="vs_src">D’après leur documentation publique, relevé du 23/10/2026.</small></p>
+    <p class="enemy reveal" data-i18n="enemy">Le problème n’est pas ta motivation. C’est le <b>multi‑app</b>&nbsp;: on jongle, on n’en garde qu’une ou deux, et rien ne se parle.</p>
   </div>
 </section>
 
-<!-- 3. PREUVE -->
+<!-- 3. LE HUB -->
+<section id="hub" aria-label="Une seule app">
+  <div class="wrap">
+    <div class="hub-head reveal">
+      <h2 data-i18n="hub_h">Une seule app pour tout ton entraînement</h2>
+      <p class="lead" data-i18n="hub_p">Au centre, <b>ta mobilité</b>, avec la méthode Mobility Club. Autour, tout ce qui touche au mouvement.</p>
+    </div>
+    <div class="bricks">
+      <div class="brick reveal">
+        <img src="/assets/lancement/seance.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran de séance Lower 2 : la mobilité des hanches ouvre la séance de force" data-i18n-alt="alt_seance" />
+        <h3 data-i18n="b1_t">La mobilité dans ta séance</h3>
+        <p data-i18n="b1_p">Ta séance de jambes commence par la mobilité des hanches. Elle s’adapte à ce que tu fais ce jour‑là.</p>
+      </div>
+      <div class="brick reveal">
+        <img src="/assets/lancement/import.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran Programme : un programme de salle importé, semaine 7 sur 18, et le bouton Importer (PDF, Numbers, photo)" data-i18n-alt="alt_import" />
+        <h3 data-i18n="b2_t">Ton programme, importé</h3>
+        <p data-i18n="b2_p">Ton programme de salle ou de course, en PDF, Numbers ou photo&nbsp;: il arrive dans ton calendrier, semaine par semaine.</p>
+      </div>
+      <div class="brick reveal">
+        <img src="/assets/lancement/montre.jpg" width="440" height="952" loading="lazy" decoding="async" alt="Écran Aujourd’hui avec les données WHOOP : récupération, charge, sommeil, VFC" data-i18n-alt="alt_montre" />
+        <h3 data-i18n="b3_t">Ta montre</h3>
+        <p data-i18n="b3_p">WHOOP est connecté&nbsp;: ta récupération, ton sommeil et ta charge du jour dans l’app. <span class="soon">Garmin et Polar&nbsp;: bientôt.</span></p>
+      </div>
+      <div class="brick reveal">
+        <img src="/assets/lancement/progres.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran Tes progrès : score articulaire, poids, pas, records et course à pied" data-i18n-alt="alt_progres" />
+        <h3 data-i18n="b4_t">Tes progrès sur ton sport</h3>
+        <p data-i18n="b4_p">Score articulaire, records, poids, pas, kilomètres de course&nbsp;: tout au même endroit.</p>
+      </div>
+      <div class="brick reveal">
+        <img src="/assets/lancement/bilan.jpg" width="560" height="1214" loading="lazy" decoding="async" alt="Écran Ton bilan : score articulaire et radar des zones" data-i18n-alt="alt_bilan" />
+        <h3 data-i18n="b5_t">Ton bilan articulaire</h3>
+        <p data-i18n="b5_p">Un bilan de départ, refait régulièrement&nbsp;: tu vois ce qui bouge vraiment.</p>
+      </div>
+      <div class="brick reveal">
+        <img src="/assets/lancement/coach.jpg" width="560" height="1214" loading="lazy" decoding="async" alt="Écran de retour vidéo d’un coach" data-i18n-alt="alt_coach" />
+        <h3 data-i18n="b6_t">Une voix, et un humain</h3>
+        <p data-i18n="b6_p">Une douleur, de la fatigue, peu de temps&nbsp;: tu le dis, la séance change. Tu filmes ton geste, un coach le regarde et te répond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. COMPARATEUR (données : docs/bascule-etude-marche-2026-10-23.md, relevé du 23/10/2026 ;
+     « non trouvé » = absent de leur documentation publique, jamais « n’existe pas ») -->
+<section id="comparer" aria-label="Comparer">
+  <div class="wrap">
+    <div class="cmp-head reveal">
+      <h2 data-i18n="cmp_h">Ce que tu perds en jonglant</h2>
+      <p class="lead" data-i18n="cmp_p">Trois apps qui ne se parlent pas&nbsp;: ta mobilité ignore ta séance de jambes d’hier.</p>
+    </div>
+    <div class="cmp glass reveal" role="table" aria-label="Comparatif">
+      <div class="row th" role="row">
+        <span role="columnheader"></span>
+        <span role="columnheader"><span data-i18n="col_sep">3 apps séparées</span><small data-i18n="col_sep_s">mobilité + muscu + course, ex. GOWOD + Hevy + Runna</small></span>
+        <span role="columnheader" class="us">Mobility Club</span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r1">Une séance de mobilité adaptée à ton entraînement du jour</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r1_s">En partie (protocoles par sport chez GOWOD)</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r1_u">Calée sur ta séance du jour</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r2">Un seul calendrier</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r2_s">Réparti entre trois apps</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r2_u">Un seul, pour tout ton entraînement</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r3">Importer ton programme</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r3_s">En partie (Hevy via un outil externe, Runna par ajout de courses)</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r3_u">PDF, Numbers ou photo</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r4">Bilan articulaire</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r4_s">Oui, dans l’appli de mobilité (GOWOD)</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r5">Coach vocal qui modifie la séance</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r5_s">Non trouvé (Runna&nbsp;: annonces d’allure, la séance ne change pas)</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r6">Ton geste corrigé en vidéo par un humain</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r6_s">Non trouvé</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+      </div>
+      <div class="row" role="row">
+        <span class="f" role="rowheader" data-i18n="r7">Suivi des progrès sur ton sport</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r7_s">Réparti entre trois apps</span></span>
+        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r7_u">Au même endroit</span></span>
+      </div>
+    </div>
+    <p class="cmp-note reveal" data-i18n="cmp_note">Relevé du 23 octobre 2026 sur les sites, centres d’aide et fiches App Store France de chaque appli. «&nbsp;Non trouvé&nbsp;»&nbsp;: absent de leur documentation publique, ce qui ne prouve pas que ça n’existe pas.</p>
+    <p class="cmp-price reveal" data-i18n="cmp_price">Côté prix, soyons honnêtes&nbsp;: la pile la moins chère que nous avons relevée, <b>GOWOD (84,99&nbsp;€/an) pour la mobilité et Hevy (26,49&nbsp;€/an) pour la muscu, revient à 111,48&nbsp;€ par an</b>. Runna (course) n’est pas chiffré&nbsp;: sa fiche n’affiche pas la durée de l’abonnement.<small>Prix le plus bas affiché sur chaque fiche App Store France, relevé du 23/10/2026.</small></p>
+    <p class="cmp-loss reveal" data-i18n="cmp_loss">Le vrai coût n’est pas l’argent. C’est la régularité&nbsp;: trois apps, et c’est la mobilité qui saute.</p>
+  </div>
+</section>
+
+<!-- 5. PREUVE -->
 <section aria-label="Membres">
   <div class="wrap">
     <div class="numbers reveal">
@@ -199,21 +344,21 @@ footer a:hover{color:var(--text-primary);}
       <div><b>52</b><span data-i18n="n_feedback">retours membres</span></div>
     </div>
     <div class="quotes">
-      <blockquote class="reveal"><q data-i18n="q1">Ce soir, première séance sans douleur. Après presque 5 ans à me limiter et à avoir mal dès que je marchais plus de 500 m, je repousse mes limites de plus en plus.</q><cite>Lisa</cite></blockquote>
-      <blockquote class="reveal"><q data-i18n="q2">Après deux semaines, j’arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie.</q><cite>Camille</cite></blockquote>
-      <blockquote class="reveal"><q data-i18n="q3">J’avais peur que les séances soient trop longues. L’appel avec Damien m’a rassuré : on adapte la mobilité à sa vie, pas l’inverse.</q><cite>Julie</cite></blockquote>
-      <blockquote class="reveal"><q data-i18n="q4">En peu de temps, plus aucune douleur pendant mes matchs de padel. Les RACs et les routines sont redoutablement efficaces.</q><cite>Marie</cite></blockquote>
-      <blockquote class="reveal"><q data-i18n="q5">En trois semaines : plus de fluidité, moins de tensions, une meilleure conscience corporelle. Et fini les réveils raide comme un balai.</q><cite>Alexandre</cite></blockquote>
-      <blockquote class="reveal"><q data-i18n="q6">En fin de séance, un squat complet sans aide, sans douleur ni difficulté — ce qui était impossible avant. Grosse, grosse satisfaction.</q><cite>Hugo</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q1">En 3 mois&nbsp;: je progresse sans me blesser, mes lombalgies et mes genoux sont gérés, et mon deadlift est passé de 70 à 95 kg.</q><cite>Guillaume</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q2">Squat lourd&nbsp;: un PR plutôt facile et surtout 0 douleur. Reprise de la course&nbsp;: des foulées vraiment souples.</q><cite>Pauline</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q3">15-20 min de mobilité avant ma séance, ça a vraiment tout changé dans mes entraînements.</q><cite>Émilie</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q4">Mes épaules commencent à se débloquer, je le ressens autant au JJB qu’à la musculation.</q><cite>Sarah</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q5">En peu de temps, plus aucune douleur pendant mes matchs de padel. Les RACs et les routines sont redoutablement efficaces.</q><cite>Marie</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q6">On adore&nbsp;: tous les outils réunis au même endroit, assemblés et enseignés intelligemment pour se réparer ou performer.</q><cite>Karin</cite></blockquote>
     </div>
   </div>
 </section>
 
-<!-- 4. OFFRE -->
+<!-- 6. OFFRE -->
 <section id="offre" aria-label="Offre">
   <div class="wrap">
     <div class="offer-top reveal">
-      <h2 data-offre-phase="fenetre" data-i18n="offer_h_f">Offre de lancement : ton prix, verrouillé</h2>
+      <h2 data-offre-phase="fenetre" data-i18n="offer_h_f">Offre de lancement&nbsp;: ton prix, verrouillé</h2>
       <h2 data-offre-phase="v2" style="display:none" hidden data-i18n="offer_h_v">La V2 est lancée</h2>
       <div class="count" data-offre-phase="fenetre">
         <div class="t" data-offre-compteur>24:00:00</div>
@@ -225,7 +370,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_m">Mensuel</div>
         <div class="price"><span data-offre-prix="mensuel">25</span> €<small data-i18n="per_month">/mois</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
         <p class="note" data-i18n="p_m_note">Essai de 7 jours, puis abonnement mensuel.</p>
         <a class="cta ghost" href="/devenir-membre" data-offre-lien="mensuel" data-i18n="cta_m">Essayer 7 jours</a>
       </div>
@@ -233,7 +378,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_a">Annuel</div>
         <div class="price"><span data-offre-prix="annuel">220</span> €<small data-i18n="per_year">/an</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
         <p class="note"><span data-i18n="p_a_note">Soit</span> <span data-offre-prix="annuel-mois" data-offre-eur>18,33 €</span> <span data-i18n="per_month_short">par mois.</span></p>
         <a class="cta primary" href="/devenir-membre" data-offre-lien="annuel" data-i18n="cta_a">Choisir l’annuel</a>
       </div>
@@ -241,7 +386,7 @@ footer a:hover{color:var(--text-primary);}
         <div class="name" data-i18n="p_v">À vie</div>
         <div class="price"><span data-offre-prix="vie">249</span> €<small data-i18n="once">une fois</small></div>
         <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-offre-prix-v2="vie">350</span> €</b></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="vie">350</span> €</b></div>
         <p class="note" data-i18n="p_v_note">Un seul paiement, accès à vie.</p>
         <a class="cta ghost" href="/lifetime" data-offre-lien="vie" data-i18n="cta_v">Prendre l’accès à vie</a>
       </div>
@@ -249,16 +394,16 @@ footer a:hover{color:var(--text-primary);}
   </div>
 </section>
 
-<!-- 5. FAQ -->
+<!-- 7. FAQ : 4 questions visibles par phase -->
 <section aria-label="FAQ">
   <div class="wrap">
     <h2 class="reveal" style="text-align:center" data-i18n="faq_h">Questions fréquentes</h2>
     <div class="faq reveal">
-      <details data-q="prix" data-offre-phase="fenetre"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il ?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24 h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
-      <details data-q="prix_v2" data-offre-phase="v2" style="display:none" hidden><summary data-i18n="q_prix_v">Le prix peut-il changer ?</summary><p data-i18n="a_prix_v">Le prix de ton abonnement reste le tien tant qu’il court. L’accès à vie se paie une seule fois.</p></details>
-      <details data-q="temps"><summary data-i18n="q_temps">Combien de temps par jour ?</summary><p data-i18n="a_temps">Quelques minutes par jour. Tu ouvres l’app, la séance est prête : rien à choisir, rien à préparer.</p></details>
-      <details data-q="souplesse"><summary data-i18n="q_souplesse">Je ne suis pas souple, c’est pour moi ?</summary><p data-i18n="a_souplesse">Oui, c’est justement pour toi. Le programme part de ton bilan : il démarre là où tu en es, pas là où il faudrait être.</p></details>
-      <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter ?</summary><p data-i18n="a_annul">Le mensuel et l’annuel s’annulent à tout moment depuis ton compte PayPal. L’essai de 7 jours du mensuel te laisse essayer avant de payer. Tu disposes aussi du délai légal de rétractation de 14 jours.</p></details>
+      <details data-q="prix" data-offre-phase="fenetre"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il&nbsp;?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24&nbsp;h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
+      <details data-q="prix_v2" data-offre-phase="v2" style="display:none" hidden><summary data-i18n="q_prix_v">Le prix peut-il changer&nbsp;?</summary><p data-i18n="a_prix_v">Le prix de ton abonnement reste le tien tant qu’il court. L’accès à vie se paie une seule fois.</p></details>
+      <details data-q="apps"><summary data-i18n="q_apps">Je dois abandonner mes autres apps&nbsp;?</summary><p data-i18n="a_apps">Celles du mouvement, oui&nbsp;: ton programme de salle et de course s’importe, ta mobilité et le suivi de tes progrès sont dans le club. Côté montre, WHOOP se connecte déjà&nbsp;; Garmin et Polar arrivent bientôt. Ta nutrition, en revanche, reste dans ton app&nbsp;: le club ne la remplace pas.</p></details>
+      <details data-q="temps"><summary data-i18n="q_temps">Combien de temps par jour&nbsp;?</summary><p data-i18n="a_temps">Quelques minutes par jour. La mobilité s’insère dans ta séance du jour&nbsp;: rien à choisir, rien à préparer.</p></details>
+      <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter&nbsp;?</summary><p data-i18n="a_annul">Le mensuel et l’annuel s’annulent à tout moment depuis ton compte PayPal. L’essai de 7 jours du mensuel te laisse essayer avant de payer. Tu disposes aussi du délai légal de rétractation de 14 jours.</p></details>
     </div>
   </div>
 </section>
@@ -277,29 +422,71 @@ footer a:hover{color:var(--text-primary);}
 var I18N = {
   fr: {},
   en: {
-    promise: "Your movement coach, in your pocket.",
+    h1: "Mobility <span>at the heart</span> of your training.",
+    promise: "One app for everything that has to do with movement.",
     count_label: "until the launch offer ends",
     count_label2: "until the launch offer ends",
     hero_cta: "See the plans",
+    v1_t: "Mobility on the side.",
+    v1_p: "One more app, one more task. The day you run short on time, it’s the first thing to go.",
+    v2_t: "Mobility at the heart.",
+    v2_p: "You import your gym and running program, you track your progress. Mobility slots in and adapts to what you do that day.",
+    enemy: "The problem isn’t your motivation. It’s <b>app juggling</b>: you juggle, you keep one or two, and nothing talks to each other.",
+    hub_h: "One app for all your training",
+    hub_p: "At the centre, <b>your mobility</b>, with the Mobility Club method. Around it, everything that has to do with movement.",
+    alt_seance: "Lower 2 session screen: hip mobility opens the strength session",
+    alt_import: "Program screen: an imported gym program, week 7 of 18, and the Import button (PDF, Numbers, photo)",
+    alt_montre: "Today screen with WHOOP data: recovery, strain, sleep, HRV",
+    alt_progres: "Your progress screen: joint score, weight, steps, records and running",
     alt_bilan: "Your assessment screen: joint score and zone radar",
     alt_coach: "Coach video feedback screen",
-    alt_voix: "Voice-adjusted session screen",
-    f1_t: "Your body measured, then measured again",
-    f1_p: "A starting joint assessment, repeated regularly: you see what really moves.",
-    f2_t: "A human watches your movement",
-    f2_p: "You film your movement, a coach watches it and answers you.",
-    f3_t: "Your session adapts to what you say",
-    f3_p: "Pain, fatigue, little time: you say it, the session changes.",
-    vs: "Of the 7 apps we compared, we found none that combines all three.",
-    vs_src: "Based on their public documentation, checked on 23/10/2026.",
+    b1_t: "Mobility inside your session",
+    b1_p: "Your leg session starts with hip mobility. It adapts to what you do that day.",
+    b2_t: "Your program, imported",
+    b2_p: "Your gym or running program, as a PDF, Numbers file or photo: it lands in your calendar, week by week.",
+    b3_t: "Your watch",
+    b3_p: "WHOOP is connected: your recovery, sleep and daily strain in the app. <span class=\"soon\">Garmin and Polar: coming soon.</span>",
+    b4_t: "Your progress in your sport",
+    b4_p: "Joint score, records, weight, steps, running distance: all in one place.",
+    b5_t: "Your joint assessment",
+    b5_p: "A starting assessment, repeated regularly: you see what really moves.",
+    b6_t: "A voice, and a human",
+    b6_p: "Pain, fatigue, little time: you say it, the session changes. You film your movement, a coach watches it and answers you.",
+    cmp_h: "What you lose by juggling",
+    cmp_p: "Three apps that don’t talk to each other: your mobility ignores yesterday’s leg day.",
+    col_sep: "3 separate apps",
+    col_sep_s: "mobility + strength + running, e.g. GOWOD + Hevy + Runna",
+    lbl_sep: "3 apps: ",
+    r1: "A mobility session matched to today’s training",
+    r1_s: "Partly (sport-specific protocols in GOWOD)",
+    r1_u: "Built around today’s session",
+    r2: "One calendar",
+    r2_s: "Split across three apps",
+    r2_u: "One, for all your training",
+    r3: "Import your program",
+    r3_s: "Partly (Hevy through an external tool, Runna by adding runs)",
+    r3_u: "PDF, Numbers or photo",
+    r4: "Joint assessment",
+    r4_s: "Yes, in the mobility app (GOWOD)",
+    inc: "Included",
+    r5: "Voice coach that changes the session",
+    r5_s: "Not found (Runna: pace cues, the session doesn’t change)",
+    r6: "Your form corrected on video by a human",
+    r6_s: "Not found",
+    r7: "Progress tracking in your sport",
+    r7_s: "Split across three apps",
+    r7_u: "In one place",
+    cmp_note: "Checked on 23 October 2026 on each app’s website, help centre and French App Store page. “Not found”: absent from their public documentation, which doesn’t prove it doesn’t exist.",
+    cmp_price: "On price, let’s be honest: the cheapest stack we found, <b>GOWOD (€84.99/year) for mobility and Hevy (€26.49/year) for strength, comes to €111.48 a year</b>. Runna (running) isn’t priced: its page doesn’t show the subscription length.<small>Lowest price shown on each French App Store page, checked on 23/10/2026.</small>",
+    cmp_loss: "The real cost isn’t money. It’s consistency: three apps, and mobility is the one that gets dropped.",
     n_members: "members",
     n_feedback: "member reviews",
-    q1: "Tonight, my first pain-free session. After nearly 5 years of holding back and hurting the moment I walked past 500 m, I keep pushing my limits.",
-    q2: "After two weeks, I can finally touch my toes with straight legs — for the first time in my life.",
-    q3: "I was afraid the sessions would take too long. The call with Damien reassured me: you fit mobility around your life, not the other way around.",
-    q4: "In no time, no more pain during my padel matches. The RACs and routines are ruthlessly effective.",
-    q6: "End of session: a full squat with no help, no pain, no struggle — which was impossible before. Huge, huge satisfaction.",
-    q5: "In three weeks: more fluidity, less tension, better body awareness. And no more waking up stiff as a board.",
+    q1: "In 3 months: progressing without getting hurt, my lower back and knees under control, and my deadlift went from 70 to 95 kg.",
+    q2: "Heavy squat: a PR that felt easy and, above all, zero pain. Back to running: strides that feel truly loose.",
+    q3: "15-20 min of mobility before my session — it genuinely changed everything in my training.",
+    q4: "My shoulders are starting to open up — I feel it as much in BJJ as in the gym.",
+    q5: "In no time, no more pain during my padel matches. The RACs and routines are ruthlessly effective.",
+    q6: "We love it: every tool gathered in one place, assembled and taught intelligently to repair yourself or perform.",
     offer_h_f: "Launch offer: your price, locked in",
     offer_h_v: "V2 is live",
     p_m: "Monthly", p_a: "Yearly", p_v: "Lifetime",
@@ -315,18 +502,18 @@ var I18N = {
     a_prix: "The launch price is reserved for the 24-hour window. When the countdown ends, the plans move to the V2 price. The price you take now stays yours as long as your subscription runs.",
     q_prix_v: "Can the price change?",
     a_prix_v: "Your subscription price stays yours as long as it runs. Lifetime access is paid once.",
+    q_apps: "Do I have to drop my other apps?",
+    a_apps: "Your movement apps, yes: your gym and running program can be imported, and your mobility and progress tracking live in the club. For your watch, WHOOP already connects; Garmin and Polar are coming soon. Your nutrition, however, stays in your own app: the club doesn’t replace it.",
     q_temps: "How much time per day?",
-    a_temps: "A few minutes a day. You open the app, the session is ready: nothing to choose, nothing to prepare.",
-    q_souplesse: "I am not flexible, is this for me?",
-    a_souplesse: "Yes, it is exactly for you. The program starts from your assessment: it begins where you are, not where you should be.",
+    a_temps: "A few minutes a day. Mobility slots into your session of the day: nothing to choose, nothing to prepare.",
     q_annul: "What if I want to stop?",
     a_annul: "Monthly and yearly plans can be cancelled at any time from your PayPal account. The 7-day trial on the monthly plan lets you try before you pay. You also have the legal 14-day withdrawal period.",
     f_priv: "Privacy"
   }
 };
 var TITLES = {
-  fenetre: { fr: "Mobility Club V2 — Offre de lancement", en: "Mobility Club V2 — Launch offer" },
-  v2: { fr: "Mobility Club V2 — Ton coach de mouvement, dans ta poche", en: "Mobility Club V2 — Your movement coach, in your pocket" }
+  fenetre: { fr: "Mobility Club V2 — Offre de lancement : la mobilité au cœur de ton entraînement", en: "Mobility Club V2 — Launch offer: mobility at the heart of your training" },
+  v2: { fr: "Mobility Club V2 — La mobilité au cœur de ton entraînement", en: "Mobility Club V2 — Mobility at the heart of your training" }
 };
 function phaseCourante() { return (window.MCOffre && MCOffre.etat() && MCOffre.etat().phase) || "v2"; }
 var LANG = "fr";

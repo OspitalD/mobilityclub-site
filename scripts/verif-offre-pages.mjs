@@ -10,8 +10,8 @@ import offre from '../netlify/functions/offre-v2.js';
 import { PLANS } from '../netlify/lib/offre-v2.js';
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..');
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml' };
-const PAGES = { '/': 'index.html', '/devenir-membre': 'devenir-membre.html', '/bascule': 'bascule.html', '/lifetime': 'lifetime.html', '/mon-ticket': 'mon-ticket.html' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webm': 'video/webm', '.mp4': 'video/mp4' };
+const PAGES = { '/': 'index.html', '/devenir-membre': 'devenir-membre.html', '/bascule': 'bascule.html', '/lifetime': 'lifetime.html', '/mon-ticket': 'mon-ticket.html', '/lancement': 'lancement.html' };
 
 const server = http.createServer(async (req, res) => {
   const path = new URL(req.url, 'http://x').pathname;
@@ -105,6 +105,26 @@ for (const [phase, fin, attendu] of [['v2', PASSE, { m: '30', a: '275', v: '350'
   // textContent : le tarif est masqué (visibility) tant que le nom n'est pas saisi, innerText l'ignorerait.
   const prixLifetime = await p.$$eval('[data-offre-prix="vie"]', (els) => els.map((e) => e.textContent.trim()));
   verifier(prixLifetime.length >= 4 && prixLifetime.every((t) => t === attendu.v), `lifetime [${phase}] prix ${attendu.v} affiché sans stock (${prixLifetime.join(',')})`);
+  await p.close();
+
+  // lancement : prix + « verrouillé » en fenêtre, « La V2 est lancée » en v2, href des plans, vidéo de la phase, compteur masqué en v2
+  p = await ouvrir('/lancement', { fin });
+  texte = await p.innerText('#offre');
+  const prixL = await p.$$eval('#offre [data-offre-prix="mensuel"], #offre [data-offre-prix="annuel"], #offre [data-offre-prix="vie"]', (els) => els.map((e) => e.textContent.trim()));
+  verifier(prixL.join('/') === `${attendu.m}/${attendu.a}/${attendu.v}`, `lancement [${phase}] prix ${prixL.join('/')}`);
+  if (phase === 'fenetre') verifier(/verrouillé/.test(texte) && texte.includes('Dès la fin du compteur'), 'lancement [fenetre] « verrouillé » + prix d’après');
+  else verifier(texte.includes('La V2 est lancée') && !/verrouillé/.test(texte), 'lancement [v2] « La V2 est lancée », aucun « verrouillé »');
+  const lienL = await p.$$eval('[data-offre-lien]', (as) => Object.fromEntries(as.map((a) => [a.dataset.offreLien, a.getAttribute('href')])));
+  const attenduL = phase === 'v2' ? { mensuel: PLANS.v2.mensuel, annuel: PLANS.v2.annuel, vie: '/lifetime' } : { mensuel: PLANS.ancien.mensuel, annuel: PLANS.ancien.annuel, vie: '/lifetime' };
+  verifier(Object.keys(attenduL).every((k) => lienL[k] === attenduL[k]), `lancement [${phase}] href ${JSON.stringify(lienL)}`);
+  if (phase === 'v2') {
+    const dom = await p.content();
+    verifier(!/P-43F|P-4VH|P-17C|KT93/.test(dom) && !(await hrefs(p)).some((l) => anciens.some((x) => l.includes(x))), 'lancement [v2] aucun ancien plan dans le DOM');
+  }
+  const src = await p.$eval('#hv', async (v) => { for (let i = 0; i < 40 && !v.currentSrc; i++) await new Promise((r) => setTimeout(r, 50)); return v.currentSrc; });
+  verifier(src.includes(`lancement-16x9-${phase}.`), `lancement [${phase}] vidéo ${src.split('/').pop()}`);
+  const compteurs = await p.$$eval('[data-offre-compteur]', (els) => els.filter((e) => e.offsetParent).length);
+  verifier(phase === 'v2' ? compteurs === 0 : compteurs === 2, `lancement [${phase}] compteurs visibles : ${compteurs}`);
   await p.close();
 
   // accueil
