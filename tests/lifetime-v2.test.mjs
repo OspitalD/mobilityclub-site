@@ -98,10 +98,10 @@ test('phase v2 : l’ordre PayPal est créé à 350,00 € et la capture est enr
   assert.equal(created.statusCode, 201);
   assert.equal(created.body.price, 350);
   assert.equal(orders.get('ORDER1').purchase_units[0].amount.value, '350.00');
-  const reservation = bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[2]['19'];
-  const captured = await call({ action: 'capture', tier: 2, ticket: 19, reservation: reservation.token, order_id: 'ORDER1' });
+  const reservation = bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[3]['19'];
+  const captured = await call({ action: 'capture', tier: 3, ticket: 19, reservation: reservation.token, order_id: 'ORDER1' });
   assert.equal(captured.statusCode, 200);
-  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[2]['19'].status, 'sold');
+  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[3]['19'].status, 'sold');
 });
 
 test('phase v2 : 350 € est refusé tant que le montant n’est pas autorisé côté PayPal (libère le ticket)', async () => {
@@ -110,17 +110,17 @@ test('phase v2 : 350 € est refusé tant que le montant n’est pas autorisé c
   const r = await call({ action: 'create', ticket: 19 });
   assert.equal(r.statusCode, 503);
   assert.equal(r.body.price, 350);
-  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[2]['19'], undefined);
+  assert.equal(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[3]['19'], undefined);
 });
 
-test('le prix est unique en v2 quel que soit le palier (état pur)', () => {
+test('en v2, la série vendue est la série 350 €, même si des séries de la fenêtre ont des places (état pur)', () => {
   process.env.OFFRE_V2_FIN = PASSE;
   const inv = normaliserInventaire(inventaireVide(), { 1: 0, 2: 0 });
   assert.equal(etatCampagne(inv, { 1: 0, 2: 0 }).price, 350);
-  // palier 1 non complet : on retire les ventes déclarées du palier 1 pour forcer tier=1
-  const inv1 = { version: 2, tiers: { 1: {}, 2: {} } };
+  // palier 1 vidé de ses ventes déclarées : la fenêtre aurait servi tier=1, la v2 sert la série 3
+  const inv1 = { version: 2, tiers: { 1: {}, 2: {}, 3: {} } };
   const etat = etatCampagne(inv1, { 1: 0, 2: 0 });
-  assert.equal(etat.tier, 1);
+  assert.equal(etat.tier, 3);
   assert.equal(etat.price, 350);
 });
 
@@ -137,9 +137,9 @@ test('réservé à 249 € dans la fenêtre, payé après la fin : honoré à 24
 test('un montant capturé différent du montant réservé reste refusé', async () => {
   process.env.OFFRE_V2_FIN = PASSE;
   await call({ action: 'create', ticket: 19 });
-  const reservation = bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[2]['19'];
+  const reservation = bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[3]['19'];
   montantCapture = '249.00';
-  const captured = await call({ action: 'capture', tier: 2, ticket: 19, reservation: reservation.token, order_id: 'ORDER1' });
+  const captured = await call({ action: 'capture', tier: 3, ticket: 19, reservation: reservation.token, order_id: 'ORDER1' });
   assert.notEqual(captured.statusCode, 200);
-  assert.notEqual(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[2]['19'].status, 'sold');
+  assert.notEqual(bucket('lifetime_ticket_inventory_2026').get('inventory').data.tiers[3]['19'].status, 'sold');
 });

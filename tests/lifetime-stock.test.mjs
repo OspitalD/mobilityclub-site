@@ -19,6 +19,8 @@ mock.module('@netlify/blobs', {
   },
 });
 
+// Vue de la campagne de la fenêtre (199 puis 249 €) : on épingle la phase pour ne pas dépendre de l'horloge.
+process.env.OFFRE_V2_FIN = '2099-01-01T00:00:00.000Z';
 const { calculerStock, default: handler } = await import('../netlify/functions/lifetime-stock.js');
 
 const keys = (count, price = 199) =>

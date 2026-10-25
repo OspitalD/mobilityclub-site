@@ -372,6 +372,7 @@ details[open] summary::after{content:"×"}
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
   function phaseV2(){return document.documentElement.getAttribute('data-offre')==='v2';}
+  function complet(){return phaseV2()?'Accès à vie complet':'Cette série est complète';}
   function all(sel){return document.querySelectorAll(sel);}
   function text(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function setVisible(sel,show){var els=all(sel);for(var i=0;i<els.length;i++)els[i].classList.toggle('is-hidden',!show);}
@@ -465,7 +466,7 @@ details[open] summary::after{content:"×"}
     var claims=all('[data-claim]');for(var i=0;i<claims.length;i++){claims[i].textContent=label;claims[i].disabled=true;claims[i].classList.add('off');}
   }
   function updateActions(data){
-    if(data.sold_out){disableActions('Cette série est complète');return;}
+    if(data.sold_out){disableActions(complet());return;}
     if(selected===null){disableActions('Choisis un ticket libre');return;}
     setVisible('[data-claim]',false);setVisible('[data-pay]',true);
     var pays=all('[data-pay]');for(var j=0;j<pays.length;j++){
@@ -484,9 +485,9 @@ details[open] summary::after{content:"×"}
     text('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));
     renderTickets(data);
     if(data.sold_out){
-      text('[data-take-label]','Cette série est complète');
-      text('[data-take-message]',phaseV2()?'Tous les tickets de cette série sont attribués.':'La série suivante ouvrira à un tarif supérieur.');
-      text('[data-action-note]',phaseV2()?'Série complète':'Série complète · prochain tarif à venir');
+      text('[data-take-label]',complet());
+      text('[data-take-message]',phaseV2()?'Les 20 Lifetime Pass à '+data.price+' € sont attribués. L’abonnement reste ouvert.':'La série suivante ouvrira à un tarif supérieur.');
+      text('[data-action-note]',phaseV2()?'Accès à vie complet':'Série complète · prochain tarif à venir');
     }else if(message){
       text('[data-take-label]',message.label);text('[data-take-message]',message.body);
       text('[data-action-note]','Stock PayPal vérifié · aucun ticket fantôme');
@@ -500,7 +501,7 @@ details[open] summary::after{content:"×"}
       text('[data-action-note]','Accès au cœur du Club à vie · stock vérifié');
     }
     updateActions(data);
-    text('[data-live-stock]',data.remaining?tierRemaining+' ticket'+(tierRemaining>1?'s':'')+' disponible'+(tierRemaining>1?'s':''):'Série complète');
+    text('[data-live-stock]',data.remaining?tierRemaining+' ticket'+(tierRemaining>1?'s':'')+' disponible'+(tierRemaining>1?'s':''):(phaseV2()?'Accès à vie complet':'Série complète'));
   }
   function choose(number){
     if(!current||checkoutBusy||statusOf(number)!=='available')return;

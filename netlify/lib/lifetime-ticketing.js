@@ -4,8 +4,15 @@ import { etatOffre, PRIX_V2 } from './offre-v2.js';
 export const TIER_SIZE = 20;
 // Une nouvelle série s'ajoute ici uniquement lorsque son prix a été décidé.
 // Le stock, les numéros et le checkout s'adaptent ensuite automatiquement.
-export const TIER_PRICES = [199, 249];
+// Série 3 (décision 25/10) : 20 tickets à 350 €, ouverte à la fin de la fenêtre de
+// lancement. Les séries 1 et 2 (et les tickets déjà vendus) ne changent pas.
+export const TIER_PRICES = [199, 249, 350];
 export const TOTAL = TIER_SIZE * TIER_PRICES.length;
+// Séries vendues par phase : la fenêtre écoule 199 puis 249 € ; la phase V2 n'expose
+// que la série 350 € (stock, compteur et fermeture comptés sur cette seule série).
+export const TIERS_FENETRE = [1, 2];
+export const TIER_V2 = 3;
+export const seriesDeLaPhase = (phase) => (phase === 'v2' ? [TIER_V2] : TIERS_FENETRE);
 export const RESERVATION_MS = 10 * 60 * 1000;
 
 const INVENTORY_STORE = 'lifetime_ticket_inventory_2026';
@@ -105,9 +112,11 @@ export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }, now = Date.no
       return [tier, Math.max(Number(captures[tier] || 0), compteStatut(inventory, tier, 'sold'))];
     })
   );
-  const sold = Math.min(TOTAL, Object.values(soldByTier).reduce((sum, count) => sum + count, 0));
-  const soldOut = sold >= TOTAL;
-  const tier = TIER_PRICES.findIndex((_, index) => soldByTier[index + 1] < TIER_SIZE) + 1 || TIER_PRICES.length;
+  const series = seriesDeLaPhase(etatOffre(now).phase);
+  const total = TIER_SIZE * series.length;
+  const sold = Math.min(total, series.reduce((sum, t) => sum + Math.min(TIER_SIZE, soldByTier[t]), 0));
+  const soldOut = sold >= total;
+  const tier = series.find((t) => soldByTier[t] < TIER_SIZE) || series[series.length - 1];
   const tickets = Array.from({ length: TIER_SIZE }, (_, index) => {
     const ticket = index + 1;
     const entry = inventory.tiers[tier][cleTicket(ticket)];
@@ -120,9 +129,9 @@ export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }, now = Date.no
 
   return {
     live: true,
-    total: TOTAL,
+    total,
     sold,
-    remaining: Math.max(0, TOTAL - sold),
+    remaining: Math.max(0, total - sold),
     sold_out: soldOut,
     tier,
     tier_sold: soldByTier[tier],

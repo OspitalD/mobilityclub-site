@@ -18,6 +18,7 @@ Site 100 % statique + Netlify Functions (aucun build). Publication manuelle (net
 | A9 | Page | `/lancement` (fichier `lancement.html`). Pas de menu, pas de lien Timer/Diagnostic. Un seul objectif : clic sur un plan. Pendant la fenêtre, le CTA principal de l'accueil pointe vers /lancement. |
 | A10 | Preuves | Uniquement : « 330 membres », « 52 retours membres » (témoignages réels de l'accueil). RETIRÉS (décision 25/10) : l'avant/après agrégé (n=15, médiane −1 pt, IC du delta contient 0 — voir preuve-avant-apres.json) et le « +22 % au retest », qui est un EXEMPLE illustratif sur l'accueil, pas une mesure. |
 | A11 | Plans PayPal V2 | Créés le 25/10 par Damien via scripts/creer-plans-v2.mjs (clones des plans actuels, seul le prix change), ACTIVE : mensuel P-3X034647B5061360HNLPBCDY (essai 7 j puis 30 €), annuel P-7PX93930RS848432UNLPBCEA (275 €). |
+| A12 | Lifetime en V2 (décision 25/10) | Nouvelle série 3 : 20 tickets à 350 € (`TIER_PRICES = [199, 249, 350]`). En phase v2, seule cette série est vendue et comptée (`total` 20) ; les séries 1–2 et leurs ventes ne bougent pas. 20 vendus → « Accès à vie complet ». |
 
 ## Forme des données (figée)
 

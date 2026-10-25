@@ -3,9 +3,12 @@
 // Vue agrégée de la même vérité que la grille numérotée. Cette Function ne
 // renvoie aucun email ni identifiant PayPal.
 
-import { lireEtatCampagne, TIER_PRICES, TIER_SIZE, TOTAL } from '../lib/lifetime-ticketing.js';
+import { lireEtatCampagne, TIER_PRICES, TIER_SIZE, TIERS_FENETRE } from '../lib/lifetime-ticketing.js';
 
-export { TOTAL };
+// Vue historique de la campagne de la fenêtre (séries 199 puis 249 €). Aucune page ne
+// l'appelle plus : la grille et la série V2 passent par lifetime-tickets.
+export const TOTAL = TIER_SIZE * TIERS_FENETRE.length;
+const PRIX_SERIES = TIERS_FENETRE.map((tier) => TIER_PRICES[tier - 1]);
 export const PREMIER_PALIER = TIER_SIZE;
 
 const json = (statusCode, body) => ({
@@ -26,7 +29,7 @@ export const calculerStock = (state = {}) => {
     total: TOTAL,
     sold,
     remaining,
-    tier: remaining === 0 ? 'sold_out' : String(TIER_PRICES[Math.min(Math.floor(sold / TIER_SIZE), TIER_PRICES.length - 1)]),
+    tier: remaining === 0 ? 'sold_out' : String(PRIX_SERIES[Math.min(Math.floor(sold / TIER_SIZE), PRIX_SERIES.length - 1)]),
     first_tier_remaining: Math.max(0, PREMIER_PALIER - sold),
   };
 };

@@ -501,8 +501,8 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
       <span class="eyebrow"><span data-tier-available>10</span> pass à <span data-offre-prix="vie">249</span> € disponibles</span>
       <h2 data-offre-phase="fenetre">Le prix monte par <span>séries de 20.</span></h2>
       <p class="closing-sub" data-offre-phase="fenetre">Chaque carnet contient 20 Lifetime Pass numérotés et nominatifs. Quand une série est complète, la suivante ouvre à un tarif supérieur.</p>
-      <h2 data-offre-phase="v2" hidden>Un paiement. <span>Le Club à vie.</span></h2>
-      <p class="closing-sub" data-offre-phase="v2" hidden>Chaque Lifetime Pass est numéroté et nominatif. Tu paies une fois, sans abonnement derrière.</p>
+      <h2 data-offre-phase="v2" hidden>20 tickets à <span data-offre-prix="vie">350</span> €. <span>Ensuite, c’est complet.</span></h2>
+      <p class="closing-sub" data-offre-phase="v2" hidden>Une série de 20 Lifetime Pass numérotés et nominatifs. Quand le dernier est pris, l’accès à vie est complet ; l’abonnement reste ouvert.</p>
       <div class="closing-box" data-price-protected>
         <div class="closing-row">
           <div class="closing-price"><span>€</span><b data-current-price data-offre-prix="vie">249</b><small>ou 4× via PayPal</small></div>
@@ -539,7 +539,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il quand la série est complète ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p><span data-offre-phase="fenetre">Une nouvelle série de 20 Lifetime Pass pourra ouvrir à un tarif supérieur. </span><span data-offre-phase="v2" hidden>Les tickets encore libres s’affichent en direct ; quand il n’en reste plus, la série est fermée. </span>L’abonnement avec 7 jours d’essai gratuit reste disponible en parallèle.</p></div></div>
+          <div class="faq-a"><div class="faq-a-inner"><p><span data-offre-phase="fenetre">Une nouvelle série de 20 Lifetime Pass pourra ouvrir à un tarif supérieur. </span><span data-offre-phase="v2" hidden>Quand les 20 Lifetime Pass à <span data-offre-prix="vie">350</span> € sont pris, l’accès à vie est complet. </span>L’abonnement avec 7 jours d’essai gratuit reste disponible en parallèle.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Comment vais-je recevoir mon accès ?</button>
@@ -567,6 +567,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 
   function pad(n){return String(Math.max(0,n)).padStart(2,'0');}
   function phaseV2(){return document.documentElement.getAttribute('data-offre')==='v2';}
+  function complet(){return phaseV2()?'Accès à vie complet':'Cette série est complète';}
   function all(sel){return document.querySelectorAll(sel);}
   function setText(sel,value){var els=all(sel);for(var i=0;i<els.length;i++)els[i].textContent=value;}
   function cleanName(value){return String(value||'').trim().replace(/\s+/g,' ').slice(0,40);}
@@ -626,16 +627,16 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
     }
   }
   function updateActions(data){
-    var actions=all('[data-ticket-action]'),label=data.sold_out?'Cette série est complète':selected===null?'Choisis un ticket libre':checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
+    var actions=all('[data-ticket-action]'),label=data.sold_out?complet():selected===null?'Choisis un ticket libre':checkoutBusy?'Réservation du ticket…':'Réserver mon ticket '+pad(selected)+' · '+data.price+' € →';
     for(var i=0;i<actions.length;i++){actions[i].textContent=actions[i].closest('.mobile-buy')&&selected!==null&&!checkoutBusy?'Ticket '+pad(selected)+' · '+data.price+' € →':label;actions[i].disabled=data.sold_out||selected===null||checkoutBusy;actions[i].classList.toggle('is-disabled',actions[i].disabled);actions[i].classList.toggle('is-loading',checkoutBusy);actions[i].setAttribute('data-plan',selected===null?'lifetime_choose_ticket':'lifetime_'+data.price+'_tier_'+data.tier+'_ticket_'+pad(selected));}
   }
   function render(data,message){
     if(selected!==null&&statusOf(selected)!=='available')selected=null;
     var total=Math.max(1,Number(data.total)||C.TOTAL),sold=Math.max(0,Math.min(Number(data.sold)||0,total)),remaining=Math.max(0,total-sold),tierRemaining=Array.isArray(data.tickets)?data.tickets.filter(function(item){return item.status==='available';}).length:Math.max(0,C.PREMIER_PALIER-(Number(data.tier_sold)||0));
     setText('[data-price]',data.price);setText('[data-current-price]',data.price);setText('[data-tier-name]','Série '+pad(data.tier)+' · Tickets 01 → 20');setText('[data-remaining]',tierRemaining+' pass restant'+(tierRemaining>1?'s':''));setText('[data-tier-available]',tierRemaining);
-    setText('[data-stock-count]',sold+' / '+total+' partis');setText('[data-stock-status]',remaining?tierRemaining+' pass à '+data.price+' € disponibles':'Cette série est complète');setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':phaseV2()?'Série complète':'Série complète · prochain tarif à venir');
+    setText('[data-stock-count]',sold+' / '+total+' partis');setText('[data-stock-status]',remaining?tierRemaining+' pass à '+data.price+' € disponibles':complet());setText('[data-closing-stock]',remaining?tierRemaining+' pass restants à '+data.price+' € · stock réel':phaseV2()?'Accès à vie complet':'Série complète · prochain tarif à venir');
     document.querySelector('[data-stock-fill]').style.width=((sold/total)*100)+'%';document.querySelector('.stock-meter').setAttribute('aria-valuemax',total);document.querySelector('.stock-meter').setAttribute('aria-valuenow',sold);renderTickets(data);
-    if(data.sold_out){setText('[data-take-label]','Cette série est complète');setText('[data-take-message]',phaseV2()?'Tous les tickets de cette série sont attribués.':'La série suivante ouvrira à un tarif supérieur.');}
+    if(data.sold_out){setText('[data-take-label]',complet());setText('[data-take-message]',phaseV2()?'Les 20 Lifetime Pass à '+data.price+' € sont attribués. L’abonnement reste ouvert.':'La série suivante ouvrira à un tarif supérieur.');}
     else if(message){setText('[data-take-label]',message.label);setText('[data-take-message]',message.body);}
     else if(selected!==null){setText('[data-take-label]',fullName()+' · ticket '+pad(selected));setText('[data-take-message]','Ton nom est imprimé. Le ticket sera bloqué 10 minutes pendant ton paiement.');}
     else{setText('[data-take-label]','Choisis ton numéro');setText('[data-take-message]','Les tickets marqués « pris » ou « en cours » ne sont plus disponibles.');}

@@ -67,10 +67,13 @@ const texteRendu = (page) => page.evaluate(() => {
   marche(document.body);
   return out.join(' ').replace(/\s+/g, ' ');
 });
+// Stock simulé : en fenêtre la série 249 € (tier 2, compté sur 40), en v2 la seule série 350 € (tier 3, sur 20).
 const stockFaux = (prix, soldOut = false) => {
   const pris = soldOut ? 20 : 3;
+  const v2 = prix === 350;
   return {
-    live: true, tier: 2, price: prix, tier_sold: pris, sold: 20 + pris, total: 40, remaining: 20 - pris, sold_out: soldOut,
+    live: true, tier: v2 ? 3 : 2, price: prix, tier_sold: pris, sold: v2 ? pris : 20 + pris, total: v2 ? 20 : 40,
+    remaining: 20 - pris, sold_out: soldOut,
     tickets: Array.from({ length: 20 }, (_, i) => ({ number: i + 1, status: i < pris ? 'sold' : 'available' })),
   };
 };
@@ -111,15 +114,17 @@ for (const [phase, fin, attendu] of [['v2', PASSE, { m: '30', a: '275', v: '350'
   await p.close();
 }
 
-// Textes Lifetime : en v2, rien ne promet une hausse par série ni ne cite « N/20 tickets à 350 € déjà pris »
-// (les tickets déjà vendus l'ont été à 249 €). Stock simulé à 350 €, série ouverte puis complète.
-const INTERDITS_V2 = ['Puis le prix monte', 'tickets à 350 € déjà pris', 'tarif supérieur', 'Le prix monte par', 'prochain tarif'];
+// Textes Lifetime : en v2 rien ne promet une hausse par série ; le compteur ne compte que la série 350 €
+// (« 3/20 tickets à 350 € déjà pris » est alors vrai) ; série vendue => « Accès à vie complet ».
+const INTERDITS_V2 = ['Puis le prix monte', 'tarif supérieur', 'Le prix monte par', 'prochain tarif'];
 for (const soldOut of [false, true]) {
   for (const chemin of ['/lifetime', '/devenir-membre', '/mon-ticket']) {
     const pg = await ouvrir(chemin, { fin: PASSE, stock: stockFaux(350, soldOut) });
     const t = await texteRendu(pg);
     const trouves = INTERDITS_V2.filter((x) => t.includes(x));
     verifier(!trouves.length, `${chemin} [v2${soldOut ? ', série complète' : ''}] aucun texte de hausse de prix (${trouves.join(' | ') || 'rien'})`);
+    if (soldOut) verifier(t.includes('Accès à vie complet'), `${chemin} [v2, série complète] « Accès à vie complet »`);
+    if (chemin === '/lifetime' && !soldOut) verifier(t.includes('3 /20 tickets à 350 € déjà pris') && t.includes('série 03'), '/lifetime [v2] compteur de la série 350 € (3/20), série 03');
     await pg.close();
   }
 }
