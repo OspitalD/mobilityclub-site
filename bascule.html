@@ -32,7 +32,7 @@ window.MC_BASCULE = {
   MENSUEL_PRIX: '25 €',                  // ⚠️ plan SANS essai gratuit (le plan de /devenir-membre a 7 j d'essai)
   LIEN_MENSUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-17C64877T6348331UNLCQIVI',
 
-  DATE_LIMITE: 'dimanche 25 octobre',
+  DATE_LIMITE: null,                     // dérivée de la fin d'offre (offre-v2.js : MC_OFFRE_FIN puis serveur), heure de Paris
   DATE_FIN_SKOOL: 'dimanche 25 octobre', // jour de la bascule : les abonnements Skool s'arrêtent
   DELAI_COUPURE: '48 h',                 // délai pour couper l'abonnement Skool après paiement
   CONTACT: 'damien@mobilityclub.co',
@@ -559,7 +559,17 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   }).join(''); };
   drawPlans();
 
-  // 4. Date limite
+  // 4. Date limite : une seule source, la fin d'offre. « lundi 26 octobre à 19 h » (Europe/Paris).
+  const dateFin = (iso) => {
+    const t = Date.parse(iso);
+    if (!t) return '';
+    const d = new Date(t);
+    const jour = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' });
+    const [h, m] = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Paris' }).split(':');
+    return jour + ' à ' + Number(h) + ' h' + (m === '00' ? '' : ' ' + m);
+  };
+  C.DATE_LIMITE = dateFin(window.MC_OFFRE_FIN);
+  const drawDates = () => {
   document.getElementById('deadline').innerHTML =
     `L'avantage fondateur reste ouvert jusqu'au <b>${v('DATE_LIMITE')}</b>. Ensuite, les formules restent disponibles, sans les bonus.`;
 
@@ -577,6 +587,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   document.getElementById('faq').innerHTML = FAQ.map(([q, a]) =>
     `<details><summary>${q}</summary><p>${a}</p></details>`
   ).join('');
+  };
+  drawDates();
 
   // Statut des 3 façons d'avoir ton programme
   document.querySelectorAll('[data-prog]').forEach((li) => {
@@ -652,6 +664,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     C.VIE_PRIX = fmtEur(e.prix.vie) + ' €';
     C.VIE_4X = '4 × ' + fmtEur(e.prix.vie / 4) + ' €';
     C.MENSUEL_PRIX = fmtEur(e.prix.mensuel) + ' €';
+    const limite = dateFin(e.fin);
+    if (limite && limite !== C.DATE_LIMITE) { C.DATE_LIMITE = limite; drawDates(); }
     if (e.phase === 'v2') {
       C.LIEN_ANNUEL = e.liens.annuel;
       C.LIEN_MENSUEL = e.liens.mensuel;
