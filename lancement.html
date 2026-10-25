@@ -13,6 +13,7 @@
 <meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-fenetre.jpg" />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
+<link rel="preload" as="image" href="/assets/video/lancement-16x9-fenetre.jpg" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
@@ -146,19 +147,19 @@ footer a:hover{color:var(--text-primary);}
 <!-- 1. HERO -->
 <section class="hero" aria-label="Mobility Club V2">
   <div class="wrap">
-    <h1 class="reveal">Mobility Club <span>V2</span></h1>
-    <p class="promise reveal" data-i18n="promise">Ton coach de mouvement, dans ta poche.</p>
-    <div class="video reveal" id="video">
+    <h1 >Mobility Club <span>V2</span></h1>
+    <p class="promise" data-i18n="promise">Ton coach de mouvement, dans ta poche.</p>
+    <div class="video" id="video">
       <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2">
         <source src="/assets/video/lancement-16x9-fenetre.webm" type="video/webm" />
         <source src="/assets/video/lancement-16x9-fenetre.mp4" type="video/mp4" />
       </video>
     </div>
-    <div class="count reveal" data-offre-phase="fenetre">
+    <div class="count" data-offre-phase="fenetre">
       <div class="t" data-offre-compteur aria-live="off">24:00:00</div>
       <p data-i18n="count_label">avant la fin de l’offre de lancement</p>
     </div>
-    <a class="cta primary reveal" href="#offre" id="hero-cta" data-i18n="hero_cta">Voir les formules</a>
+    <a class="cta primary" href="#offre" id="hero-cta" data-i18n="hero_cta">Voir les formules</a>
   </div>
 </section>
 
