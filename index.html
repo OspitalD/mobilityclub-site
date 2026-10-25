@@ -1539,6 +1539,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 .cx-total .s{display:block;margin-top:6px;color:var(--cx-muted);font-size:14.5px}
 .cx-cta{margin-top:22px;display:flex;justify-content:center}
 </style>
+<script src="/assets/js/offre-v2.js"></script>
 <script type="importmap">
 { "imports": {
   "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -1561,7 +1562,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
     </a>
     <div class="header-right">
-      <a class="header-cta" href="/devenir-membre" data-cta="header" data-i18n="nav_cta">Devenir membre</a>
+      <a class="header-cta" href="/devenir-membre" data-offre-lien="achat" data-cta="header" data-i18n="nav_cta">Devenir membre</a>
       <div class="lang" role="group" aria-label="Language / Langue">
         <span class="thumb" aria-hidden="true"></span>
         <button type="button" data-lang="fr" aria-pressed="true">FR</button>
@@ -1600,7 +1601,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   </p>
 
   <div class="hero-cta-row reveal">
-    <a href="/devenir-membre" class="btn btn-primary" data-cta="hero">
+    <a href="/devenir-membre" class="btn btn-primary" data-offre-lien="achat" data-cta="hero">
       <span data-i18n="hero_cta">Devenir membre</span>
       <span class="arrow">→</span>
     </a>
@@ -2046,7 +2047,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         <span class="door-go"><span data-i18n="door_go">Commencer</span><span class="arrow">→</span></span>
       </a>
 
-      <a class="door reveal" data-door="club" href="/devenir-membre" rel="noopener">
+      <a class="door reveal" data-door="club" data-offre-lien="achat" href="/devenir-membre" rel="noopener">
         <div class="door-top">
           <span class="door-num">/03</span>
           <span class="door-tag product" data-i18n="tag_product">Le produit</span>
@@ -2058,7 +2059,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     </div>
 
     <div class="doors-cta reveal">
-      <a href="/devenir-membre" class="btn btn-primary" data-cta="doors"><span data-i18n="doors_cta">Devenir membre</span><span class="arrow">→</span></a>
+      <a href="/devenir-membre" class="btn btn-primary" data-offre-lien="achat" data-cta="doors"><span data-i18n="doors_cta">Devenir membre</span><span class="arrow">→</span></a>
       <p class="doors-cta-note" data-i18n="doors_cta_note">Essai gratuit de 7 jours · garantie progression</p>
     </div>
   </div>
@@ -2070,7 +2071,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <div class="sticky-cta" id="stickyCta" aria-hidden="true">
   <div class="sticky-inner">
     <span class="sticky-txt" data-i18n="sticky_txt"><b>Commence gratuitement.</b> Diagnostic + Timer offerts.</span>
-    <a class="btn btn-primary sticky-btn" href="/devenir-membre" data-cta="sticky"><span data-i18n="sticky_btn">Devenir membre</span><span class="arrow">→</span></a>
+    <a class="btn btn-primary sticky-btn" href="/devenir-membre" data-offre-lien="achat" data-cta="sticky"><span data-i18n="sticky_btn">Devenir membre</span><span class="arrow">→</span></a>
   </div>
 </div>
 
@@ -2111,7 +2112,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         ['Ton programme importé (PDF, photo, texte)', 'Inclus', 'Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.'],
         ['Un bilan articulaire de départ', 'Inclus', 'Ailleurs : Pliability et GOWOD.'],
         ['Un programme créé pour toi', 'Inclus', 'Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.'],
-        ['Accès à vie', '249 €', 'Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.']
+        ['Accès à vie', '{vie}', 'Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.']
       ],
       open: 'Voir le tableau détaillé', close: 'Masquer le tableau', sub: 'Fonctions et prix des 8 applis',
       rows: ['Un programme créé pour toi, personnalisé','Importer ton programme (PDF, photo, texte)','Créer ton propre programme','Bilan articulaire de départ','Coach vocal qui ajuste ta séance','Ton geste corrigé en vidéo par un vrai coach','Accès à vie','Prix au mois','Prix sur un an'],
@@ -2133,7 +2134,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       needs: { mobilite: 'Mobilité', muscu: 'Musculation', course: 'Course', sante: 'Tracker tes données santé' },
       gen: 'Générique', ind: 'Individualisé',
       hint: { gen: 'Un programme tout fait, le même pour tous.', ind: 'Un plan créé pour toi, selon ton niveau et tes objectifs.' },
-      over: 'sur', all: 'Tout ça dans le club, à vie : 249 €, une fois.',
+      over: 'sur', all: 'Tout ça dans le club, à vie : {vie}, une fois.',
       santeLine: 'Tracker tes données santé : bientôt dans le club, avec WHOOP.',
       empty: 'Coche tes besoins pour voir le total.',
       cta: 'Devenir membre', locale: 'fr-FR', colon: ' : '
@@ -2148,7 +2149,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         ['Import your own program (PDF, photo, text)', 'Included', 'Elsewhere: partly. Fitbod, one session from a photo on Android. Hevy, through an external tool.'],
         ['A starting joint assessment', 'Included', 'Elsewhere: Pliability and GOWOD.'],
         ['A program built for you', 'Included', 'Elsewhere: Pliability, GOWOD, Fitbod, Freeletics and Runna.'],
-        ['Lifetime access', '€249', 'Elsewhere: Hevy (€89.99), program only: no coach, no mobility, no joint assessment. Freeletics, on its website, price not published.']
+        ['Lifetime access', '{vie}', 'Elsewhere: Hevy (€89.99), program only: no coach, no mobility, no joint assessment. Freeletics, on its website, price not published.']
       ],
       open: 'See the detailed table', close: 'Hide the table', sub: 'Features and prices of 8 apps',
       rows: ['A personalised program built for you','Import your program (PDF, photo, text)','Build your own program','Starting joint assessment','Voice coach that adjusts your session','Form corrected on video by a real coach','Lifetime access','Monthly price','Yearly price'],
@@ -2170,7 +2171,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       needs: { mobilite: 'Mobility', muscu: 'Strength training', course: 'Running', sante: 'Track your health data' },
       gen: 'Generic', ind: 'Individualised',
       hint: { gen: 'A ready-made program, the same for everyone.', ind: 'A plan built for you, based on your level and goals.' },
-      over: 'over', all: 'All of it in the club, for life: €249, once.',
+      over: 'over', all: 'All of it in the club, for life: {vie}, once.',
       santeLine: 'Track your health data: coming soon to the club, with WHOOP.',
       empty: 'Tick your needs to see the total.',
       cta: 'Become a member', locale: 'en-IE', colon: ': '
@@ -2184,12 +2185,12 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     ['●','●','●','—','—','—','—','—'],
     ['●','—','—','—','◐','—','◐','◐'],
     ['●','—','—','—','—','—','—','—'],
-    [249,'—','—','—','◐',89.99,'—','—'],
-    [25,22.99,9.29,13.49,'—',3.49,19.99,14.99],
-    [220,199.99,84.99,81.99,79.99,26.49,119.99,94.99]
+    ['P:vie','—','—','—','◐',89.99,'—','—'],
+    ['P:mensuel',22.99,9.29,13.49,'—',3.49,19.99,14.99],
+    ['P:annuel',199.99,84.99,81.99,79.99,26.49,119.99,94.99]
   ];
   var OUTILS = [
-    { k: 'us', us: true, cout: function(){ return 249; } },
+    { k: 'us', us: true, cout: function(){ return P.vie; } },
     { n: 'Pliability', cout: function(y){ return 199.99 * y; } },
     { n: 'Runna', cout: function(y){ return 119.99 * y; } },
     { n: 'Ladder', cout: function(y){ return 94.99 * y; } },
@@ -2204,14 +2205,17 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     { id: 'course', gen: { app: 'Runna', c: function(y){ return 119.99 * y; } }, ind: { app: 'Runna', c: function(y){ return 119.99 * y; } } },
     { id: 'sante', soon: true }
   ];
+  // Prix de la phase courante : alimentés par offre-v2 (source unique), jamais écrits en dur.
+  var P = { mensuel: 25, annuel: 220, vie: 249 };
   var st = { lang: 'fr', years: 3, mode: 'ind', pick: { mobilite: true, muscu: true } };
   var root = document.getElementById('cmpRoot');
   if (!root) return;
   function eur(n, t){ return n.toLocaleString(t.locale, { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  function cell(v, t){ return v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : v); }
+  function cell(v, t){ return v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : (typeof v === 'string' && v.indexOf('P:') === 0 ? eur(P[v.slice(2)], t) : v)); }
+  function prix(str, t){ return str.replace('{vie}', eur(P.vie, t)); }
   function build(){
     var t = T[st.lang], i;
-    var vs = t.vs.map(function(r){ return '<li><strong>' + r[0] + '</strong><span class="cx-us">' + r[1] + '</span><span class="cx-else">' + r[2] + '</span></li>'; }).join('');
+    var vs = t.vs.map(function(r){ return '<li><strong>' + r[0] + '</strong><span class="cx-us">' + prix(r[1], t) + '</span><span class="cx-else">' + r[2] + '</span></li>'; }).join('');
     var head = '<tr>' + APPS.map(function(a, j){ return '<th scope="col"' + (j ? '' : ' class="us"') + '>' + a + '</th>'; }).join('') + '</tr>';
     var body = '';
     for (i = 0; i < t.rows.length; i++){
@@ -2234,7 +2238,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       '<div class="cx-chips" data-g="chips">' + BESOINS.map(function(b){ return '<button type="button" data-id="' + b.id + '">' + t.needs[b.id] + (b.soon ? '<span class="cx-soon">' + t.soon + '</span>' : '') + '</button>'; }).join('') + '</div>' +
       '<div class="cx-seg two" data-g="m" role="group"><button type="button" data-m="gen">' + t.gen + '</button><button type="button" data-m="ind">' + t.ind + '</button></div>' +
       '<p class="cx-hint" data-g="hint"></p><p class="cx-total" data-g="total"></p></div></div>' +
-      '<div class="cx-cta"><a href="/devenir-membre" class="btn btn-primary" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
+      '<div class="cx-cta"><a href="/devenir-membre" class="btn btn-primary" data-offre-lien="achat" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
     draw();
   }
   function q(g){ return root.querySelector('[data-g="' + g + '"]'); }
@@ -2252,7 +2256,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     var tot = Math.round(sel.reduce(function(n, b){ return n + b[st.mode].c(st.years); }, 0) * 100) / 100;
     var s = soon ? '<span class="s">' + t.santeLine + '</span>' : '';
     q('total').innerHTML = sel.length
-      ? sel.map(function(b){ return t.needs[b.id] + ' (' + b[st.mode].app + ')'; }).join(' + ') + ' ' + t.over + ' ' + t.years(st.years) + t.colon + '<b>' + eur(tot, t) + '</b>.<br><span class="g">' + t.all + '</span>' + s
+      ? sel.map(function(b){ return t.needs[b.id] + ' (' + b[st.mode].app + ')'; }).join(' + ') + ' ' + t.over + ' ' + t.years(st.years) + t.colon + '<b>' + eur(tot, t) + '</b>.<br><span class="g">' + prix(t.all, t) + '</span>' + s
       : (soon ? s : t.empty);
   }
   root.addEventListener('click', function(e){
@@ -2263,6 +2267,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   });
   window.renderCompare = function(lang){ st.lang = T[lang] ? lang : 'fr'; build(); };
   build();
+  if (window.MCOffre) window.MCOffre.onChange(function(e){ P.mensuel = e.prix.mensuel; P.annuel = e.prix.annuel; P.vie = e.prix.vie; build(); });
 })();
 </script>
 <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>

@@ -77,7 +77,10 @@
     }
     els = document.querySelectorAll('[data-offre-lien]');
     for (i = 0; i < els.length; i++) {
-      v = e.liens && e.liens[els[i].getAttribute('data-offre-lien')];
+      var cle = els[i].getAttribute('data-offre-lien');
+      // « achat » = le CTA principal des pages vitrine : la page de lancement pendant
+      // la fenêtre, la page d'achat ensuite. Dérivé de la phase, pas du contrat de liens.
+      v = cle === 'achat' ? (e.phase === 'fenetre' ? '/lancement' : '/devenir-membre') : e.liens && e.liens[cle];
       if (v) {
         els[i].setAttribute('href', v);
         // Un lien interne ne s'ouvre pas dans un nouvel onglet.
