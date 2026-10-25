@@ -20,9 +20,7 @@ export const PLANS = {
     mensuel: PAYPAL_PLAN('P-3X034647B5061360HNLPBCDY'), // 30 €/mois, essai 7 j
     annuel: PAYPAL_PLAN('P-7PX93930RS848432UNLPBCEA'), // 275 €/an
     vie: '/lifetime',
-    // 30 €/mois SANS essai (/lancement, C3) : plan à créer par Damien. null => deploy bloqué
-    // (tests/offre-v2-deploy.test.mjs) et la page renvoie vers /devenir-membre, jamais vers un ancien plan.
-    mensuel_fixe: null,
+    mensuel_fixe: PAYPAL_PLAN('P-3H171898NK2522001NLPCAUI'), // 30 €/mois, sans essai (/lancement, C3)
   },
 };
 

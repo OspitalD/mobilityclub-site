@@ -33,8 +33,8 @@ test('après la fin : prix 30/275/350 et AUCUN ancien plan dans les liens', () =
   assert.ok(!rendu.includes(PLANS.ancien.annuel.split('=')[1]));
   assert.equal(e.liens.vie, '/lifetime');
   assert.ok(!rendu.includes('P-17C64877T6348331UNLCQIVI'), 'mensuel fixe 25 € jamais rendu en v2');
-  // Tant que le plan 30 € sans essai n'existe pas : page d'achat, jamais l'ancien plan.
-  assert.equal(e.liens.mensuel_fixe, PLANS.v2.mensuel_fixe ?? '/devenir-membre');
+  assert.equal(e.liens.mensuel_fixe, PLANS.v2.mensuel_fixe);
+  assert.match(e.liens.mensuel_fixe, /plan_id=P-3H171898NK2522001NLPCAUI$/);
 });
 
 test('après la fin : les liens sont les plans V2 (essai 7 j / 275 €), jamais un lien vide', () => {
