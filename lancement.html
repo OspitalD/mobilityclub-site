@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mobility Club V2 — Offre de lancement</title>
+<meta name="description" content="Mobility Club V2 : ton coach de mouvement, dans ta poche. Bilan articulaire, coach vocal, correction vidéo par un humain. Offre de lancement, prix verrouillé." />
+<meta name="theme-color" content="#0D0F0E" />
+<meta name="robots" content="index,follow" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Mobility Club V2 — Ton coach de mouvement, dans ta poche" />
+<meta property="og:description" content="Bilan articulaire, coach vocal, correction vidéo par un humain. Offre de lancement : prix verrouillé." />
+<meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-fenetre.jpg" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:locale:alternate" content="en_US" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg-primary:#0D0F0E;
+  --bg-surface:linear-gradient(160deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02) 55%, rgba(255,255,255,0.045));
+  --glass-border:rgba(255,255,255,.14);
+  --hair:rgba(255,255,255,0.07);
+  --accent-green:#3ECFA0;
+  --accent-gold:#E8A020;
+  --accent-purple:#B990E0;
+  --text-primary:#F5F5F3;
+  --text-secondary:#9a9c9a;
+  --text-tertiary:#6b6e6c;
+  --font-sans:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --maxw:1080px;
+  --gutter:clamp(16px, 5vw, 56px);
+  --ease:cubic-bezier(0.22, 1, 0.36, 1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.55;overflow-x:hidden;position:relative;}
+body::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(60% 420px at 85% 0%, rgba(62,207,160,.16), transparent 70%),
+    radial-gradient(50% 520px at 0% 38%, rgba(185,144,224,.12), transparent 70%),
+    radial-gradient(55% 480px at 100% 70%, rgba(232,160,32,.09), transparent 70%);}
+a{color:inherit;}
+img,video{display:block;max-width:100%;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
+section{padding:clamp(48px,8vw,96px) 0;}
+h1,h2,h3{font-style:italic;font-weight:800;letter-spacing:-0.02em;line-height:1.08;}
+h1{font-size:clamp(38px,7.2vw,76px);}
+h2{font-size:clamp(28px,4.4vw,44px);margin-bottom:clamp(20px,3vw,32px);text-wrap:balance;}
+h3{font-size:clamp(18px,2vw,22px);text-wrap:balance;}
+p{color:var(--text-secondary);}
+.glass{background:var(--bg-surface);border:1px solid var(--glass-border);border-radius:26px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+
+/* langue */
+.langbar{display:flex;justify-content:flex-end;padding-top:16px;}
+.lang{font:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--text-secondary);background:transparent;border:1px solid var(--glass-border);border-radius:100px;padding:6px 14px;cursor:pointer;}
+.lang:hover{color:var(--text-primary);}
+
+/* boutons */
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 28px;border-radius:100px;font-weight:700;font-size:16px;text-decoration:none;font-family:inherit;border:1px solid transparent;cursor:pointer;transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s;}
+.cta.primary{background:var(--accent-green);color:#0D0F0E;box-shadow:0 10px 36px -10px rgba(62,207,160,.55);}
+.cta.primary:hover{transform:translateY(-2px);}
+.cta.ghost{background:transparent;color:var(--text-primary);border-color:var(--glass-border);}
+.cta.ghost:hover{border-color:var(--accent-green);color:var(--accent-green);}
+.cta:focus-visible,summary:focus-visible,.lang:focus-visible{outline:2px solid var(--accent-green);outline-offset:3px;}
+
+/* hero */
+.hero{padding-top:clamp(24px,5vw,56px);text-align:center;}
+.hero h1 span{color:var(--accent-green);}
+.promise{font-size:clamp(18px,2.4vw,24px);color:var(--text-primary);font-weight:600;margin:16px auto 0;max-width:34ch;text-wrap:balance;}
+.video{margin:clamp(28px,4vw,44px) auto 0;max-width:880px;aspect-ratio:16/9;border-radius:28px;overflow:hidden;border:1px solid var(--glass-border);background:#111412;}
+.video video{width:100%;height:100%;object-fit:cover;}
+.count{margin-top:clamp(24px,4vw,36px);}
+.count .t{font-size:clamp(40px,8vw,72px);font-weight:800;font-style:italic;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:var(--accent-gold);line-height:1;}
+.count p{margin-top:8px;font-size:14px;}
+.hero .cta{margin-top:clamp(22px,3vw,32px);}
+
+/* faits */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,48px);}
+.fact{display:flex;flex-direction:column;gap:16px;}
+.fact img{width:100%;max-width:240px;height:auto;aspect-ratio:1179/2556;border-radius:26px;border:1px solid var(--glass-border);margin:0 auto;background:#111412;}
+.fact h3{margin-top:4px;}
+.fact p{font-size:15px;}
+.vs{margin-top:clamp(32px,5vw,56px);text-align:center;font-size:clamp(17px,2.2vw,22px);font-weight:600;color:var(--text-primary);text-wrap:balance;}
+.vs small{display:block;margin-top:6px;font-size:12px;font-weight:400;color:var(--text-tertiary);}
+
+/* preuve */
+.numbers{display:flex;gap:clamp(24px,6vw,72px);flex-wrap:wrap;margin-bottom:clamp(28px,4vw,44px);}
+.numbers b{display:block;font-size:clamp(40px,6vw,64px);font-weight:800;font-style:italic;color:var(--accent-green);line-height:1;}
+.numbers span{font-size:14px;color:var(--text-secondary);}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);}
+.quotes blockquote{padding:0 0 0 18px;border-left:2px solid rgba(185,144,224,.5);}
+.quotes q{display:block;quotes:none;font-size:15px;color:var(--text-primary);}
+.quotes cite{display:block;margin-top:10px;font-size:13px;font-style:normal;font-weight:700;color:var(--text-secondary);}
+
+/* offre */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,24px);align-items:stretch;}
+.plan{padding:clamp(22px,3vw,32px);display:flex;flex-direction:column;gap:10px;}
+.plan .name{font-weight:700;font-size:15px;color:var(--text-secondary);}
+.plan .price{font-size:clamp(44px,6vw,60px);font-weight:800;font-style:italic;line-height:1;letter-spacing:-0.02em;}
+.plan .price small{font-size:16px;font-weight:600;font-style:normal;color:var(--text-secondary);letter-spacing:0;margin-left:4px;}
+.plan .lock{font-weight:700;font-size:14px;color:var(--accent-green);}
+.plan .after{font-size:14px;}
+.plan .note{font-size:14px;flex:1;}
+.plan .cta{margin-top:10px;width:100%;}
+.offer-top{text-align:center;margin-bottom:clamp(8px,2vw,16px);}
+.offer-top .count{margin:0 0 clamp(24px,4vw,40px);}
+.offer-top h2{margin-bottom:20px;}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto;}
+details{border-top:1px solid var(--hair);}
+details:last-child{border-bottom:1px solid var(--hair);}
+summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:700;font-size:17px;display:flex;justify-content:space-between;gap:16px;align-items:center;}
+summary::-webkit-details-marker{display:none;}
+summary::after{content:"+";font-size:24px;color:var(--accent-green);transition:transform .25s var(--ease);flex:none;}
+details[open] summary::after{transform:rotate(45deg);}
+details p{padding:0 0 22px;max-width:62ch;}
+
+footer{padding:40px 0 56px;border-top:1px solid var(--hair);font-size:13px;color:var(--text-tertiary);}
+footer .wrap{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;}
+footer a{color:var(--text-secondary);text-decoration:none;}
+footer a:hover{color:var(--text-primary);}
+
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease), transform .8s var(--ease);}
+.reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important;}html{scroll-behavior:auto;}}
+
+@media (max-width:820px){
+  .facts{grid-template-columns:1fr;gap:28px;}
+  .fact{display:grid;grid-template-columns:116px 1fr;gap:4px 18px;align-items:start;}
+  .fact img{grid-row:1 / span 2;max-width:116px;border-radius:18px;margin:0;}
+  .fact h3{margin-top:0;align-self:end;}
+  .quotes{grid-template-columns:1fr;}
+  .plans{grid-template-columns:1fr;}
+  .plan .cta{margin-top:6px;}
+  .video{border-radius:20px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap langbar"><button class="lang" id="lang" type="button" aria-label="Language">EN</button></div>
+
+<main>
+<!-- 1. HERO -->
+<section class="hero" aria-label="Mobility Club V2">
+  <div class="wrap">
+    <h1 class="reveal">Mobility Club <span>V2</span></h1>
+    <p class="promise reveal" data-i18n="promise">Ton coach de mouvement, dans ta poche.</p>
+    <div class="video reveal" id="video">
+      <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2">
+        <source src="/assets/video/lancement-16x9-fenetre.webm" type="video/webm" />
+        <source src="/assets/video/lancement-16x9-fenetre.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <div class="count reveal" data-offre-phase="fenetre">
+      <div class="t" data-offre-compteur aria-live="off">24:00:00</div>
+      <p data-i18n="count_label">avant la fin de l’offre de lancement</p>
+    </div>
+    <a class="cta primary reveal" href="#offre" id="hero-cta" data-i18n="hero_cta">Voir les formules</a>
+  </div>
+</section>
+
+<!-- 2. MOAT -->
+<section aria-label="Ce que la V2 change">
+  <div class="wrap">
+    <div class="facts">
+      <div class="fact reveal">
+        <img src="/assets/lancement/bilan.jpg" width="560" height="1214" loading="lazy" alt="Écran Ton bilan : score articulaire et radar des zones" data-i18n-alt="alt_bilan" />
+        <h3 data-i18n="f1_t">Ton corps mesuré, puis re‑mesuré</h3>
+        <p data-i18n="f1_p">Un bilan articulaire de départ, refait régulièrement : tu vois ce qui bouge vraiment.</p>
+      </div>
+      <div class="fact reveal">
+        <img src="/assets/lancement/coach.jpg" width="560" height="1214" loading="lazy" alt="Écran de retour vidéo d’un coach" data-i18n-alt="alt_coach" />
+        <h3 data-i18n="f2_t">Un humain regarde ton geste</h3>
+        <p data-i18n="f2_p">Tu filmes ton mouvement, un coach le regarde et te répond.</p>
+      </div>
+      <div class="fact reveal">
+        <img src="/assets/lancement/voix.jpg" width="560" height="1214" loading="lazy" alt="Écran de séance ajustée à la voix" data-i18n-alt="alt_voix" />
+        <h3 data-i18n="f3_t">Ta séance s’adapte à ce que tu dis</h3>
+        <p data-i18n="f3_p">Une douleur, de la fatigue, peu de temps : tu le dis, la séance change.</p>
+      </div>
+    </div>
+    <p class="vs reveal"><span data-i18n="vs">Sur les 7 applis que nous avons comparées, aucune ne réunit ces trois points.</span><small data-i18n="vs_src">D’après leur documentation publique, relevé du 23/10/2026.</small></p>
+  </div>
+</section>
+
+<!-- 3. PREUVE -->
+<section aria-label="Membres">
+  <div class="wrap">
+    <div class="numbers reveal">
+      <div><b>330</b><span data-i18n="n_members">membres</span></div>
+      <div><b>52</b><span data-i18n="n_feedback">retours membres</span></div>
+    </div>
+    <div class="quotes">
+      <blockquote class="reveal"><q data-i18n="q1">Ce soir, première séance sans douleur. Après presque 5 ans à me limiter et à avoir mal dès que je marchais plus de 500 m, je repousse mes limites de plus en plus.</q><cite>Lisa</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q2">Après deux semaines, j’arrive enfin à toucher mes pieds jambes tendues — pour la première fois de ma vie.</q><cite>Camille</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q3">J’avais peur que les séances soient trop longues. L’appel avec Damien m’a rassuré : on adapte la mobilité à sa vie, pas l’inverse.</q><cite>Julie</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q4">En peu de temps, plus aucune douleur pendant mes matchs de padel. Les RACs et les routines sont redoutablement efficaces.</q><cite>Marie</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q5">En trois semaines : plus de fluidité, moins de tensions, une meilleure conscience corporelle. Et fini les réveils raide comme un balai.</q><cite>Alexandre</cite></blockquote>
+      <blockquote class="reveal"><q data-i18n="q6">En fin de séance, un squat complet sans aide, sans douleur ni difficulté — ce qui était impossible avant. Grosse, grosse satisfaction.</q><cite>Hugo</cite></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- 4. OFFRE -->
+<section id="offre" aria-label="Offre">
+  <div class="wrap">
+    <div class="offer-top reveal">
+      <h2 data-offre-phase="fenetre" data-i18n="offer_h_f">Offre de lancement : ton prix, verrouillé</h2>
+      <h2 data-offre-phase="v2" style="display:none" hidden data-i18n="offer_h_v">La V2 est lancée</h2>
+      <div class="count" data-offre-phase="fenetre">
+        <div class="t" data-offre-compteur>24:00:00</div>
+        <p data-i18n="count_label2">avant la fin de l’offre de lancement</p>
+      </div>
+    </div>
+    <div class="plans">
+      <div class="plan glass reveal">
+        <div class="name" data-i18n="p_m">Mensuel</div>
+        <div class="price"><span data-offre-prix="mensuel">25</span> €<small data-i18n="per_month">/mois</small></div>
+        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
+        <p class="note" data-i18n="p_m_note">Essai de 7 jours, puis abonnement mensuel.</p>
+        <a class="cta ghost" href="/devenir-membre" data-offre-lien="mensuel" data-i18n="cta_m">Essayer 7 jours</a>
+      </div>
+      <div class="plan glass reveal">
+        <div class="name" data-i18n="p_a">Annuel</div>
+        <div class="price"><span data-offre-prix="annuel">220</span> €<small data-i18n="per_year">/an</small></div>
+        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
+        <p class="note"><span data-i18n="p_a_note">Soit</span> <span data-offre-prix="annuel-mois" data-offre-eur>18,33 €</span> <span data-i18n="per_month_short">par mois.</span></p>
+        <a class="cta primary" href="/devenir-membre" data-offre-lien="annuel" data-i18n="cta_a">Choisir l’annuel</a>
+      </div>
+      <div class="plan glass reveal">
+        <div class="name" data-i18n="p_v">À vie</div>
+        <div class="price"><span data-offre-prix="vie">249</span> €<small data-i18n="once">une fois</small></div>
+        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur :</span> <b><span data-post="vie">350</span> €</b></div>
+        <p class="note" data-i18n="p_v_note">Un seul paiement, accès à vie.</p>
+        <a class="cta ghost" href="/lifetime" data-offre-lien="vie" data-i18n="cta_v">Prendre l’accès à vie</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FAQ -->
+<section aria-label="FAQ">
+  <div class="wrap">
+    <h2 class="reveal" style="text-align:center" data-i18n="faq_h">Questions fréquentes</h2>
+    <div class="faq reveal">
+      <details data-q="prix"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il ?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24 h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
+      <details data-q="temps"><summary data-i18n="q_temps">Combien de temps par jour ?</summary><p data-i18n="a_temps">Quelques minutes par jour. Tu ouvres l’app, la séance est prête : rien à choisir, rien à préparer.</p></details>
+      <details data-q="souplesse"><summary data-i18n="q_souplesse">Je ne suis pas souple, c’est pour moi ?</summary><p data-i18n="a_souplesse">Oui, c’est justement pour toi. Le programme part de ton bilan : il démarre là où tu en es, pas là où il faudrait être.</p></details>
+      <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter ?</summary><p data-i18n="a_annul">Le mensuel et l’annuel s’annulent à tout moment depuis ton compte PayPal. L’essai de 7 jours du mensuel te laisse essayer avant de payer. Tu disposes aussi du délai légal de rétractation de 14 jours.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Mobility Club</span>
+    <span><a href="/confidentialite" data-i18n="f_priv">Confidentialité</a> · <a href="mailto:damien@mobilityclub.co">damien@mobilityclub.co</a></span>
+  </div>
+</footer>
+
+<script src="/assets/js/offre-v2.js"></script>
+<script>
+/* Dictionnaire : le français est lu dans le DOM au chargement (source unique du texte FR),
+   l’anglais est ci-dessous. Chaînes en guillemets doubles ou apostrophe typographique uniquement. */
+var I18N = {
+  fr: {},
+  en: {
+    promise: "Your movement coach, in your pocket.",
+    count_label: "until the launch offer ends",
+    count_label2: "until the launch offer ends",
+    hero_cta: "See the plans",
+    alt_bilan: "Your assessment screen: joint score and zone radar",
+    alt_coach: "Coach video feedback screen",
+    alt_voix: "Voice-adjusted session screen",
+    f1_t: "Your body measured, then measured again",
+    f1_p: "A starting joint assessment, repeated regularly: you see what really moves.",
+    f2_t: "A human watches your movement",
+    f2_p: "You film your movement, a coach watches it and answers you.",
+    f3_t: "Your session adapts to what you say",
+    f3_p: "Pain, fatigue, little time: you say it, the session changes.",
+    vs: "Of the 7 apps we compared, none combines these three.",
+    vs_src: "Based on their public documentation, checked on 23/10/2026.",
+    n_members: "members",
+    n_feedback: "member feedbacks",
+    q1: "Tonight, my first pain-free session. After nearly 5 years of holding back and hurting the moment I walked past 500 m, I keep pushing my limits.",
+    q2: "After two weeks, I can finally touch my toes with straight legs — for the first time in my life.",
+    q3: "I was afraid the sessions would take too long. The call with Damien reassured me: you fit mobility around your life, not the other way around.",
+    q4: "In no time, no more pain during my padel matches. The RACs and routines are ruthlessly effective.",
+    q6: "End of session: a full squat with no help, no pain, no struggle — which was impossible before. Huge, huge satisfaction.",
+    q5: "In three weeks: more fluidity, less tension, better body awareness. And no more waking up stiff as a board.",
+    offer_h_f: "Launch offer: your price, locked in",
+    offer_h_v: "V2 is live",
+    p_m: "Monthly", p_a: "Yearly", p_v: "Lifetime",
+    per_month: "/month", per_year: "/year", once: "one time", per_month_short: "per month.",
+    locked: "Price locked in",
+    after: "When the countdown ends:",
+    p_m_note: "7-day trial, then a monthly subscription.",
+    p_a_note: "That is",
+    p_v_note: "One payment, lifetime access.",
+    cta_m: "Try 7 days", cta_a: "Choose yearly", cta_v: "Get lifetime access",
+    faq_h: "Frequently asked questions",
+    q_prix: "Why is the price going up?",
+    a_prix: "The launch price is reserved for the 24-hour window. When the countdown ends, the plans move to the V2 price. The price you take now stays yours as long as your subscription runs.",
+    q_temps: "How much time per day?",
+    a_temps: "A few minutes a day. You open the app, the session is ready: nothing to choose, nothing to prepare.",
+    q_souplesse: "I am not flexible, is this for me?",
+    a_souplesse: "Yes, it is exactly for you. The program starts from your assessment: it begins where you are, not where you should be.",
+    q_annul: "What if I want to stop?",
+    a_annul: "Monthly and yearly plans can be cancelled at any time from your PayPal account. The 7-day trial on the monthly plan lets you try before you pay. You also have the legal 14-day withdrawal period.",
+    f_priv: "Privacy"
+  }
+};
+var TITLES = { fr: "Mobility Club V2 — Offre de lancement", en: "Mobility Club V2 — Launch offer" };
+var LANG = "fr";
+
+(function () {
+  var nodes = document.querySelectorAll("[data-i18n]");
+  var alts = document.querySelectorAll("[data-i18n-alt]");
+  var i, k;
+  for (i = 0; i < nodes.length; i++) { k = nodes[i].getAttribute("data-i18n"); if (!(k in I18N.fr)) I18N.fr[k] = nodes[i].innerHTML; }
+  for (i = 0; i < alts.length; i++) { k = alts[i].getAttribute("data-i18n-alt"); I18N.fr[k] = alts[i].getAttribute("alt"); }
+})();
+
+function setLang(l) {
+  if (!I18N[l]) l = "fr";
+  LANG = l;
+  document.documentElement.lang = l;
+  var dict = I18N[l], i, k;
+  var nodes = document.querySelectorAll("[data-i18n]");
+  for (i = 0; i < nodes.length; i++) { k = nodes[i].getAttribute("data-i18n"); if (dict[k] != null) nodes[i].innerHTML = dict[k]; }
+  var alts = document.querySelectorAll("[data-i18n-alt]");
+  for (i = 0; i < alts.length; i++) { k = alts[i].getAttribute("data-i18n-alt"); if (dict[k] != null) alts[i].setAttribute("alt", dict[k]); }
+  document.title = TITLES[l];
+  document.getElementById("lang").textContent = l === "fr" ? "EN" : "FR";
+  try { localStorage.setItem("mc_lang", l); } catch (e) { /* stockage refusé : on continue */ }
+  if (window.MCOffre && MCOffre.etat()) remplirPost(MCOffre.etat());
+}
+document.getElementById("lang").addEventListener("click", function () { setLang(LANG === "fr" ? "en" : "fr"); });
+
+/* prix d’après le compteur : lus de l’état serveur (prix_v2), le HTML ne porte que le repli */
+function fmtPrix(n) { var s = (Math.round(n * 100) / 100).toFixed(2).replace(".", ","); return s.slice(-3) === ",00" ? s.slice(0, -3) : s; }
+function remplirPost(e) {
+  if (!e || !e.prix_v2) return;
+  var els = document.querySelectorAll("[data-post]");
+  for (var i = 0; i < els.length; i++) { var v = e.prix_v2[els[i].getAttribute("data-post")]; if (v != null) els[i].textContent = fmtPrix(v); }
+}
+
+/* vidéo : fenêtre ou V2 */
+var videoPhase = "fenetre";
+function videoPour(phase) {
+  if (phase === videoPhase) return;
+  videoPhase = phase;
+  var v = document.getElementById("hv");
+  var base = "/assets/video/lancement-16x9-" + (phase === "v2" ? "v2" : "fenetre");
+  v.setAttribute("poster", base + ".jpg");
+  v.innerHTML = "<source src=\"" + base + ".webm\" type=\"video/webm\"><source src=\"" + base + ".mp4\" type=\"video/mp4\">";
+  v.load();
+  var p = v.play(); if (p && p.catch) p.catch(function () {});
+}
+
+/* suivi : même format de payload que l’accueil (first-party, sans PII) */
+var TRACK_URL = "/.netlify/functions/track-site-event";
+function visitorId() {
+  try {
+    var v = localStorage.getItem("mc_vid");
+    if (!v) { v = Math.random().toString(36).slice(2, 12); localStorage.setItem("mc_vid", v); }
+    return v;
+  } catch (e) { return null; }
+}
+function track(event, props) {
+  try {
+    var body = JSON.stringify({ event: event, variant: "lancement", vid: visitorId(), props: Object.assign({ lang: document.documentElement.lang || "fr" }, props || {}) });
+    if (navigator.sendBeacon) navigator.sendBeacon(TRACK_URL, new Blob([body], { type: "application/json" }));
+    else fetch(TRACK_URL, { method: "POST", body: body, keepalive: true, headers: { "Content-Type": "application/json" } }).catch(function () {});
+  } catch (e) { /* le suivi ne casse jamais la page */ }
+}
+
+(function init() {
+  var stored = null;
+  try { stored = localStorage.getItem("mc_lang"); } catch (e) {}
+  if (stored === "en") setLang("en");
+
+  if (window.MCOffre) MCOffre.onChange(function (e) { videoPour(e.phase); remplirPost(e); });
+
+  /* reveal */
+  var rv = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } });
+    }, { threshold: 0.12 });
+    rv.forEach(function (el) { io.observe(el); });
+  } else { rv.forEach(function (el) { el.classList.add("in"); }); }
+
+  track("page_view", { path: "/lancement" });
+
+  /* offre vue, une fois */
+  var offre = document.getElementById("offre");
+  if (offre && "IntersectionObserver" in window) {
+    var io2 = new IntersectionObserver(function (es) {
+      if (es.some(function (x) { return x.isIntersecting; })) { track("offer_viewed", { path: "/lancement" }); io2.disconnect(); }
+    }, { threshold: 0.3 });
+    io2.observe(offre);
+  }
+
+  /* première lecture vidéo */
+  var hv = document.getElementById("hv"), played = false;
+  hv.addEventListener("playing", function () { if (!played) { played = true; track("video_played", { path: "/lancement" }); } });
+
+  /* FAQ */
+  var ds = document.querySelectorAll("details[data-q]");
+  for (var i = 0; i < ds.length; i++) {
+    (function (d) {
+      var once = false;
+      d.addEventListener("toggle", function () { if (d.open && !once) { once = true; track("faq_opened", { cta: d.getAttribute("data-q") }); } });
+    })(ds[i]);
+  }
+
+  /* clic sur un plan */
+  var links = document.querySelectorAll("[data-offre-lien]");
+  for (var j = 0; j < links.length; j++) {
+    (function (a) {
+      a.addEventListener("click", function () {
+        var plan = a.getAttribute("data-offre-lien");
+        if (plan === "mensuel" || plan === "annuel" || plan === "vie") track("plan_clicked", { plan: plan, path: "/lancement" });
+      });
+    })(links[j]);
+  }
+})();
+</script>
+</body>
+</html>
