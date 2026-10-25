@@ -1,5 +1,6 @@
 import { test, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { etatOffre, FIN_FENETRE, PLANS } from '../netlify/lib/offre-v2.js';
 import offreHandler from '../netlify/functions/offre-v2.js';
 
@@ -30,10 +31,17 @@ test('après la fin : prix 30/275/350 et AUCUN ancien plan dans les liens', () =
   assert.equal(e.liens.vie, '/lifetime');
 });
 
-test('plans V2 non créés : repli sur /devenir-membre, jamais un lien null', () => {
+test('après la fin : les liens sont les plans V2 (essai 7 j / 275 €), jamais un lien vide', () => {
   const e = etatOffre(fin + 1);
-  if (PLANS.v2.mensuel === null) assert.equal(e.liens.mensuel, '/devenir-membre');
-  assert.ok(e.liens.mensuel && e.liens.annuel);
+  assert.equal(e.liens.mensuel, PLANS.v2.mensuel);
+  assert.equal(e.liens.annuel, PLANS.v2.annuel);
+  assert.match(e.liens.mensuel, /plan_id=P-3X034647B5061360HNLPBCDY$/);
+  assert.match(e.liens.annuel, /plan_id=P-7PX93930RS848432UNLPBCEA$/);
+});
+
+test('la copie navigateur de la fin égale FIN_FENETRE (sinon le repli hors ligne bascule à une autre heure)', () => {
+  const src = readFileSync(new URL('../assets/js/offre-v2.js', import.meta.url), 'utf8');
+  assert.equal(/MC_OFFRE_FIN \|\| '([^']+)'/.exec(src)?.[1], FIN_FENETRE);
 });
 
 test('OFFRE_V2_FIN remplace la fin (passé => v2, futur => fenetre)', () => {

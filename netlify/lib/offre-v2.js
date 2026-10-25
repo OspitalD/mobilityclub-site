@@ -14,11 +14,10 @@ export const PLANS = {
     annuel: PAYPAL_PLAN('P-4VH08043D1618690PNJJ2Z5A'), // 220 €/an
     vie: '/lifetime',
   },
-  // null tant que Damien n'a pas créé les plans PayPal : le deploy est bloqué
-  // par tests/offre-v2-deploy.test.mjs, pas par une vérification à l'exécution.
+  // Un plan à null bloque le deploy via tests/offre-v2-deploy.test.mjs, pas via une vérification à l'exécution.
   v2: {
-    mensuel: null, // 30 €/mois, essai 7 j
-    annuel: null, // 275 €/an
+    mensuel: PAYPAL_PLAN('P-3X034647B5061360HNLPBCDY'), // 30 €/mois, essai 7 j
+    annuel: PAYPAL_PLAN('P-7PX93930RS848432UNLPBCEA'), // 275 €/an
     vie: '/lifetime',
   },
 };

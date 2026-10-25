@@ -2207,6 +2207,9 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   ];
   // Prix de la phase courante : alimentés par offre-v2 (source unique), jamais écrits en dur.
   var P = { mensuel: 25, annuel: 220, vie: 249 };
+  // Ce bloc se reconstruit (changement de langue, de phase) : le href du CTA doit venir d'ici, pas d'un
+  // passage unique de offre-v2 sur le DOM, sinon la reconstruction le remet à l'ancienne valeur.
+  var ctaHref = '/devenir-membre';
   var st = { lang: 'fr', years: 3, mode: 'ind', pick: { mobilite: true, muscu: true } };
   var root = document.getElementById('cmpRoot');
   if (!root) return;
@@ -2238,7 +2241,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       '<div class="cx-chips" data-g="chips">' + BESOINS.map(function(b){ return '<button type="button" data-id="' + b.id + '">' + t.needs[b.id] + (b.soon ? '<span class="cx-soon">' + t.soon + '</span>' : '') + '</button>'; }).join('') + '</div>' +
       '<div class="cx-seg two" data-g="m" role="group"><button type="button" data-m="gen">' + t.gen + '</button><button type="button" data-m="ind">' + t.ind + '</button></div>' +
       '<p class="cx-hint" data-g="hint"></p><p class="cx-total" data-g="total"></p></div></div>' +
-      '<div class="cx-cta"><a href="/devenir-membre" class="btn btn-primary" data-offre-lien="achat" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
+      '<div class="cx-cta"><a href="' + ctaHref + '" class="btn btn-primary" data-offre-lien="achat" data-cta="comparer"><span>' + t.cta + '</span><span class="arrow">→</span></a></div>';
     draw();
   }
   function q(g){ return root.querySelector('[data-g="' + g + '"]'); }
@@ -2267,7 +2270,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   });
   window.renderCompare = function(lang){ st.lang = T[lang] ? lang : 'fr'; build(); };
   build();
-  if (window.MCOffre) window.MCOffre.onChange(function(e){ P.mensuel = e.prix.mensuel; P.annuel = e.prix.annuel; P.vie = e.prix.vie; build(); });
+  if (window.MCOffre) window.MCOffre.onChange(function(e){ P.mensuel = e.prix.mensuel; P.annuel = e.prix.annuel; P.vie = e.prix.vie; ctaHref = e.phase === 'fenetre' ? '/lancement' : '/devenir-membre'; build(); });
 })();
 </script>
 <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
