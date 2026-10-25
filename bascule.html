@@ -51,6 +51,7 @@ window.MC_BASCULE = {
   PROG_CLUB: 'dispo'
 };
 </script>
+<script src="/assets/js/offre-v2.js"></script>
 
 <title>Le club déménage — Mobility Club</title>
 <meta name="description" content="Le Mobility Club quitte Skool : ton abonnement passe dans l'app." />
@@ -398,7 +399,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           <li><strong>Ton programme importé (PDF, photo, texte)</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.</span></li>
           <li><strong>Un bilan articulaire de départ</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability et GOWOD.</span></li>
           <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.</span></li>
-          <li><strong>Accès à vie</strong><span class="vs-us">249 €</span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
+          <li><strong>Accès à vie</strong><span class="vs-us"><span data-offre-prix="vie" data-offre-eur>249 €</span></span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
         </ul>
         <details class="vs-detail">
           <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 8 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
@@ -425,13 +426,13 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
             <tr class="lbl"><th scope="colgroup" colspan="8">Ton geste corrigé en vidéo par un vrai coach</th></tr>
             <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Accès à vie</th></tr>
-            <tr class="val"><td class="us">249 €</td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="val"><td class="us"><span data-offre-prix="vie" data-offre-eur>249 €</span></td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
             <tr class="part"><td colspan="8">◐ Freeletics : accès à vie sur son site, prix non publié</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Prix au mois</th></tr>
-            <tr class="val"><td class="us">25 €</td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>19,99 €</td><td>14,99 €</td></tr>
+            <tr class="val"><td class="us"><span data-offre-prix="mensuel" data-offre-eur>25 €</span></td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>19,99 €</td><td>14,99 €</td></tr>
             <tr class="part"><td colspan="8">— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Prix sur un an</th></tr>
-            <tr class="val"><td class="us">220 €</td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>119,99 €</td><td>94,99 €</td></tr>
+            <tr class="val"><td class="us"><span data-offre-prix="annuel" data-offre-eur>220 €</span></td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>119,99 €</td><td>94,99 €</td></tr>
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
@@ -526,7 +527,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   const PLANS = {
     annuel: { nom: 'Annuel', merci: 'Ton abonnement annuel est validé.', prix: 'ANNUEL_PRIX', unite: '/an', sub: 'ANNUEL_EQUIV', x4: 'ANNUEL_4X', bonus: 'ANNUEL_BONUS', lien: 'LIEN_ANNUEL', cta: "Passer à l'annuel" },
-    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement. Rentabilisé en 10 mois par rapport au mois.', bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
+    vie: { nom: 'Accès à vie', merci: 'Ton accès à vie est validé.', prix: 'VIE_PRIX', unite: '', x4: 'VIE_4X', subTxt: 'Un seul paiement, plus jamais d’abonnement.', subFn: () => `Un seul paiement, plus jamais d’abonnement. Rentabilisé en ${Math.round(offre.vie / offre.mensuel)} mois par rapport au mois.`, bonus: 'VIE_BONUS', lien: 'LIEN_VIE', cta: "Prendre l'accès à vie" },
     mensuel: { nom: 'Rester au mois', merci: 'Ton abonnement au mois est validé.', prix: 'MENSUEL_PRIX', unite: '/mois', subTxt: 'Sans engagement, tu arrêtes quand tu veux.', bonus: null, lien: 'LIEN_MENSUEL', cta: 'Rester au mois' },
   };
   // La formule recommandée passe en tête (premier écran sur mobile).
@@ -536,10 +537,12 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   document.querySelectorAll('[data-v]').forEach((el) => { el.innerHTML = v(el.dataset.v); });
 
   // 3. Cartes
-  document.getElementById('plans').innerHTML = ORDER.map((id) => {
+  // Prix courants (fenêtre puis V2), mis à jour par syncOffre ; les cartes se redessinent à chaque changement.
+  const offre = { mensuel: 25, annuel: 220, vie: 249 };
+  const drawPlans = () => { document.getElementById('plans').innerHTML = ORDER.map((id) => {
     const p = PLANS[id];
     const reco = id === C.RECOMMANDE;
-    const sub = p.sub ? v(p.sub) : esc(p.subTxt);
+    const sub = p.sub ? v(p.sub) : esc(p.subFn ? p.subFn() : p.subTxt);
     let bonus = '';
     if (p.bonus === null) bonus = '<p class="bonus none">Sans bonus fondateur.</p>';
     else if (Array.isArray(C[p.bonus]) && C[p.bonus].length) bonus = `<div class="bonus"><b>Bonus fondateur</b><ul>${C[p.bonus].map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
@@ -553,7 +556,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
       ${bonus}
       <a class="cta ${reco ? 'primary' : 'ghost'}" href="#" data-plan="${id}">${p.cta}</a>
     </article>`;
-  }).join('');
+  }).join(''); };
+  drawPlans();
 
   // 4. Date limite
   document.getElementById('deadline').innerHTML =
@@ -583,7 +587,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
 
   // Simulateur : coût cumulé sur N années (formule annuelle la moins chère de chaque appli)
   const OUTILS = [
-    { id: 'mc_vie', nom: 'Mobility Club à vie', us: true, cout: () => 249 },
+    { id: 'mc_vie', nom: 'Mobility Club à vie', us: true, cout: () => offre.vie },
     { id: 'pliability', nom: 'Pliability', cout: (y) => 199.99 * y, combo: true },
     { id: 'ladder', nom: 'Ladder', cout: (y) => 94.99 * y, combo: true },
     { id: 'gowod', nom: 'GOWOD', cout: (y) => 84.99 * y, combo: true },
@@ -621,7 +625,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     const yl = years > 1 ? `${years} ans` : '1 an';
     const soonLine = soon ? '<span class="soon-line">Tracker tes données santé : bientôt dans le club, avec WHOOP.</span>' : '';
     document.getElementById('comboTotal').innerHTML = sel.length
-      ? `${sel.map((b) => `${b.nom} (${b[mode].app})`).join(' + ')} sur ${yl} : <b>${eur(tot)}</b>.<br><span class="g">Tout ça dans le club, à vie : 249 €, une fois.</span>${soonLine}`
+      ? `${sel.map((b) => `${b.nom} (${b[mode].app})`).join(' + ')} sur ${yl} : <b>${eur(tot)}</b>.<br><span class="g">Tout ça dans le club, à vie : ${eur(offre.vie)}, une fois.</span>${soonLine}`
       : (soon ? soonLine : 'Coche tes besoins pour voir le total.');
   };
   document.getElementById('yearsSeg').addEventListener('click', (e) => {
@@ -637,6 +641,26 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     pick.has(b.dataset.id) ? pick.delete(b.dataset.id) : pick.add(b.dataset.id); drawSim();
   });
   drawSim();
+
+  // Source unique des prix et liens : la Function offre-v2. En phase V2, /bascule ne rend plus aucun ancien
+  // plan : le mensuel devient le plan 30 € AVEC essai (A6) et l'accès à vie passe par /lifetime (A5).
+  const fmtEur = (n) => (Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+  const syncOffre = (e) => {
+    Object.assign(offre, e.prix);
+    C.ANNUEL_PRIX = fmtEur(e.prix.annuel) + ' €';
+    C.ANNUEL_EQUIV = 'soit ' + fmtEur(e.prix.annuel / 12) + ' € par mois';
+    C.VIE_PRIX = fmtEur(e.prix.vie) + ' €';
+    C.VIE_4X = '4 × ' + fmtEur(e.prix.vie / 4) + ' €';
+    C.MENSUEL_PRIX = fmtEur(e.prix.mensuel) + ' €';
+    if (e.phase === 'v2') {
+      C.LIEN_ANNUEL = e.liens.annuel;
+      C.LIEN_MENSUEL = e.liens.mensuel;
+      C.LIEN_VIE = e.liens.vie;
+    }
+    drawPlans();
+    drawSim();
+  };
+  if (window.MCOffre) window.MCOffre.onChange(syncOffre);
 
   // Paiement
   const html = document.documentElement;

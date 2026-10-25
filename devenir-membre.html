@@ -15,17 +15,8 @@
 window.MC_LIFETIME = {
   TOTAL: 40,
   PREMIER_PALIER: 20,
-  PRIX_1: 199,
-  PRIX_2: 249,
-
-  LIEN_199: 'https://www.paypal.com/ncp/payment/5LSVN4S2KGSM4',
-  LIEN_249: 'https://www.paypal.com/ncp/payment/KT93SVXG954UE',
   ESSAI_JOURS: 7,
-  PRIX_MOIS: 25,
-  DEVISE_MOIS: '€',
-  LIEN_MENSUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-43F663568B911461GNLNCJBY',
-  PRIX_AN: 220,                          // plan PayPal annuel, montant vérifié par Damien le 23/10/2026 (même lien que /bascule)
-  LIEN_ANNUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A',
+  // Prix et liens d'achat : plus ici. Source unique = /.netlify/functions/offre-v2 (assets/js/offre-v2.js).
 
   STOCK_ENDPOINT: '/.netlify/functions/lifetime-tickets',
   CHECKOUT_ENDPOINT: '/.netlify/functions/lifetime-checkout',
@@ -33,11 +24,13 @@ window.MC_LIFETIME = {
 };
 </script>
 
+<script src="/assets/js/offre-v2.js"></script>
+
 <title>Devenir membre — Mobility Club</title>
-<meta name="description" content="Rejoins Mobility Club avec 7 jours d’essai gratuit puis 25 €/mois, 220 € pour un an, ou un Lifetime Pass à 249 € en paiement unique." />
+<meta name="description" content="Rejoins Mobility Club : 7 jours d’essai gratuit puis abonnement mensuel, abonnement annuel, ou Lifetime Pass en paiement unique." />
 <meta name="robots" content="index,follow" />
 <meta property="og:title" content="Devenir membre — Mobility Club" />
-<meta property="og:description" content="Trois façons de rejoindre Mobility Club : 7 jours gratuits puis 25 €/mois, 220 € pour un an, ou un Lifetime Pass à 249 €." />
+<meta property="og:description" content="Trois façons de rejoindre Mobility Club : 7 jours gratuits puis abonnement mensuel, un an, ou un Lifetime Pass en paiement unique." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.mobilityclub.co/devenir-membre" />
 
@@ -352,30 +345,30 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <p class="hero-sub">Le même Mobility Club, trois portes d’entrée. Commence par l’essai gratuit au mois, prends l’année, ou sécurise ton accès à vie avec un ticket nominatif.</p>
         <div class="hero-proof">
           <span><b>7 jours gratuits</b> avec l’abonnement</span>
-          <span><b>20 pass à 199 €</b> déjà pris</span>
-          <span data-price-protected><b>10/20 pass à 249 €</b> déjà pris</span>
+          <span data-offre-phase="fenetre"><b>20 pass à 199 €</b> déjà pris</span>
+          <span data-price-protected data-offre-phase="fenetre"><b>10/20 pass à 249 €</b> déjà pris</span>
           <span><b>11 acheteurs</b> il y a un an</span>
         </div>
         <div class="access-choices" aria-label="Choisir sa formule Mobility Club">
-          <a class="access-choice primary" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-43F663568B911461GNLNCJBY" target="_blank" rel="noopener" data-access-choice="monthly_trial" data-plan="monthly_trial_25_eur">
+          <a class="access-choice primary" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-43F663568B911461GNLNCJBY" target="_blank" rel="noopener" data-offre-lien="mensuel" data-access-choice="monthly_trial" data-plan="monthly_trial_25_eur">
             <span class="access-choice-kicker">Avec abonnement</span>
             <h2>7 jours gratuits</h2>
-            <strong class="access-choice-price">puis 25 €/mois</strong>
+            <strong class="access-choice-price">puis <span data-offre-prix="mensuel">25</span> €/mois</strong>
             <span class="access-choice-detail">Sans engagement · paiement sécurisé PayPal</span>
             <span class="access-choice-action">Démarrer l’essai →</span>
           </a>
-          <a class="access-choice" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" data-access-choice="yearly" data-plan="yearly_220_eur">
+          <a class="access-choice" href="https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-4VH08043D1618690PNJJ2Z5A" target="_blank" rel="noopener" data-offre-lien="annuel" data-access-choice="yearly" data-plan="yearly_220_eur">
             <span class="access-choice-kicker">Avec abonnement</span>
             <h2>Un an</h2>
-            <strong class="access-choice-price">220 €/an</strong>
-            <span class="access-choice-detail">Soit 18,33 €/mois · renouvelé chaque année, tu arrêtes quand tu veux</span>
+            <strong class="access-choice-price"><span data-offre-prix="annuel">220</span> €/an</strong>
+            <span class="access-choice-detail">Soit <span data-offre-prix="annuel-mois">18,33</span> €/mois · renouvelé chaque année, tu arrêtes quand tu veux</span>
             <span class="access-choice-action">Choisir l’année →</span>
           </a>
-          <a class="access-choice" href="#tickets" data-access-choice="lifetime_tickets" data-plan="lifetime_tickets_249">
+          <a class="access-choice" href="#tickets" data-access-choice="lifetime_tickets" data-plan="lifetime_tickets">
             <span class="access-choice-kicker">Sans abonnement</span>
             <h2>Accès à vie</h2>
             <strong class="access-choice-price price-placeholder">Tarif révélé après ton nom</strong>
-            <strong class="access-choice-price" data-price-protected><span data-current-price>249</span> € une fois</strong>
+            <strong class="access-choice-price" data-price-protected><span data-current-price data-offre-prix="vie">249</span> € une fois</strong>
             <span class="access-choice-detail"><span data-tier-available>10</span> tickets nominatifs disponibles · payable en 4×</span>
             <span class="access-choice-action">Choisir mon ticket →</span>
           </a>
@@ -408,12 +401,12 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         <div class="ticket-stage" data-ticket-experience aria-hidden="true" hidden data-price-protected>
           <div class="ticket-head">
             <div class="ticket-head-copy">Carnet en cours<b data-tier-name>Série 02 · Tickets 01 → 20</b></div>
-            <div class="ticket-price"><span>€</span><b data-price>249</b><small>ou 4× via PayPal</small></div>
+            <div class="ticket-price"><span>€</span><b data-price data-offre-prix="vie">249</b><small>ou 4× via PayPal</small></div>
           </div>
           <div class="ticket-grid" data-ticket-grid aria-label="Tickets du carnet en cours"></div>
           <div class="ticket-message">
             <b data-take-label>Choisis ton numéro</b>
-            <p data-take-message>Les 20 tickets à 199 € sont partis. Choisis ton numéro dans la série actuelle à 249 €.</p>
+            <p data-take-message>Les 20 tickets à 199 € sont partis. Choisis ton numéro dans la série actuelle.</p>
           </div>
           <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Vérification des tickets…</button>
           <p class="offer-fine"><b>Payable en 4× via PayPal</b> · sous réserve d’éligibilité</p>
@@ -505,12 +498,12 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 
   <section class="section closing" id="offre">
     <div class="wrap">
-      <span class="eyebrow"><span data-tier-available>10</span> pass à 249 € disponibles</span>
+      <span class="eyebrow"><span data-tier-available>10</span> pass à <span data-offre-prix="vie">249</span> € disponibles</span>
       <h2>Le prix monte par <span>séries de 20.</span></h2>
       <p class="closing-sub">Chaque carnet contient 20 Lifetime Pass numérotés et nominatifs. Quand une série est complète, la suivante ouvre à un tarif supérieur.</p>
       <div class="closing-box" data-price-protected>
         <div class="closing-row">
-          <div class="closing-price"><span>€</span><b data-current-price>249</b><small>ou 4× via PayPal</small></div>
+          <div class="closing-price"><span>€</span><b data-current-price data-offre-prix="vie">249</b><small>ou 4× via PayPal</small></div>
           <div class="closing-stock" data-closing-stock>Stock réel en cours de vérification</div>
         </div>
         <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisis d’abord ton ticket</button>
@@ -540,7 +533,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Quel est le tarif du Lifetime Pass ?</button>
-          <div class="faq-a"><div class="faq-a-inner"><p>Le premier carnet de 20 pass à 199 € est complet. La série actuelle coûte 249 €. Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
+          <div class="faq-a"><div class="faq-a-inner"><p><span data-offre-phase="fenetre">Le premier carnet de 20 pass à 199 € est complet. La série actuelle coûte 249 €. </span><span data-offre-phase="v2" hidden>Le Lifetime Pass coûte désormais <span data-offre-prix="vie">350</span> €, quel que soit le numéro. </span>Tu peux payer comptant ou choisir le paiement en 4× proposé par PayPal, sous réserve de son éligibilité. Le stock affiché vient des paiements validés et chaque ticket réservé est bloqué pendant dix minutes.</p></div></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" type="button" aria-expanded="false">Que se passe-t-il quand la série est complète ?</button>
@@ -559,7 +552,7 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
 <footer>© 2026 Mobility Club · Devenir membre</footer>
 
 <div class="mobile-buy" aria-label="Acheter le Lifetime Pass">
-  <div class="mobile-buy-price"><span data-current-price>249</span> €<small>ou 4× via PayPal</small></div>
+  <div class="mobile-buy-price"><span data-current-price data-offre-prix="vie">249</span> €<small>ou 4× via PayPal</small></div>
   <button class="primary-cta is-disabled" type="button" data-ticket-action disabled>Choisir mon ticket</button>
 </div>
 
@@ -674,6 +667,8 @@ footer{padding:34px var(--gutter) calc(34px + env(safe-area-inset-bottom));borde
   function vid(){try{var v=localStorage.getItem('mc_vid');if(!v){v=Math.random().toString(36).slice(2,12);localStorage.setItem('mc_vid',v);}return v;}catch(e){return null;}}
   function track(ev,props){try{var b=JSON.stringify({event:ev,vid:vid(),props:Object.assign({path:'/devenir-membre',lang:'fr'},props||{})});if(navigator.sendBeacon){navigator.sendBeacon(URL,new Blob([b],{type:'application/json'}));}else{fetch(URL,{method:'POST',body:b,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});}}catch(e){}}
 
+  // Le libellé de suivi doit dire le prix réellement affiché, sinon les stats de plan mentent après la bascule.
+  if(window.MCOffre)window.MCOffre.onChange(function(e){var m=document.querySelector('[data-access-choice="monthly_trial"]'),y=document.querySelector('[data-access-choice="yearly"]');if(m)m.setAttribute('data-plan','monthly_trial_'+e.prix.mensuel+'_eur');if(y)y.setAttribute('data-plan','yearly_'+e.prix.annuel+'_eur');});
   buildTickets();
   var identityForm=document.querySelector('[data-identity-form]');if(identityForm)identityForm.addEventListener('submit',submitIdentity);
   identity=readIdentity();confirmedPass=readConfirmed();var paypalMode=new URLSearchParams(window.location.search).get('paypal');if(identity||paypalMode==='return'||paypalMode==='cancel')revealExperience(true);

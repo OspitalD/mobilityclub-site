@@ -5,6 +5,9 @@
    data-offre-compteur. window.MC_OFFRE_FIN (ISO) = heure de fin embarquée. */
 (function () {
   'use strict';
+  // Une seule copie navigateur de la fin (tests/offre-v2-pages.test.mjs la compare à FIN_FENETRE).
+  // Sert de repli si le fetch échoue ; une page peut la surcharger avant ce script.
+  window.MC_OFFRE_FIN = window.MC_OFFRE_FIN || '2026-10-26T18:00:00.000Z';
   var URL_OFFRE = '/.netlify/functions/offre-v2';
   var PRIX = {
     fenetre: { mensuel: 25, annuel: 220, vie: 249 },
