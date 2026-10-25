@@ -10,10 +10,12 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Mobility Club V2 — La mobilité au cœur de ton entraînement" />
 <meta property="og:description" content="Une seule app pour tout ce qui touche au mouvement : ton programme de salle et de course, tes progrès, et la mobilité qui s’y insère." />
-<meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-fenetre.jpg" />
+<!-- og:image sans prix : un partage lu après la fin du compteur ne doit jamais montrer l’ancien prix. -->
+<meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-v2.jpg" />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:locale:alternate" content="en_US" />
-<link rel="preload" as="image" href="/assets/video/lancement-16x9-fenetre.jpg" fetchpriority="high" />
+<link rel="preload" as="image" href="/assets/video/lancement-16x9-fenetre.jpg" fetchpriority="high" media="(min-width:700px)" />
+<link rel="preload" as="image" href="/assets/video/lancement-9x16-fenetre.jpg" fetchpriority="high" media="(max-width:699.98px)" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <script src="/assets/js/offre-v2.js"></script>
@@ -22,7 +24,10 @@
    le compteur de la fenêtre n’est jamais peint. offre-v2.js confirme ensuite avec le serveur. */
 try { if (window.MC_OFFRE_FIN && Date.now() >= Date.parse(window.MC_OFFRE_FIN)) document.documentElement.setAttribute("data-offre", "v2"); } catch (e) {}
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
+<!-- Police non bloquante : le texte du hero (élément LCP) peint tout de suite, la police arrive ensuite (display=swap). -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" /></noscript>
 <style>
 :root{
   --bg-primary:#0D0F0E;
@@ -108,11 +113,12 @@ html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 .hub-head{text-align:center;max-width:760px;margin:0 auto clamp(36px,6vw,64px);}
 .hub-head h2{margin-bottom:16px;}
 .hub-head .lead b{color:var(--text-primary);font-weight:600;}
-.bricks{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(40px,5vw,64px) clamp(24px,4vw,48px);}
-.brick{display:flex;flex-direction:column;gap:14px;}
-.brick img{width:100%;max-width:220px;height:auto;aspect-ratio:560/1214;object-fit:cover;object-position:top;border-radius:24px;border:1px solid var(--glass-border);margin:0 auto 6px;background:#111412;}
+.bricks{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(48px,5vw,72px) clamp(24px,3vw,40px);}
+.brick{display:flex;flex-direction:column;gap:12px;}
+.brick img{width:100%;height:auto;aspect-ratio:560/950;object-fit:cover;object-position:top;border-radius:24px;border:1px solid var(--glass-border);margin:0 0 8px;background:#111412;}
 .brick p{font-size:15px;}
 .brick .soon{color:var(--accent-gold);font-weight:600;}
+.hub-note{margin-top:clamp(28px,4vw,40px);text-align:center;font-size:13px;color:var(--text-tertiary);}
 
 /* 4. comparateur */
 .cmp-head{text-align:center;max-width:760px;margin:0 auto clamp(28px,4vw,44px);}
@@ -143,17 +149,56 @@ html[data-offre="v2"] [data-offre-phase="fenetre"]{display:none;}
 .quotes cite{display:block;margin-top:10px;font-size:13px;font-style:normal;font-weight:700;color:var(--text-secondary);}
 
 /* 6. offre */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2vw,24px);align-items:stretch;}
-.plan{padding:clamp(22px,3vw,32px);display:flex;flex-direction:column;gap:10px;}
+.plans{display:grid;grid-template-columns:1.55fr 1fr;gap:clamp(14px,2vw,24px);align-items:stretch;max-width:960px;margin:0 auto;}
+.plan{padding:clamp(24px,3.4vw,40px);display:flex;flex-direction:column;gap:10px;border-radius:26px;}
 .plan .name{font-weight:700;font-size:15px;color:var(--text-secondary);}
-.plan .price{font-size:clamp(44px,6vw,60px);font-weight:800;font-style:italic;line-height:1;letter-spacing:-0.02em;}
+.plan .price{font-weight:800;font-style:italic;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;}
 .plan .price small{font-size:16px;font-weight:600;font-style:normal;color:var(--text-secondary);letter-spacing:0;margin-left:4px;}
-.plan .lock{font-weight:700;font-size:14px;color:var(--accent-green);}
+.plan .once{font-size:16px;color:var(--text-primary);font-weight:600;}
 .plan .after{font-size:14px;}
+.plan .after b{color:var(--text-primary);}
 .plan .note{font-size:14px;flex:1;}
-.plan .cta{margin-top:10px;width:100%;}
+.plan .legal{font-size:12px;color:var(--text-tertiary);}
+.plan .cta{margin-top:12px;width:100%;}
+.plan-vie{border-color:rgba(62,207,160,.45);}
+.plan-vie .name{color:var(--accent-green);}
+.plan-vie .price{font-size:clamp(46px,7vw,76px);margin-top:4px;}
+.plan-vie .price .x{color:var(--text-secondary);font-weight:700;}
+.plan-m{border:1px solid var(--hair);background:transparent;}
+.plan-m .price{font-size:clamp(30px,3.6vw,40px);}
+.plan-m .cta{min-height:48px;font-size:15px;}
+
+/* simulateur */
+.sim{max-width:960px;margin:clamp(48px,7vw,80px) auto 0;padding-top:clamp(28px,4vw,40px);border-top:1px solid var(--hair);}
+.sim h3{font-size:clamp(22px,3vw,30px);letter-spacing:-0.03em;}
+.sim-ctl{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-top:18px;}
+.sim-ctl label{font-size:15px;color:var(--text-secondary);}
+.sim-ctl output{font-size:clamp(22px,3vw,28px);font-weight:800;font-style:italic;color:var(--text-primary);font-variant-numeric:tabular-nums;}
+.sim input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;margin-top:6px;background:transparent;cursor:pointer;--p:33%;}
+.sim input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent-green) var(--p),#1A1E1C var(--p));}
+.sim input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:#1A1E1C;}
+.sim input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--accent-green);}
+.sim input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-10px;border-radius:50%;background:var(--text-primary);border:0;box-shadow:0 0 0 6px rgba(62,207,160,.18);}
+.sim input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--text-primary);border:0;box-shadow:0 0 0 6px rgba(62,207,160,.18);}
+.sim input[type=range]:focus{outline:none;}
+.sim input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px #0D0F0E,0 0 0 5px var(--accent-green);}
+.sim input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 3px #0D0F0E,0 0 0 5px var(--accent-green);}
+.sim-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--text-tertiary);}
+.bars{list-style:none;margin-top:22px;display:grid;gap:16px;}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:baseline;font-size:15px;color:var(--text-secondary);}
+.bars b{font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;}
+.bars .bar{grid-column:1/-1;height:3px;border-radius:3px;background:#1A1E1C;}
+.bars .bar i{display:block;height:100%;border-radius:3px;background:#5C615E;transition:width .4s var(--ease);}
+.bars li.now{color:var(--text-primary);}
+.bars li.now .bar i{background:var(--accent-green);}
+.bars li.now.vie b{color:var(--accent-green);}
+.sim-say{margin-top:22px;display:grid;gap:6px;}
+.sim-say p{font-size:clamp(16px,1.9vw,19px);font-weight:600;color:var(--text-primary);line-height:1.4;}
+.sim-say p + p{font-size:15px;font-weight:500;color:var(--text-secondary);}
+.sim-say b{color:var(--accent-green);}
 .offer-top{text-align:center;margin-bottom:clamp(8px,2vw,16px);}
 .offer-top .count{margin:0 0 clamp(24px,4vw,40px);}
+.offer-top .count .t{color:var(--accent-gold);}
 .offer-top h2{margin-bottom:20px;}
 
 /* 7. faq */
@@ -180,10 +225,12 @@ footer a:hover{color:var(--text-primary);}
   .split > div{padding:0;}
   .split > div + div{border-left:0;border-top:1px solid var(--hair);margin-top:28px;padding-top:28px;}
   .split h3{margin:12px 0 8px;}
-  .bricks{grid-template-columns:1fr;gap:32px;}
-  .brick{display:grid;grid-template-columns:112px 1fr;gap:6px 18px;align-items:start;}
-  .brick img{grid-row:1 / span 2;max-width:112px;border-radius:16px;margin:0;}
-  .brick h3{align-self:end;}
+  /* hub : une rangée qu’on fait glisser, écrans à ~260 px (lisibles) au lieu de 6 vignettes de 112 px */
+  .bricks{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(76%,300px);gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) 8px;scroll-padding:0 var(--gutter);scrollbar-width:none;}
+  .bricks::-webkit-scrollbar{display:none;}
+  .bricks:focus-visible{outline:2px solid var(--accent-green);outline-offset:4px;}
+  .brick{scroll-snap-align:start;}
+  .brick img{border-radius:20px;}
   .quotes{grid-template-columns:1fr;}
   .plans{grid-template-columns:1fr;}
   .plan .cta{margin-top:6px;}
@@ -191,15 +238,22 @@ footer a:hover{color:var(--text-primary);}
 }
 @media (max-width:700px){
   .row{grid-template-columns:1fr;gap:6px;}
-  .row.th{display:none;}
-  .row:nth-child(2){border-top:0;}
+  /* l’en-tête des colonnes disparaît, mais on garde « mobilité + muscu + course, ex. … » */
+  .row.th{display:block;padding:10px 0 4px;}
+  .row.th > span:first-child,.row.th > .us{display:none;}
+  .row.th small{display:inline;margin-left:4px;}
+  /* hero : compteur et CTA avant la vidéo (toujours au-dessus de la ligne de flottaison), vidéo 9:16 lisible */
+  .hero .wrap{display:flex;flex-direction:column;align-items:center;}
+  .hero .count{order:3;margin-top:22px;}
+  .hero .cta{order:4;margin-top:16px;}
+  .video{order:5;aspect-ratio:9/16;width:min(100%, calc(70svh * 9 / 16));max-width:none;margin-top:28px;}
   .m-lbl{display:inline;font-weight:600;color:var(--text-tertiary);}
   .row .us .m-lbl{color:rgba(62,207,160,.7);}
 }
 </style>
 </head>
 <body>
-<div class="wrap langbar"><button class="lang" id="lang" type="button" aria-label="Language">EN</button></div>
+<div class="wrap langbar"><button class="lang" id="lang" type="button" aria-label="English version" data-i18n-aria="aria_lang">EN</button></div>
 
 <main>
 <!-- 1. HERO -->
@@ -209,18 +263,38 @@ footer a:hover{color:var(--text-primary);}
     <h1 data-i18n="h1">La mobilité <span>au cœur</span> de ton entraînement.</h1>
     <p class="promise" data-i18n="promise">Une seule app pour tout ce qui touche au mouvement.</p>
     <div class="video" id="video">
-      <video id="hv" autoplay muted loop playsinline preload="metadata" poster="/assets/video/lancement-16x9-fenetre.jpg" width="1280" height="720" aria-label="Mobility Club V2"></video>
+      <video id="hv" autoplay muted loop playsinline preload="metadata" width="1280" height="720" aria-label="Mobility Club V2"></video>
     </div>
+    <script>
+    /* Vidéo : la phase (fenêtre / v2) et le format (16:9, ou 9:16 sous 700 px) choisissent UN fichier.
+       Posé ici, avant la première peinture : en phase v2, l’affiche de la fenêtre n’apparaît jamais. */
+    var videoCle = null;
+    function videoPour(phase) {
+      var format = window.matchMedia("(max-width:699.98px)").matches ? "9x16" : "16x9";
+      var cle = format + "-" + (phase === "v2" ? "v2" : "fenetre");
+      if (cle === videoCle) return;
+      videoCle = cle;
+      var v = document.getElementById("hv");
+      var base = "/assets/video/lancement-" + cle;
+      v.setAttribute("width", format === "9x16" ? "1080" : "1280");
+      v.setAttribute("height", format === "9x16" ? "1920" : "720");
+      v.setAttribute("poster", base + ".jpg");
+      v.innerHTML = "<source src=\"" + base + ".webm\" type=\"video/webm\"><source src=\"" + base + ".mp4\" type=\"video/mp4\">";
+      v.load();
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }
+    videoPour(document.documentElement.getAttribute("data-offre") === "v2" ? "v2" : "fenetre");
+    </script>
     <div class="count" data-offre-phase="fenetre">
       <div class="t" data-offre-compteur aria-live="off">24:00:00</div>
       <p data-i18n="count_label">avant la fin de l’offre de lancement</p>
     </div>
-    <a class="cta primary" href="#offre" id="hero-cta" data-i18n="hero_cta">Voir les formules</a>
+    <a class="cta primary" href="#offre" id="hero-cta" data-i18n="hero_cta">Voir l’offre de lancement</a>
   </div>
 </section>
 
 <!-- 2. LA FRACTURE -->
-<section id="fracture" aria-label="V1 et V2">
+<section id="fracture" aria-label="V1 et V2" data-i18n-aria="aria_fracture">
   <div class="wrap">
     <div class="split">
       <div class="v1 reveal">
@@ -239,105 +313,106 @@ footer a:hover{color:var(--text-primary);}
 </section>
 
 <!-- 3. LE HUB -->
-<section id="hub" aria-label="Une seule app">
+<section id="hub" aria-label="Une seule app" data-i18n-aria="aria_hub">
   <div class="wrap">
     <div class="hub-head reveal">
       <h2 data-i18n="hub_h">Une seule app pour tout ton entraînement</h2>
       <p class="lead" data-i18n="hub_p">Au centre, <b>ta mobilité</b>, avec la méthode Mobility Club. Autour, tout ce qui touche au mouvement.</p>
     </div>
-    <div class="bricks">
+    <div class="bricks" tabindex="0" role="region" aria-label="Les briques de la V2" data-i18n-aria="aria_bricks">
       <div class="brick reveal">
-        <img src="/assets/lancement/seance.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran de séance Lower 2 : la mobilité des hanches ouvre la séance de force" data-i18n-alt="alt_seance" />
+        <img src="/assets/lancement/seance.jpg" width="440" height="746" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran de séance Lower 2, la mobilité des hanches ouvre la séance de force" data-i18n-alt="alt_seance" />
         <h3 data-i18n="b1_t">La mobilité dans ta séance</h3>
-        <p data-i18n="b1_p">Ta séance de jambes commence par la mobilité des hanches. Elle s’adapte à ce que tu fais ce jour‑là.</p>
+        <p data-i18n="b1_p">Ta mobilité s’adapte à ce que tu fais ce jour‑là. Avec la V2, elle ouvre ta séance de force&nbsp;: les hanches d’abord, puis les jambes.</p>
       </div>
       <div class="brick reveal">
-        <img src="/assets/lancement/import.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran Programme : un programme de salle importé, semaine 7 sur 18, et le bouton Importer (PDF, Numbers, photo)" data-i18n-alt="alt_import" />
+        <img src="/assets/lancement/import.jpg" width="560" height="950" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran Programme, un programme de salle importé, semaine 7 sur 18" data-i18n-alt="alt_import" />
         <h3 data-i18n="b2_t">Ton programme, importé</h3>
-        <p data-i18n="b2_p">Ton programme de salle ou de course, en PDF, Numbers ou photo&nbsp;: il arrive dans ton calendrier, semaine par semaine.</p>
+        <p data-i18n="b2_p">Ton programme de salle ou de course, en PDF, photo ou texte collé&nbsp;: il arrive dans ton calendrier, semaine par semaine.</p>
       </div>
       <div class="brick reveal">
-        <img src="/assets/lancement/montre.jpg" width="440" height="952" loading="lazy" decoding="async" alt="Écran Aujourd’hui avec les données WHOOP : récupération, charge, sommeil, VFC" data-i18n-alt="alt_montre" />
+        <img src="/assets/lancement/montre.jpg" width="440" height="746" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran Aujourd’hui avec les données d’une montre, récupération, charge, sommeil, VFC" data-i18n-alt="alt_montre" />
         <h3 data-i18n="b3_t">Ta montre</h3>
-        <p data-i18n="b3_p">WHOOP est connecté&nbsp;: ta récupération, ton sommeil et ta charge du jour dans l’app. <span class="soon">Garmin et Polar&nbsp;: bientôt.</span></p>
+        <p data-i18n="b3_p"><span class="soon">WHOOP, Garmin et Polar&nbsp;: bientôt.</span> Ta récupération, ton sommeil et ta charge du jour arriveront dans l’app pour ajuster ta séance.</p>
       </div>
       <div class="brick reveal">
-        <img src="/assets/lancement/progres.jpg" width="440" height="954" loading="lazy" decoding="async" alt="Écran Tes progrès : score articulaire, poids, pas, records et course à pied" data-i18n-alt="alt_progres" />
+        <img src="/assets/lancement/progres.jpg" width="440" height="746" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran Tes progrès, score articulaire, poids, pas, records et course à pied" data-i18n-alt="alt_progres" />
         <h3 data-i18n="b4_t">Tes progrès sur ton sport</h3>
-        <p data-i18n="b4_p">Score articulaire, records, poids, pas, kilomètres de course&nbsp;: tout au même endroit.</p>
+        <p data-i18n="b4_p">Avec la V2&nbsp;: score articulaire, records, poids, pas et kilomètres de course, au même endroit.</p>
       </div>
       <div class="brick reveal">
-        <img src="/assets/lancement/bilan.jpg" width="560" height="1214" loading="lazy" decoding="async" alt="Écran Ton bilan : score articulaire et radar des zones" data-i18n-alt="alt_bilan" />
+        <img src="/assets/lancement/bilan.jpg" width="560" height="950" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran Ton bilan, score articulaire et radar des zones" data-i18n-alt="alt_bilan" />
         <h3 data-i18n="b5_t">Ton bilan articulaire</h3>
         <p data-i18n="b5_p">Un bilan de départ, refait régulièrement&nbsp;: tu vois ce qui bouge vraiment.</p>
       </div>
       <div class="brick reveal">
-        <img src="/assets/lancement/coach.jpg" width="560" height="1214" loading="lazy" decoding="async" alt="Écran de retour vidéo d’un coach" data-i18n-alt="alt_coach" />
+        <img src="/assets/lancement/coach.jpg" width="560" height="950" loading="lazy" decoding="async" alt="Aperçu de la V2 : écran de retour vidéo d’un coach" data-i18n-alt="alt_coach" />
         <h3 data-i18n="b6_t">Une voix, et un humain</h3>
         <p data-i18n="b6_p">Une douleur, de la fatigue, peu de temps&nbsp;: tu le dis, la séance change. Tu filmes ton geste, un coach le regarde et te répond.</p>
       </div>
     </div>
+    <p class="hub-note" data-i18n="hub_note">Écrans présentés&nbsp;: aperçu de la V2.</p>
   </div>
 </section>
 
 <!-- 4. COMPARATEUR (données : docs/bascule-etude-marche-2026-10-23.md, relevé du 23/10/2026 ;
      « non trouvé » = absent de leur documentation publique, jamais « n’existe pas ») -->
-<section id="comparer" aria-label="Comparer">
+<section id="comparer" aria-label="Comparer" data-i18n-aria="aria_cmp">
   <div class="wrap">
     <div class="cmp-head reveal">
       <h2 data-i18n="cmp_h">Ce que tu perds en jonglant</h2>
-      <p class="lead" data-i18n="cmp_p">Trois apps qui ne se parlent pas&nbsp;: ta mobilité ignore ta séance de jambes d’hier.</p>
+      <p class="lead" data-i18n="cmp_p">Trois apps qui ne se parlent pas&nbsp;: ta mobilité ne connaît pas ta séance de jambes d’hier.</p>
     </div>
-    <div class="cmp glass reveal" role="table" aria-label="Comparatif">
+    <div class="cmp glass reveal" role="table" aria-label="Comparatif" data-i18n-aria="aria_table">
       <div class="row th" role="row">
         <span role="columnheader"></span>
         <span role="columnheader"><span data-i18n="col_sep">3 apps séparées</span><small data-i18n="col_sep_s">mobilité + muscu + course, ex. GOWOD + Hevy + Runna</small></span>
         <span role="columnheader" class="us">Mobility Club</span>
       </div>
       <div class="row" role="row">
-        <span class="f" role="rowheader" data-i18n="r1">Une séance de mobilité adaptée à ton entraînement du jour</span>
-        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r1_s">En partie (protocoles par sport chez GOWOD)</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r1_u">Calée sur ta séance du jour</span></span>
+        <span class="f" role="rowheader" data-i18n="r1">Une séance de mobilité pensée pour ton sport</span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r1_s">Oui chez GOWOD (protocoles par sport)</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="r1_u">Oui, et calée sur ta séance du jour</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r2">Un seul calendrier</span>
         <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r2_s">Réparti entre trois apps</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r2_u">Un seul, pour tout ton entraînement</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="r2_u">Un seul, pour tout ton entraînement</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r3">Importer ton programme</span>
         <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r3_s">En partie (Hevy via un outil externe, Runna par ajout de courses)</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r3_u">PDF, Numbers ou photo</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="r3_u">PDF, photo ou texte collé</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r4">Bilan articulaire</span>
         <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r4_s">Oui, dans l’appli de mobilité (GOWOD)</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r5">Coach vocal qui modifie la séance</span>
-        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r5_s">Non trouvé (Runna&nbsp;: annonces d’allure, la séance ne change pas)</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+        <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r5_s">Non trouvé (Runna&nbsp;: guidage d’allure)</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r6">Ton geste corrigé en vidéo par un humain</span>
         <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r6_s">Non trouvé</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="inc">Inclus</span></span>
       </div>
       <div class="row" role="row">
         <span class="f" role="rowheader" data-i18n="r7">Suivi des progrès sur ton sport</span>
         <span class="sep" role="cell"><span class="m-lbl" data-i18n="lbl_sep">3 apps&nbsp;: </span><span data-i18n="r7_s">Réparti entre trois apps</span></span>
-        <span class="us" role="cell"><span class="m-lbl">Mobility Club&nbsp;: </span><span data-i18n="r7_u">Au même endroit</span></span>
+        <span class="us" role="cell"><span class="m-lbl" data-i18n="lbl_us">Mobility Club&nbsp;: </span><span data-i18n="r7_u">Avec la V2, au même endroit</span></span>
       </div>
     </div>
     <p class="cmp-note reveal" data-i18n="cmp_note">Relevé du 23 octobre 2026 sur les sites, centres d’aide et fiches App Store France de chaque appli. «&nbsp;Non trouvé&nbsp;»&nbsp;: absent de leur documentation publique, ce qui ne prouve pas que ça n’existe pas.</p>
-    <p class="cmp-price reveal" data-i18n="cmp_price">Côté prix, soyons honnêtes&nbsp;: la pile la moins chère que nous avons relevée, <b>GOWOD (84,99&nbsp;€/an) pour la mobilité et Hevy (26,49&nbsp;€/an) pour la muscu, revient à 111,48&nbsp;€ par an</b>. Runna (course) n’est pas chiffré&nbsp;: sa fiche n’affiche pas la durée de l’abonnement.<small>Prix le plus bas affiché sur chaque fiche App Store France, relevé du 23/10/2026.</small></p>
+    <p class="cmp-price reveal" data-i18n="cmp_price">Côté prix, soyons honnêtes&nbsp;: parmi les apps du tableau, <b>GOWOD (84,99&nbsp;€/an) pour la mobilité et Hevy (26,49&nbsp;€/an) pour la muscu reviennent à 111,48&nbsp;€ par an</b>. Runna (course) n’est pas chiffré&nbsp;: sa fiche n’affiche pas la durée de l’abonnement.<small>Prix le plus bas affiché sur chaque fiche App Store France, relevé du 23/10/2026.</small></p>
     <p class="cmp-loss reveal" data-i18n="cmp_loss">Le vrai coût n’est pas l’argent. C’est la régularité&nbsp;: trois apps, et c’est la mobilité qui saute.</p>
   </div>
 </section>
 
 <!-- 5. PREUVE -->
-<section aria-label="Membres">
+<section aria-label="Membres" data-i18n-aria="aria_members">
   <div class="wrap">
     <div class="numbers reveal">
       <div><b>330</b><span data-i18n="n_members">membres</span></div>
@@ -355,7 +430,7 @@ footer a:hover{color:var(--text-primary);}
 </section>
 
 <!-- 6. OFFRE -->
-<section id="offre" aria-label="Offre">
+<section id="offre" aria-label="Offre" data-i18n-aria="aria_offer">
   <div class="wrap">
     <div class="offer-top reveal">
       <h2 data-offre-phase="fenetre" data-i18n="offer_h_f">Offre de lancement&nbsp;: ton prix, verrouillé</h2>
@@ -366,44 +441,50 @@ footer a:hover{color:var(--text-primary);}
       </div>
     </div>
     <div class="plans">
-      <div class="plan glass reveal">
+      <div class="plan plan-vie glass reveal">
+        <div class="name" data-i18n="p_v">Accès à vie</div>
+        <div class="price"><span class="x">4 × </span><span data-offre-prix="vie-4x">62,25</span>&nbsp;€</div>
+        <div class="once"><span data-i18n="or_once">ou</span> <span data-offre-prix="vie">249</span>&nbsp;€ <span data-i18n="once">en une fois</span></div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="vie">350</span>&nbsp;€ (4 × <span data-offre-prix-v2="vie-4x">87,50</span>&nbsp;€)</b></div>
+        <p class="note" data-i18n="p_v_note">Sans abonnement&nbsp;: l’app et ses évolutions, à vie.</p>
+        <a class="cta primary" href="/lifetime" data-offre-lien="vie" data-i18n="cta_v">Prendre l’accès à vie</a>
+        <p class="legal" data-i18n="legal_4x">Paiement en 4 fois sous réserve d’éligibilité et d’acceptation par PayPal.</p>
+      </div>
+      <div class="plan plan-m reveal">
         <div class="name" data-i18n="p_m">Mensuel</div>
-        <div class="price"><span data-offre-prix="mensuel">25</span> €<small data-i18n="per_month">/mois</small></div>
-        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="mensuel">30</span> €<span data-i18n="per_month">/mois</span></b></div>
-        <p class="note" data-i18n="p_m_note">Essai de 7 jours, puis abonnement mensuel.</p>
-        <a class="cta ghost" href="/devenir-membre" data-offre-lien="mensuel" data-i18n="cta_m">Essayer 7 jours</a>
+        <div class="price"><span data-offre-prix="mensuel">25</span>&nbsp;€<small data-i18n="per_month">/mois</small></div>
+        <div class="once" data-i18n="no_commit">sans engagement</div>
+        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="mensuel">30</span>&nbsp;€<span data-i18n="per_month">/mois</span></b></div>
+        <p class="note" data-i18n="p_m_note">Tu arrêtes quand tu veux depuis PayPal.</p>
+        <a class="cta ghost" href="/devenir-membre" data-offre-lien="mensuel_fixe" data-i18n="cta_m">Choisir le mensuel</a>
       </div>
-      <div class="plan glass reveal">
-        <div class="name" data-i18n="p_a">Annuel</div>
-        <div class="price"><span data-offre-prix="annuel">220</span> €<small data-i18n="per_year">/an</small></div>
-        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="annuel">275</span> €<span data-i18n="per_year">/an</span></b></div>
-        <p class="note"><span data-i18n="p_a_note">Soit</span> <span data-offre-prix="annuel-mois" data-offre-eur>18,33 €</span> <span data-i18n="per_month_short">par mois.</span></p>
-        <a class="cta primary" href="/devenir-membre" data-offre-lien="annuel" data-i18n="cta_a">Choisir l’annuel</a>
+    </div>
+
+    <!-- Simulateur : tous les montants viennent de l’offre servie (offre-v2), aucun en dur. -->
+    <div class="sim reveal" id="sim">
+      <h3 data-i18n="sim_t">Ce que tu paies sur la durée</h3>
+      <div class="sim-ctl">
+        <label for="sim-r" data-i18n="sim_l">Durée</label>
+        <output id="sim-o" for="sim-r">2 ans</output>
       </div>
-      <div class="plan glass reveal">
-        <div class="name" data-i18n="p_v">À vie</div>
-        <div class="price"><span data-offre-prix="vie">249</span> €<small data-i18n="once">une fois</small></div>
-        <div class="lock" data-offre-phase="fenetre" data-i18n="locked">Prix verrouillé</div>
-        <div class="after" data-offre-phase="fenetre"><span data-i18n="after">Dès la fin du compteur&nbsp;:</span> <b><span data-offre-prix-v2="vie">350</span> €</b></div>
-        <p class="note" data-i18n="p_v_note">Un seul paiement, accès à vie.</p>
-        <a class="cta ghost" href="/lifetime" data-offre-lien="vie" data-i18n="cta_v">Prendre l’accès à vie</a>
-      </div>
+      <input id="sim-r" type="range" min="6" max="60" step="1" value="24" aria-valuetext="2 ans" />
+      <div class="sim-ends" aria-hidden="true"><span data-i18n="sim_min">6 mois</span><span data-i18n="sim_max">5 ans</span></div>
+      <ul class="bars" id="sim-bars"></ul>
+      <div class="sim-say" id="sim-say" aria-live="polite"></div>
     </div>
   </div>
 </section>
 
 <!-- 7. FAQ : 4 questions visibles par phase -->
-<section aria-label="FAQ">
+<section aria-label="Questions fréquentes" data-i18n-aria="aria_faq">
   <div class="wrap">
     <h2 class="reveal" style="text-align:center" data-i18n="faq_h">Questions fréquentes</h2>
     <div class="faq reveal">
-      <details data-q="prix" data-offre-phase="fenetre"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il&nbsp;?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24&nbsp;h. À la fin du compteur, les formules passent au prix V2. Le prix que tu prends maintenant reste le tien tant que ton abonnement court.</p></details>
+      <details data-q="prix" data-offre-phase="fenetre"><summary data-i18n="q_prix">Pourquoi le prix monte-t-il&nbsp;?</summary><p data-i18n="a_prix">Le prix de lancement est réservé à la fenêtre de 24&nbsp;h. À la fin du compteur, l’accès à vie et le mensuel passent au prix V2. L’accès à vie pris maintenant est payé une fois pour toutes&nbsp;; le mensuel pris maintenant garde son prix tant que ton abonnement court.</p></details>
       <details data-q="prix_v2" data-offre-phase="v2" style="display:none" hidden><summary data-i18n="q_prix_v">Le prix peut-il changer&nbsp;?</summary><p data-i18n="a_prix_v">Le prix de ton abonnement reste le tien tant qu’il court. L’accès à vie se paie une seule fois.</p></details>
-      <details data-q="apps"><summary data-i18n="q_apps">Je dois abandonner mes autres apps&nbsp;?</summary><p data-i18n="a_apps">Celles du mouvement, oui&nbsp;: ton programme de salle et de course s’importe, ta mobilité et le suivi de tes progrès sont dans le club. Côté montre, WHOOP se connecte déjà&nbsp;; Garmin et Polar arrivent bientôt. Ta nutrition, en revanche, reste dans ton app&nbsp;: le club ne la remplace pas.</p></details>
+      <details data-q="apps"><summary data-i18n="q_apps">Je dois abandonner mes autres apps&nbsp;?</summary><p data-i18n="a_apps">Ton programme de salle et de course s’importe dans le club, avec ta mobilité. Garde ton app de course pour enregistrer tes sorties (GPS). La nutrition reste dans ton app&nbsp;: le club ne la remplace pas. Côté montre, WHOOP, Garmin et Polar arrivent bientôt.</p></details>
       <details data-q="temps"><summary data-i18n="q_temps">Combien de temps par jour&nbsp;?</summary><p data-i18n="a_temps">Quelques minutes par jour. La mobilité s’insère dans ta séance du jour&nbsp;: rien à choisir, rien à préparer.</p></details>
-      <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter&nbsp;?</summary><p data-i18n="a_annul">Le mensuel et l’annuel s’annulent à tout moment depuis ton compte PayPal. L’essai de 7 jours du mensuel te laisse essayer avant de payer. Tu disposes aussi du délai légal de rétractation de 14 jours.</p></details>
+      <details data-q="annulation"><summary data-i18n="q_annul">Et si je veux arrêter&nbsp;?</summary><p data-i18n="a_annul">Le mensuel est sans engagement&nbsp;: tu arrêtes quand tu veux depuis ton compte PayPal. L’accès à vie se paie une fois, en un ou quatre versements&nbsp;: il n’y a pas d’abonnement à arrêter. Dans les deux cas, tu disposes du délai légal de rétractation de 14&nbsp;jours.</p></details>
     </div>
   </div>
 </section>
@@ -426,58 +507,60 @@ var I18N = {
     promise: "One app for everything that has to do with movement.",
     count_label: "until the launch offer ends",
     count_label2: "until the launch offer ends",
-    hero_cta: "See the plans",
+    hero_cta: "See the launch offer",
     v1_t: "Mobility on the side.",
     v1_p: "One more app, one more task. The day you run short on time, it’s the first thing to go.",
     v2_t: "Mobility at the heart.",
     v2_p: "You import your gym and running program, you track your progress. Mobility slots in and adapts to what you do that day.",
-    enemy: "The problem isn’t your motivation. It’s <b>app juggling</b>: you juggle, you keep one or two, and nothing talks to each other.",
+    enemy: "The problem isn’t your motivation. It’s <b>too many apps</b>: you keep one or two, and none of them talk to each other.",
     hub_h: "One app for all your training",
     hub_p: "At the centre, <b>your mobility</b>, with the Mobility Club method. Around it, everything that has to do with movement.",
-    alt_seance: "Lower 2 session screen: hip mobility opens the strength session",
-    alt_import: "Program screen: an imported gym program, week 7 of 18, and the Import button (PDF, Numbers, photo)",
-    alt_montre: "Today screen with WHOOP data: recovery, strain, sleep, HRV",
-    alt_progres: "Your progress screen: joint score, weight, steps, records and running",
-    alt_bilan: "Your assessment screen: joint score and zone radar",
-    alt_coach: "Coach video feedback screen",
+    alt_seance: "V2 preview: Lower 2 session screen, hip mobility opens the strength session",
+    alt_import: "V2 preview: Program screen, an imported gym program, week 7 of 18",
+    alt_montre: "V2 preview: Today screen with watch data, recovery, strain, sleep, HRV",
+    alt_progres: "V2 preview: Your progress screen, joint score, weight, steps, records and running",
+    alt_bilan: "V2 preview: Your assessment screen, joint score and zone radar",
+    alt_coach: "V2 preview: coach video feedback screen",
     b1_t: "Mobility inside your session",
-    b1_p: "Your leg session starts with hip mobility. It adapts to what you do that day.",
+    b1_p: "Your mobility adapts to what you do that day. With V2, it opens your strength session: hips first, then legs.",
     b2_t: "Your program, imported",
-    b2_p: "Your gym or running program, as a PDF, Numbers file or photo: it lands in your calendar, week by week.",
+    b2_p: "Your gym or running program, as a PDF, a photo or pasted text: it lands in your calendar, week by week.",
     b3_t: "Your watch",
-    b3_p: "WHOOP is connected: your recovery, sleep and daily strain in the app. <span class=\"soon\">Garmin and Polar: coming soon.</span>",
+    b3_p: "<span class=\"soon\">WHOOP, Garmin and Polar: coming soon.</span> Your recovery, sleep and daily strain will come into the app to adjust your session.",
     b4_t: "Your progress in your sport",
-    b4_p: "Joint score, records, weight, steps, running distance: all in one place.",
+    b4_p: "With V2: joint score, records, weight, steps and running distance, in one place.",
     b5_t: "Your joint assessment",
     b5_p: "A starting assessment, repeated regularly: you see what really moves.",
     b6_t: "A voice, and a human",
     b6_p: "Pain, fatigue, little time: you say it, the session changes. You film your movement, a coach watches it and answers you.",
+    hub_note: "Screens shown: a preview of V2.",
     cmp_h: "What you lose by juggling",
-    cmp_p: "Three apps that don’t talk to each other: your mobility ignores yesterday’s leg day.",
+    cmp_p: "Three apps that don’t talk to each other: your mobility doesn’t know about yesterday’s leg day.",
     col_sep: "3 separate apps",
     col_sep_s: "mobility + strength + running, e.g. GOWOD + Hevy + Runna",
     lbl_sep: "3 apps: ",
-    r1: "A mobility session matched to today’s training",
-    r1_s: "Partly (sport-specific protocols in GOWOD)",
-    r1_u: "Built around today’s session",
+    lbl_us: "Mobility Club: ",
+    r1: "A mobility session designed for your sport",
+    r1_s: "Yes in GOWOD (sport-specific protocols)",
+    r1_u: "Yes, and built around today’s session",
     r2: "One calendar",
     r2_s: "Split across three apps",
     r2_u: "One, for all your training",
     r3: "Import your program",
     r3_s: "Partly (Hevy through an external tool, Runna by adding runs)",
-    r3_u: "PDF, Numbers or photo",
+    r3_u: "PDF, photo or pasted text",
     r4: "Joint assessment",
     r4_s: "Yes, in the mobility app (GOWOD)",
     inc: "Included",
     r5: "Voice coach that changes the session",
-    r5_s: "Not found (Runna: pace cues, the session doesn’t change)",
+    r5_s: "Not found (Runna: pace guidance)",
     r6: "Your form corrected on video by a human",
     r6_s: "Not found",
     r7: "Progress tracking in your sport",
     r7_s: "Split across three apps",
-    r7_u: "In one place",
+    r7_u: "With V2, in one place",
     cmp_note: "Checked on 23 October 2026 on each app’s website, help centre and French App Store page. “Not found”: absent from their public documentation, which doesn’t prove it doesn’t exist.",
-    cmp_price: "On price, let’s be honest: the cheapest stack we found, <b>GOWOD (€84.99/year) for mobility and Hevy (€26.49/year) for strength, comes to €111.48 a year</b>. Runna (running) isn’t priced: its page doesn’t show the subscription length.<small>Lowest price shown on each French App Store page, checked on 23/10/2026.</small>",
+    cmp_price: "On price, let’s be honest: among the apps in the table, <b>GOWOD (€84.99/year) for mobility and Hevy (€26.49/year) for strength come to €111.48 a year</b>. Runna (running) isn’t priced: its page doesn’t show the subscription length.<small>Lowest price shown on each French App Store page, checked on 23/10/2026.</small>",
     cmp_loss: "The real cost isn’t money. It’s consistency: three apps, and mobility is the one that gets dropped.",
     n_members: "members",
     n_feedback: "member reviews",
@@ -489,26 +572,30 @@ var I18N = {
     q6: "We love it: every tool gathered in one place, assembled and taught intelligently to repair yourself or perform.",
     offer_h_f: "Launch offer: your price, locked in",
     offer_h_v: "V2 is live",
-    p_m: "Monthly", p_a: "Yearly", p_v: "Lifetime",
-    per_month: "/month", per_year: "/year", once: "one time", per_month_short: "per month.",
-    locked: "Price locked in",
+    p_m: "Monthly", p_v: "Lifetime access",
+    per_month: "/month", or_once: "or", once: "in one payment", no_commit: "no commitment",
     after: "When the countdown ends:",
-    p_m_note: "7-day trial, then a monthly subscription.",
-    p_a_note: "That is",
-    p_v_note: "One payment, lifetime access.",
-    cta_m: "Try 7 days", cta_a: "Choose yearly", cta_v: "Get lifetime access",
+    p_m_note: "Stop whenever you want from PayPal.",
+    p_v_note: "No subscription: the app and its updates, for life.",
+    legal_4x: "Pay in 4 subject to eligibility and approval by PayPal.",
+    cta_m: "Choose monthly", cta_v: "Get lifetime access",
+    sim_t: "What you pay over time",
+    sim_l: "Duration",
+    sim_min: "6 months", sim_max: "5 years",
     faq_h: "Frequently asked questions",
     q_prix: "Why is the price going up?",
-    a_prix: "The launch price is reserved for the 24-hour window. When the countdown ends, the plans move to the V2 price. The price you take now stays yours as long as your subscription runs.",
+    a_prix: "The launch price is reserved for the 24-hour window. When the countdown ends, lifetime access and the monthly plan move to the V2 price. Lifetime access taken now is paid once and for all; a monthly plan taken now keeps its price as long as your subscription runs.",
     q_prix_v: "Can the price change?",
     a_prix_v: "Your subscription price stays yours as long as it runs. Lifetime access is paid once.",
     q_apps: "Do I have to drop my other apps?",
-    a_apps: "Your movement apps, yes: your gym and running program can be imported, and your mobility and progress tracking live in the club. For your watch, WHOOP already connects; Garmin and Polar are coming soon. Your nutrition, however, stays in your own app: the club doesn’t replace it.",
+    a_apps: "Your gym and running program can be imported into the club, alongside your mobility. Keep your running app to record your runs (GPS). Nutrition stays in your own app: the club doesn’t replace it. For watches, WHOOP, Garmin and Polar are coming soon.",
     q_temps: "How much time per day?",
     a_temps: "A few minutes a day. Mobility slots into your session of the day: nothing to choose, nothing to prepare.",
     q_annul: "What if I want to stop?",
-    a_annul: "Monthly and yearly plans can be cancelled at any time from your PayPal account. The 7-day trial on the monthly plan lets you try before you pay. You also have the legal 14-day withdrawal period.",
-    f_priv: "Privacy"
+    a_annul: "The monthly plan has no commitment: stop whenever you want from your PayPal account. Lifetime access is paid once, in one or four instalments: there’s no subscription to stop. Either way, you have the legal 14-day withdrawal period.",
+    f_priv: "Privacy",
+    aria_fracture: "V1 and V2", aria_hub: "One app", aria_bricks: "The V2 building blocks", aria_cmp: "Compare", aria_table: "Comparison",
+    aria_members: "Members", aria_offer: "Offer", aria_faq: "Frequently asked questions", aria_lang: "Version française"
   }
 };
 var TITLES = {
@@ -524,6 +611,8 @@ var LANG = "fr";
   var i, k;
   for (i = 0; i < nodes.length; i++) { k = nodes[i].getAttribute("data-i18n"); if (!(k in I18N.fr)) I18N.fr[k] = nodes[i].innerHTML; }
   for (i = 0; i < alts.length; i++) { k = alts[i].getAttribute("data-i18n-alt"); I18N.fr[k] = alts[i].getAttribute("alt"); }
+  var arias = document.querySelectorAll("[data-i18n-aria]");
+  for (i = 0; i < arias.length; i++) { k = arias[i].getAttribute("data-i18n-aria"); I18N.fr[k] = arias[i].getAttribute("aria-label"); }
 })();
 
 function setLang(l) {
@@ -535,26 +624,75 @@ function setLang(l) {
   for (i = 0; i < nodes.length; i++) { k = nodes[i].getAttribute("data-i18n"); if (dict[k] != null) nodes[i].innerHTML = dict[k]; }
   var alts = document.querySelectorAll("[data-i18n-alt]");
   for (i = 0; i < alts.length; i++) { k = alts[i].getAttribute("data-i18n-alt"); if (dict[k] != null) alts[i].setAttribute("alt", dict[k]); }
+  var arias = document.querySelectorAll("[data-i18n-aria]");
+  for (i = 0; i < arias.length; i++) { k = arias[i].getAttribute("data-i18n-aria"); if (dict[k] != null) arias[i].setAttribute("aria-label", dict[k]); }
   document.title = TITLES[phaseCourante()][l];
   document.getElementById("lang").textContent = l === "fr" ? "EN" : "FR";
   try { localStorage.setItem("mc_lang", l); } catch (e) { /* stockage refusé : on continue */ }
   /* ré-applique l’offre : les montants se formatent selon la langue (18,33 / 18.33) */
   if (window.MCOffre && MCOffre.etat()) MCOffre.appliquerOffre(MCOffre.etat());
+  dessinerSim();
 }
 document.getElementById("lang").addEventListener("click", function () { setLang(LANG === "fr" ? "en" : "fr"); });
 
-/* vidéo : fenêtre ou V2 */
-/* Aucune <source> dans le HTML : la phase choisit la vidéo, une seule est téléchargée. */
-var videoPhase = null;
-function videoPour(phase) {
-  if (phase === videoPhase) return;
-  videoPhase = phase;
-  var v = document.getElementById("hv");
-  var base = "/assets/video/lancement-16x9-" + (phase === "v2" ? "v2" : "fenetre");
-  v.setAttribute("poster", base + ".jpg");
-  v.innerHTML = "<source src=\"" + base + ".webm\" type=\"video/webm\"><source src=\"" + base + ".mp4\" type=\"video/mp4\">";
-  v.load();
-  var p = v.play(); if (p && p.catch) p.catch(function () {});
+/* simulateur « Ce que tu paies sur la durée » : montants lus dans l’offre servie (offre-v2) */
+var SIM = {
+  fr: {
+    duree: function (m) { return m % 12 === 0 ? (m === 12 ? "1 an" : (m / 12) + " ans") : m + " mois"; },
+    vieNow: "À vie, maintenant", vieApres: "À vie, après le compteur", vie: "À vie",
+    mNow: "Mensuel, maintenant", mApres: "Mensuel, après le compteur", m: "Mensuel",
+    gain: function (x) { return "Entrer maintenant&nbsp;: <b>" + x + " de moins</b> qu’après le compteur."; },
+    seuil: function (n) { return "L’accès à vie est rentabilisé dès le " + n + "<sup>e</sup>&nbsp;mois."; },
+    plus: function (d, x) { return "Sur " + d + ", il te coûte " + x + " de moins que le mensuel."; },
+    moins: function (d, x) { return "Sur " + d + ", le mensuel reste moins cher&nbsp;: " + x + "."; },
+    locale: "fr-FR"
+  },
+  en: {
+    duree: function (m) { return m % 12 === 0 ? (m === 12 ? "1 year" : (m / 12) + " years") : m + " months"; },
+    vieNow: "Lifetime, now", vieApres: "Lifetime, after the countdown", vie: "Lifetime",
+    mNow: "Monthly, now", mApres: "Monthly, after the countdown", m: "Monthly",
+    gain: function (x) { return "Joining now: <b>" + x + " less</b> than after the countdown."; },
+    seuil: function (n) { return "Lifetime access pays for itself from month " + n + "."; },
+    plus: function (d, x) { return "Over " + d + ", it costs you " + x + " less than the monthly plan."; },
+    moins: function (d, x) { return "Over " + d + ", the monthly plan is still cheaper: " + x + "."; },
+    locale: "en-GB"
+  }
+};
+function eur(n) {
+  return new Intl.NumberFormat(SIM[LANG].locale, { style: "currency", currency: "EUR", maximumFractionDigits: n % 1 ? 2 : 0 }).format(n);
+}
+/* Calcul pur, exposé pour la vérification : mêmes prix que l’offre affichée. */
+function calculSim(mois, e) {
+  var v2 = e.phase !== "fenetre";
+  var p = e.prix, a = e.prix_v2;
+  var lignes = v2
+    ? [{ k: "vie", now: true, vie: true, v: p.vie }, { k: "m", now: true, v: p.mensuel * mois }]
+    : [{ k: "vieNow", now: true, vie: true, v: p.vie }, { k: "vieApres", vie: true, v: a.vie }, { k: "mNow", now: true, v: p.mensuel * mois }, { k: "mApres", v: a.mensuel * mois }];
+  return {
+    lignes: lignes,
+    gain: v2 ? null : a.vie - p.vie,
+    seuil: Math.ceil(p.vie / p.mensuel),
+    ecart: p.mensuel * mois - p.vie
+  };
+}
+window.calculSim = calculSim;
+var simMois = 24;
+function dessinerSim() {
+  var e = window.MCOffre && MCOffre.etat();
+  var r = document.getElementById("sim-r");
+  if (!e || !r) return;
+  var t = SIM[LANG], c = calculSim(simMois, e), d = t.duree(simMois);
+  document.getElementById("sim-o").textContent = d;
+  r.setAttribute("aria-valuetext", d);
+  r.style.setProperty("--p", ((simMois - 6) / 54 * 100) + "%");
+  var max = Math.max.apply(null, c.lignes.map(function (l) { return l.v; }));
+  document.getElementById("sim-bars").innerHTML = c.lignes.map(function (l) {
+    return "<li class=\"" + (l.now ? "now" : "") + (l.vie ? " vie" : "") + "\" data-k=\"" + l.k + "\"><span>" + t[l.k] + "</span><b data-v=\"" + l.v + "\">" + eur(l.v) + "</b><span class=\"bar\"><i style=\"width:" + Math.max(1.5, l.v / max * 100) + "%\"></i></span></li>";
+  }).join("");
+  var say = [];
+  if (c.gain != null) say.push(t.gain(eur(c.gain)));
+  say.push(t.seuil(c.seuil) + " " + (c.ecart >= 0 ? t.plus(d, eur(c.ecart)) : t.moins(d, eur(e.prix.mensuel * simMois))));
+  document.getElementById("sim-say").innerHTML = say.map(function (x) { return "<p>" + x + "</p>"; }).join("");
 }
 
 /* suivi : même format de payload que l’accueil (first-party, sans PII) */
@@ -579,8 +717,19 @@ function track(event, props) {
   try { stored = localStorage.getItem("mc_lang"); } catch (e) {}
   if (stored === "en") setLang("en");
 
-  if (window.MCOffre) MCOffre.onChange(function (e) { videoPour(e.phase); document.title = TITLES[e.phase === "fenetre" ? "fenetre" : "v2"][LANG]; });
-  else videoPour("fenetre"); /* script d’offre absent : phase inconnue, vidéo de la fenêtre par défaut */
+  if (window.MCOffre) MCOffre.onChange(function (e) { videoPour(e.phase); dessinerSim(); document.title = TITLES[e.phase === "fenetre" ? "fenetre" : "v2"][LANG]; });
+  /* passage sous / au-dessus de 700 px : on change de format de vidéo */
+  var mq = window.matchMedia("(max-width:699.98px)");
+  var auFormat = function () { videoPour(phaseCourante()); };
+  if (mq.addEventListener) mq.addEventListener("change", auFormat); else if (mq.addListener) mq.addListener(auFormat);
+
+  /* simulateur : une mesure, au premier déplacement du curseur */
+  var simR = document.getElementById("sim-r"), simVu = false;
+  simR.addEventListener("input", function () {
+    simMois = Number(simR.value) || 24;
+    dessinerSim();
+    if (!simVu) { simVu = true; track("simulator_used", { path: "/lancement", months: simMois }); }
+  });
 
   /* reveal */
   var rv = document.querySelectorAll(".reveal");
@@ -628,7 +777,7 @@ function track(event, props) {
     (function (a) {
       a.addEventListener("click", function () {
         var plan = a.getAttribute("data-offre-lien");
-        if (plan === "mensuel" || plan === "annuel" || plan === "vie") track("plan_clicked", { plan: plan, path: "/lancement" });
+        if (plan === "mensuel_fixe" || plan === "vie") track("plan_clicked", { plan: plan, path: "/lancement" });
       });
     })(links[j]);
   }
