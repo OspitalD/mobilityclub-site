@@ -43,3 +43,18 @@ test('la variante de hero servie par la page (coach) est acceptée, une inconnue
   assert.equal((await avecVariante('coach')).statusCode, 200);
   assert.equal((await avecVariante('inconnue')).statusCode, 400);
 });
+
+test('les événements de la page de lancement et sa variante sont acceptés et stockés', async () => {
+  records.length = 0;
+  for (const event of ['offer_viewed', 'video_played', 'faq_opened']) {
+    const response = await handler({
+      httpMethod: 'POST', headers: {},
+      body: JSON.stringify({ event, variant: 'lancement', vid: 'abcd1234', props: { path: '/lancement', lang: 'fr' } }),
+    });
+    assert.equal(response.statusCode, 200, event);
+  }
+  assert.deepEqual(records.map((r) => r.value.event), ['offer_viewed', 'video_played', 'faq_opened']);
+  assert.ok(records.every((r) => r.value.variant === 'lancement'));
+  // La whitelist reste fermée : un événement non prévu est toujours refusé.
+  assert.equal((await envoyer('inconnu', {})).statusCode, 400);
+});

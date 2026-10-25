@@ -8,6 +8,9 @@ import {
   normaliserInventaire,
 } from '../netlify/lib/lifetime-ticketing.js';
 
+// Ces assertions décrivent la fenêtre (249 €) : on épingle la phase pour qu'elles ne dépendent pas de l'horloge.
+process.env.OFFRE_V2_FIN = '2099-01-01T00:00:00.000Z';
+
 test('custom_id PayPal transporte exactement le palier, le ticket et la réservation', () => {
   const token = '11111111-2222-4333-8444-555555555555';
   const customId = customIdLifetime({ tier: 2, ticket: 7, token });

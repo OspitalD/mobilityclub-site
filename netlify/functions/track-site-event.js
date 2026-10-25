@@ -21,9 +21,12 @@ const EVENTS = new Set([
   'identity_completed', // carnet nominatif ouvert, sans jamais stocker le nom
   'checkout_started',   // réservation créée, départ vers PayPal
   'purchase_confirmed', // capture PayPal confirmée au retour sur le site
+  'offer_viewed',       // page de lancement : l'offre est entrée dans le viewport
+  'video_played',       // page de lancement : lecture d'une vidéo
+  'faq_opened',         // page de lancement : ouverture d'une question de la FAQ
 ]);
 
-const VARIANTS = new Set(['vision', 'friction', 'coach']);
+const VARIANTS = new Set(['vision', 'friction', 'coach', 'lancement']);
 
 // Longueur max d'une valeur de props. Coupe court aux payloads gonflés.
 const MAX_VAL = 64;

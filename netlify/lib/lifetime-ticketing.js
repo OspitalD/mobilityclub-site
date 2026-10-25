@@ -1,4 +1,5 @@
 import { getStore } from '@netlify/blobs';
+import { etatOffre, PRIX_V2 } from './offre-v2.js';
 
 export const TIER_SIZE = 20;
 // Une nouvelle série s'ajoute ici uniquement lorsque son prix a été décidé.
@@ -21,7 +22,11 @@ export const DECLARED_SOLD_TICKETS = {
 export const tierValide = (tier) =>
   Number.isInteger(Number(tier)) && Number(tier) >= 1 && Number(tier) <= TIER_PRICES.length;
 
-const prixDuPalier = (tier) => TIER_PRICES[Number(tier) - 1];
+// En phase V2 le Lifetime coûte un prix unique, quel que soit le palier : la progression
+// 199 → 249 était un levier de rareté de la fenêtre, plus de la V2. La phase vient de
+// offre-v2 (même horloge que les pages), jamais d'un calcul local.
+const prixDuPalier = (tier, now = Date.now()) =>
+  etatOffre(now).phase === 'v2' ? PRIX_V2.vie : TIER_PRICES[Number(tier) - 1];
 const cleTicket = (ticket) => String(Number(ticket)).padStart(2, '0');
 
 export const ticketValide = (ticket) =>
@@ -93,7 +98,7 @@ export const normaliserInventaire = (value, captures = { 1: 0, 2: 0 }, now = Dat
   return inventory;
 };
 
-export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }) => {
+export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }, now = Date.now()) => {
   const soldByTier = Object.fromEntries(
     TIER_PRICES.map((_, index) => {
       const tier = index + 1;
@@ -121,7 +126,7 @@ export const etatCampagne = (inventory, captures = { 1: 0, 2: 0 }) => {
     sold_out: soldOut,
     tier,
     tier_sold: soldByTier[tier],
-    price: prixDuPalier(tier),
+    price: prixDuPalier(tier, now),
     tickets,
   };
 };
@@ -154,7 +159,7 @@ const lireInventaire = async () => {
 
 export const lireEtatCampagne = async (now = Date.now()) => {
   const [captures, { snapshot }] = await Promise.all([lireCaptures(), lireInventaire()]);
-  return etatCampagne(normaliserInventaire(snapshot?.data, captures, now), captures);
+  return etatCampagne(normaliserInventaire(snapshot?.data, captures, now), captures, now);
 };
 
 const muterInventaire = async (mutation, now = Date.now()) => {
@@ -180,7 +185,7 @@ export const reserverTicket = async ({ ticket, token, now = Date.now() }) => {
   }
 
   return muterInventaire((inventory, captures) => {
-    const state = etatCampagne(inventory, captures);
+    const state = etatCampagne(inventory, captures, now);
     const tier = state.tier;
     const key = cleTicket(ticket);
     const activeReservations = compteStatut(inventory, tier, 'reserved');
@@ -197,9 +202,9 @@ export const reserverTicket = async ({ ticket, token, now = Date.now() }) => {
       token: String(token).toLowerCase(),
       created_at: new Date(now).toISOString(),
       expires_at: expiresAt,
-      price: prixDuPalier(tier),
+      price: prixDuPalier(tier, now),
     };
-    return { tier, ticket: Number(ticket), token: String(token).toLowerCase(), price: prixDuPalier(tier), expires_at: expiresAt };
+    return { tier, ticket: Number(ticket), token: String(token).toLowerCase(), price: prixDuPalier(tier, now), expires_at: expiresAt };
   }, now);
 };
 
@@ -240,12 +245,6 @@ export const enregistrerVente = async ({ tier, ticket, token, orderId, captureId
     error.code = 'capture_mismatch';
     throw error;
   }
-  if (Number(price) !== prixDuPalier(tier)) {
-    const error = new Error('capture_amount_mismatch');
-    error.code = 'capture_amount_mismatch';
-    throw error;
-  }
-
   const sold = await muterInventaire((inventory) => {
     const key = cleTicket(ticket);
     const entry = inventory.tiers?.[tier]?.[key];
@@ -253,6 +252,14 @@ export const enregistrerVente = async ({ tier, ticket, token, orderId, captureId
     if (entry?.status !== 'reserved' || entry.token !== String(token).toLowerCase() || entry.order_id !== orderId) {
       const error = new Error('reservation_lost');
       error.code = 'reservation_lost';
+      throw error;
+    }
+    // Le montant attendu est celui annoncé à la réservation : un acheteur qui a réservé à 249 € juste
+    // avant la fin de la fenêtre et paie après doit être honoré, pas refusé APRÈS que PayPal l'a débité.
+    const attendu = Number.isFinite(Number(entry.price)) ? Number(entry.price) : prixDuPalier(tier, now);
+    if (Number(price) !== attendu) {
+      const error = new Error('capture_amount_mismatch');
+      error.code = 'capture_amount_mismatch';
       throw error;
     }
     inventory.tiers[tier][key] = {

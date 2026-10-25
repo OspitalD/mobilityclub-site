@@ -1,6 +1,9 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
 
+// Ces assertions décrivent la fenêtre (249 €) : on épingle la phase pour qu'elles ne dépendent pas de l'horloge.
+process.env.OFFRE_V2_FIN = '2099-01-01T00:00:00.000Z';
+
 let captureBlobs = [];
 
 mock.module('@netlify/blobs', {
