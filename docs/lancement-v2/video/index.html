@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr" data-composition-variables='[{"id":"phase","type":"enum","label":"Fin de vidéo","default":"fenetre","options":[{"value":"fenetre","label":"Fenêtre 24 h (prix 25 €)"},{"value":"v2","label":"V2 (sans prix)"}]}]'>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1920, height=1080">
+<title>Lancement V2 16:9</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<link rel="stylesheet" href="assets/common.css">
+<style>
+html,body{width:1920px;height:1080px}
+
+.col{position:absolute;left:140px;top:0;bottom:0;width:960px;display:flex;flex-direction:column;justify-content:center}
+.col.center{left:0;width:100%;align-items:center;text-align:center}
+.big{font-size:118px}.gap{margin-top:46px}
+.hd{font-size:104px}
+#a2{margin-top:6px}
+.phone{width:424px;height:920px;left:1238px;top:80px;box-shadow:0 0 140px rgba(62,207,160,.14)}
+#phone-coach,#phone-voice{box-shadow:0 0 140px rgba(185,144,224,.18)}
+.photo{width:736px;height:920px;left:1082px;top:80px}
+.ticks{left:1082px;width:736px;top:1010px}
+#photo{top:56px;height:900px}
+.ticks{top:988px}
+.pr{width:760px;height:520px;top:280px;display:flex;flex-direction:column;justify-content:center;padding:0 64px}
+#pr1{left:140px}#pr2{left:1020px}
+.big2{font-size:210px}
+.cap{margin-top:26px;font-size:46px;font-weight:600;color:var(--tx2);line-height:1.2;max-width:620px}
+.brand{font-size:150px}
+.brand .sub{font-size:68px;margin-top:14px;letter-spacing:-.025em}
+.price{position:relative;margin-top:56px;padding:44px 72px;text-align:center}
+.price .p1{font-style:italic;font-weight:800;font-size:92px;letter-spacing:-.035em;line-height:1.05}
+.price .p2{font-size:44px;font-weight:600;margin-top:14px}
+
+</style></head><body>
+<div id="root" data-composition-id="lancement" data-start="0" data-duration="20" data-width="1920" data-height="1080">
+  <div id="halo-o" class="halo"></div><div id="halo-g" class="halo"></div><div id="halo-v" class="halo"></div>
+
+  <section id="s0" class="clip" data-start="0" data-duration="3.2" data-track-index="1">
+    <div class="col center">
+      <h1 id="p1" class="big"><span class="ln dim">Tu sais que</span><span class="ln dim">la mobilité compte.</span></h1>
+      <h1 id="p2" class="big gap"><span class="ln">Tu abandonnes</span><span class="ln">en <span class="o">trois semaines.</span></span></h1>
+    </div>
+  </section>
+
+  <section id="s1" class="clip" data-start="3" data-duration="4.5" data-track-index="2">
+    <div class="col">
+      <h1 id="a1" class="hd"><span class="ln"><span class="g">Ton corps</span> mesuré.</span></h1>
+      <h1 id="a2" class="hd"><span class="ln dim">Puis re‑mesuré.</span></h1>
+    </div>
+    <div id="photo" class="photo">
+      <img id="ph1" src="assets/p1.jpg" alt=""><img id="ph2" src="assets/p2.jpg" alt=""><img id="ph3" src="assets/p3.jpg" alt=""><img id="ph4" src="assets/p4.jpg" alt=""><img id="ph5" src="assets/p5.jpg" alt="">
+    </div>
+    <div id="ticks" class="ticks"><i><b id="tk1"></b></i><i><b id="tk2"></b></i><i><b id="tk3"></b></i><i><b id="tk4"></b></i><i><b id="tk5"></b></i></div>
+    <div id="phone-bilan" class="phone"><img src="assets/diag-bilan.jpg" alt=""></div>
+  </section>
+
+  <section id="s2" class="clip" data-start="7.2" data-duration="3.5" data-track-index="3">
+    <div class="col">
+      <h1 id="b1" class="hd"><span class="ln">Un <span class="v">humain</span></span><span class="ln">regarde</span><span class="ln">ton geste.</span></h1>
+    </div>
+    <div id="phone-coach" class="phone"><img src="assets/video-coach.jpg" alt=""></div>
+  </section>
+
+  <section id="s3" class="clip" data-start="10.6" data-duration="3.5" data-track-index="4">
+    <div class="col">
+      <h1 id="c1" class="hd"><span class="ln">Ta séance</span><span class="ln">s’adapte à</span><span class="ln"><span class="v">ce que tu dis.</span></span></h1>
+    </div>
+    <div id="phone-voice" class="phone"><img src="assets/voice-adjusted.jpg" alt=""></div>
+  </section>
+
+  <section id="s4" class="clip" data-start="14" data-duration="3.1" data-track-index="5">
+    <div id="pr1" class="glass pr">
+      <div class="num big2" id="v330"><span id="n330">330</span></div>
+      <div class="cap">membres</div>
+    </div>
+    <div id="pr2" class="glass pr">
+      <div class="num big2 g"><span id="n52">52</span></div>
+      <div class="cap">retours membres</div>
+    </div>
+  </section>
+
+  <section id="s5" class="clip" data-start="17" data-duration="3" data-track-index="6">
+    <div class="col center end">
+      <h1 id="e1" class="brand"><span class="ln">Mobility Club <span class="g">V2</span></span>
+        <span class="ln only-v2 sub">Ton <span class="v">coach de mouvement</span>,</span>
+        <span class="ln only-v2 sub">dans ta poche.</span></h1>
+      <div id="e2" class="glass price only-fenetre">
+        <div class="p1 g">25 €/mois, verrouillé.</div>
+        <div class="p2 dim">Dès la fin du compteur : 30 €/mois.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>window.MC_LAYOUT={halo:{g:[1400,420],v:[1500,700],o:[500,540]},size:1300,drift:140};</script>
+<script src="assets/tl.js"></script>
+<script>window.__timelines["lancement"] = window.MC_BUILD();</script>
+</body></html>

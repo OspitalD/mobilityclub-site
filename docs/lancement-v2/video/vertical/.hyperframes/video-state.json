@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "historyId": "0635412b-04f9-4573-8a1f-31cecb6866d7",
+  "currentRevision": "86e1ddd3-0ae0-431a-863b-17d812c0000a",
+  "pendingChanges": false,
+  "files": {
+    "hyperframes.json": {
+      "hash": "53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50",
+      "content": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/53/53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50"
+    },
+    "index.html": {
+      "hash": "539f53877017423b19533a250e0e93d424a15f971a6d0667890809b5e8a96831",
+      "content": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/53/539f53877017423b19533a250e0e93d424a15f971a6d0667890809b5e8a96831"
+    },
+    "meta.json": {
+      "hash": "8779fffda1e42bbe66e47d9eca823e5bc47d283b71e4cf314ae18e664cf4a360",
+      "content": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/87/8779fffda1e42bbe66e47d9eca823e5bc47d283b71e4cf314ae18e664cf4a360"
+    },
+    "package.json": {
+      "hash": "6ae94fabf449f6fd99dcf862a8dcf726bb6459fcf4b8e9502d6d6cc5724a03ae",
+      "content": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/6a/6ae94fabf449f6fd99dcf862a8dcf726bb6459fcf4b8e9502d6d6cc5724a03ae"
+    }
+  },
+  "revisions": {
+    "aafb8e41-1eac-47b9-9ee5-e0acef4d9024": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792938387708,
+      "endedAt": 1792938387709,
+      "files": {
+        "index.html": {
+          "before": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/ca/ca736c7aba361ca66be7faf00dde79fd91ac1dc6257ea31cf873b59512fd7cfa",
+          "after": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/cb/cb1d716ca11dd82e581f3032196090686c31b9c9d0d251e2699df2e6d98a2305"
+        }
+      }
+    },
+    "86e1ddd3-0ae0-431a-863b-17d812c0000a": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1792938648054,
+      "endedAt": 1792938648055,
+      "files": {
+        "index.html": {
+          "before": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/cb/cb1d716ca11dd82e581f3032196090686c31b9c9d0d251e2699df2e6d98a2305",
+          "after": "/Users/damienospital/.cache/hyperframes/history/0635412b-04f9-4573-8a1f-31cecb6866d7/blobs/53/539f53877017423b19533a250e0e93d424a15f971a6d0667890809b5e8a96831"
+        }
+      }
+    }
+  },
+  "checks": {
+    "latest": {
+      "revision": "86e1ddd3-0ae0-431a-863b-17d812c0000a",
+      "id": "745c3a48-41b7-4a1e-9b73-8c2a7e56acd5"
+    },
+    "revisions": {
+      "86e1ddd3-0ae0-431a-863b-17d812c0000a": [
+        {
+          "id": "745c3a48-41b7-4a1e-9b73-8c2a7e56acd5",
+          "scope": "project",
+          "report": "/Users/damienospital/Projects/mc-worktrees/site-lancement-v2/docs/lancement-v2/video/vertical/.hyperframes/artifacts/checks/745c3a48-41b7-4a1e-9b73-8c2a7e56acd5.json",
+          "metadata": {
+            "ok": true,
+            "browserSkipped": false,
+            "options": {
+              "samples": 9,
+              "atTransitions": false,
+              "maxIssues": 80,
+              "collapseStatic": true,
+              "tolerance": 2,
+              "timeout": 3000,
+              "contrast": true,
+              "strict": false,
+              "snapshots": false,
+              "browserGpuMode": "auto"
+            }
+          },
+          "createdAt": 1792938650444,
+          "contentHash": "93857109f8fcae6fa676127f4e6244104481d1fa535115b46df9ed1c1adf130a",
+          "revision": "86e1ddd3-0ae0-431a-863b-17d812c0000a",
+          "inputFingerprint": "eecb1c5d696afa2ea08f91ef9f2db18843c9b810c7c22bfe8b0728bcf6c265b6",
+          "inputScope": "local-project-files",
+          "attribution": "recorded-revision"
+        }
+      ]
+    },
+    "unversioned": [
+      {
+        "id": "03d2b455-0bde-4541-8952-d87517b35800",
+        "scope": "project",
+        "report": "/Users/damienospital/Projects/mc-worktrees/site-lancement-v2/docs/lancement-v2/video/vertical/.hyperframes/artifacts/checks/03d2b455-0bde-4541-8952-d87517b35800.json",
+        "metadata": {
+          "ok": true,
+          "browserSkipped": false,
+          "options": {
+            "samples": 9,
+            "atTransitions": false,
+            "maxIssues": 80,
+            "collapseStatic": true,
+            "tolerance": 2,
+            "timeout": 3000,
+            "contrast": true,
+            "strict": false,
+            "snapshots": false,
+            "browserGpuMode": "auto"
+          }
+        },
+        "createdAt": 1792938208463,
+        "contentHash": "049bf97fbb8c0bd99d9fa6de4acb2d957aacff2b900b4ed8eb0ecddb8483937c",
+        "revision": null,
+        "inputFingerprint": "7365e1f2fc7de646338a6e6a8085e6f7ea54219809cf0fbc05553a06392226c1",
+        "inputScope": "local-project-files",
+        "attribution": "unversioned"
+      }
+    ]
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "9d18907e-84a4-45ab-bddb-263f8400e31c",
+      "completedAt": 1792938667303,
+      "output": "/private/tmp/claude-501/-Users-damienospital-Projects-mobility-dashboard/3238f459-56a2-447e-af82-886ae7b23f7f/scratchpad/r/9-fenetre.mp4",
+      "status": "completed",
+      "revision": "86e1ddd3-0ae0-431a-863b-17d812c0000a"
+    },
+    "retainedRevisions": [
+      "86e1ddd3-0ae0-431a-863b-17d812c0000a",
+      "aafb8e41-1eac-47b9-9ee5-e0acef4d9024"
+    ]
+  },
+  "pendingArtifactCleanup": []
+}
