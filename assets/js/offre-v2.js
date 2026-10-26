@@ -145,7 +145,8 @@
     appliquerOffre: appliquerOffre,
     onChange: function (cb) { listeners.push(cb); if (etat) cb(etat); },
     etat: function () { return etat; },
-    texteCompteur: texteCompteur
+    texteCompteur: texteCompteur,
+    decalage: function () { return decalage; }
   };
   window.chargerOffre = chargerOffre;
   window.appliquerOffre = appliquerOffre;

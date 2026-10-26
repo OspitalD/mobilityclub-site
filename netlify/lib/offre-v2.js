@@ -26,6 +26,13 @@ export const PLANS = {
   },
 };
 
+// Bonus de rattrapage (/lancement, décision Damien 26/10) : après la fenêtre, une pop-up
+// rouvre les prix V1 pendant 5 min, une seule fois par visiteur (compté dans son navigateur).
+// Proposé jusqu'à la désactivation du site, mercredi 28/10 au matin (8 h Paris).
+// ⚠️ Les anciens plans PayPal (P-17C, lien KT93SVXG954UE) doivent rester actifs jusque-là.
+export const FIN_BONUS = '2026-10-28T07:00:00.000Z';
+export const DUREE_BONUS_MS = 5 * 60 * 1000;
+
 export const PRIX_FENETRE = { mensuel: 25, annuel: 220, vie: 249 };
 export const PRIX_V2 = { mensuel: 30, annuel: 275, vie: 350 };
 
@@ -60,5 +67,14 @@ export const etatOffre = (now = Date.now()) => {
       vie: plans.vie,
       mensuel_fixe: plans.mensuel_fixe ?? '/devenir-membre',
     },
+    // null hors période : la page n'a alors rien à proposer.
+    bonus: phase === 'v2' && maintenant < Date.parse(FIN_BONUS)
+      ? {
+          duree_ms: DUREE_BONUS_MS,
+          jusqu_a: FIN_BONUS,
+          prix: avec4x(PRIX_FENETRE),
+          liens: { vie: PLANS.ancien.vie, mensuel_fixe: PLANS.ancien.mensuel_fixe },
+        }
+      : null,
   };
 };

@@ -27,6 +27,9 @@ const EVENTS = new Set([
   'simulator_used',     // page de lancement : curseur du simulateur de coût déplacé (une fois)
   'facecam_bubble_shown', // page de lancement : bulle face cam affichée
   'facecam_opened',     // page de lancement : vidéo face cam ouverte (avec le son)
+  'bonus_shown',        // page de lancement : pop-up « prix V1 pendant 5 min » affichée
+  'bonus_activated',    // page de lancement : bonus de 5 min lancé (une fois par visiteur)
+  'bonus_plan_clicked', // page de lancement : clic sur un plan pendant le bonus
 ]);
 
 const VARIANTS = new Set(['vision', 'friction', 'coach', 'lancement']);
