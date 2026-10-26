@@ -711,6 +711,7 @@ function track(event, props) {
     else fetch(TRACK_URL, { method: "POST", body: body, keepalive: true, headers: { "Content-Type": "application/json" } }).catch(function () {});
   } catch (e) { /* le suivi ne casse jamais la page */ }
 }
+window.track = track; /* bulle face cam : facecam_bubble_shown / facecam_opened */
 
 (function init() {
   var stored = null;
@@ -783,5 +784,6 @@ function track(event, props) {
   }
 })();
 </script>
+<script src="/assets/js/bulle-facecam.js" defer></script>
 </body>
 </html>

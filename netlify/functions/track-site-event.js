@@ -25,6 +25,8 @@ const EVENTS = new Set([
   'video_played',       // page de lancement : lecture d'une vidéo
   'faq_opened',         // page de lancement : ouverture d'une question de la FAQ
   'simulator_used',     // page de lancement : curseur du simulateur de coût déplacé (une fois)
+  'facecam_bubble_shown', // page de lancement : bulle face cam affichée
+  'facecam_opened',     // page de lancement : vidéo face cam ouverte (avec le son)
 ]);
 
 const VARIANTS = new Set(['vision', 'friction', 'coach', 'lancement']);
