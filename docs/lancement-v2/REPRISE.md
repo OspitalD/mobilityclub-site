@@ -69,3 +69,9 @@ Vérifier ce qui a été commité avec `git -C ~/Projects/mc-worktrees/site-lanc
   2. Damien clique les boutons PayPal de /lancement (montants, récurrence).
   3. Après 26/10 15:45Z : vérifier phase v2 en prod (prix 30/350, plus aucun ancien plan, pas de compteur) ; Damien désactive P-43F, P-4VH, P-17C + liens KT93SVXG954UE / 5LSVN4S2KGSM4.
   4. Mettre en ligne la branche feat/paypal-abonnement-app (~/Projects/mobilityclub-site-paypal-app, c78cbcb) pour l'accès app auto des abonnés V2 — d'ici là, manuel.
+
+## 26/10 ~10 h Paris — bulle face cam LIVE (main 436fcef, deploy 6adf156404946a7db8820190)
+- Bulle face cam en prod sur /lancement, vérifiée Chromium 375/1280 (bulle, modale avec son, track-site-event 200, phase fenetre, fin 15:45Z inchangée).
+- Événements ajoutés : facecam_bubble_shown, facecam_opened.
+- À corriger : verif-offre-pages.mjs attend encore l'ancien lien « vie » (échec hérité de 7f1e4fd, lien PayPal 249 € direct).
+- Reste : vérif bascule après 15:45Z, désactivation anciens plans, branche paypal-app.
