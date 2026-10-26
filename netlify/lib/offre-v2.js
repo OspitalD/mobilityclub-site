@@ -4,7 +4,7 @@
 
 // UNE heure de fin pour tout le monde (jamais calculée par visiteur, jamais
 // remise à zéro). Provisoire : reposée juste avant le deploy = publication + 24 h.
-export const FIN_FENETRE = '2026-10-26T15:45:00.000Z';
+export const FIN_FENETRE = '2026-10-26T19:00:00.000Z';
 
 const PAYPAL_PLAN = (id) => `https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=${id}`;
 
