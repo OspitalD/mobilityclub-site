@@ -44,8 +44,8 @@ test('Polar a sa section, son relevé journalier et son effacement', () => {
   assert.match(texte, /<li> ?Polar|Polar<\/strong> —|Polar —/);
 });
 
-test('Apple Santé (app native) est déclaré', () => {
-  assert.match(texte, /Apple Santé/);
+test('Apple Santé n\'est pas déclaré tant que l\'app iPhone ne le lit pas', () => {
+  assert.doesNotMatch(texte, /Apple Santé|HealthKit/);
 });
 
 test('Aucun envoi des données capteurs pour entraîner une IA', () => {
