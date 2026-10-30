@@ -31,12 +31,12 @@
     })(el);
     el.classList.add('bt');
   }
-  var titres = document.querySelectorAll('.hero h1, #t-pb, #t-perso, #t-cats, #t-faq, .final h2.live');
+  var titres = document.querySelectorAll('.hero h1, #t-pb, #t-perso, .hd-step h3, #t-cats, #t-faq, .final h2.live');
   Array.prototype.forEach.call(titres, decouperMots);
 
   /* ---------- ScrollReveal / Group ---------- */
   var GROUPES = ['.hero .lede', '.hero .fan', '.hero .tiles', '.probleme p', '.routine', '.ba-col', '.ba-bar', '.perso-sub', '.psteps li',
-    '.pphone', '.offer', '.clubline', '.faq details', '.final .lede', '.prix li', '.risque', '.cta-row'];
+    '.offer', '.clubline', '.faq details', '.final .lede', '.prix li', '.risque', '.cta-row'];
   var parent = new Map();
   GROUPES.forEach(function (sel) {
     Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) {
