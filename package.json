@@ -8,6 +8,7 @@
     "@netlify/blobs": "^10.7.7"
   },
   "scripts": {
-    "test": "node --experimental-test-module-mocks --test \"tests/*.test.mjs\""
+    "test": "node --experimental-test-module-mocks --test \"tests/*.test.mjs\"",
+    "visuels:halloween": "node scripts/visuels-halloween/rendre.mjs"
   }
 }
