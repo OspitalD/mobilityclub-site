@@ -90,3 +90,18 @@ body.is-ended .live{display:none!important;}
 body.is-ended .ended{display:block;}
 body.is-ended span.ended{display:inline;}
 body.is-ended span.capsule.ended{display:inline-flex;}
+
+/* Citrouille d'Halloween sculptée sur la face de la poche : côtes, yeux froncés, crocs, flamme qui vacille. */
+.pocket-front{border-radius:22px 22px 46% 46% / 18px 18px 34% 34%;clip-path:none;
+  background:radial-gradient(120% 90% at 50% 18%,#F7963F 0%,#E2711F 45%,#B9501A 80%,#8E3A10 100%);
+  box-shadow:inset 0 10px 16px -8px rgba(255,214,150,.35),inset 0 -22px 26px -14px rgba(60,20,2,.6),0 18px 34px -12px rgba(255,122,18,.45);}
+.pocket-front::before{display:none;}
+.jack{position:absolute;inset:6px 4% 4px;width:92%;height:calc(100% - 10px);overflow:visible;}
+.jack-feu{animation:jk-flamme 2.8s ease-in-out infinite;transform-origin:50% 60%;}
+@keyframes jk-flamme{0%,100%{opacity:1;}18%{opacity:.82;}22%{opacity:.97;}47%{opacity:.88;}52%{opacity:1;}74%{opacity:.8;}78%{opacity:.95;}}
+.fan .label{left:auto;right:-26px;top:auto;bottom:-20px;transform:rotate(-8deg);z-index:5;padding:5px 12px 6px;border-radius:14px;}
+.fan .label b{font-size:20px;}
+.fan .label span{font-size:11px;}
+/* Intérieur de la citrouille : le dos de la poche devient la cavité sombre, plus de bord dentelé. */
+.pocket-back{clip-path:none;border-radius:22px 22px 40% 40% / 18px 18px 30% 30%;background:radial-gradient(90% 60% at 50% 20%,#3a1404,#1a0802 70%);box-shadow:inset 0 8px 18px rgba(255,140,40,.25);}
+@media (prefers-reduced-motion:reduce){.jack-feu{animation:none;}}
