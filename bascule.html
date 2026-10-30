@@ -32,7 +32,6 @@ window.MC_BASCULE = {
   MENSUEL_PRIX: '25 €',                  // ⚠️ plan SANS essai gratuit (le plan de /devenir-membre a 7 j d'essai)
   LIEN_MENSUEL: 'https://www.paypal.com/webapps/billing/plans/subscribe?plan_id=P-17C64877T6348331UNLCQIVI',
 
-  DATE_LIMITE: null,                     // dérivée de la fin d'offre (offre-v2.js : MC_OFFRE_FIN puis serveur), heure de Paris
   DATE_FIN_SKOOL: 'dimanche 25 octobre', // jour de la bascule : les abonnements Skool s'arrêtent
   DELAI_COUPURE: '48 h',                 // délai pour couper l'abonnement Skool après paiement
   CONTACT: 'damien@mobilityclub.co',
@@ -51,7 +50,6 @@ window.MC_BASCULE = {
   PROG_CLUB: 'dispo'
 };
 </script>
-<script src="/assets/js/offre-v2.js"></script>
 
 <title>Le club déménage — Mobility Club</title>
 <meta name="description" content="Le Mobility Club quitte Skool : ton abonnement passe dans l'app." />
@@ -329,10 +327,6 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
     <div class="wide">
       <div class="plans-wrap"><div class="plans-halo" aria-hidden="true"><i style="left:0;top:40px;width:230px;height:230px;background:#3ECFA0;opacity:.4;filter:blur(55px)"></i><i style="right:10%;top:140px;width:200px;height:200px;background:#B990E0;opacity:.3;filter:blur(60px)"></i><i style="left:30%;top:260px;width:150px;height:150px;background:#E8A020;opacity:.18;filter:blur(55px)"></i></div><div class="plans" id="plans"></div></div>
     </div>
-    <div class="col">
-      <!-- 4. Date limite -->
-      <p class="deadline" id="deadline"></p>
-    </div>
   </section>
 
   <!-- 2. Ce qui change / ce qui ne change pas -->
@@ -399,7 +393,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
           <li><strong>Ton programme importé (PDF, photo, texte)</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : en partie. Fitbod, une séance en photo sur Android. Hevy, via un outil externe.</span></li>
           <li><strong>Un bilan articulaire de départ</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability et GOWOD.</span></li>
           <li><strong>Un programme créé pour toi</strong><span class="vs-us">Inclus</span><span class="vs-else">Ailleurs : Pliability, GOWOD, Fitbod, Freeletics et Runna.</span></li>
-          <li><strong>Accès à vie</strong><span class="vs-us"><span data-offre-prix="vie" data-offre-eur>249 €</span></span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
+          <li><strong>Accès à vie</strong><span class="vs-us"><span>249 €</span></span><span class="vs-else">Ailleurs : Hevy (89,99 €), programme seul : ni coach, ni mobilité, ni bilan articulaire. Freeletics, sur son site, prix non publié.</span></li>
         </ul>
         <details class="vs-detail">
           <summary><span><span class="when-closed">Voir le tableau détaillé</span><span class="when-open">Masquer le tableau</span><small>Fonctions et prix des 8 applis</small></span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
@@ -426,13 +420,13 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
             <tr class="lbl"><th scope="colgroup" colspan="8">Ton geste corrigé en vidéo par un vrai coach</th></tr>
             <tr class="val"><td class="us">●</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Accès à vie</th></tr>
-            <tr class="val"><td class="us"><span data-offre-prix="vie" data-offre-eur>249 €</span></td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
+            <tr class="val"><td class="us"><span>249 €</span></td><td>—</td><td>—</td><td>—</td><td>◐</td><td>89,99 €</td><td>—</td><td>—</td></tr>
             <tr class="part"><td colspan="8">◐ Freeletics : accès à vie sur son site, prix non publié</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Prix au mois</th></tr>
-            <tr class="val"><td class="us"><span data-offre-prix="mensuel" data-offre-eur>25 €</span></td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>19,99 €</td><td>14,99 €</td></tr>
+            <tr class="val"><td class="us"><span>25 €</span></td><td>22,99 €</td><td>9,29 €</td><td>13,49 €</td><td>—</td><td>3,49 €</td><td>19,99 €</td><td>14,99 €</td></tr>
             <tr class="part"><td colspan="8">— Freeletics : pas de formule au mois, seulement 3, 6 ou 12 mois</td></tr>
             <tr class="lbl"><th scope="colgroup" colspan="8">Prix sur un an</th></tr>
-            <tr class="val"><td class="us"><span data-offre-prix="annuel" data-offre-eur>220 €</span></td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>119,99 €</td><td>94,99 €</td></tr>
+            <tr class="val"><td class="us"><span>220 €</span></td><td>199,99 €</td><td>84,99 €</td><td>81,99 €</td><td>79,99 €</td><td>26,49 €</td><td>119,99 €</td><td>94,99 €</td></tr>
           </tbody>
         </table>
         <p class="cmp-key"><span>● oui</span><span>◐ en partie</span><span>— non trouvé dans leur documentation</span></p>
@@ -537,7 +531,7 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   document.querySelectorAll('[data-v]').forEach((el) => { el.innerHTML = v(el.dataset.v); });
 
   // 3. Cartes
-  // Prix courants (fenêtre puis V2), mis à jour par syncOffre ; les cartes se redessinent à chaque changement.
+  // Prix fondateurs fixes (MC_BASCULE), utilisés aussi par le simulateur.
   const offre = { mensuel: 25, annuel: 220, vie: 249 };
   const drawPlans = () => { document.getElementById('plans').innerHTML = ORDER.map((id) => {
     const p = PLANS[id];
@@ -559,36 +553,18 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   }).join(''); };
   drawPlans();
 
-  // 4. Date limite : une seule source, la fin d'offre. « lundi 26 octobre à 19 h » (Europe/Paris).
-  const dateFin = (iso) => {
-    const t = Date.parse(iso);
-    if (!t) return '';
-    const d = new Date(t);
-    const jour = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' });
-    const [h, m] = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Paris' }).split(':');
-    return jour + ' à ' + Number(h) + ' h' + (m === '00' ? '' : ' ' + m);
-  };
-  C.DATE_LIMITE = dateFin(window.MC_OFFRE_FIN);
-  const drawDates = () => {
-  document.getElementById('deadline').innerHTML =
-    `L'avantage fondateur reste ouvert jusqu'au <b>${v('DATE_LIMITE')}</b>. Ensuite, les formules restent disponibles, sans les bonus.`;
-
   // 5. FAQ
   const FAQ = [
     ['Que devient mon abonnement Skool ?',
       `Dès que ton paiement dans l'app est validé, je coupe ton abonnement Skool moi-même, sous ${v('DELAI_COUPURE')}. Tu n'as rien à faire, et le classroom reste ouvert en accès libre. Si un prélèvement Skool passait quand même après ta bascule, je te le rembourse : tu ne paies jamais deux fois.`],
     ['Est-ce que je garde mes données et ma progression ?',
       "Oui. Ton programme, tes séances faites et ta progression sont déjà dans l'app. Rien ne repart de zéro."],
-    [`Et si je ne fais rien avant le ${v('DATE_LIMITE')} ?`,
-      `L'avantage fondateur se ferme à cette date. Ton abonnement Skool, lui, s'arrête le ${v('DATE_FIN_SKOOL')}. Après, tu pourras toujours revenir dans l'app au prix normal, sans les bonus.`],
     ['Comment je contacte Damien ?',
       `Réponds directement à mon message, ou écris-moi : ${v('CONTACT')}. Je lis tout moi-même.`],
   ];
   document.getElementById('faq').innerHTML = FAQ.map(([q, a]) =>
     `<details><summary>${q}</summary><p>${a}</p></details>`
   ).join('');
-  };
-  drawDates();
 
   // Statut des 3 façons d'avoir ton programme
   document.querySelectorAll('[data-prog]').forEach((li) => {
@@ -654,13 +630,8 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   });
   drawSim();
 
-  // Décision Damien 30/10 : /bascule garde ses prix et liens fondateurs (MC_BASCULE : 220 €/an, 249 € à vie,
-  // 25 €/mois), même en phase V2. offre-v2 ne pilote plus ici que la date de fin affichée.
-  const syncOffre = (e) => {
-    const limite = dateFin(e.fin);
-    if (limite && limite !== C.DATE_LIMITE) { C.DATE_LIMITE = limite; drawDates(); }
-  };
-  if (window.MCOffre) window.MCOffre.onChange(syncOffre);
+  // Décision Damien 30/10 : /bascule garde ses prix et liens fondateurs (MC_BASCULE), sans date limite
+  // ni lien avec offre-v2.
 
   // Paiement
   const html = document.documentElement;
