@@ -126,3 +126,14 @@
 # ── Halloween : page de vente temporaire (offre 1+1, fin 2026-11-01 23 h 59 Paris) ──
 # /halloween est servie par halloween.html (URL propre native de Netlify, comme /lancement).
 # Après la fin, la page affiche elle-même « offre terminée » ; aucune redirection à retirer.
+
+# /halloween/choisir : page de sélection (poche à 2 programmes → lien PayPal selon la combinaison).
+[[redirects]]
+  from = "/halloween/choisir"
+  to = "/halloween-choisir.html"
+  status = 200
+
+[[redirects]]
+  from = "/halloween/choisir/"
+  to = "/halloween-choisir.html"
+  status = 200

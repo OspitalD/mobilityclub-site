@@ -21,42 +21,11 @@
 <meta name="twitter:description" content="Un programme Articulation ou Warm Up acheté, le deuxième offert. Jusqu'au samedi 1er novembre à minuit." />
 <meta name="twitter:image" content="https://mobilityclub.co/assets/halloween/og.jpg" />
 <link rel="preload" as="image" href="/assets/halloween/colonne.jpg" fetchpriority="high" />
+<link rel="stylesheet" href="/assets/halloween/commun.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
 <style>
-:root{
-  --bg:#0D0F0E;
-  --glass:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
-  --glass-border:rgba(255,255,255,.14);
-  --hair:rgba(255,255,255,.08);
-  --green:#3ECFA0;
-  --pumpkin:#E8742A;
-  --text:#F5F5F3;
-  --body:#C9CBC8;
-  --muted:#8c8f8c;
-  --font:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --maxw:1080px;
-  --gutter:clamp(20px, 5vw, 56px);
-  --ease:cubic-bezier(.22,1,.36,1);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.55;overflow-x:hidden;font-size:16px;}
-a{color:inherit;}
-img{display:block;max-width:100%;}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
-h1,h2,h3{font-style:italic;font-weight:800;letter-spacing:-.035em;line-height:1.04;}
-h2{font-size:clamp(34px,5.6vw,60px);text-wrap:balance;}
-h3{font-size:clamp(22px,2.6vw,28px);letter-spacing:-.025em;}
-p{color:var(--body);font-size:clamp(16px,1.5vw,17px);}
-section{padding:clamp(72px,11vw,150px) 0;}
-.glass{background:var(--glass);border:1px solid var(--glass-border);border-radius:28px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);}
-
-.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 32px;border-radius:100px;font-weight:700;font-size:17px;text-decoration:none;font-family:inherit;background:var(--green);color:#0D0F0E;box-shadow:0 0 0 1px rgba(62,207,160,.5),0 14px 44px -8px rgba(62,207,160,.5);transition:transform .25s var(--ease);}
-.cta:hover{transform:translateY(-2px);}
-a:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:3px;}
-
 /* ───────── HÉROS ───────── */
 .hero{position:relative;min-height:100svh;padding:0;display:flex;flex-direction:column;overflow:hidden;isolation:isolate;}
 .hero-bg{position:absolute;inset:0;z-index:-2;background:#0D0F0E;}
@@ -73,33 +42,6 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-off
 .hero h1{font-size:clamp(50px,10.4vw,92px);letter-spacing:-.05em;line-height:.96;margin-top:clamp(14px,2.6vw,26px);text-wrap:balance;}
 .hero h1 em{color:var(--pumpkin);display:inline-block;}
 
-/* poche kraft + éventail */
-.fan{position:relative;width:min(300px,78vw);height:clamp(250px,34svh,300px);margin:clamp(14px,3vw,26px) auto 0;flex:none;}
-.cover{position:absolute;bottom:34px;width:48%;aspect-ratio:3/4.3;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.22);box-shadow:0 18px 36px -10px rgba(0,0,0,.65),0 4px 10px rgba(0,0,0,.35);background:#111412;}
-.cover img{width:100%;height:100%;object-fit:cover;}
-.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 55%);}
-.cover b{position:absolute;z-index:1;left:12px;top:11px;right:10px;text-align:left;font-style:italic;font-weight:800;font-size:20px;letter-spacing:-.03em;line-height:1.05;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5);}
-.cover b small{display:block;font-size:12px;font-weight:600;font-style:normal;letter-spacing:0;color:rgba(255,255,255,.8);margin-top:2px;}
-.cover.a{left:3%;transform:rotate(-9deg);transform-origin:50% 100%;z-index:2;}
-.cover.b{right:3%;transform:rotate(8deg) translateY(-14px);transform-origin:50% 100%;z-index:2;}
-.pocket-back,.pocket-front{position:absolute;left:0;right:0;bottom:0;}
-.pocket-back{z-index:1;height:128px;background:linear-gradient(180deg,#7a3a12,#9a4a18);
-  clip-path:polygon(0.00% 0%, 5.56% 6%, 11.11% 0%, 16.67% 6%, 22.22% 0%, 27.78% 6%, 33.33% 0%, 38.89% 6%, 44.44% 0%, 50.00% 6%, 55.56% 0%, 61.11% 6%, 66.67% 0%, 72.22% 6%, 77.78% 0%, 83.33% 6%, 88.89% 0%, 94.44% 6%, 100.00% 0%, 95% 100%, 5% 100%);}
-.pocket-front{z-index:3;height:112px;border-radius:0 0 14px 14px;
-  background:
-   url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
-   linear-gradient(90deg,rgba(0,0,0,.28),transparent 14%,transparent 86%,rgba(0,0,0,.3)),
-   linear-gradient(180deg,#f08a3e,#d4671f 55%,#b9551a);
-  background-blend-mode:multiply,normal,normal;
-  clip-path:polygon(0.00% 0%, 5.56% 6%, 11.11% 0%, 16.67% 6%, 22.22% 0%, 27.78% 6%, 33.33% 0%, 38.89% 6%, 44.44% 0%, 50.00% 6%, 55.56% 0%, 61.11% 6%, 66.67% 0%, 72.22% 6%, 77.78% 0%, 83.33% 6%, 88.89% 0%, 94.44% 6%, 100.00% 0%, 95% 100%, 5% 100%);
-  box-shadow:inset 0 10px 14px -8px rgba(90,35,5,.55);}
-.pocket-front::before{content:"";position:absolute;left:0;right:0;top:20px;height:2px;background:linear-gradient(90deg,transparent,rgba(90,35,5,.35),transparent);}
-.pocket-front::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 -18px 22px -14px rgba(60,20,2,.5);}
-.label{position:absolute;z-index:4;left:50%;bottom:22px;transform:translateX(-50%) rotate(-3deg);padding:8px 20px 9px;border-radius:18px;text-align:center;background:linear-gradient(160deg,rgba(255,255,255,.42),rgba(255,255,255,.16));border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 20px -6px rgba(60,20,2,.55),inset 0 1px 0 rgba(255,255,255,.6);color:#fff;white-space:nowrap;}
-.label b{display:block;font-style:italic;font-weight:800;font-size:30px;line-height:1;letter-spacing:-.04em;text-shadow:0 1px 6px rgba(60,20,2,.45);}
-.label span{font-size:12px;font-weight:600;color:rgba(255,255,255,.95);}
-.fan-shadow{position:absolute;left:6%;right:6%;bottom:-10px;height:18px;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.6),transparent);filter:blur(6px);z-index:0;}
-
 /* compte à rebours en tuiles */
 .tiles{display:flex;gap:8px;justify-content:center;margin-top:clamp(16px,3vw,26px);}
 .tile{min-width:64px;padding:10px 6px 8px;border-radius:16px;background:rgba(13,15,14,.72);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
@@ -109,12 +51,6 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-off
 .hero .cta{margin-top:clamp(16px,2.6vw,24px);width:min(100%,360px);}
 .hero .sub{margin-top:10px;font-size:13px;color:var(--muted);}
 
-/* terminé */
-.ended{display:none;}
-body.is-ended .live{display:none!important;}
-body.is-ended .ended{display:block;}
-body.is-ended span.ended{display:inline;}
-body.is-ended .capsule.ended{display:inline-flex;}
 .ended-box{max-width:520px;margin:20px auto 0;padding:26px;text-align:center;}
 .ended-box h2{font-size:clamp(26px,5vw,34px);margin-bottom:10px;}
 .ended-box .cta{margin-top:18px;}
@@ -134,16 +70,6 @@ body.is-ended .capsule.ended{display:inline-flex;}
 .checks svg{flex:none;width:20px;height:20px;margin-top:2px;stroke:var(--green);}
 .offer .plus{padding-top:16px;border-top:1px solid var(--hair);font-weight:700;font-size:17px;color:var(--text);}
 .offer .plus span{color:var(--green);}
-
-/* ───────── ÉTAPES ───────── */
-.steps{display:grid;grid-template-columns:1fr;gap:clamp(56px,9vw,96px);}
-.step{display:grid;gap:28px;justify-items:start;}
-.step .n{font-style:italic;font-weight:800;font-size:15px;color:var(--green);}
-.step h3{margin:6px 0 12px;font-size:clamp(30px,5vw,44px);}
-.step p{max-width:40ch;}
-.phone{width:min(268px,72vw);aspect-ratio:390/844;border-radius:44px;overflow:hidden;border:1px solid rgba(255,255,255,.22);box-shadow:0 30px 60px -20px rgba(0,0,0,.8),0 0 0 6px #0b0c0c,0 0 0 7px rgba(255,255,255,.1);background:#111412;position:relative;}
-.phone img{width:100%;height:100%;object-fit:cover;}
-.sticky-phone{display:none;}
 
 /* ───────── CLUB ───────── */
 .club{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(28px,4vw,48px);}
@@ -167,27 +93,51 @@ body.is-ended .capsule.ended{display:inline-flex;}
 .final h2{font-size:clamp(40px,7vw,76px);max-width:14ch;margin:0 auto 32px;}
 .final .cta{width:min(100%,360px);}
 
-footer{padding:36px 0 52px;border-top:1px solid var(--hair);font-size:13px;color:var(--muted);}
-footer .wrap{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;}
-footer a{color:var(--body);text-decoration:none;}
 
-@media (max-width:820px){
-  .offers,.club{grid-template-columns:1fr;}
-  .offer{min-height:0;}
-}
+/* CTA répétés */
+.cta-row{text-align:center;margin-top:clamp(32px,5vw,52px);}
+.cta-row .cta{width:min(100%,360px);}
+
+/* ───────── PERSONNALISATION (carrousel) ───────── */
+.perso{display:grid;grid-template-columns:1.05fr .8fr;gap:clamp(32px,6vw,96px);align-items:center;}
+.perso h2{margin-bottom:clamp(24px,4vw,40px);}
+.psteps{list-style:none;display:grid;gap:6px;}
+.psteps li{display:grid;grid-template-columns:34px 1fr;gap:0 10px;padding:14px 0;border-top:1px solid var(--hair);cursor:pointer;opacity:.45;transition:opacity .4s var(--ease);}
+.psteps li.on{opacity:1;}
+.psteps .n{font-style:italic;font-weight:800;color:var(--pumpkin);font-size:18px;grid-row:1 / span 2;}
+.psteps b{font-size:clamp(19px,2.2vw,24px);font-weight:800;font-style:italic;letter-spacing:-.025em;color:var(--text);}
+.psteps p{font-size:16px;margin-top:4px;}
+.pphone{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.segs{display:flex;gap:6px;width:min(268px,72vw);}
+.seg{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden;border:0;padding:0;cursor:pointer;position:relative;}
+.seg i{position:absolute;inset:0;background:var(--text);transform-origin:0 50%;transform:scaleX(0);}
+.pphone .phone{position:relative;}
+.pphone .phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .7s var(--ease),transform .9s var(--ease);}
+.pphone .phone img.on{opacity:1;transform:none;}
+.dots{display:flex;gap:4px;}
+.dot{width:32px;height:32px;display:grid;place-items:center;background:none;border:0;cursor:pointer;border-radius:50%;}
+.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);transition:background .3s,transform .3s;}
+.dot.on::before{background:var(--text);transform:scale(1.25);}
+.dot:focus-visible,.seg:focus-visible{outline:2px solid var(--green);outline-offset:3px;}
+.phone{width:min(268px,72vw);aspect-ratio:390/844;border-radius:44px;overflow:hidden;border:1px solid rgba(255,255,255,.22);box-shadow:0 30px 60px -20px rgba(0,0,0,.8),0 0 0 6px #0b0c0c,0 0 0 7px rgba(255,255,255,.1);background:#111412;}
+
+/* ───────── ACCÈS TOTAL (une ligne) ───────── */
+.clubline{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;justify-content:space-between;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:22px 0;}
+.clubline p{color:var(--body);font-size:16px;}
+.clubline b{color:var(--text);}
+
+/* barre CTA collante (mobile) */
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,rgba(13,15,14,.92) 40%);transform:translateY(110%);transition:transform .35s var(--ease);pointer-events:none;display:none;}
+.sticky-cta .cta{width:100%;}
+.sticky-cta.show{transform:none;pointer-events:auto;}
+@media (max-width:899px){.sticky-cta{display:block;}body{padding-bottom:0;}}
+@media (max-width:820px){.perso{grid-template-columns:1fr;}.psteps li:not(.on) p{display:none;}.psteps li{opacity:.55;}.pphone{order:-1;}.offers{grid-template-columns:1fr;}.offer{min-height:0;}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.cta,.sticky-cta,.pphone .phone img,.psteps li{transition:none;}}
 @media (min-width:900px){
   .hero-bg .sharp{inset:0 auto 0 50%;width:min(620px,48vw);transform:translateX(-50%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);}
-  .steps{grid-template-columns:1fr 340px;gap:0 clamp(40px,8vw,120px);align-items:start;}
-  .step{min-height:68vh;align-content:center;}
-  .step .phone{display:none;}
-  .sticky-phone{display:block;grid-column:2;grid-row:1 / span 3;position:sticky;top:calc(50vh - 290px);width:min(268px,100%);justify-self:center;}
-  .sticky-phone img{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--ease);}
-  .sticky-phone img.on{opacity:1;}
-  .step{grid-column:1;}
+  .hero h1{font-size:clamp(64px,6.4vw,84px);}.hero-in{padding-top:20px;padding-bottom:28px;}.fan{height:250px;margin-top:14px;}.hero-bg .sharp{filter:brightness(.62) saturate(.95);}.hero-bg::after{background:linear-gradient(180deg,rgba(13,15,14,.5) 0%,rgba(13,15,14,.1) 30%,rgba(13,15,14,.5) 70%,rgba(13,15,14,.9) 100%);}
 }
 @media (max-height:700px){.fan{height:230px;}}
-@media (min-width:900px){.hero h1{font-size:clamp(64px,6.4vw,84px);}.hero-in{padding-top:20px;padding-bottom:28px;}.fan{height:250px;margin-top:14px;}.hero-bg .sharp{filter:brightness(.62) saturate(.95);}.hero-bg::after{background:linear-gradient(180deg,rgba(13,15,14,.5) 0%,rgba(13,15,14,.1) 30%,rgba(13,15,14,.5) 70%,rgba(13,15,14,.9) 100%);}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.cta,.sticky-phone img{transition:none;}}
 </style>
 </head>
 <body>
@@ -219,9 +169,9 @@ footer a{color:var(--body);text-decoration:none;}
       <div class="tile"><span id="cd-m">00</span><small>min</small></div>
       <div class="tile"><span id="cd-s">00</span><small>s</small></div>
     </div>
-    <p class="until live">1 acheté, 1 offert. Fin samedi 1<sup>er</sup> novembre, 23 h 59 (Paris)</p>
-    <a class="cta live" href="https://app.mobilityclub.co" data-cta="hero">Je choisis mes 2 programmes</a>
-    <p class="sub live">Compte gratuit, bilan gratuit, puis achat dans l'app.</p>
+    <p class="until live">2 programmes, le moins cher est offert. Fin samedi 1<sup>er</sup> novembre, 23 h 59 (Paris)</p>
+    <a class="cta live" href="/halloween/choisir" data-cta="hero">Choisir mes programmes</a>
+    <p class="sub live">Tu paies ici, puis tu te connectes à l'app avec l'email de ton paiement.</p>
 
     <div class="ended glass ended-box" id="ended" role="status">
       <h2>L'offre est terminée.</h2>
@@ -231,88 +181,68 @@ footer a{color:var(--body);text-decoration:none;}
   </div>
 </header>
 
-<!-- 2. LES 2 CATÉGORIES -->
+<!-- 2. 100 % PERSONNALISÉ -->
+<section aria-labelledby="t-perso" id="perso">
+  <div class="wrap perso">
+    <div>
+      <h2 id="t-perso">Ton programme devient 100&nbsp;% personnalisé</h2>
+      <ol class="psteps" id="psteps">
+        <li class="on" data-i="0"><span class="n">1</span><b>Onboarding</b><p>Tu te connectes avec ton email : un code, pas de mot de passe. Ton espace est prêt.</p></li>
+        <li data-i="1"><span class="n">2</span><b>Bilan</b><p>Des tests guidés mesurent ta mobilité, zone par zone. L'algorithme lit ton résultat.</p></li>
+        <li data-i="2"><span class="n">3</span><b>Génération</b><p>Il priorise ta zone la plus faible et règle les séries, le temps et la fréquence pour toi.</p></li>
+        <li data-i="3"><span class="n">4</span><b>12 semaines</b><p>Ton programme se déroule sur 12 semaines et fait progresser ta zone d'une semaine à l'autre.</p></li>
+      </ol>
+    </div>
+    <div class="pphone" id="pphone" role="group" aria-roledescription="carrousel" aria-label="Les 4 étapes dans l'app">
+      <div class="segs" id="segs"><button class="seg" type="button" aria-label="Étape 1 : Onboarding"><i></i></button><button class="seg" type="button" aria-label="Étape 2 : Bilan"><i></i></button><button class="seg" type="button" aria-label="Étape 3 : Génération"><i></i></button><button class="seg" type="button" aria-label="Étape 4 : 12 semaines"><i></i></button></div>
+      <div class="phone" id="pscreen">
+        <img class="on" src="/assets/halloween/app-compte.jpg" alt="Écran de connexion de l'app" width="390" height="844" />
+        <img src="/assets/halloween/app-bilan.jpg" alt="Écran de résultat du bilan" width="390" height="844" loading="lazy" />
+        <img src="/assets/halloween/app-programme.jpg" alt="Écran de choix du programme selon ta zone la plus faible" width="390" height="844" loading="lazy" />
+        <img src="/assets/halloween/app-semaines.jpg" alt="Écran du programme semaine par semaine" width="390" height="844" loading="lazy" />
+      </div>
+      <div class="dots" id="dots"><button class="dot on" type="button" aria-label="Étape 1"></button><button class="dot" type="button" aria-label="Étape 2"></button><button class="dot" type="button" aria-label="Étape 3"></button><button class="dot" type="button" aria-label="Étape 4"></button></div>
+    </div>
+  </div>
+  <div class="wrap cta-row live"><a class="cta" href="/halloween/choisir" data-cta="perso">Choisir mes programmes</a></div>
+</section>
+
+<!-- 4. LES 2 CATÉGORIES -->
 <section aria-labelledby="t-cats">
   <div class="wrap">
-    <div class="sec-head">
-      <h2 id="t-cats">Deux catégories. Dans chacune, le deuxième est offert.</h2>
-    </div>
+    <div class="sec-head"><h2 id="t-cats">Deux catégories.</h2></div>
     <div class="offers">
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/hanche.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Articulation</div>
         <p class="zones">Une zone : épaule, hanche, cheville, colonne…</p>
         <div class="price">90 €<small>le programme</small></div>
-        <ul class="checks">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines générées par l'algorithme</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de ta zone</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3, 4 ou 5 séances par semaine</li>
-        </ul>
-        <p class="plus"><span>+</span> 1 offert dans la même catégorie</p>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines générées par l'algorithme</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de ta zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3, 4 ou 5 séances par semaine</li></ul>
       </article>
-
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/squat.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Warm Up</div>
         <p class="zones">Un mouvement : squat, développé, tractions, soulevé de terre, course, padel…</p>
         <div class="price">49 €<small>le programme</small></div>
-        <ul class="checks">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines d'échauffement avant ta séance</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de la zone</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>La durée que tu veux par séance</li>
-        </ul>
-        <p class="plus"><span>+</span> 1 offert dans la même catégorie</p>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines d'échauffement avant ta séance</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de la zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>La durée que tu veux par séance</li></ul>
       </article>
     </div>
+    <div class="cta-row live"><a class="cta" href="/halloween/choisir" data-cta="categories">Choisir mes programmes</a></div>
   </div>
 </section>
 
-<!-- 3. TROIS ÉTAPES -->
-<section aria-labelledby="t-steps" style="padding-top:0">
+<!-- 5. ACCÈS TOTAL -->
+<section aria-label="Accès total" style="padding:0">
   <div class="wrap">
-    <div class="sec-head"><h2 id="t-steps">Trois étapes, dans l'app.</h2></div>
-    <div class="steps" id="steps">
-      <div class="sticky-phone phone" aria-hidden="true">
-        <img class="on" src="/assets/halloween/app-compte.jpg" alt="" loading="lazy" width="390" height="844" />
-        <img src="/assets/halloween/app-bilan.jpg" alt="" loading="lazy" width="390" height="844" />
-        <img src="/assets/halloween/app-programme.jpg" alt="" loading="lazy" width="390" height="844" />
-      </div>
-      <div class="step" data-i="0">
-        <div><span class="n">Étape 1</span><h3>Crée ton compte gratuit</h3><p>Ton email, un code reçu par email, c'est tout. Tu as tout de suite le minuteur et le diagnostic.</p></div>
-        <div class="phone"><img src="/assets/halloween/app-compte.jpg" alt="Écran de connexion de l'app Mobility Club" loading="lazy" width="390" height="844" /></div>
-      </div>
-      <div class="step" data-i="1">
-        <div><span class="n">Étape 2</span><h3>Fais le bilan de ta zone</h3><p>Quelques tests guidés pour voir où tu en es sur l'articulation ou le mouvement visé. Gratuit.</p></div>
-        <div class="phone"><img src="/assets/halloween/app-bilan.jpg" alt="Écran de résultat du bilan dans l'app" loading="lazy" width="390" height="844" /></div>
-      </div>
-      <div class="step" data-i="2">
-        <div><span class="n">Étape 3</span><h3>Choisis dans l'onglet Programme</h3><p>Tu prends ton premier programme, puis le deuxième offert dans la même catégorie. L'algorithme génère tes 12 semaines, semi-personnalisées.</p></div>
-        <div class="phone"><img src="/assets/halloween/app-programme.jpg" alt="Écran Programme de l'app avec les programmes à choisir" loading="lazy" width="390" height="844" /></div>
-      </div>
+    <div class="clubline">
+      <p><b>Tu veux tout, tout le temps ?</b> L'accès total : 30 € / mois (7 jours d'essai), 275 € / an, 350 € à vie en 4 × 87,50 €.</p>
+      <a class="lnk" style="margin:0" href="/devenir-membre">Voir l'accès total</a>
     </div>
   </div>
 </section>
 
-<!-- 4. LE CLUB -->
-<section aria-label="Le reste du club" style="padding-top:0">
-  <div class="wrap">
-    <div class="club glass">
-      <div>
-        <h2>Tu veux tout, tout le temps ?</h2>
-        <p>L'accès total au club inclut la séance du jour qui s'adapte à toi et tous les programmes, sans les acheter un par un.</p>
-        <a class="lnk" href="/devenir-membre">Voir l'accès total</a>
-      </div>
-      <ul>
-        <li><b>30 € / mois</b><span>7 jours d'essai</span></li>
-        <li><b>275 € / an</b><span></span></li>
-        <li><b>350 € à vie</b><span>4 × 87,50 €</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 5. FAQ -->
-<section aria-labelledby="t-faq" style="padding-top:0">
+<!-- 6. FAQ -->
+<section aria-labelledby="t-faq" style="padding-top:clamp(72px,11vw,150px)">
   <div class="wrap">
     <div class="sec-head"><h2 id="t-faq">Questions</h2></div>
     <div class="faq">
@@ -321,12 +251,20 @@ footer a{color:var(--body);text-decoration:none;}
         <p>Samedi 1<sup>er</sup> novembre 2026 à 23 h 59, heure de Paris. Le compte à rebours de cette page est calé sur cette heure. Après, le 1 acheté, 1 offert n'existe plus.</p>
       </details>
       <details class="glass">
-        <summary>Comment je choisis le deuxième programme ?</summary>
-        <p>Toi-même, dans la même catégorie que le premier : si tu achètes une articulation, tu choisis une autre articulation offerte. Si tu achètes un Warm Up, tu choisis un autre Warm Up.</p>
+        <summary>Comment marche le 1 acheté, 1 offert ?</summary>
+        <p>Tu mets deux programmes dans ta poche, de la même catégorie ou non. Tu paies le plus cher des deux, l'autre est offert : deux Articulation ou une Articulation et un Warm Up, 90 € ; deux Warm Up, 49 €.</p>
+      </details>
+      <details class="glass">
+        <summary>Je paie avant d'avoir un compte ?</summary>
+        <p>Oui. Tu paies sur PayPal depuis la page de sélection, puis tu ouvres l'app et tu te connectes avec l'email de ton paiement PayPal (un code reçu par email, pas de mot de passe). Tes programmes t'y attendent.</p>
+      </details>
+      <details class="glass">
+        <summary>Comment j'accède à mes programmes après le paiement ?</summary>
+        <p>Dans l'app, avec l'email de ton paiement : tu fais ton bilan, puis tes programmes se génèrent sur 12 semaines. Si tu as un souci, écris à damien@mobilityclub.co.</p>
       </details>
       <details class="glass">
         <summary>Faut-il un abonnement ?</summary>
-        <p>Non. Les programmes s'achètent à l'unité dans l'app. Le compte, le minuteur et le diagnostic sont gratuits. L'abonnement ne concerne que l'accès total au club.</p>
+        <p>Non. Les programmes s'achètent à l'unité. L'abonnement ne concerne que l'accès total au club.</p>
       </details>
       <details class="glass">
         <summary>Combien de temps dure un programme ?</summary>
@@ -335,13 +273,11 @@ footer a{color:var(--body);text-decoration:none;}
     </div>
   </div>
 </section>
-
-<!-- 6. CTA FINAL -->
 <section class="final" aria-label="Choisir mes programmes" style="padding-top:0">
   <div class="wrap">
     <h2 class="live">Deux programmes dans la poche.</h2>
     <h2 class="ended">Les programmes t'attendent dans l'app.</h2>
-    <a class="cta" href="https://app.mobilityclub.co" data-cta="final"><span class="live">Je choisis mes 2 programmes</span><span class="ended">Voir les programmes</span></a>
+    <a class="cta live" href="/halloween/choisir" data-cta="final">Choisir mes programmes</a>
   </div>
 </section>
 </main>
@@ -353,7 +289,9 @@ footer a{color:var(--body);text-decoration:none;}
   </div>
 </footer>
 
+<div class="sticky-cta live" id="sticky"><a class="cta" href="/halloween/choisir" data-cta="sticky">Choisir mes programmes</a></div>
+
 <script src="/assets/halloween/compte-a-rebours.js"></script>
-<script src="/assets/halloween/etapes.js"></script>
+<script src="/assets/halloween/carrousel.js"></script>
 </body>
 </html>
