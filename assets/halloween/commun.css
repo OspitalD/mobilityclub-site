@@ -25,10 +25,31 @@ h2{font-size:clamp(34px,5.6vw,60px);text-wrap:balance;}
 h3{font-size:clamp(22px,2.6vw,28px);letter-spacing:-.025em;}
 p{color:var(--body);font-size:clamp(16px,1.5vw,17px);}
 section{padding:clamp(72px,11vw,150px) 0;}
-.glass{background:var(--glass);border:1px solid var(--glass-border);border-radius:28px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);}
+.glass{position:relative;background:rgba(255,255,255,.035);border:0;border-radius:28px;-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);box-shadow:inset 0 1px 1px rgba(255,255,255,.12),0 8px 32px rgba(0,0,0,.25);}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.12) 22%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 58%,rgba(255,255,255,.1) 80%,rgba(255,255,255,.3) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
 
-.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 32px;border-radius:100px;font-weight:700;font-size:17px;text-decoration:none;font-family:inherit;background:var(--green);color:#0D0F0E;box-shadow:0 0 0 1px rgba(62,207,160,.5),0 14px 44px -8px rgba(62,207,160,.5);transition:transform .25s var(--ease);}
-.cta:hover{transform:translateY(-2px);}
+/* Boutons — d'après les sources 10K (web-video-hero, web-glass-offer-cards) : pilule sobre, 50 px, 600,
+   flèche ↗, liseré lumineux intérieur, ombre courte ; jamais un halo massif. */
+.cta{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 20px 0 24px;border:0;border-radius:999px;font-family:inherit;font-weight:600;font-size:16px;letter-spacing:-.01em;line-height:1;text-decoration:none;cursor:pointer;
+  background:var(--green);color:#08110D;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.45),0 10px 26px -12px rgba(62,207,160,.7);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;-webkit-tap-highlight-color:transparent;}
+.cta::after{content:"";flex:none;width:18px;height:18px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M8 7h9v9'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7M8 7h9v9'/%3E%3C/svg%3E") center/contain no-repeat;
+  transition:transform .18s ease;}
+.cta:hover{transform:translateY(-1px);filter:brightness(1.04);}
+.cta:hover::after{transform:translate(2px,-2px);}
+.cta:active{transform:scale(.98);filter:brightness(.97);}
+.cta:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+/* Verre liquide (10K) : fond quasi nul, flou, liseré en dégradé masqué plus clair en haut et en bas. */
+.lg{position:relative;background:rgba(255,255,255,.035);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);box-shadow:inset 0 1px 1px rgba(255,255,255,.12),0 8px 32px rgba(0,0,0,.25);}
+.lg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.14) 22%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 58%,rgba(255,255,255,.14) 80%,rgba(255,255,255,.42) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+@media (prefers-reduced-motion:reduce){.cta,.cta::after{transition:none;}}
 a:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:3px;}
 
 /* poche kraft + éventail */
