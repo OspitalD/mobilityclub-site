@@ -64,7 +64,8 @@ footer a{color:var(--body);text-decoration:none;}
 
 
 /* terminé (partagé) */
-.ended{display:none;}
+body:not(.is-ended) .ended{display:none!important;}
 body.is-ended .live{display:none!important;}
 body.is-ended .ended{display:block;}
 body.is-ended span.ended{display:inline;}
+body.is-ended span.capsule.ended{display:inline-flex;}
