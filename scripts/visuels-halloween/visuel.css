@@ -1,0 +1,29 @@
+/* Visuels d'annonce Halloween — s'appuie sur commun.css (verre .lg/.glass, .cta, grain, citrouille .jack-feu). */
+:root{--violet:#A99CFF;--violet-nuit:#1B1740;--violet-ligne:rgba(124,107,240,.5);}
+html,body{margin:0;padding:0;}
+body{background:#0D0F0E;overflow:hidden;position:relative;line-height:1.2;}
+.st{position:relative;overflow:hidden;isolation:isolate;background:#0D0F0E;}
+.s1080{width:1080px;height:1920px;}
+.glow{position:absolute;inset:0;z-index:-1;pointer-events:none;}
+.pk{display:block;height:auto;}
+.pk .jack-feu{animation:none;opacity:1;}
+em{font-style:italic;color:var(--pumpkin);}
+h1,h2,h3{margin:0;}
+p{margin:0;font-size:inherit;}
+.marque{font-weight:700;letter-spacing:-.01em;color:var(--muted);}
+.photo-bg{position:absolute;inset:0;z-index:-2;}
+.photo-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.photo-bg .bl{inset:-6%;width:112%;height:112%;filter:blur(26px) brightness(.38) saturate(.9);}
+.photo-bg .sh{filter:brightness(.5) saturate(.95);}
+/* paquets en verre liquide */
+.pack{position:relative;overflow:hidden;isolation:isolate;border-radius:36px;}
+.pack>*{position:relative;z-index:1;}
+.pack .bgp{position:absolute;z-index:0;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05) contrast(1.04) brightness(.62);}
+.pack .nm{font-style:italic;font-weight:800;letter-spacing:-.03em;word-spacing:.06em;line-height:1;color:var(--text);text-shadow:0 2px 18px rgba(0,0,0,.6);}
+.pack .zs{color:var(--body);}
+.pack .px{font-style:italic;font-weight:800;letter-spacing:-.06em;line-height:.9;color:var(--text);}
+.pack.v .nm{color:var(--violet);}
+.pack.v{background:linear-gradient(160deg,rgba(124,107,240,.18),rgba(124,107,240,.04));}
+.pack.v::before{background:linear-gradient(180deg,rgba(169,156,255,.6) 0%,rgba(169,156,255,.16) 22%,rgba(169,156,255,0) 42%,rgba(169,156,255,0) 58%,rgba(169,156,255,.16) 80%,rgba(169,156,255,.5) 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.pack.o{background:linear-gradient(160deg,rgba(232,116,42,.14),rgba(232,116,42,.03));}
+.pack.o .nm{color:var(--text);}
