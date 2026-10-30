@@ -615,6 +615,7 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .tour-note{ max-width:520px; margin:22px auto 0; text-align:left; }
 .demo .demo-hint{ text-align:center; max-width:560px; margin-inline:auto; }
 
+@media (max-width:767px){ .cs-nav{ display:none; } }   /* mobile : points, glisser et « Continuer » suffisent — rien ne recouvre l'écran */
 @media (prefers-reduced-motion:reduce){ .cs-card{ transition:none !important; } .cs-card.is-center .cs-head{ animation:none !important; } }
 @media (max-width:640px){
   /* mobile : carte + bouton « Valider » visibles ensemble (on regarde la rotation ET on tape) */
@@ -624,7 +625,6 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   /* diagnostic compacté pour tenir sans scroll interne (slider + score visibles) */
   .cs-head{ margin-bottom:12px; min-height:42px; }
   .cs-benefit{ font-size:14.5px; }
-  .cs-nav{ width:36px; height:36px; }
   .demo-controls{ gap:12px; margin-top:14px; }
   .tour-note{ margin-top:16px; }
 }
@@ -678,6 +678,45 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .dg2-range::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--side); box-shadow:0 0 18px color-mix(in srgb, var(--side) 55%, transparent); }
 .dg2-range:focus-visible{ outline:2px solid rgba(62,207,160,0.6); outline-offset:2px; border-radius:22px; }
 
+/* ---- Démo · étape 2 : écran « Qu'est-ce qui te gêne ? » (copie de l'écran de l'app, corps en image de repli) ---- */
+.phone.tour-stage.vs-screen{ background:radial-gradient(90% 40% at 0% 25%, rgba(62,207,160,0.26), transparent 65%), radial-gradient(70% 36% at 100% 55%, rgba(185,144,224,0.20), transparent 65%), #0D0F0E; }
+.vs-screen .ob-top{ margin-bottom:10px; }
+.vs-screen .ob-prog{ margin-top:2px; }
+.vs-body{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+.vs-card{ isolation:isolate; padding:14px 16px 14px; border-radius:24px; display:flex; flex-direction:column; gap:8px;
+  background:linear-gradient(160deg,rgba(62,207,160,0.16),rgba(62,207,160,0.04) 45%,rgba(255,255,255,0.05)); border:1px solid rgba(255,255,255,0.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.24), 0 16px 40px rgba(0,0,0,0.4); }
+.vs-who{ display:flex; align-items:center; gap:7px; font-size:12px; font-weight:800; color:#B990E0; }
+.vs-who i{ width:7px; height:7px; border-radius:50%; background:#B990E0; }
+.vs-h{ margin:0; font-size:28px; font-weight:800; font-style:italic; letter-spacing:-0.045em; line-height:1; color:#F5F5F3; text-wrap:balance; }
+.vs-row{ display:flex; align-items:center; gap:8px; margin-top:10px; flex:none; }
+.vs-cap{ flex:none; width:76px; height:46px; border-radius:23px; border:1px solid rgba(185,144,224,0.35); background:#1F1A27; box-shadow:0 0 26px rgba(185,144,224,0.30); display:flex; align-items:center; justify-content:center; }
+.vs-eq{ display:flex; align-items:center; gap:4px; height:24px; }
+.vs-eq i{ display:block; width:6px; border-radius:99px; background:linear-gradient(180deg,#F0E4FC,#B990E0); transform-origin:center; animation:vsEq 2.6s ease-in-out infinite; }
+@keyframes vsEq{ 0%,100%{ transform:scaleY(.55); } 50%{ transform:scaleY(1); } }
+.vs-field{ flex:1; min-width:0; height:46px; display:flex; align-items:center; padding:0 16px; border-radius:23px; font-size:13.5px; font-weight:600; color:#8E918E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  background:linear-gradient(160deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03)); border:1px solid rgba(255,255,255,0.14); box-shadow:inset 0 1px 0 rgba(255,255,255,0.22); }
+.vs-bilan{ flex:1 1 auto; min-height:0; margin-top:10px; padding:12px 0 8px; gap:0; overflow:hidden; background:linear-gradient(160deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.05)); }
+.vs-bhd{ padding:0 16px; font-size:12px; font-weight:800; color:#8E918E; }
+.vs-scene{ position:relative; flex:1 1 auto; min-height:150px; }
+.vs-fig{ position:absolute; top:0; bottom:0; left:50%; aspect-ratio:340/410; transform:translateX(-50%); pointer-events:none; }
+.vs-fig img{ display:block; width:100%; height:100%; user-select:none; -webkit-user-select:none; }
+.vs-cables{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.vs-lab{ position:absolute; height:30px; display:flex; flex-direction:column; justify-content:center; z-index:2; }
+.vs-lab.l{ left:8px; align-items:flex-start; } .vs-lab.r{ right:8px; align-items:flex-end; }
+.vs-z{ appearance:none; border:0; background:none; font:inherit; padding:2px 4px; font-size:11.5px; font-weight:800; line-height:1.1; white-space:nowrap; color:#D9DBD8; cursor:pointer; border-radius:6px; }
+.vs-dash{ font-size:13px; font-weight:800; line-height:.8; color:#5E615E; padding:0 4px; }
+.vs-lab.on .vs-z{ color:#E8A020; }
+.vs-z:focus-visible{ outline:2px solid #3ECFA0; outline-offset:2px; }
+.vs-foot{ flex:none; min-height:40px; padding:6px 18px 0; display:flex; flex-direction:column; gap:1px; }
+.vs-foot b{ font-size:17px; font-weight:800; font-style:italic; letter-spacing:-0.03em; color:#F5F5F3; line-height:1.1; }
+.vs-foot span{ font-size:11.5px; font-weight:700; color:#8E918E; }
+@media (max-width:640px){
+  .vs-h{ font-size:24px; }
+  .vs-card{ padding:12px 14px; }
+}
+@media (prefers-reduced-motion:reduce){ .vs-eq i{ animation:none; } }
+
 /* ---- Démo · assistant d'onboarding (mécanique 10K « web-onboarding-wizard », DA du club) ---- */
 .phone.tour-stage.ob{ display:flex; flex-direction:column; overflow:hidden; padding:16px 16px 18px; isolation:isolate;
   background:radial-gradient(120% 60% at 0% 18%, rgba(62,207,160,0.12), transparent 60%), #0D0F0E; }
@@ -697,7 +736,6 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 @keyframes ob-in{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
 .ob-title{ margin:26px 0 18px; font-size:27px; font-weight:800; font-style:italic; letter-spacing:-0.035em; line-height:1.05; color:var(--text-primary); text-wrap:balance; }
 .ob-list{ display:flex; flex-direction:column; gap:9px; }
-.ob-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .ob-chip{ position:relative; display:flex; align-items:center; width:100%; min-height:56px; padding:14px 16px; border:1px solid rgba(255,255,255,0.25); border-radius:14px;
   background:rgba(255,255,255,0.10); color:var(--text-primary); font:inherit; text-align:left; cursor:pointer;
   transition:background .15s ease, border-color .15s ease, transform .15s ease; }
@@ -705,8 +743,6 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .ob-chip.is-selected{ border-color:#3ECFA0; background:rgba(255,255,255,0.22); transform:scale(1.01); }
 .ob-chip:focus-visible{ outline:2px solid rgba(62,207,160,0.6); outline-offset:2px; }
 .ob-lab{ font-size:15px; font-weight:700; letter-spacing:-0.01em; line-height:1.25; }
-.ob-grid .ob-chip{ min-height:50px; padding:11px 12px; border-radius:13px; }
-.ob-grid .ob-lab{ font-size:13.5px; }
 .ob-kbd{ display:none; }
 @media (min-width:768px){
   .ob-chip:has(.ob-kbd){ padding-right:46px; }
@@ -715,15 +751,24 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .ob-calc{ margin:16px 2px 0; font-size:13.5px; line-height:1.45; color:#BFC1BE; }
 .ob-calc b{ color:var(--text-primary); font-weight:700; }
 /* programme conseillé */
-.ob-pbody{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:20px; }
-.ob-pphoto{ position:relative; flex:1 1 auto; min-height:200px; border-radius:22px; overflow:hidden; background:#111412; }
-.ob-pphoto img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-.ob-pphoto::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(13,15,14,0.88)); }
-.ob-ptitle{ margin:0; font-size:30px; font-weight:800; font-style:italic; letter-spacing:-0.035em; line-height:1; color:#F5F5F3; }
-.ob-pphoto .ob-ptitle{ position:absolute; left:18px; right:18px; bottom:16px; z-index:1; }
-.ob-pbody.is-type{ justify-content:center; padding-top:0; padding-bottom:40px; }
-.ob-ptype{ font-size:46px; line-height:.98; text-wrap:balance; }
-.ob-ptype + .ob-pmeta{ margin-top:22px; }
+.ob-pbody{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:18px; }
+/* carte Boutique : pastille « 12 sem. » en haut à droite, libellé, nom de zone géant en bas */
+.ob-pcard{ position:relative; flex:1 1 auto; min-height:220px; border-radius:26px; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; justify-content:flex-end; padding:18px 18px 18px;
+  border:1px solid rgba(255,255,255,0.10); background:#111412; }
+.ob-pcard>img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
+.ob-pcard.has-photo::after{ content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(13,15,14,0) 38%, rgba(13,15,14,0.92) 100%); }
+/* sans photo : papier imprimé (lueur, rayures, grain) + nom de zone en filigrane géant */
+.ob-pcard.no-photo{ background:
+  radial-gradient(70% 55% at 50% 58%, rgba(62,207,160,0.30), transparent 72%),
+  repeating-linear-gradient(135deg, rgba(255,255,255,0.045) 0 6px, transparent 6px 14px),
+  linear-gradient(160deg,#14201B,#0B0F0D); }
+.ob-pcard.no-photo::before{ content:""; position:absolute; inset:0; z-index:-1; opacity:.32; mix-blend-mode:overlay;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.ob-wm{ position:absolute; z-index:-1; left:-6px; right:-6px; top:12px; font-size:68px; font-weight:800; font-style:italic; letter-spacing:-0.05em; line-height:.9; color:rgba(255,255,255,0.07); overflow:hidden; pointer-events:none; user-select:none; }
+.ob-ppill{ position:absolute; top:14px; right:14px; padding:6px 12px; border-radius:100px; font-size:12px; font-weight:700; color:#F5F5F3; background:rgba(13,15,14,0.55); border:1px solid rgba(255,255,255,0.16); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.ob-plab{ margin:0 0 4px; font-size:12.5px; font-weight:600; color:#3ECFA0; }
+.ob-ptitle{ margin:0; font-size:44px; font-weight:800; font-style:italic; letter-spacing:-0.04em; line-height:.98; color:#F5F5F3; text-wrap:balance; }
+.ob-pcard .ob-psub{ margin:10px 0 0; font-size:13.5px; font-weight:600; color:#D9DBD8; }
 .ob-pmeta{ margin:16px 2px 0; font-size:17px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
 .ob-pwhy{ margin:6px 2px 0; font-size:13.5px; line-height:1.45; color:#9A9C99; }
 /* bilan : le contenu du diagnostic vit dans .ob-motion */
@@ -731,8 +776,8 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 @media (max-width:640px){
   .ob-title{ margin:20px 0 14px; font-size:24px; }
   .ob-chip{ min-height:52px; padding:12px 14px; }
-  .ob-grid .ob-chip{ min-height:46px; }
-  .ob-ptype{ font-size:38px; }
+    .ob-ptitle{ font-size:38px; }
+  .ob-wm{ font-size:58px; }
 }
 @media (prefers-reduced-motion:reduce){
   .ob-motion{ animation:none; }
@@ -1626,7 +1671,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo · le produit en vrai</span></span>
     </div>
     <h2 class="demo-title reveal-lines" data-split-lines data-i18n="demo_title">Ton programme en sept écrans.<br>Joue-le.</h2>
-    <p class="demo-sub reveal" data-i18n="demo_sub">Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Les quatre premiers sont jouables.</p>
+    <p class="demo-sub reveal" data-i18n="demo_sub">Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Objectif, zone, bilan et fréquence sont jouables.</p>
 
     <div class="demo reveal">
       <div class="carousel" id="carousel">
@@ -2429,7 +2474,7 @@ const I18N = {
     vc_cap: 'Tu filmes · le coach corrige · tu progresses',
     demo_eyebrow: 'La démo · le produit en vrai',
     demo_title: "Ton programme en sept écrans.<br>Joue-le.",
-    demo_sub: "Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Les quatre premiers sont jouables.",
+    demo_sub: "Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Objectif, zone, bilan et fréquence sont jouables.",
     demo_hint: "Vrais écrans de l'app, ici en démo. Sur mobile : touche.",
 
     s3_eyebrow: 'Le fondateur',
@@ -2588,7 +2633,7 @@ const I18N = {
     vc_cap: 'You film · the coach corrects · you progress',
     demo_eyebrow: 'The demo · the real product',
     demo_title: "Your program in seven screens.<br>Play it.",
-    demo_sub: "Goal → area → report → program → frequency → today's session → 12 weeks. The first four are playable.",
+    demo_sub: "Goal → area → report → program → frequency → today's session → 12 weeks. Goal, area, report and frequency are playable.",
     demo_hint: "Real app screens, here as a demo. On mobile: tap.",
 
     s3_eyebrow: 'The founder',
@@ -3104,20 +3149,14 @@ if (prefersReduced) {
     {fr:'Protéger mes articulations dans le temps', en:'Protect my joints over time'},
     {fr:'Performer dans mon sport', en:'Perform in my sport'}
   ];
-  const ZONES = [
-    {id:'gef', fr:'Grand écart facial', en:'Front splits'},
-    {id:'gel', fr:'Grand écart latéral', en:'Side splits', img:'hanche'},
-    {id:'col', fr:'Colonne', en:'Spine', img:'colonne'},
-    {id:'lom', fr:'Lombaire', en:'Lower back'},
-    {id:'epa', fr:'Épaule', en:'Shoulder', img:'epaule', pos:'50% 78%'},
-    {id:'cou', fr:'Coude', en:'Elbow'},
-    {id:'gen', fr:'Genou', en:'Knee'},
-    {id:'poi', fr:'Poignet', en:'Wrist'},
-    {id:'cp',  fr:'Chaîne postérieure', en:'Posterior chain'},
-    {id:'che', fr:'Cheville', en:'Ankle', img:'cheville'},
-    {id:'cer', fr:'Cervicale', en:'Neck'}
+  const ZONES = [   // 5 zones de l'écran « Qu'est-ce qui te gêne ? » : y = hauteur de l'étiquette, side = côté, pts = points sur le corps (cadre 340×410), dernier chiffre : 1 = face visible
+    {id:'epaule', fr:'Épaule', en:'Shoulder', lf:'Épaules', le:'Shoulders', y:.20, side:'l', pts:[[.6056,.2434,1],[.4073,.2501,1]], img:'epaule', pos:'50% 78%'},
+    {id:'hanche', fr:'Hanche', en:'Hip', lf:'Hanches', le:'Hips', y:.50, side:'l', pts:[[.5524,.4854,1],[.4561,.4851,1]], img:'hanche'},
+    {id:'colonne', fr:'Colonne', en:'Spine', lf:'Colonne', le:'Spine', y:.31, side:'r', pts:[[.5272,.2854,0],[.5158,.3995,1]], img:'colonne'},
+    {id:'chaine', fr:'Chaîne postérieure', en:'Posterior chain', lf:'Chaîne postérieure', le:'Posterior chain', y:.64, side:'r', pts:[[.572,.5509,1],[.4665,.5498,0]]},
+    {id:'cheville', fr:'Cheville', en:'Ankle', lf:'Chevilles', le:'Ankles', y:.88, side:'l', pts:[[.6042,.8897,1],[.4245,.8785,0]], img:'cheville'}
   ];
-  const ZDEFAULT = 4;                 // Épaule si l'utilisateur saute l'étape
+  const ZDEFAULT = 0;                 // Épaules si l'utilisateur saute l'étape
   const FREQS = [3,4,5];
   let obj = -1, zone = -1, freq = 4;  // freq : 4 présélectionné → la ligne calculée est lisible dès l'entrée
   const zoneIdx = () => (zone >= 0 ? zone : ZDEFAULT);
@@ -3168,14 +3207,48 @@ if (prefersReduced) {
       OBJ.map((o,k)=>'<button type="button" role="radio" class="ob-chip" aria-checked="false"><span class="ob-lab">'+o[L()]+'</span><kbd class="ob-kbd" aria-hidden="true">'+(k+1)+'</kbd></button>').join('')+'</div></div>';
     bindBack(stageObj); bindChips(stageObj,k=>pick(0,k)); paintChips(stageObj,obj);
   }
-  /* ---------- 2 · zone ---------- */
+  /* ---------- 2 · zone : VRAI écran « Qu'est-ce qui te gêne ? » (corps + étiquettes reliées) ---------- */
+  const zoneLab = z => z[L()==='en'?'le':'lf'];
+  function scopeDraw(){
+    const sc=stageZone.querySelector('.vs-scene'), svg=stageZone.querySelector('.vs-cables'); if(!sc||!svg) return;
+    const W=sc.offsetWidth, H=sc.offsetHeight; if(!W||!H) return;
+    const fw=H*340/410, fl=(W-fw)/2; let o='';
+    ZONES.forEach((zn,k)=>{
+      const on=(k===zone), col=on?'#E8A020':'#F5F5F3', lab=sc.querySelector('[data-k="'+k+'"]'); if(!lab) return;
+      const ly=zn.y*H, lx=zn.side==='l'?lab.offsetLeft+lab.offsetWidth+4:lab.offsetLeft-4;
+      const pts=zn.pts.map(q=>({x:fl+q[0]*fw,y:q[1]*H,f:q[2]}));
+      pts.forEach(q=>{ const op=q.f?1:.38;
+        o+= on ? '<circle cx="'+q.x+'" cy="'+q.y+'" r="26" fill="url(#vsg)"/><circle cx="'+q.x+'" cy="'+q.y+'" r="6" fill="'+col+'" fill-opacity="'+op+'"/>'
+               : '<circle cx="'+q.x+'" cy="'+q.y+'" r="4.2" fill="#0D0F0E" fill-opacity=".55" stroke="#F5F5F3" stroke-opacity="'+(.7*op)+'" stroke-width="1.4"/>'; });
+      const t=pts.reduce((a,b)=>zn.side==='l'?(b.x<a.x?b:a):(b.x>a.x?b:a)), d=zn.side==='l'?1:-1, op=on?.85:.32;
+      o+='<path d="M'+lx+' '+ly+' C '+(lx+d*34)+' '+ly+', '+(t.x-d*20)+' '+t.y+', '+t.x+' '+t.y+'" fill="none" stroke="'+col+'" stroke-opacity="'+(op*(t.f?1:.6))+'" stroke-width="1.2" stroke-linecap="round"'+(t.f?'':' stroke-dasharray="2 4"')+'/><circle cx="'+lx+'" cy="'+ly+'" r="2" fill="'+col+'" fill-opacity="'+op+'"/>';
+    });
+    svg.innerHTML='<defs><radialGradient id="vsg"><stop offset="0" stop-color="#E8A020" stop-opacity=".38"/><stop offset="1" stop-color="#E8A020" stop-opacity="0"/></radialGradient></defs>'+o;
+  }
+  function scopePaint(){
+    stageZone.querySelectorAll('.vs-z').forEach((b,k)=>{ b.setAttribute('aria-checked',k===zone?'true':'false'); b.parentElement.classList.toggle('on',k===zone); });
+    const f=stageZone.querySelector('.vs-foot');
+    if(f) f.innerHTML = zone>=0 ? '<b>'+zoneLab(ZONES[zone])+'</b><span>'+tr('Pas encore mesurée','Not measured yet')+'</span>' : '<span class="vs-hint">'+tr('Touche une zone du corps','Tap an area of the body')+'</span>';
+    scopeDraw();
+  }
+  let scopeRO=null;
   function renderZone(){
-    setup(stageZone);
-    stageZone.innerHTML = hdr(1,tr('Onboarding','Onboarding'))+
-      '<div class="ob-motion"><h3 class="ob-title">'+tr('Quelle zone te gêne le plus ?','Which area bothers you most?')+'</h3>'+
-      '<div class="ob-grid" role="radiogroup" aria-label="'+tr('Zone','Area')+'">'+
-      ZONES.map(o=>'<button type="button" role="radio" class="ob-chip" aria-checked="false"><span class="ob-lab">'+o[L()]+'</span></button>').join('')+'</div></div>';
-    bindBack(stageZone); bindChips(stageZone,k=>pick(1,k)); paintChips(stageZone,zone);
+    setup(stageZone,'vs-screen');
+    const bars=[44,80,100,66,36].map((h,i)=>'<i style="height:'+h+'%;animation-delay:'+(i*.15)+'s"></i>').join('');
+    const labs=ZONES.map((zn,k)=>'<div class="vs-lab '+zn.side+'" data-k="'+k+'" style="top:calc('+(zn.y*100)+'% - 15px)"><button type="button" role="radio" class="vs-z" aria-checked="false">'+zoneLab(zn)+'</button><span class="vs-dash" aria-hidden="true">—</span></div>').join('');
+    stageZone.innerHTML='<header class="ob-top"><div class="ob-prog" role="progressbar" aria-valuemin="1" aria-valuemax="'+N+'" aria-valuenow="2">'+segHtml(1)+'</div></header>'+
+      '<div class="ob-motion vs-body">'+
+      '<div class="vs-card"><div class="vs-who"><i></i>Coach</div><h3 class="vs-h">'+tr('Qu\'est-ce qui te gêne ?','What bothers you?')+'</h3></div>'+
+      '<div class="vs-row"><div class="vs-cap" aria-hidden="true"><span class="vs-eq">'+bars+'</span></div><div class="vs-field">'+tr('Ou dis-le avec tes mots','Or say it in your own words')+'</div></div>'+
+      '<section class="vs-card vs-bilan" aria-label="'+tr('Ton dernier bilan','Your last report')+'"><div class="vs-bhd"><span>'+tr('Ton dernier bilan','Your last report')+'</span></div>'+
+      '<div class="vs-scene" role="radiogroup" aria-label="'+tr('Zone qui te gêne','Area that bothers you')+'"><div class="vs-fig"><img src="assets/app/v2/corps-repli.webp" alt="" aria-hidden="true" draggable="false"></div><svg class="vs-cables" aria-hidden="true"></svg>'+labs+'</div>'+
+      '<div class="vs-foot" aria-live="polite"></div></section></div>';
+    stageZone.querySelectorAll('.vs-z').forEach((b,k)=>b.addEventListener('click',()=>pick(1,k)));
+    const sc=stageZone.querySelector('.vs-scene');
+    sc.addEventListener('pointerup',e=>{ if(e.target.closest('.vs-lab')) return; const W=sc.offsetWidth,H=sc.offsetHeight, r=sc.getBoundingClientRect(), fw=H*340/410, fl=(W-fw)/2, px=(e.clientX-r.left)*(W/(r.width||W)), py=(e.clientY-r.top)*(H/(r.height||H)); let best=-1,bd=34;
+      ZONES.forEach((zn,k)=>zn.pts.forEach(q=>{ const d=Math.hypot(fl+q[0]*fw-px,q[1]*H-py); if(d<bd){bd=d;best=k;} })); if(best>=0) pick(1,best); });
+    if(scopeRO) scopeRO.disconnect(); if(typeof ResizeObserver==='function'){ scopeRO=new ResizeObserver(scopeDraw); scopeRO.observe(sc); }
+    scopePaint(); requestAnimationFrame(scopeDraw); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(scopeDraw);
   }
 
   /* ---------- 3 · diagnostic RÉEL (épaule · flexion, photos des 5 paliers) ---------- */
@@ -3218,11 +3291,14 @@ if (prefersReduced) {
   function renderProg(){
     const zn = ZONES[zoneIdx()];
     setup(stageProg,'ob-progscreen');
-    const media = zn.img
-      ? '<div class="ob-pphoto"><img src="assets/halloween/'+zn.img+'.jpg" alt="" decoding="async"'+(zn.pos?' style="object-position:'+zn.pos+'"':'')+'><h3 class="ob-ptitle">'+zn[L()]+'</h3></div>'
-      : '<h3 class="ob-ptitle ob-ptype">'+zn[L()]+'</h3>';
+    const card = '<div class="ob-pcard '+(zn.img?'has-photo':'no-photo')+'">'+
+      (zn.img?'<img src="assets/halloween/'+zn.img+'.jpg" alt="" decoding="async"'+(zn.pos?' style="object-position:'+zn.pos+'"':'')+'>':'<span class="ob-wm" aria-hidden="true">'+zn[L()]+'</span>')+
+      '<span class="ob-ppill">'+tr('12 sem.','12 wks')+'</span>'+
+      '<p class="ob-plab">'+tr('Ta zone la plus faible','Your weakest area')+'</p>'+
+      '<h3 class="ob-ptitle">'+zn[L()]+'</h3>'+
+      '<p class="ob-psub">'+tr('3 à 5 séances / sem','3 to 5 sessions / wk')+'</p></div>';
     stageProg.innerHTML = hdr(3,tr('Programme','Program'))+
-      '<div class="ob-motion ob-pbody'+(zn.img?'':' is-type')+'">'+media+
+      '<div class="ob-motion ob-pbody">'+card+
       '<p class="ob-pmeta">'+tr('12 semaines · 90 €','12 weeks · €90')+'</p>'+
       '<p class="ob-pwhy">'+tr('Ta zone la plus gênée passe en premier.','Your most limiting area comes first.')+'</p></div>';
     bindBack(stageProg);
@@ -3244,7 +3320,7 @@ if (prefersReduced) {
   function pick(step,k){
     if(busy) return;
     if(step===0){ obj=k; paintChips(stageObj,k); }
-    else if(step===1){ zone=k; paintChips(stageZone,k); renderProg(); }
+    else if(step===1){ zone=k; scopePaint(); renderProg(); refreshBtn(); tourNote(); return; }   // pas d'avance auto : « Continuer » avance
     else if(step===4){ freq=FREQS[k]; paintChips(stageFreq,k); const c=stageFreq.querySelector('#obcalc'); if(c) c.innerHTML=calcLine(); }
     tourNote();
     busy=true;
@@ -3294,7 +3370,7 @@ if (prefersReduced) {
   function tourNote(){
     const step=current; let v;
     if(step===0) v=tr('Une réponse suffit : l\'écran suivant s\'ouvre tout seul.','One answer is enough: the next screen opens on its own.');
-    else if(step===1) v=tr('Une seule zone, la plus gênante. Ici : <b>'+zoneName()+'</b>'+(zone<0?' (par défaut)':'')+'.','A single area, the most limiting. Here: <b>'+zoneName()+'</b>'+(zone<0?' (default)':'')+'.');
+    else if(step===1) v=tr('Touche une étiquette ou un point du corps. Ici : <b>'+zoneLab(ZONES[zoneIdx()])+'</b>'+(zone<0?' (par défaut)':'')+'.','Tap a label or a point on the body. Here: <b>'+zoneLab(ZONES[zoneIdx()])+'</b>'+(zone<0?' (default)':'')+'.');
     else if(step===2) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
     else if(step===3) v=tr('Programme conseillé : <b>'+zoneName()+'</b>, 12 semaines. Il suit la zone que tu as choisie.','Recommended program: <b>'+zoneName()+'</b>, 12 weeks. It follows the area you picked.');
     else if(step===4) v=calcLine();
@@ -3302,7 +3378,7 @@ if (prefersReduced) {
     else v=tr('Douze semaines plus tard, tu retestes : <b>+16 pts</b>, mesurés.','Twelve weeks later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
-  function refreshBtn(){ nextBtn.textContent = current===N-1 ? tr('Recommencer','Start over') : tr('Continuer','Continue'); }
+  function refreshBtn(){ nextBtn.textContent = current===N-1 ? tr('Recommencer','Start over') : current===1 ? (zone<0 ? tr('Choisis une zone','Pick an area') : tr('Continuer · ','Continue · ')+zoneLab(ZONES[zone])) : tr('Continuer','Continue'); }
   function refresh(){ layout(); tourNote(); refreshBtn(); renderDots(); }
 
   /* entrée de contenu (opacity + translateY, .24 s) et remplissage animé des segments */
@@ -3329,7 +3405,7 @@ if (prefersReduced) {
   }
   function restart(){ obj=-1; zone=-1; freq=4; lvl={D:3,G:3}; side='D'; renderAll(); goTo(0); tourNote(); }
 
-  [ 'v2/today-session.jpg','v2/progress.jpg' ].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
+  [ 'v2/today-session.jpg','v2/progress.jpg','v2/corps-repli.webp' ].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
   nextBtn.addEventListener('click',()=>{ if(current===N-1) restart(); else goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
@@ -3344,6 +3420,10 @@ if (prefersReduced) {
     const max = current===0?OBJ.length : current===1?ZONES.length : current===4?FREQS.length : 0;
     if(n<=max){ e.preventDefault(); pick(current,n-1); }
   });
+  /* glisser (mobile) : balayage horizontal = étape suivante / précédente ; ignoré sur le curseur et les boutons */
+  if(carEl){ let sx=0, sy=0, ok=false;
+    carEl.addEventListener('touchstart',e=>{ const t=e.target; ok=!(t.closest&&t.closest('input,button')); sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+    carEl.addEventListener('touchend',e=>{ if(!ok) return; const c=e.changedTouches[0], dx=c.clientX-sx, dy=c.clientY-sy; if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) goTo(current+(dx<0?1:-1)); },{passive:true}); }
   document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); renderTitles(); refresh(); }));
 
   renderAll(); renderTitles(); refresh();
