@@ -221,7 +221,7 @@
 
   renderObj(); renderZone(); renderDiag(); renderProg(); renderFreq(); placeZoom();
   renderShot(5, '/assets/app/v2/today-session.jpg', 'Écran Aujourd\'hui : la séance du jour est prête');
-  renderShot(6, '/assets/halloween/app-bilan.jpg', 'Écran Bilan : radar et score à refaire après 12 semaines');
+  renderShot(6, '/assets/app/v2/bilan.jpg', 'Écran Bilan articulaire : score 72, +9 depuis le diagnostic précédent');
   live();
 
   /* ---------- échelle du canvas (écrans conçus en 320 × 692) ---------- */
