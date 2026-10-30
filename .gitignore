@@ -23,3 +23,6 @@ assets/app/v2/*.png
 
 # Dossiers de reprise opérationnels : docs/ est servi publiquement sur www.mobilityclub.co
 docs/REPRISE-ACCES-PAYPAL-HERMES.md
+
+# Captures de vérification de la démo
+.captures-demo/

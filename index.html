@@ -571,19 +571,8 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .ds-delta span{ font-size:13px; color:var(--text-secondary); }
 
 /* Side : steps + button */
-.demo-steps{ list-style:none; counter-reset:st; display:flex; flex-direction:column; gap:2px; margin-bottom:24px; }
-.demo-step{ counter-increment:st; display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid var(--hair); transition:color .3s var(--ease); color:var(--text-tertiary); }
-.demo-step::before{ content:counter(st,decimal-leading-zero); font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); transition:color .3s var(--ease); }
-.demo-step .sl{ font-size:15px; font-weight:600; letter-spacing:-0.01em; }
-.demo-step.done{ color:var(--text-secondary); }
-.demo-step.done::before{ content:"✓"; color:var(--accent-green); }
-.demo-step.active{ color:var(--text-primary); }
-.demo-step.active::before{ color:var(--accent-green); }
-.demo-step.active .sl{ color:var(--text-primary); }
-.demo-next{ width:100%; }
 .demo-hint{ margin-top:16px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.3px; color:var(--text-tertiary); line-height:1.5; }
 
-/* ---- Calendrier drag & drop réel (porté de l'app) ---- */
 .demo-phone{ position:relative; }
 .demo-phone::after{ content:""; position:absolute; z-index:-1; inset:2% 6% 0; background:radial-gradient(60% 44% at 50% 20%, rgba(62,207,160,0.16), transparent 72%); filter:blur(52px); }
 
@@ -633,11 +622,6 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   .cs-card{ width:322px; margin-left:-161px; }
   .cs-card .phone.tour-stage{ height:560px; }
   /* diagnostic compacté pour tenir sans scroll interne (slider + score visibles) */
-  .cs-card .td-video-wrap{ max-width:150px; }
-  .cs-card .td-instr{ font-size:12.5px; margin-bottom:9px; }
-  .cs-card .td-lead{ margin-bottom:8px; }
-  .cs-card .mc-slider{ margin-top:8px; }
-  .cs-card .td-score{ margin-top:9px; padding-top:9px; }
   .cs-head{ margin-bottom:12px; min-height:42px; }
   .cs-benefit{ font-size:14.5px; }
   .cs-nav{ width:36px; height:36px; }
@@ -653,167 +637,21 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   padding:20px 16px; box-shadow:0 54px 110px -58px rgba(0,0,0,0.95);
   font-family:var(--font-sans); color:var(--text-primary);
 }
-.scal-eyebrow{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-secondary); }
-.scal-eyebrow .scal-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent-green); }
-.scal-hero{ font-size:23px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 6px; color:var(--text-primary); }
-.scal-lede{ font-size:12.5px; color:var(--text-secondary); line-height:1.45; margin:0; }
-.scal-lede b{ color:var(--text-primary); }
-.scal-lede .mint{ color:var(--accent-green); }
-.scal-gridwrap{ margin-top:14px; }
-.scal-ghead{ display:grid; grid-template-columns:30px 1fr 1fr 1fr; gap:6px; padding-bottom:7px; }
-.scal-ghead>span{ font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:1.1px; color:var(--text-tertiary); text-align:center; }
-.scal-ghead>span:first-child{ text-align:left; }
-.scal-grow{ display:grid; grid-template-columns:30px 1fr 1fr 1fr; gap:5px; padding:3px 0; }
-.scal-grow+.scal-grow{ border-top:1px solid var(--border-subtle); }
-.scal-gday{ display:flex; align-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--text-secondary); }
-.scal-cell{ min-height:38px; border-radius:10px; border:1px dashed transparent; display:flex; transition:background .12s var(--ease), border-color .12s var(--ease); }
-.scal-cell.drop-ok{ border-color:var(--accent-green-line); background:var(--accent-green-soft); }
-.scal-cell.drop-no{ border-color:rgba(224,90,74,0.5); background:rgba(224,90,74,0.07); }
-.scal-blk{ flex:1; border-radius:9px; padding:6px 8px; min-width:0; display:flex; flex-direction:column; justify-content:center; gap:2px; }
-.scal-blk .scal-bt{ font-size:11.5px; font-weight:700; letter-spacing:-0.01em; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.scal-blk .scal-bm{ font-family:var(--font-sans); font-size:9px; font-weight:500; line-height:1; }
-.scal-blk.sport{ background:var(--scal-s2); border:1px solid var(--border-strong); }
-.scal-blk.sport .scal-bt{ color:var(--text-primary); }
-.scal-blk.sport .scal-bm{ color:var(--text-tertiary); }
-.scal-blk.mob{ background:var(--scal-green-fill); border:1px dashed var(--accent-green-line); }
-.scal-blk.mob .scal-bt{ color:var(--accent-green); }
-.scal-blk.mob .scal-bm{ color:rgba(62,207,160,0.72); }
-.scal-tray{ margin-top:13px; padding:13px; border-radius:16px; background:var(--bg-surface); border:1px solid var(--border-active); }
-.scal-tray-head{ display:flex; align-items:center; gap:8px; margin-bottom:9px; }
-.scal-tray-head .th{ font-size:13px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
-.scal-tray-head .th span{ font-weight:500; color:var(--text-tertiary); }
-.scal-tray-head .thb{ margin-left:auto; font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:0.6px; color:var(--accent-green); background:var(--accent-green-soft); border:1px solid var(--accent-green-line); padding:2px 7px; border-radius:999px; }
-.scal-palette{ display:flex; gap:7px; flex-wrap:wrap; }
-.scal-ptoken{ display:inline-flex; align-items:center; gap:7px; padding:8px 11px; border-radius:11px; background:var(--scal-s2); border:1px solid var(--border-strong); cursor:grab; touch-action:none; user-select:none; }
-.scal-ptoken .pdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.scal-ptoken .pn{ font-size:13px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
-.scal-ptoken .pg{ color:var(--text-tertiary); display:flex; font-size:12px; }
-.scal-ptoken.dragging{ opacity:0.3; }
-.scal-ptoken.pulse{ animation:scal-pulse 1.7s var(--ease) infinite; border-color:var(--accent-green-line); }
-@keyframes scal-pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(62,207,160,0); } 50%{ box-shadow:0 0 0 5px rgba(62,207,160,0.12); } }
-.scal-token{ display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:12px; cursor:grab; background:var(--scal-green-fill); border:1px dashed var(--accent-green-line); touch-action:none; user-select:none; margin-top:10px; }
-.scal-token .tk-ic{ width:30px; height:30px; flex-shrink:0; border-radius:8px; background:var(--accent-green-soft); border:1px solid var(--accent-green-line); color:var(--accent-green); display:flex; align-items:center; justify-content:center; font-size:14px; }
-.scal-token .tk-t{ font-size:13px; font-weight:700; color:var(--accent-green); letter-spacing:-0.01em; }
-.scal-token .tk-s{ font-family:var(--font-mono); font-size:9px; color:rgba(62,207,160,0.7); margin-top:2px; letter-spacing:0.5px; }
-.scal-token .tk-grab{ margin-left:auto; color:var(--accent-green-line); font-size:12px; }
-.scal-token.pulse{ animation:scal-pulse 1.7s var(--ease) infinite; }
-.scal-ghost{ position:fixed; z-index:120; pointer-events:none; left:0; top:0; min-width:150px; display:flex; align-items:center; gap:9px; padding:10px 12px; border-radius:12px; background:rgba(20,28,24,0.96); border:1px dashed var(--accent-green); box-shadow:0 18px 40px -12px rgba(0,0,0,0.7); transform:translate(-50%,-50%) scale(1.02); }
-.scal-ghost .gt{ font-size:13px; font-weight:700; }
-.scal-ghost .gs{ font-family:var(--font-mono); font-size:9px; }
-.scal-toast{ position:fixed; left:50%; bottom:40px; transform:translateX(-50%) translateY(8px); opacity:0; background:rgba(20,28,24,0.96); border:1px solid var(--accent-green-line); color:var(--accent-green); font-size:12px; font-weight:600; padding:9px 14px; border-radius:10px; pointer-events:none; transition:all .22s var(--ease); white-space:nowrap; z-index:121; }
-.scal-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-.demo-guide .dg-eyebrow{ font-family:var(--font-mono); font-size:10px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent-green); margin-bottom:10px; }
-.demo-guide .dg-step{ display:flex; gap:14px; padding:15px 0; border-top:1px solid var(--hair); color:var(--text-tertiary); transition:color .3s var(--ease); }
-.demo-guide .dg-step .n{ font-family:var(--font-mono); font-size:12px; }
-.demo-guide .dg-step.on{ color:var(--text-primary); }
-.demo-guide .dg-step.on .n{ color:var(--accent-green); }
-.demo-guide .dg-step.done .n{ color:var(--accent-green); }
-.demo-guide .dg-step .t{ font-size:15px; font-weight:600; letter-spacing:-0.01em; }
-.demo-guide .dg-live{ margin-top:22px; padding:16px 18px; border:1px solid var(--border-active); border-radius:14px; background:var(--bg-surface); }
-.demo-guide .dg-live .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
-.demo-guide .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
-.demo-guide .dg-live .v b{ color:var(--accent-green); }
 /* diagnostic chip + recherche */
-.scal-diag{ display:flex; align-items:center; gap:9px; margin-top:12px; padding:9px 12px; border:1px solid rgba(232,160,32,0.32); border-radius:12px; background:rgba(232,160,32,0.06); }
-.scal-diag .di{ width:22px; height:22px; border-radius:6px; background:rgba(232,160,32,0.12); border:1px solid rgba(232,160,32,0.32); color:#E8A020; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
-.scal-diag .dt{ font-size:12px; color:var(--text-secondary); }
-.scal-diag .dt b{ color:#E8A020; font-weight:700; }
-.scal-diag .dre{ margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--accent-green); cursor:pointer; border:1px solid var(--border-active); border-radius:100px; padding:4px 9px; user-select:none; }
-.scal-diag .dre:hover{ border-color:var(--accent-green-line); }
-.scal-search{ position:relative; }
-.scal-search input{ width:100%; height:42px; border-radius:11px; background:var(--scal-s2); border:1px solid var(--border-strong); color:var(--text-primary); font-family:var(--font-sans); font-size:13.5px; padding:0 12px 0 34px; outline:none; }
-.scal-search input:focus{ border-color:var(--accent-green-line); }
-.scal-search input::placeholder{ color:var(--text-tertiary); }
-.scal-search .si{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); font-size:14px; }
-.scal-searchres{ margin-top:6px; border:1px solid var(--border-active); border-radius:11px; overflow:hidden; }
-.scal-sres{ display:flex; align-items:center; gap:10px; padding:10px 11px; border-top:1px solid var(--border-subtle); cursor:pointer; }
-.scal-sres:first-child{ border-top:none; }
-.scal-sres:hover{ background:var(--scal-s2); }
-.scal-sres .sdot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.scal-sres .srn{ font-size:13.5px; font-weight:600; color:var(--text-primary); }
-.scal-sres .scat{ margin-left:auto; font-family:var(--font-mono); font-size:9px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-tertiary); }
-.scal-sres.added .srn{ color:var(--text-tertiary); }
-.scal-sres-none{ padding:12px; font-size:12.5px; color:var(--text-tertiary); }
 
 /* ---- Démo · Calendrier en DA V2 (verre, titre italique, pas de mono ni d'icônes en pastilles) ---- */
-.phone.scal.cal2{ --scal-s2:rgba(255,255,255,0.06); --border-strong:rgba(255,255,255,0.14); isolation:isolate;
-  background:radial-gradient(120% 55% at 0% 10%, rgba(62,207,160,0.15), transparent 60%), radial-gradient(90% 50% at 100% 85%, rgba(185,144,224,0.12), transparent 60%), #0D0F0E; }
-.cal2 .scal-eyebrow{ font-family:var(--font-sans); font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; color:#8B8D8A; }
-.cal2 .scal-eyebrow .scal-dot{ display:none; }
-.cal2 .scal-hero{ font-size:25px; font-weight:800; font-style:italic; letter-spacing:-0.03em; margin:2px 0 4px; }
-.cal2 .scal-diag{ border-radius:100px; padding:7px 8px 7px 14px; border-color:rgba(255,255,255,0.14); background:linear-gradient(160deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03)); }
-.cal2 .scal-diag .di{ display:none; }
-.cal2 .scal-diag .dt{ font-size:12.5px; font-weight:600; color:#BFC1BE; }
-.cal2 .scal-diag .dre{ font-family:var(--font-sans); font-size:12px; font-weight:700; border-color:rgba(255,255,255,0.14); }
-.cal2 .scal-ghead>span{ font-family:var(--font-sans); font-size:10.5px; font-weight:600; letter-spacing:0; text-transform:capitalize; color:#6E716E; }
-.cal2 .scal-gday{ font-family:var(--font-sans); font-size:11.5px; font-weight:700; text-transform:capitalize; color:#9A9C99; }
-.cal2 .scal-grow+.scal-grow{ border-top-color:rgba(255,255,255,0.05); }
-.cal2 .scal-blk{ border-radius:12px; }
-.cal2 .scal-blk.sport{ background:linear-gradient(160deg,rgba(255,255,255,0.11),rgba(255,255,255,0.04)); border:1px solid rgba(255,255,255,0.14); box-shadow:inset 0 1px 0 rgba(255,255,255,0.14); }
-.cal2 .scal-blk.mob{ background:rgba(62,207,160,0.12); border:1px solid rgba(62,207,160,0.35); }
-.cal2 .scal-tray{ border-radius:24px; background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02) 50%,rgba(255,255,255,0.04)); border:1px solid rgba(255,255,255,0.12); box-shadow:inset 0 1px 0 rgba(255,255,255,0.2); }
-.cal2 .scal-search input{ border-radius:100px; }
-.cal2 .scal-searchres{ border-radius:16px; border-color:rgba(255,255,255,0.10); }
-.cal2 .scal-sres .scat{ font-family:var(--font-sans); font-size:10.5px; letter-spacing:0; text-transform:none; }
-.cal2 .scal-tray-head .thb{ font-family:var(--font-sans); font-size:11px; letter-spacing:0; border-radius:100px; padding:3px 9px; }
-.cal2 .scal-ptoken{ border-radius:100px; padding:8px 13px; }
-.cal2 .scal-token{ border-radius:100px; border-style:solid; border-color:rgba(62,207,160,0.38); background:rgba(62,207,160,0.10); padding:9px 16px; }
-.cal2 .scal-token .tk-ic{ display:none; }
-.cal2 .scal-token .tk-s{ font-family:var(--font-sans); font-size:11px; letter-spacing:0; text-transform:none; }
 
 /* ---- Tour produit : phone-stage + stepper + slider diagnostic ---- */
 .phone.tour-stage{ height:648px; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
 .phone.tour-stage::-webkit-scrollbar{ width:0; }
 .phone.tour-stage.is-shot{ padding:0; overflow:hidden; }
 .tour-img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top center; }
-.tour-steps{ list-style:none; display:flex; flex-direction:column; margin-bottom:22px; }
-.tour-step{ display:flex; align-items:center; gap:13px; padding:11px 0; border-top:1px solid var(--hair); color:var(--text-tertiary); transition:color .3s var(--ease); }
-.tour-step .n{ width:22px; height:22px; border-radius:50%; border:1px solid var(--border-active); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; flex-shrink:0; }
-.tour-step .t{ font-size:14.5px; font-weight:600; letter-spacing:-0.01em; }
-.tour-step.done{ color:var(--text-secondary); }
-.tour-step.done .n{ color:var(--accent-green); border-color:var(--accent-green-line); }
-.tour-step.active{ color:var(--text-primary); }
-.tour-step.active .n{ color:var(--bg-primary); background:var(--accent-green); border-color:var(--accent-green); }
-.tour-next{ width:100%; }
-.tour-side .dg-live{ margin-top:18px; padding:16px 18px; border:1px solid var(--border-active); border-radius:14px; background:var(--bg-surface); }
-.tour-side .dg-live .k{ font-family:var(--font-mono); font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
-.tour-side .dg-live .v{ font-size:15px; font-weight:600; margin-top:7px; line-height:1.4; color:var(--text-primary); }
-.tour-side .dg-live .v b{ color:var(--accent-green); }
 /* diagnostic slider (or) */
-.td-instr{ font-size:13.5px; color:var(--text-primary); line-height:1.4; margin-bottom:12px; }
-.td-tabs{ display:flex; border-bottom:1px solid var(--border-active); margin-bottom:12px; }
-.td-tab{ flex:1; appearance:none; background:none; border:none; cursor:pointer; font-family:var(--font-sans); font-size:14px; font-weight:600; color:var(--text-secondary); padding:10px 0; position:relative; }
-.td-tab.on{ color:#E8A020; }
-.td-tab.on::after{ content:""; position:absolute; left:14%; right:14%; bottom:-1px; height:2px; background:#E8A020; border-radius:2px; }
-.td-lead{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-tertiary); line-height:1.5; margin-bottom:11px; }
-.td-card{ border:1px solid rgba(232,160,32,0.3); border-radius:16px; padding:20px 18px; text-align:center; background:rgba(232,160,32,0.05); position:relative; }
-.td-badge{ position:absolute; top:12px; right:12px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.6px; color:#E8A020; background:rgba(232,160,32,0.12); border:1px solid rgba(232,160,32,0.3); border-radius:100px; padding:4px 9px; }
-.td-pal{ font-size:15px; font-weight:700; letter-spacing:-0.01em; text-align:center; color:var(--text-primary); margin:0 0 2px; }
-.td-desc{ font-size:13px; color:var(--text-secondary); margin-top:6px; }
-.td-video-wrap{ position:relative; width:100%; max-width:212px; aspect-ratio:3/4; margin:0 auto 10px; border-radius:14px; overflow:hidden; border:1px solid var(--border-strong); background:var(--bg-surface); }
-.td-frame{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; background:var(--bg-surface); transition:opacity .18s ease; }
-.td-scale{ display:flex; justify-content:space-between; margin-top:2px; padding:0 8px; }
-.td-scale span{ font-family:var(--font-mono); font-size:12px; color:var(--text-tertiary); }
-.td-scale span.on{ color:#E8A020; font-weight:700; }
-.td-score{ display:flex; align-items:center; justify-content:space-between; margin-top:13px; padding-top:13px; border-top:1px solid var(--hair); }
-.td-score .k{ font-family:var(--font-mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-tertiary); }
-.td-score .v b{ font-family:var(--font-display); font-size:30px; font-weight:800; color:var(--accent-green); }
-.td-score .v span{ font-size:13px; color:var(--text-tertiary); }
-.mc-slider{ -webkit-appearance:none; appearance:none; width:100%; height:34px; background:transparent; cursor:pointer; margin-top:12px; }
-.mc-slider::-webkit-slider-runnable-track{ height:4px; border-radius:2px; background:linear-gradient(90deg,#E8A020 0 var(--fill,75%), rgba(255,255,255,0.1) var(--fill,75%) 100%); }
-.mc-slider::-webkit-slider-thumb{ -webkit-appearance:none; height:24px; width:24px; border-radius:50%; background:#E8A020; margin-top:-10px; border:4px solid var(--bg-primary); box-shadow:0 0 0 1px rgba(232,160,32,0.4), 0 0 14px rgba(232,160,32,0.5); }
-.mc-slider::-moz-range-track{ height:4px; border-radius:2px; background:rgba(255,255,255,0.1); }
-.mc-slider::-moz-range-progress{ height:4px; border-radius:2px; background:#E8A020; }
-.mc-slider::-moz-range-thumb{ height:24px; width:24px; border-radius:50%; background:#E8A020; border:4px solid var(--bg-primary); }
 
 /* ---- Démo · Diagnostic en DA V2 (copie de l'écran de test de l'app : verre, titre italique, curseur or/violet) ---- */
 .phone.tour-stage.dg2{ --side:#E8A020; display:flex; flex-direction:column; overflow:hidden; padding:16px 16px 18px; isolation:isolate;
   background:radial-gradient(120% 60% at 0% 18%, rgba(62,207,160,0.16), transparent 60%), radial-gradient(90% 50% at 100% 70%, rgba(185,144,224,0.13), transparent 60%), #0D0F0E; }
 .phone.tour-stage.dg2[data-side="gauche"]{ --side:#B990E0; }
-.dg2-top{ display:flex; align-items:center; gap:10px; }
-.dg2-prog{ flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,0.10); overflow:hidden; }
-.dg2-prog i{ display:block; width:4%; height:100%; background:#3ECFA0; }
-.dg2-step{ font-size:11.5px; font-weight:600; color:#9A9C99; font-variant-numeric:tabular-nums; }
 .dg2-eyebrow{ margin-top:14px; font-size:12px; font-weight:600; color:#8B8D8A; }
 .dg2-title{ margin:2px 0 0; font-size:25px; font-weight:800; font-style:italic; letter-spacing:-0.03em; line-height:1.1; color:#F5F5F3; }
 .dg2-photo{ position:relative; flex:1 1 auto; min-height:150px; margin-top:12px; border-radius:26px; overflow:hidden; background:#141715; border:1px solid rgba(255,255,255,0.12); box-shadow:0 20px 50px rgba(0,0,0,0.45); }
@@ -839,16 +677,68 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
 .dg2-range::-moz-range-progress{ height:6px; border-radius:3px; background:var(--side); }
 .dg2-range::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--side); box-shadow:0 0 18px color-mix(in srgb, var(--side) 55%, transparent); }
 .dg2-range:focus-visible{ outline:2px solid rgba(62,207,160,0.6); outline-offset:2px; border-radius:22px; }
-/* Calendrier (étape 2 du tour) compact → tient dans le phone sans scroll interne (mobile + desktop) */
-.scal-hero{ font-size:20px; margin:8px 0 4px; }
-.scal-diag{ margin-top:8px; padding:7px 11px; }
-.scal-gridwrap{ margin-top:8px; }
-.scal-grow{ padding:2px 0; }
-.scal-cell{ min-height:32px; }
-.scal-tray{ margin-top:9px; padding:11px; }
-.scal-tray-head{ margin-top:8px !important; }
-.scal-token{ margin-top:7px; padding:9px 12px; }
-.scal-search input{ height:38px; }
+
+/* ---- Démo · assistant d'onboarding (mécanique 10K « web-onboarding-wizard », DA du club) ---- */
+.phone.tour-stage.ob{ display:flex; flex-direction:column; overflow:hidden; padding:16px 16px 18px; isolation:isolate;
+  background:radial-gradient(120% 60% at 0% 18%, rgba(62,207,160,0.12), transparent 60%), #0D0F0E; }
+.ob-top{ flex-shrink:0; }
+.ob-nav{ display:flex; align-items:center; gap:8px; }
+.ob-back{ width:34px; height:34px; border:0; border-radius:50%; background:rgba(255,255,255,0.08); color:#F5F5F3; font:inherit; font-size:17px; line-height:1; cursor:pointer; transition:background .15s var(--ease); }
+.ob-back:hover{ background:rgba(255,255,255,0.14); }
+.ob-back:disabled{ opacity:.3; cursor:default; }
+.ob-section{ flex:1; margin:0; text-align:center; font-size:12px; font-weight:600; color:#9A9C99; }
+.ob-count{ min-width:34px; text-align:right; font-size:11.5px; font-weight:600; color:#7A7C7A; font-variant-numeric:tabular-nums; }
+.ob-prog{ display:flex; gap:5px; margin-top:12px; }
+.ob-seg{ flex:1; height:3px; border-radius:99px; background:rgba(255,255,255,0.12); overflow:hidden; }
+.ob-seg>span{ display:block; height:100%; width:0; background:#3ECFA0; border-radius:inherit; transition:width .35s cubic-bezier(.22,1,.36,1); }
+.ob-seg.is-done>span{ width:100%; }
+.ob-seg.is-active>span{ width:55%; }
+.ob-motion{ animation:ob-in .24s cubic-bezier(.22,1,.36,1); }
+@keyframes ob-in{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
+.ob-title{ margin:26px 0 18px; font-size:27px; font-weight:800; font-style:italic; letter-spacing:-0.035em; line-height:1.05; color:var(--text-primary); text-wrap:balance; }
+.ob-list{ display:flex; flex-direction:column; gap:9px; }
+.ob-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.ob-chip{ position:relative; display:flex; align-items:center; width:100%; min-height:56px; padding:14px 16px; border:1px solid rgba(255,255,255,0.25); border-radius:14px;
+  background:rgba(255,255,255,0.10); color:var(--text-primary); font:inherit; text-align:left; cursor:pointer;
+  transition:background .15s ease, border-color .15s ease, transform .15s ease; }
+.ob-chip:hover{ background:rgba(255,255,255,0.15); }
+.ob-chip.is-selected{ border-color:#3ECFA0; background:rgba(255,255,255,0.22); transform:scale(1.01); }
+.ob-chip:focus-visible{ outline:2px solid rgba(62,207,160,0.6); outline-offset:2px; }
+.ob-lab{ font-size:15px; font-weight:700; letter-spacing:-0.01em; line-height:1.25; }
+.ob-grid .ob-chip{ min-height:50px; padding:11px 12px; border-radius:13px; }
+.ob-grid .ob-lab{ font-size:13.5px; }
+.ob-kbd{ display:none; }
+@media (min-width:768px){
+  .ob-chip:has(.ob-kbd){ padding-right:46px; }
+  .ob-kbd{ position:absolute; right:14px; top:50%; transform:translateY(-50%); display:block; font:600 12px/1 var(--font-sans); color:rgba(255,255,255,0.55); }
+}
+.ob-calc{ margin:16px 2px 0; font-size:13.5px; line-height:1.45; color:#BFC1BE; }
+.ob-calc b{ color:var(--text-primary); font-weight:700; }
+/* programme conseillé */
+.ob-pbody{ flex:1; display:flex; flex-direction:column; min-height:0; padding-top:20px; }
+.ob-pphoto{ position:relative; flex:1 1 auto; min-height:200px; border-radius:22px; overflow:hidden; background:#111412; }
+.ob-pphoto img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.ob-pphoto::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(13,15,14,0.88)); }
+.ob-ptitle{ margin:0; font-size:30px; font-weight:800; font-style:italic; letter-spacing:-0.035em; line-height:1; color:#F5F5F3; }
+.ob-pphoto .ob-ptitle{ position:absolute; left:18px; right:18px; bottom:16px; z-index:1; }
+.ob-pbody.is-type{ justify-content:center; padding-top:0; padding-bottom:40px; }
+.ob-ptype{ font-size:46px; line-height:.98; text-wrap:balance; }
+.ob-ptype + .ob-pmeta{ margin-top:22px; }
+.ob-pmeta{ margin:16px 2px 0; font-size:17px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
+.ob-pwhy{ margin:6px 2px 0; font-size:13.5px; line-height:1.45; color:#9A9C99; }
+/* bilan : le contenu du diagnostic vit dans .ob-motion */
+.dg2-motion{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+@media (max-width:640px){
+  .ob-title{ margin:20px 0 14px; font-size:24px; }
+  .ob-chip{ min-height:52px; padding:12px 14px; }
+  .ob-grid .ob-chip{ min-height:46px; }
+  .ob-ptype{ font-size:38px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .ob-motion{ animation:none; }
+  .ob-seg>span, .ob-chip, .ob-back{ transition:none; }
+  .ob-chip.is-selected{ transform:none; }
+}
 
 @media (max-width:860px){
   .demo{ grid-template-columns:1fr; }
@@ -1733,10 +1623,10 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 <section class="pad" id="app" aria-label="Démo interactive">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo</span></span>
+      <span class="eyebrow"><span class="idx">▸</span><span data-i18n="demo_eyebrow">La démo · le produit en vrai</span></span>
     </div>
-    <h2 class="demo-title reveal-lines" data-split-lines data-i18n="demo_title">Compose ta semaine.<br>Le club cale la mobilité.</h2>
-    <p class="demo-sub reveal" data-i18n="demo_sub">Prends un sport, glisse-le sur un créneau. Le club ajoute la mobilité autour — automatiquement. C'est l'écran réel de l'app.</p>
+    <h2 class="demo-title reveal-lines" data-split-lines data-i18n="demo_title">Ton programme en sept écrans.<br>Joue-le.</h2>
+    <p class="demo-sub reveal" data-i18n="demo_sub">Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Les quatre premiers sont jouables.</p>
 
     <div class="demo reveal">
       <div class="carousel" id="carousel">
@@ -1749,7 +1639,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
         <button class="btn btn-primary cs-validate" id="tourNext" type="button">…</button>
       </div>
       <div class="dg-live tour-note" id="tourNote"></div>
-      <p class="demo-hint" data-i18n="demo_hint">Vrais écrans + interactions du produit. Diagnostic et emploi du temps sont jouables. Sur mobile : touche et glisse.</p>
+      <p class="demo-hint" data-i18n="demo_hint">Vrais écrans de l'app, ici en démo. Sur mobile : touche.</p>
     </div>
   </div>
 </section>
@@ -2538,9 +2428,9 @@ const I18N = {
     vc_p3: 'Tu reçois une correction humaine, précise, personnalisée.',
     vc_cap: 'Tu filmes · le coach corrige · tu progresses',
     demo_eyebrow: 'La démo · le produit en vrai',
-    demo_title: "La boucle complète.<br>Joue-la.",
-    demo_sub: "Diagnostic → emploi du temps → programme → vidéo au coach → correction → retest à J+30. Le diagnostic et le planning sont jouables ; le reste, ce sont tes vrais écrans.",
-    demo_hint: "Interface réelle de l'onboarding Mobility Club — ici en démo. Sur mobile : touche et glisse.",
+    demo_title: "Ton programme en sept écrans.<br>Joue-le.",
+    demo_sub: "Objectif → zone → bilan → programme → fréquence → séance du jour → 12 semaines. Les quatre premiers sont jouables.",
+    demo_hint: "Vrais écrans de l'app, ici en démo. Sur mobile : touche.",
 
     s3_eyebrow: 'Le fondateur',
     s3_lead: "La mobilité n'est pas un sport. Elle est au service de ton sport — et de ta vie.",
@@ -2697,9 +2587,9 @@ const I18N = {
     vc_p3: 'Get human feedback — precise, personalized.',
     vc_cap: 'You film · the coach corrects · you progress',
     demo_eyebrow: 'The demo · the real product',
-    demo_title: "The full loop.<br>Play it.",
-    demo_sub: "Diagnostic → schedule → program → video to coach → feedback → retest at day 30. The diagnostic and schedule are playable; the rest are your real screens.",
-    demo_hint: "Real Mobility Club onboarding screen — here as a demo. On mobile: touch and drag.",
+    demo_title: "Your program in seven screens.<br>Play it.",
+    demo_sub: "Goal → area → report → program → frequency → today's session → 12 weeks. The first four are playable.",
+    demo_hint: "Real app screens, here as a demo. On mobile: tap.",
 
     s3_eyebrow: 'The founder',
     s3_lead: "Mobility isn't a sport. It serves your sport — and your life.",
@@ -3174,10 +3064,12 @@ if (prefersReduced) {
 })();
 
 /* ============================================================
-   Démo produit — la boucle complète, guidée.
-   1 Diagnostic (slider amplitude réel) · 2 Emploi du temps (drag & drop)
-   · 3 Programme · 4 Vidéo au coach · 5 Correction · 6 Retest J+30.
-   Interactif (slider + calendrier) + vraies captures. Vanilla, bilingue.
+   Démo produit — ton programme en sept écrans.
+   1 Objectif · 2 Zone · 3 Bilan (slider réel) · 4 Programme conseillé
+   · 5 Fréquence · 6 Séance du jour · 7 12 semaines.
+   Mécanique « assistant d'onboarding » : en-tête (retour, section, n/7),
+   progression segmentée, réponses qui avancent seules, touches 1–9.
+   Les écrans 1·2·3·5 sont jouables ; 4 réagit à la zone choisie. Vanilla, bilingue.
    ============================================================ */
 (function productTour(){
   const track = document.getElementById('carTrack');
@@ -3186,23 +3078,56 @@ if (prefersReduced) {
   const nextArrow = document.getElementById('tourNextArrow');
   const noteEl = document.getElementById('tourNote');
   const dotsEl = document.getElementById('tourDots');
+  const carEl = document.getElementById('carousel');
   if (!track || !nextBtn) return;
   const z = n => String(n).padStart(2, '0');
-
   const L = () => (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
   const tr = (fr,en) => (L()==='en'?en:fr);
+  const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let current = 0;
 
   const STEPS = [
-    {fr:'Diagnostic',en:'Diagnostic', bf:'Sais exactement où tu en es.', be:'Know exactly where you stand.'},
-    {fr:'Ton bilan',en:'Your report', bf:'Ton corps chiffré, tes priorités claires.', be:'Your body quantified, priorities clear.'},
-    {fr:'Emploi du temps',en:'Schedule', bf:'Le club cale la mobilité autour de ta vie.', be:'The club fits mobility around your life.'},
-    {fr:'Programme généré',en:'Program built', bf:'Ta séance du jour, déjà prête.', be:'Today\'s session, already built.'},
-    {fr:'Parle à ton coach',en:'Talk to your coach', bf:'Une douleur ? Dis-le. Ta séance s\'adapte.', be:'In pain? Say it. Your session adapts.'},
-    {fr:'Vidéo au coach',en:'Video to coach', bf:'Un doute ? Tu filmes, le coach regarde.', be:'In doubt? Film it, the coach looks.'},
-    {fr:'Correction du coach',en:'Coach feedback', bf:'Une vraie correction humaine, pas un algo.', be:'Real human feedback, not an algo.'},
-    {fr:'Retest à J+30',en:'Retest at day 30', bf:'Tu progresses — mesuré, pas ressenti.', be:'You progress — measured, not felt.'}
+    {fr:'Ton objectif',en:'Your goal', bf:'On part de ce que tu veux vraiment.', be:'We start from what you really want.'},
+    {fr:'Ta zone',en:'Your area', bf:'Tu désignes la zone qui te gêne le plus.', be:'You pick the area that bothers you most.'},
+    {fr:'Ton bilan',en:'Your report', bf:'Tu sais exactement où tu en es.', be:'You know exactly where you stand.'},
+    {fr:'Ton programme conseillé',en:'Your recommended program', bf:'Le club choisit pour toi, sans que tu devines.', be:'The club chooses for you, no guesswork.'},
+    {fr:'Ta fréquence',en:'Your frequency', bf:'Un rythme qui tient dans ta semaine.', be:'A pace that fits your week.'},
+    {fr:'Ta séance du jour',en:'Today\'s session', bf:'Ta séance du jour, déjà prête.', be:'Today\'s session, already built.'},
+    {fr:'12 semaines',en:'12 weeks', bf:'Tu progresses — mesuré, pas ressenti.', be:'You progress — measured, not felt.'}
   ];
+  const N = STEPS.length;
+
+  /* données des écrans jouables */
+  const OBJ = [
+    {fr:'Calmer une douleur', en:'Calm a pain'},
+    {fr:'Revenir d\'une blessure', en:'Come back from an injury'},
+    {fr:'Protéger mes articulations dans le temps', en:'Protect my joints over time'},
+    {fr:'Performer dans mon sport', en:'Perform in my sport'}
+  ];
+  const ZONES = [
+    {id:'gef', fr:'Grand écart facial', en:'Front splits'},
+    {id:'gel', fr:'Grand écart latéral', en:'Side splits', img:'hanche'},
+    {id:'col', fr:'Colonne', en:'Spine', img:'colonne'},
+    {id:'lom', fr:'Lombaire', en:'Lower back'},
+    {id:'epa', fr:'Épaule', en:'Shoulder', img:'epaule', pos:'50% 78%'},
+    {id:'cou', fr:'Coude', en:'Elbow'},
+    {id:'gen', fr:'Genou', en:'Knee'},
+    {id:'poi', fr:'Poignet', en:'Wrist'},
+    {id:'cp',  fr:'Chaîne postérieure', en:'Posterior chain'},
+    {id:'che', fr:'Cheville', en:'Ankle', img:'cheville'},
+    {id:'cer', fr:'Cervicale', en:'Neck'}
+  ];
+  const ZDEFAULT = 4;                 // Épaule si l'utilisateur saute l'étape
+  const FREQS = [3,4,5];
+  let obj = -1, zone = -1, freq = 4;  // freq : 4 présélectionné → la ligne calculée est lisible dès l'entrée
+  const zoneIdx = () => (zone >= 0 ? zone : ZDEFAULT);
+  const zoneName = () => ZONES[zoneIdx()][L()];
+  const calcLine = () => {
+    const n = freq, t = n*12;
+    return L()==='en' ? '<b>'+n+' sessions</b> × 12 weeks = <b>'+t+' sessions</b> on your area'
+                      : '<b>'+n+' séances</b> × 12 semaines = <b>'+t+' séances</b> sur ta zone';
+  };
+  const calcText = () => calcLine().replace(/<[^>]+>/g,'');
 
   /* cartes persistantes du carrousel (une par étape) : titre flottant + écran */
   const cards = STEPS.map((s,i)=>{
@@ -3212,15 +3137,48 @@ if (prefersReduced) {
     const ph=document.createElement('div'); ph.className='phone tour-stage scal';
     card.appendChild(head); card.appendChild(ph); track.appendChild(card); return ph;
   });
-  const stageD = cards[0], stageC = cards[2];   // diagnostic → carte 0, calendrier → carte 2 (carte 1 = bilan)
+  const stageObj = cards[0], stageZone = cards[1], stageD = cards[2], stageProg = cards[3], stageFreq = cards[4];
   function renderTitles(){ cards.forEach((ph,i)=>{ const card=ph.parentElement;
     const t=card.querySelector('.cs-title'), b=card.querySelector('.cs-benefit');
-    if(t) t.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(i+1)+'/'+z(STEPS.length)+'</span><span class="tt">'+STEPS[i][L()]+'</span>';
+    if(t) t.innerHTML='<span class="tn">'+tr('ÉTAPE','STEP')+' '+z(i+1)+'/'+z(N)+'</span><span class="tt">'+STEPS[i][L()]+'</span>';
     if(b) b.textContent = L()==='en'?STEPS[i].be:STEPS[i].bf;
   }); }
 
-  /* ---------- ÉTAPE 1 · diagnostic RÉEL (épaule · flexion, vraie vidéo) ---------- */
-  const DIAG_INSTR={fr:"Lève un bras vers le haut, pousse-le plus en arrière avec ta main libre. Limite sans que le dos décolle du mur.",en:"Raise one arm, push it further back with your free hand. Limit before your back leaves the wall."};
+  /* ---------- en-tête d'assistant : retour · section · n/7 + progression segmentée ---------- */
+  const group = i => Math.min(4, Math.floor((N>1 ? i/(N-1) : 1)*5));
+  const segHtml = i => { const g=group(i); let h=''; for(let k=0;k<5;k++) h+='<div class="ob-seg'+(k<g?' is-done':(k===g?' is-active':''))+'"><span></span></div>'; return h; };
+  function hdr(i,label){
+    return '<header class="ob-top"><div class="ob-nav">'+
+      '<button type="button" class="ob-back" data-back aria-label="'+tr('Étape précédente','Previous step')+'"'+(i===0?' disabled':'')+'>←</button>'+
+      '<p class="ob-section">'+label+'</p>'+
+      '<span class="ob-count" aria-label="'+tr('Étape','Step')+' '+(i+1)+' / '+N+'">'+(i+1)+'/'+N+'</span></div>'+
+      '<div class="ob-prog" role="progressbar" aria-valuemin="1" aria-valuemax="'+N+'" aria-valuenow="'+(i+1)+'">'+segHtml(i)+'</div></header>';
+  }
+  function setup(ph,cls){ ph.className='phone tour-stage scal ob'+(cls?' '+cls:''); }
+  function bindBack(ph){ const b=ph.querySelector('[data-back]'); if(b) b.onclick=()=>{ if(current>0) goTo(current-1); }; }
+  function bindChips(ph,onPick){ ph.querySelectorAll('.ob-chip').forEach((c,k)=>c.addEventListener('click',()=>onPick(k))); }
+  function paintChips(ph,sel){ ph.querySelectorAll('.ob-chip').forEach((c,k)=>{ c.classList.toggle('is-selected',k===sel); c.setAttribute('aria-checked',k===sel?'true':'false'); }); }
+
+  /* ---------- 1 · objectif ---------- */
+  function renderObj(){
+    setup(stageObj);
+    stageObj.innerHTML = hdr(0,tr('Onboarding','Onboarding'))+
+      '<div class="ob-motion"><h3 class="ob-title">'+tr('Quel est ton objectif principal ?','What\'s your main goal?')+'</h3>'+
+      '<div class="ob-list" role="radiogroup" aria-label="'+tr('Objectif principal','Main goal')+'">'+
+      OBJ.map((o,k)=>'<button type="button" role="radio" class="ob-chip" aria-checked="false"><span class="ob-lab">'+o[L()]+'</span><kbd class="ob-kbd" aria-hidden="true">'+(k+1)+'</kbd></button>').join('')+'</div></div>';
+    bindBack(stageObj); bindChips(stageObj,k=>pick(0,k)); paintChips(stageObj,obj);
+  }
+  /* ---------- 2 · zone ---------- */
+  function renderZone(){
+    setup(stageZone);
+    stageZone.innerHTML = hdr(1,tr('Onboarding','Onboarding'))+
+      '<div class="ob-motion"><h3 class="ob-title">'+tr('Quelle zone te gêne le plus ?','Which area bothers you most?')+'</h3>'+
+      '<div class="ob-grid" role="radiogroup" aria-label="'+tr('Zone','Area')+'">'+
+      ZONES.map(o=>'<button type="button" role="radio" class="ob-chip" aria-checked="false"><span class="ob-lab">'+o[L()]+'</span></button>').join('')+'</div></div>';
+    bindBack(stageZone); bindChips(stageZone,k=>pick(1,k)); paintChips(stageZone,zone);
+  }
+
+  /* ---------- 3 · diagnostic RÉEL (épaule · flexion, photos des 5 paliers) ---------- */
   const PALLIERS=[
     {fr:"Bras sous l'horizontale", en:"Arm below horizontal"},
     {fr:"Bras au-dessus de l'horizontale (≈120°)", en:"Arm above horizontal (≈120°)"},
@@ -3242,111 +3200,75 @@ if (prefersReduced) {
   }
   function renderDiag(){
     const v=lvl[side];
-    stageD.classList.add('dg2'); stageD.setAttribute('data-side', side==='D'?'droit':'gauche');
+    setup(stageD,'dg2'); stageD.setAttribute('data-side', side==='D'?'droit':'gauche');
     stageD.innerHTML =
-      '<div class="dg2-top"><span class="dg2-prog"><i></i></span><span class="dg2-step">'+tr('Étape 1 / 28','Step 1 / 28')+'</span></div>'+
-      '<div class="dg2-eyebrow">'+tr('Épaule · Passif','Shoulder · Passive')+'</div>'+
+      hdr(2,tr('Bilan','Report'))+
+      '<div class="ob-motion dg2-motion"><div class="dg2-eyebrow">'+tr('Épaule · Passif','Shoulder · Passive')+'</div>'+
       '<h3 class="dg2-title">'+tr('Flexion d\'épaule','Shoulder flexion')+'</h3>'+
       '<div class="dg2-photo"><img id="tdimg" src="assets/app/v2/diag/p'+(v+1)+'.jpg" alt="'+tr('Test de flexion d\'épaule, photo du palier','Shoulder flexion test, tier photo')+'">'+
-        '<div class="dg2-sides"><button class="dg2-side'+(side==='D'?' on':'')+'" data-side="D"><i></i>'+tr('Côté droit','Right side')+'</button><button class="dg2-side'+(side==='G'?' on':'')+'" data-side="G"><i></i>'+tr('Côté gauche','Left side')+'</button></div></div>'+
+        '<div class="dg2-sides"><button type="button" class="dg2-side'+(side==='D'?' on':'')+'" data-side="D"><i></i>'+tr('Côté droit','Right side')+'</button><button type="button" class="dg2-side'+(side==='G'?' on':'')+'" data-side="G"><i></i>'+tr('Côté gauche','Left side')+'</button></div></div>'+
       '<div class="dg2-sl"><div class="dg2-read"><span class="dg2-num" id="tdnum">'+(v+1)+'<small>/5</small></span><span class="dg2-lbl" id="tdpal">'+PALLIERS[v][L()]+'</span></div>'+
-        '<input type="range" class="dg2-range" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide" aria-label="'+tr('Ton amplitude','Your range')+'"></div>';
+        '<input type="range" class="dg2-range" min="0" max="4" step="1" value="'+v+'" style="--fill:'+(v*25)+'%" id="tdslide" aria-label="'+tr('Ton amplitude','Your range')+'"></div></div>';
+    bindBack(stageD);
     stageD.querySelectorAll('.dg2-side').forEach(t=>t.onclick=()=>{ side=t.getAttribute('data-side'); diagUpdate(); });
     const s=stageD.querySelector('#tdslide'); if(s) s.oninput=e=>{ lvl[side]=+e.target.value; diagUpdate(); };
   }
 
-  /* ---------- ÉTAPE 2 · calendrier drag & drop ---------- */
-  const DAYS={fr:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
-  const DAYLBL={fr:['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'],en:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']};
-  const SLOTLBL={fr:['Matin','Midi','Soir'],en:['Morning','Noon','Evening']};
-  const ZONES=[{fr:'Épaules',en:'Shoulders'},{fr:'Hanches',en:'Hips'},{fr:'Chevilles',en:'Ankles'},{fr:'Colonne',en:'Spine'},{fr:'Thoracique',en:'Thoracic'}];
-  const FAM={force:'#C9C7C0',course:'#7FB2E8',velo:'#9FD0E8',combat:'#C99BE0',raquette:'#E0B36B',collectif:'#8FD9A8',eau:'#7FCBD9',souplesse:'#E0A8C8',autre:'#E89B7F'};
-  const FAMLBL={force:{fr:'Force',en:'Strength'},course:{fr:'Course',en:'Running'},velo:{fr:'Cyclisme',en:'Cycling'},combat:{fr:'Combat',en:'Combat'},raquette:{fr:'Raquette',en:'Racket'},collectif:{fr:'Collectif',en:'Team'},eau:{fr:'Eau',en:'Water'},souplesse:{fr:'Souplesse',en:'Flex'},autre:{fr:'Autre',en:'Other'}};
-  const CATALOG=[{id:'crossfit',fr:'CrossFit',en:'CrossFit',fam:'collectif'},{id:'course',fr:'Course à pied',en:'Running',fam:'course'},{id:'trail',fr:'Trail',en:'Trail',fam:'course'},{id:'velo',fr:'Cyclisme',en:'Cycling',fam:'velo'},{id:'muscu',fr:'Musculation',en:'Strength',fam:'force'},{id:'padel',fr:'Padel',en:'Padel',fam:'raquette'},{id:'tennis',fr:'Tennis',en:'Tennis',fam:'raquette'},{id:'foot',fr:'Football',en:'Football',fam:'collectif'},{id:'rugby',fr:'Rugby',en:'Rugby',fam:'collectif'},{id:'natation',fr:'Natation',en:'Swimming',fam:'eau'},{id:'escalade',fr:'Escalade',en:'Climbing',fam:'force'},{id:'boxe',fr:'Boxe',en:'Boxing',fam:'combat'},{id:'judo',fr:'Judo / JJB',en:'Judo / BJJ',fam:'combat'},{id:'yoga',fr:'Yoga',en:'Yoga',fam:'souplesse'},{id:'ski',fr:'Ski',en:'Skiing',fam:'autre'},{id:'golf',fr:'Golf',en:'Golf',fam:'autre'}];
-  const catf=id=>CATALOG.find(c=>c.id===id);
-  let palette=['muscu','course'], sessions=[], mob=[], query='', diag=2;   // Chevilles = zone cohérente avec le bilan (asymétrie cheville) + la séance générée
-  const keyAt=(a,di,si)=>a.find(x=>x.di===di&&x.si===si);
-  const diagZone=()=>ZONES[diag][L()];
-  const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-  function firstFree(pd){ for(let si=0;si<3;si++){if(!keyAt(sessions,pd,si)&&!keyAt(mob,pd,si))return{di:pd,si};} for(let di=0;di<7;di++)for(let si=0;si<3;si++){if(!keyAt(sessions,di,si)&&!keyAt(mob,di,si))return{di,si};} return null; }
-  function renderCal(){
-    const dd=DAYS[L()], sl=SLOTLBL[L()]; let grid='';
-    for(let di=0;di<7;di++){ let cells='';
-      for(let si=0;si<3;si++){ const s=keyAt(sessions,di,si),m=keyAt(mob,di,si); let inner='';
-        if(s) inner='<div class="scal-blk sport"><span class="scal-bt">'+catf(s.sportId)[L()]+'</span><span class="scal-bm">'+tr('séance','session')+'</span></div>';
-        else if(m) inner='<div class="scal-blk mob"><span class="scal-bt">'+tr('Mobilité','Mobility')+(m.auto?' <span style="font-weight:600;opacity:.7">· auto</span>':'')+'</span><span class="scal-bm">'+m.zone+' · 8′</span></div>';
-        cells+='<div class="scal-cell" data-cell="'+di+'|'+si+'">'+inner+'</div>'; }
-      grid+='<div class="scal-grow"><div class="scal-gday">'+dd[di]+'</div>'+cells+'</div>'; }
-    const tokens=palette.map((id,i)=>{const c=catf(id);return '<div class="scal-ptoken'+(i===0&&!sessions.length?' pulse':'')+'" data-sport="'+id+'"><span class="pdot" style="background:'+FAM[c.fam]+'"></span><span class="pn">'+c[L()]+'</span><span class="pg">⠿</span></div>';}).join('');
-    stageC.classList.add('cal2');
-    stageC.innerHTML=
-      '<div class="scal-eyebrow"><span class="scal-dot"></span>'+tr('Ton calendrier sport','Your sport calendar')+'</div>'+
-      '<h2 class="scal-hero">'+tr('Compose ta semaine.','Build your week.')+'</h2>'+
-      '<div class="scal-diag"><span class="di">◈</span><span class="dt">'+tr('Diagnostic · priorité','Diagnostic · priority')+' <b>'+diagZone()+'</b></span><span class="dre" data-diag>'+tr('↻','↻')+'</span></div>'+
-      '<div class="scal-gridwrap"><div class="scal-ghead"><span></span><span>'+sl[0]+'</span><span>'+sl[1]+'</span><span>'+sl[2]+'</span></div>'+grid+'</div>'+
-      '<div class="scal-tray"><div class="scal-search"><span class="si">⌕</span><input id="scalq" placeholder="'+tr('Ajoute un sport…','Add a sport…')+'" autocomplete="off" value="'+query.replace(/"/g,'&quot;')+'"></div><div class="scal-searchres" id="scalres"></div>'+
-      '<div class="scal-tray-head" style="margin-top:11px"><span class="th">'+tr('Tes sports','Your sports')+' <span>· '+tr('glisse','drag')+'</span></span><span class="thb">'+sessions.length+' '+tr('placé','placed')+(sessions.length>1?'s':'')+'</span></div>'+
-      '<div class="scal-palette">'+tokens+'</div>'+
-      '<div class="scal-token'+(sessions.length&&!mob.length?' pulse':'')+'" data-mob><span class="tk-ic">◈</span><div><div class="tk-t">'+tr('Mobilité','Mobility')+'</div><div class="tk-s">'+tr('Glisse-la dans ta semaine','Drag it into your week')+'</div></div><span class="tk-grab">⠿</span></div></div>';
-    calAttach(); calResults();
+  /* ---------- 4 · programme conseillé (suit la zone choisie) ---------- */
+  function renderProg(){
+    const zn = ZONES[zoneIdx()];
+    setup(stageProg,'ob-progscreen');
+    const media = zn.img
+      ? '<div class="ob-pphoto"><img src="assets/halloween/'+zn.img+'.jpg" alt="" decoding="async"'+(zn.pos?' style="object-position:'+zn.pos+'"':'')+'><h3 class="ob-ptitle">'+zn[L()]+'</h3></div>'
+      : '<h3 class="ob-ptitle ob-ptype">'+zn[L()]+'</h3>';
+    stageProg.innerHTML = hdr(3,tr('Programme','Program'))+
+      '<div class="ob-motion ob-pbody'+(zn.img?'':' is-type')+'">'+media+
+      '<p class="ob-pmeta">'+tr('12 semaines · 90 €','12 weeks · €90')+'</p>'+
+      '<p class="ob-pwhy">'+tr('Ta zone la plus gênée passe en premier.','Your most limiting area comes first.')+'</p></div>';
+    bindBack(stageProg);
   }
-  function calResults(){ const box=stageC.querySelector('#scalres'); if(!box)return; const q=query.trim().toLowerCase();
-    if(!q){box.innerHTML='';box.style.display='none';return;} box.style.display='';
-    const m=CATALOG.filter(c=>c.fr.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)).slice(0,5);
-    box.innerHTML=m.length?m.map(c=>{const ad=palette.indexOf(c.id)>=0;return '<div class="scal-sres'+(ad?' added':'')+'" data-add="'+c.id+'"><span class="sdot" style="background:'+FAM[c.fam]+'"></span><span class="srn">'+c[L()]+'</span><span class="scat">'+(ad?tr('ajouté','added'):FAMLBL[c.fam][L()])+'</span></div>';}).join(''):'<div class="scal-sres-none">'+tr('Aucun sport.','No sport.')+'</div>'; }
-  function calAttach(){
-    stageC.querySelectorAll('.scal-ptoken').forEach(t=>t.addEventListener('pointerdown',e=>begin(e,{kind:'newsport',sportId:t.getAttribute('data-sport')},t)));
-    const mt=stageC.querySelector('[data-mob]'); if(mt) mt.addEventListener('pointerdown',e=>begin(e,{kind:'mob'},mt));
-    const inp=stageC.querySelector('#scalq'); if(inp) inp.addEventListener('input',e=>{query=e.target.value;calResults();});
-    const res=stageC.querySelector('#scalres'); if(res) res.addEventListener('click',e=>{const r=e.target.closest('[data-add]');if(!r)return;const id=r.getAttribute('data-add');if(palette.indexOf(id)<0){palette.push(id);toast(catf(id)[L()]+tr(' ajouté',' added'));}query='';renderCal();tourNote();});
-    const dz=stageC.querySelector('[data-diag]'); if(dz) dz.addEventListener('click',()=>{diag=ri(0,ZONES.length-1);sessions=[];mob=[];query='';toast(tr('Diagnostic · ','Diagnostic · ')+diagZone());renderCal();tourNote();});
-  }
-  let drag=null;
-  function cellUnder(e){ if(drag&&drag.ghost)drag.ghost.style.display='none'; const el=document.elementFromPoint(e.clientX,e.clientY); if(drag&&drag.ghost)drag.ghost.style.display=''; return el?el.closest('.scal-cell'):null; }
-  function clearHi(){ stageC.querySelectorAll('.scal-cell').forEach(c=>c.classList.remove('drop-ok','drop-no')); }
-  function hi(cell){ const p=cell.getAttribute('data-cell').split('|'); const occ=keyAt(sessions,+p[0],+p[1])||keyAt(mob,+p[0],+p[1]); cell.classList.add(occ?'drop-no':'drop-ok'); }
-  function startGhost(){ let label,sub,mint; if(drag.kind==='mob'){label=tr('Mobilité','Mobility');sub=diagZone()+' · 8′';mint=true;} else {const c=catf(drag.sportId);label=c[L()];sub=tr('NOUVELLE SÉANCE','NEW SESSION');mint=false;}
-    const g=document.createElement('div');g.className='scal-ghost';g.innerHTML='<div><div class="gt" style="color:'+(mint?'#3ECFA0':'#F5F5F3')+'">'+label+'</div><div class="gs" style="color:'+(mint?'rgba(62,207,160,0.8)':'#8A8C89')+'">'+sub+'</div></div>';document.body.appendChild(g);drag.ghost=g;drag.started=true;if(drag.src)drag.src.classList.add('dragging'); }
-  function onMove(e){ if(!drag)return; if(!drag.started){const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.sqrt(dx*dx+dy*dy)<7)return;startGhost();} if(drag.ghost){drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';} const cell=cellUnder(e); if(drag.lastCell&&drag.lastCell!==cell)drag.lastCell.classList.remove('drop-ok','drop-no'); if(cell)hi(cell); drag.lastCell=cell; }
-  function onUp(e){ document.removeEventListener('pointermove',onMove); if(!drag)return; if(drag.started){const cell=cellUnder(e);if(cell)drop(cell);} clearHi(); if(drag.ghost)drag.ghost.remove(); drag=null; renderCal(); tourNote(); }
-  function begin(e,pl,src){ e.preventDefault(); drag={kind:pl.kind,sportId:pl.sportId,src,sx:e.clientX,sy:e.clientY,started:false,ghost:null,lastCell:null}; document.addEventListener('pointermove',onMove); document.addEventListener('pointerup',onUp,{once:true}); }
-  function drop(cell){ const p=cell.getAttribute('data-cell').split('|'),di=+p[0],si=+p[1]; if(keyAt(sessions,di,si)||keyAt(mob,di,si)){toast(tr('Créneau occupé','Slot taken'));return;}
-    if(drag.kind==='mob'){mob.push({di,si,zone:diagZone(),auto:false});toast(tr('Mobilité ','Mobility ')+diagZone()+' · '+DAYLBL[L()][di]);return;}
-    const c=catf(drag.sportId);sessions.push({di,si,sportId:c.id});const f=firstFree(di);
-    if(f){mob.push({di:f.di,si:f.si,zone:diagZone(),auto:true});toast(c[L()]+' + '+tr('mobilité ','mobility ')+diagZone()+' (auto)');} else toast(c[L()]+' · '+DAYLBL[L()][di]); }
-  let toastEl=null,toastT=0;
-  function toast(msg){ if(!toastEl){toastEl=document.createElement('div');toastEl.className='scal-toast';document.body.appendChild(toastEl);} toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
-  /* ---------- étapes 3-6 · vraies captures (rendues dans leur carte) ---------- */
+  /* ---------- 5 · fréquence ---------- */
+  function renderFreq(){
+    setup(stageFreq);
+    stageFreq.innerHTML = hdr(4,tr('Programme','Program'))+
+      '<div class="ob-motion"><h3 class="ob-title">'+tr('Combien de séances par semaine ?','How many sessions per week?')+'</h3>'+
+      '<div class="ob-list" role="radiogroup" aria-label="'+tr('Séances par semaine','Sessions per week')+'">'+
+      FREQS.map((n,k)=>'<button type="button" role="radio" class="ob-chip" aria-checked="false"><span class="ob-lab">'+n+' '+tr('séances','sessions')+'</span><kbd class="ob-kbd" aria-hidden="true">'+(k+1)+'</kbd></button>').join('')+'</div>'+
+      '<p class="ob-calc" id="obcalc" aria-live="polite">'+calcLine()+'</p></div>';
+    bindBack(stageFreq); bindChips(stageFreq,k=>pick(4,k)); paintChips(stageFreq,FREQS.indexOf(freq));
+  }
+
+  /* ---------- choix : sélection puis avance seule (~260 ms, 0 si mouvement réduit) ---------- */
+  let busy=false;
+  function pick(step,k){
+    if(busy) return;
+    if(step===0){ obj=k; paintChips(stageObj,k); }
+    else if(step===1){ zone=k; paintChips(stageZone,k); renderProg(); }
+    else if(step===4){ freq=FREQS[k]; paintChips(stageFreq,k); const c=stageFreq.querySelector('#obcalc'); if(c) c.innerHTML=calcLine(); }
+    tourNote();
+    busy=true;
+    setTimeout(()=>{ busy=false; if(current===step) goTo(step+1); }, reduced()?0:260);
+  }
+
+  /* ---------- 6-7 · vraies captures ---------- */
   const ASSET_V='?v=2';   // cache-bust : force le fetch des captures ré-exportées (netteté)
-  function renderImg(el,src,alt){ el.classList.add('is-shot'); el.classList.remove('tour-ph');
+  function renderImg(el,src,alt){ el.className='phone tour-stage scal is-shot';
     el.innerHTML='<img class="tour-img" src="'+src+ASSET_V+'" alt="'+alt+'" decoding="async">';
     const im=el.querySelector('img');
     im.addEventListener('error',()=>{ el.classList.remove('is-shot'); el.classList.add('tour-ph');
       el.innerHTML='<span class="tour-ph-txt">'+alt+'<br><small>'+tr('capture à venir','screenshot coming')+'</small></span>'; });
   }
 
-  /* calendrier pré-rempli : Musculation + Course déjà placés, mobilité calée auto autour */
-  function seedCal(){
-    sessions=[{di:0,si:0,sportId:'muscu'},{di:3,si:2,sportId:'course'}];
-    mob=[{di:0,si:1,zone:diagZone(),auto:true},{di:3,si:1,zone:diagZone(),auto:true}];
-  }
-
-  /* rend le contenu de chaque carte une seule fois (re-appelé au changement de langue) */
+  /* rend le contenu de chaque carte (re-appelé au changement de langue / à la relance) */
   function renderAll(){
-    stageD.classList.remove('is-shot'); renderDiag();
-    renderImg(cards[1],'assets/app/v2/diag-bilan.jpg', tr('Résultat du diagnostic','Diagnostic result'));
-    stageC.classList.remove('is-shot'); renderCal();
-    renderImg(cards[3],'assets/app/v2/today-session.jpg', tr('Programme généré','Program built'));
-    renderImg(cards[4],'assets/app/v2/voice-adjusted.jpg', tr('Séance ajustée par le coach','Session adjusted by the coach'));
-    renderImg(cards[5],'assets/app/v2/video-send.jpg',  tr('Envoi vidéo au coach','Send video to coach'));
-    renderImg(cards[6],'assets/app/v2/video-coach.jpg', tr('Correction du coach','Coach feedback'));
-    renderImg(cards[7],'assets/app/v2/progress.jpg', tr('Tes progrès','Your progress'));
+    renderObj(); renderZone(); renderDiag(); renderProg(); renderFreq();
+    renderImg(cards[5],'assets/app/v2/today-session.jpg', tr('Ta séance du jour','Today\'s session'));
+    renderImg(cards[6],'assets/app/v2/progress.jpg', tr('Tes progrès sur 12 semaines','Your progress over 12 weeks'));
   }
 
   /* coverflow : chaque carte se place selon son offset par rapport à l'étape courante */
   function layout(){
-    const N=cards.length;
     for(let i=0;i<N;i++){
       const card=cards[i].parentElement;
       let off=i-current; if(off>N/2) off-=N; else if(off<-N/2) off+=N;   // circulaire : distance la plus courte sur l'anneau
@@ -3363,6 +3285,7 @@ if (prefersReduced) {
       card.style.transform='translateX('+tx+'%) translateZ('+tz+'px) rotateY('+ry+'deg) scale('+sc+')';
       card.style.opacity=op; card.style.zIndex=N-a;
       card.style.pointerEvents = off===0 ? 'auto' : 'none';   // seule la carte de face est jouable
+      if(off===0) card.removeAttribute('inert'); else card.setAttribute('inert','');   // ni focus clavier ni lecteur d'écran hors carte active
       card.classList.toggle('is-center', off===0);
       if(card.style.transition==='none'){ void card.offsetWidth; card.style.transition=''; }  // restaure pour les prochains
     }
@@ -3370,34 +3293,60 @@ if (prefersReduced) {
   function renderDots(){ if(!dotsEl) return; dotsEl.innerHTML=STEPS.map((s,i)=>'<button class="dot '+(i<current?'done':(i===current?'on':''))+'" data-i="'+i+'" type="button" aria-label="'+s[L()]+'"></button>').join(''); }
   function tourNote(){
     const step=current; let v;
-    if(step===0) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
-    else if(step===1) v=tr('Ton bilan articulaire : score global + zones prioritaires. Ton point de départ, mesuré.','Your joint report: global score + priority zones. Your starting point, measured.');
-    else if(step===2) v=sessions.length?tr('<b>'+mob.length+'</b> mobilité(s) <b>'+diagZone()+'</b> calée(s) auto autour de tes séances.','<b>'+mob.length+'</b> <b>'+diagZone()+'</b> mobility block(s) auto-set around your sessions.'):tr('Cherche un sport, glisse-le. Le club cale la mobilité (<b>'+diagZone()+'</b>).','Search a sport, drag it. The club sets mobility (<b>'+diagZone()+'</b>).');
-    else if(step===3) v=tr('Le club génère ton programme du jour — décidé, sans que tu choisisses.','The club builds today\'s program — decided, nothing to choose.');
-    else if(step===4) v=tr('Tu parles à ton coach : « j\'ai mal à l\'épaule droite » → il allège ta séance. Tu valides. <b>Beta.</b>','You talk to your coach: “my right shoulder hurts” → it eases your session. You confirm. <b>Beta.</b>');
-    else if(step===5) v=tr('Un doute sur ton geste ? Tu filmes, tu envoies au coach.','Unsure about your form? Film it, send it to the coach.');
-    else if(step===6) v=tr('Damien te répond par écrit — une vraie correction, pas un algo.','Damien replies in writing — real feedback, not an algo.');
-    else v=tr('30 jours plus tard, tu retestes : <b>+16 pts</b>, mesurés.','30 days later, you retest: <b>+16 pts</b>, measured.');
+    if(step===0) v=tr('Une réponse suffit : l\'écran suivant s\'ouvre tout seul.','One answer is enough: the next screen opens on its own.');
+    else if(step===1) v=tr('Une seule zone, la plus gênante. Ici : <b>'+zoneName()+'</b>'+(zone<0?' (par défaut)':'')+'.','A single area, the most limiting. Here: <b>'+zoneName()+'</b>'+(zone<0?' (default)':'')+'.');
+    else if(step===2) v=tr('Glisse le curseur : ton amplitude → un score. Ici <b>'+diagScore()+'/100</b> à l\'épaule.','Slide: your range → a score. Here <b>'+diagScore()+'/100</b> at the shoulder.');
+    else if(step===3) v=tr('Programme conseillé : <b>'+zoneName()+'</b>, 12 semaines. Il suit la zone que tu as choisie.','Recommended program: <b>'+zoneName()+'</b>, 12 weeks. It follows the area you picked.');
+    else if(step===4) v=calcLine();
+    else if(step===5) v=tr('Chaque jour, la séance est décidée — sans que tu choisisses.','Every day, the session is decided — nothing to choose.');
+    else v=tr('Douze semaines plus tard, tu retestes : <b>+16 pts</b>, mesurés.','Twelve weeks later, you retest: <b>+16 pts</b>, measured.');
     if(noteEl) noteEl.innerHTML='<div class="k">'+tr('En direct','Live')+'</div><div class="v">'+v+'</div>';
   }
-  function refreshBtn(){ nextBtn.textContent = tr('Valider l\'étape →','Validate step →'); }   // circulaire : toujours actif
+  function refreshBtn(){ nextBtn.textContent = current===N-1 ? tr('Recommencer','Start over') : tr('Continuer','Continue'); }
   function refresh(){ layout(); tourNote(); refreshBtn(); renderDots(); }
-  const N = STEPS.length;
+
+  /* entrée de contenu (opacity + translateY, .24 s) et remplissage animé des segments */
+  function enter(from){
+    const ph=cards[current], mo=ph.querySelector('.ob-motion');
+    if(mo && !reduced()){ mo.style.animation='none'; void mo.offsetWidth; mo.style.animation=''; }
+    const segs=ph.querySelectorAll('.ob-seg');
+    if(segs.length && from!==undefined && !reduced()){
+      const gf=group(Math.max(0,Math.min(N-1,from))), gt=group(current);
+      segs.forEach((s,k)=>{ s.className='ob-seg'+(k<gf?' is-done':(k===gf?' is-active':'')); });
+      void ph.offsetWidth;
+      requestAnimationFrame(()=>segs.forEach((s,k)=>{ s.className='ob-seg'+(k<gt?' is-done':(k===gt?' is-active':'')); }));
+    }
+    // si le focus était dans la démo (clavier / tap), il suit vers le premier contrôle du nouvel écran
+    if(carEl && carEl.contains(document.activeElement)){
+      setTimeout(()=>{ const c=cards[current].querySelector('.ob-chip, .dg2-range, [data-back]'); if(c) c.focus({preventScroll:true}); }, reduced()?0:280);
+    }
+  }
   function goTo(ns){
     ns=((ns%N)+N)%N;                             // circulaire
     if(ns===current) return;
-    current=ns;
-    refresh();                                   // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
+    const from=current; current=ns;
+    refresh(); enter(from);                      // le carrousel pivote via la transition CSS ; chaque titre tourne avec sa carte
   }
+  function restart(){ obj=-1; zone=-1; freq=4; lvl={D:3,G:3}; side='D'; renderAll(); goTo(0); tourNote(); }
 
-  ['v2/diag-bilan.jpg','v2/today-session.jpg','v2/voice-adjusted.jpg','v2/video-send.jpg','v2/video-coach.jpg','v2/progress.jpg'].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
-  nextBtn.addEventListener('click',()=>{ goTo(current+1); });
+  [ 'v2/today-session.jpg','v2/progress.jpg' ].forEach(n=>{ const im=new Image(); im.src='assets/app/'+n+ASSET_V; }); [1,2,3,4,5].forEach(n=>{ const im=new Image(); im.src='assets/app/v2/diag/p'+n+'.jpg'; });
+  nextBtn.addEventListener('click',()=>{ if(current===N-1) restart(); else goTo(current+1); });
   if(prevBtn) prevBtn.addEventListener('click',()=> goTo(current-1));
   if(nextArrow) nextArrow.addEventListener('click',()=> goTo(current+1));
   if(dotsEl) dotsEl.addEventListener('click',e=>{ const d=e.target.closest('[data-i]'); if(d) goTo(+d.dataset.i); });
+  /* clavier : 1–9 choisissent, Échap revient — seulement quand la démo a le focus */
+  if(carEl) carEl.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    const t=e.target, typing=t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA';
+    if(e.key==='Escape'){ if(current>0){ e.preventDefault(); goTo(current-1); } return; }
+    if(typing) return;
+    const n=+e.key; if(!(n>=1&&n<=9)) return;
+    const max = current===0?OBJ.length : current===1?ZONES.length : current===4?FREQS.length : 0;
+    if(n<=max){ e.preventDefault(); pick(current,n-1); }
+  });
   document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{ renderAll(); renderTitles(); refresh(); }));
 
-  seedCal(); renderAll(); renderTitles(); refresh();
+  renderAll(); renderTitles(); refresh();
 })();
 
 /* Photo Damien (§03) : s'affiche automatiquement dès que le fichier existe,
