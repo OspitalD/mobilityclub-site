@@ -106,6 +106,19 @@ h1{font-size:clamp(40px,8vw,64px);letter-spacing:-.045em;margin:6px 0 4px;}
 /* Barre de paiement : poche vide = un seul bouton, sans récap. */
 .pay.vide .recap,.pay.vide .note{display:none;}
 .msg:empty{min-height:0;}
+
+/* Étagères : pas la marge générique des <section>. */
+.shelf{padding:0 0 18px;}
+/* Paquet sans photo : papier imprimé (rayures de bonbon, lueur de catégorie), grand titre au centre. */
+.pack.sans-photo{--glow:rgba(232,116,42,.55);background:
+  radial-gradient(70% 55% at 50% 58%,var(--glow),transparent 72%),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.045) 0 6px,transparent 6px 14px),
+  linear-gradient(160deg,#211612,#120D0B);}
+.pack.sans-photo[data-cat="warmup"]{--glow:rgba(138,107,176,.6);background:
+  radial-gradient(70% 55% at 50% 58%,var(--glow),transparent 72%),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.045) 0 6px,transparent 6px 14px),
+  linear-gradient(160deg,#1A1424,#0F0C14);}
+.pack.sans-photo b{top:50%;transform:translateY(-50%);left:10px;right:10px;text-align:center;font-size:20px;line-height:1.05;}
 @media (min-width:900px){
   .layout{grid-template-columns:380px minmax(0,1fr);gap:56px;align-items:start;}
   .pocketzone{position:sticky;top:20px;margin:0;padding:0;background:none;z-index:5;}

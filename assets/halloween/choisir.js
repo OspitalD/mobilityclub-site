@@ -17,19 +17,30 @@
 
   var CAT = {
     articulation: { nom: 'Articulation', prix: 90, desc: 'Une zone. Bilan de ta zone, 3, 4 ou 5 séances par semaine, 12 semaines.' },
-    warmup: { nom: 'Warm Up', prix: 49, desc: 'Un mouvement. Bilan de la zone, durée par séance au choix, 12 semaines.' }
+    warmup: { nom: 'Warm Up', prix: 49, desc: 'Un mouvement ou ton sport. Bilan de la zone, durée par séance au choix, 12 semaines.' }
   };
   var PROGRAMMES = [
-    { id: 'art-epaule', cat: 'articulation', titre: 'Épaule', img: 'epaule', pos: '50% 78%' },
-    { id: 'art-hanche', cat: 'articulation', titre: 'Hanche', img: 'hanche' },
-    { id: 'art-cheville', cat: 'articulation', titre: 'Cheville', img: 'cheville' },
+    /* Liste de Damien (30/10). Photo seulement quand elle montre vraiment la zone ou le mouvement ; sinon paquet sans photo. */
+    { id: 'art-grand-ecart-facial', cat: 'articulation', titre: 'Grand écart facial' },
+    { id: 'art-grand-ecart-lateral', cat: 'articulation', titre: 'Grand écart latéral', img: 'hanche' },
     { id: 'art-colonne', cat: 'articulation', titre: 'Colonne', img: 'colonne' },
+    { id: 'art-lombaire', cat: 'articulation', titre: 'Lombaire' },
+    { id: 'art-epaule', cat: 'articulation', titre: 'Épaule', img: 'epaule', pos: '50% 78%' },
+    { id: 'art-coude', cat: 'articulation', titre: 'Coude' },
+    { id: 'art-genou', cat: 'articulation', titre: 'Genou' },
+    { id: 'art-poignet', cat: 'articulation', titre: 'Poignet' },
+    { id: 'art-chaine-posterieure', cat: 'articulation', titre: 'Chaîne postérieure' },
+    { id: 'art-cheville', cat: 'articulation', titre: 'Cheville', img: 'cheville' },
+    { id: 'art-cervicale', cat: 'articulation', titre: 'Cervicale' },
     { id: 'wu-squat', cat: 'warmup', titre: 'Squat', img: 'squat' },
-    { id: 'wu-developpe', cat: 'warmup', titre: 'Développé', img: 'colonne' },
-    { id: 'wu-tractions', cat: 'warmup', titre: 'Tractions', img: 'epaule', pos: '50% 78%' },
-    { id: 'wu-souleve', cat: 'warmup', titre: 'Soulevé de terre', img: 'hanche' },
-    { id: 'wu-course', cat: 'warmup', titre: 'Course', img: 'cheville' },
-    { id: 'wu-padel', cat: 'warmup', titre: 'Padel', img: 'sol' }
+    { id: 'wu-deadlift', cat: 'warmup', titre: 'Deadlift' },
+    { id: 'wu-traction', cat: 'warmup', titre: 'Traction' },
+    { id: 'wu-bench-press', cat: 'warmup', titre: 'Bench press' },
+    { id: 'wu-overhead', cat: 'warmup', titre: 'Overhead' },
+    { id: 'wu-course', cat: 'warmup', titre: 'Course à pied' },
+    { id: 'wu-tennis-padel', cat: 'warmup', titre: 'Tennis / Padel' },
+    { id: 'wu-jjb-grappling', cat: 'warmup', titre: 'JJB / Grappling' },
+    { id: 'wu-sport-collectif', cat: 'warmup', titre: 'Sport collectif' }
   ];
   var PAR_ID = {};
   PROGRAMMES.forEach(function (p) { p.prix = CAT[p.cat].prix; PAR_ID[p.id] = p; });
