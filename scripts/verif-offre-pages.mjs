@@ -94,10 +94,10 @@ for (const [phase, fin, attendu] of [['v2', PASSE, { m: '30', a: '275', v: '350'
   // bascule
   p = await ouvrir('/bascule', { fin });
   texte = await p.innerText('#plans');
-  verifier(texte.includes(`${attendu.v} €`) && texte.includes(`${attendu.a} €`) && texte.includes(`${attendu.m} €`), `bascule [${phase}] cartes ${attendu.m}/${attendu.a}/${attendu.v}`);
+  // Décision 30/10 : /bascule garde ses prix et liens fondateurs quelle que soit la phase.
+  verifier(texte.includes('249 €') && texte.includes('220 €') && texte.includes('25 €'), `bascule [${phase}] cartes fondateurs 25/220/249`);
   const cfg = await p.evaluate(() => ({ vie: window.MC_BASCULE.LIEN_VIE, men: window.MC_BASCULE.LIEN_MENSUEL, an: window.MC_BASCULE.LIEN_ANNUEL }));
-  if (phase === 'v2') verifier(cfg.vie === '/lifetime' && cfg.men === PLANS.v2.mensuel && cfg.an === PLANS.v2.annuel && ![cfg.men, cfg.an, cfg.vie].some((l) => anciens.some((x) => l.includes(x))), 'bascule [v2] Lifetime -> /lifetime, aucun ancien plan (A5, A6)');
-  else verifier(cfg.vie.includes('KT93SVXG954UE') && cfg.men.includes('P-17C64877T6348331UNLCQIVI'), 'bascule [fenetre] liens inchangés');
+  verifier(cfg.vie.includes('KT93SVXG954UE') && cfg.men.includes('P-17C64877T6348331UNLCQIVI') && cfg.an.includes('P-4VH08043D1618690PNJJ2Z5A'), `bascule [${phase}] liens fondateurs`);
   await p.close();
 
   // lifetime (stock injoignable : le repli doit afficher le prix de la phase)

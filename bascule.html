@@ -654,25 +654,11 @@ h2{font-size:clamp(26px,6.6vw,34px);line-height:1.1;font-weight:800;font-style:i
   });
   drawSim();
 
-  // Source unique des prix et liens : la Function offre-v2. En phase V2, /bascule ne rend plus aucun ancien
-  // plan : le mensuel devient le plan 30 € AVEC essai (A6) et l'accès à vie passe par /lifetime (A5).
-  const fmtEur = (n) => (Math.round(n * 100) / 100).toLocaleString('fr-FR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+  // Décision Damien 30/10 : /bascule garde ses prix et liens fondateurs (MC_BASCULE : 220 €/an, 249 € à vie,
+  // 25 €/mois), même en phase V2. offre-v2 ne pilote plus ici que la date de fin affichée.
   const syncOffre = (e) => {
-    Object.assign(offre, e.prix);
-    C.ANNUEL_PRIX = fmtEur(e.prix.annuel) + ' €';
-    C.ANNUEL_EQUIV = 'soit ' + fmtEur(e.prix.annuel / 12) + ' € par mois';
-    C.VIE_PRIX = fmtEur(e.prix.vie) + ' €';
-    C.VIE_4X = '4 × ' + fmtEur(e.prix.vie / 4) + ' €';
-    C.MENSUEL_PRIX = fmtEur(e.prix.mensuel) + ' €';
     const limite = dateFin(e.fin);
     if (limite && limite !== C.DATE_LIMITE) { C.DATE_LIMITE = limite; drawDates(); }
-    if (e.phase === 'v2') {
-      C.LIEN_ANNUEL = e.liens.annuel;
-      C.LIEN_MENSUEL = e.liens.mensuel;
-      C.LIEN_VIE = e.liens.vie;
-    }
-    drawPlans();
-    drawSim();
   };
   if (window.MCOffre) window.MCOffre.onChange(syncOffre);
 
