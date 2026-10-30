@@ -184,7 +184,7 @@
     el.innerHTML = hdr(3, 'Programme') + '<div class="ob-motion ob-pbody"><div class="ob-pcard ' + (zn.img ? 'has-photo' : 'hd-body') + '">' +
       (zn.img ? '<img src="/assets/halloween/' + zn.img + '.jpg" alt="" decoding="async"' + (zn.pos ? ' style="object-position:' + zn.pos + '"' : '') + '>' : '<div class="hd-zoom" aria-hidden="true"><img src="/assets/app/v2/corps-repli.webp" alt="" draggable="false"></div><div class="hd-veil" aria-hidden="true"></div>') +
       '<span class="ob-ppill">12 sem.</span><p class="ob-plab">Ta zone la plus faible</p><h3 class="ob-ptitle">' + zn.n + '</h3><p class="ob-psub">3 à 5 séances / sem</p></div>' +
-      '<p class="ob-pmeta">12 semaines · 90 €</p><p class="ob-pwhy hd-orange">+ un 2<sup>e</sup> programme offert jusqu\'à samedi minuit</p></div>';
+      '<p class="ob-pmeta">12 semaines · 90 €</p><p class="ob-pwhy hd-orange">+ un 2<sup>e</sup> programme offert jusqu\'à dimanche minuit</p></div>';
   }
 
   function placeZoom() {

@@ -1,4 +1,4 @@
-/* Compte à rebours Halloween. Fin fixe : samedi 1er novembre 2026, 23 h 59 Paris = 22:59:00Z.
+/* Compte à rebours Halloween. Fin fixe : dimanche 1er novembre 2026, 23 h 59 Paris = 22:59:00Z.
    Jamais de redémarrage : passé la fin, la page bascule en « offre terminée » et y reste. */
 (function () {
   'use strict';
