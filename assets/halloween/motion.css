@@ -1,0 +1,19 @@
+/* Motion — valeurs reprises des sources 10K (BlurText, ScrollReveal, RollingAmount). Actif seulement sous html.mo
+   (posé par motion.js quand JavaScript tourne et que « réduire les animations » n'est pas demandé). */
+.mo .bt .bw{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(50px);}
+.mo .bt.in .bw{animation:mo-bw .7s ease-out both;animation-delay:calc(.1s * var(--i, 0));}
+@keyframes mo-bw{0%{opacity:0;filter:blur(10px);transform:translateY(50px);}50%{opacity:.5;filter:blur(5px);transform:translateY(-5px);}100%{opacity:1;filter:blur(0);transform:none;}}
+.mo .sr{opacity:0;transform:translateY(40px);filter:blur(8px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);transition-delay:var(--d,0s);}
+.mo .sr.in{opacity:1;transform:none;filter:none;}
+
+/* RollingAmount (web-count-up) : le montant roule vers le haut quand il monte, vers le bas quand il descend. */
+.ra{position:relative;display:inline-block;vertical-align:bottom;font-variant-numeric:tabular-nums;}
+.ra-sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.ra-vp{display:inline-block;height:1.15em;overflow:hidden;line-height:1;vertical-align:bottom;}
+.ra-tr{display:flex;flex-direction:column;}
+.ra-row{display:flex;height:1.15em;align-items:center;justify-content:flex-end;line-height:1;white-space:nowrap;}
+.ra-up{animation:ra-up .38s cubic-bezier(.16,1,.3,1) forwards;}
+.ra-down{transform:translateY(-50%);animation:ra-down .38s cubic-bezier(.16,1,.3,1) forwards;}
+@keyframes ra-up{from{transform:translateY(0);}to{transform:translateY(-50%);}}
+@keyframes ra-down{from{transform:translateY(-50%);}to{transform:translateY(0);}}
+@media (prefers-reduced-motion:reduce){.ra-up{animation:none;transform:translateY(-50%);}.ra-down{animation:none;transform:none;}}

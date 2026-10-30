@@ -81,6 +81,13 @@
   }
 
   var dernierAjout = null;
+  var dernierMontant = null;
+  function montantRoulant(avant, apres) {
+    if (avant === null || avant === apres || reduit) return '<span class="ra">' + eur(apres) + '</span>';
+    var monte = apres > avant, a = eur(avant), b = eur(apres);
+    return '<span class="ra"><span class="ra-sr">' + b + '</span><span class="ra-vp" aria-hidden="true"><span class="ra-tr ' + (monte ? 'ra-up' : 'ra-down') + '">' +
+      '<span class="ra-row">' + (monte ? a : b) + '</span><span class="ra-row">' + (monte ? b : a) + '</span></span></span></span>';
+  }
   function rendre() {
     var c = calcul();
     poche.className = 'fan pk n' + sel.length + (sel.length ? '' : ' vide') + (poche.classList.contains('over') ? ' over' : '');
@@ -100,7 +107,11 @@
     else if (sel.length === 1) h = '<li><span>' + PAR_ID[sel[0]].titre + '</span><b>' + eur(PAR_ID[sel[0]].prix) + '</b></li>';
     else h = '<li><span>' + c.paye.titre + '</span><b>' + eur(c.paye.prix) + '</b></li>' +
       '<li><span>' + c.offert.titre + '</span><b>offert (valeur ' + eur(c.offert.prix) + ')</b></li>' +
-      '<li class="tot"><span>Total</span><span>' + eur(c.total) + '</span></li>';
+      '';
+    /* « À payer » roule à chaque changement (RollingAmount, 10K web-count-up). */
+    var montant = c ? c.total : sel.length === 1 ? PAR_ID[sel[0]].prix : 0;
+    h += '<li class="tot"><span>À payer</span><span>' + montantRoulant(dernierMontant, montant) + '</span></li>';
+    dernierMontant = montant;
     recap.innerHTML = h;
     majBouton(c);
   }

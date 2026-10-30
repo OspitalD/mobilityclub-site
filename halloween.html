@@ -22,6 +22,7 @@
 <meta name="twitter:image" content="https://mobilityclub.co/assets/halloween/og.jpg" />
 <link rel="preload" as="image" href="/assets/halloween/colonne.jpg" fetchpriority="high" />
 <link rel="stylesheet" href="/assets/halloween/commun.css" />
+<link rel="stylesheet" href="/assets/halloween/motion.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
@@ -104,6 +105,20 @@
 .probleme h2{font-size:clamp(28px,6vw,44px);}
 .probleme p{margin-top:16px;font-size:18px;line-height:1.55;color:var(--body);}
 .perso-sub{margin-top:10px;font-size:17px;color:var(--body);}
+.pb-list{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:10px;}
+.pb-list li{position:relative;padding-left:22px;font-size:18px;line-height:1.5;color:var(--text);}
+.pb-list li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:2px;border-radius:2px;background:var(--pumpkin);}
+.pb-turn{color:var(--text)!important;font-weight:700;font-style:italic;font-size:20px!important;}
+.ba{display:grid;gap:12px;margin:0 0 22px;}
+.ba p{margin:0;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:16px;line-height:1.5;}
+.ba p:last-child{box-shadow:inset 0 0 0 1px rgba(62,207,160,.35);}
+.ba b{display:block;margin-bottom:2px;font-style:italic;color:var(--text);}
+.ba p:last-child b{color:var(--green);}
+.checks em{display:block;font-style:normal;color:var(--body);font-size:.92em;margin-top:2px;}
+.prix{list-style:none;margin:22px auto 0;padding:0;max-width:440px;display:grid;gap:0;}
+.prix li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;color:var(--body);}
+.prix b{font-size:24px;font-weight:800;font-style:italic;color:var(--text);}
+.risque{max-width:440px;margin:16px auto 22px;font-size:14px;line-height:1.5;color:var(--body);}
 .cta-row{text-align:center;margin-top:clamp(32px,5vw,52px);}
 .cta-row .cta{min-width:min(100%,300px);}
 
@@ -194,9 +209,17 @@
 <!-- 1 bis. LE PROBLÈME (lead) -->
 <section class="probleme" aria-labelledby="t-pb">
   <div class="wrap">
-    <h2 id="t-pb">Les routines des réseaux ne connaissent pas ton épaule.</h2>
-    <p>Dix minutes de mobilité « pour tout le monde ». Tu les fais deux semaines, tu ne sens pas la différence, tu lâches. Normal : personne n'a regardé ce qui coince chez toi.</p>
-    <p>Ici, on commence par mesurer. Ensuite seulement, on te dit quoi faire.</p>
+    <h2 id="t-pb">Ce n'est pas toi. C'est la routine.</h2>
+    <p>Tu fais tes dix minutes de mobilité. Tu les fais bien, même.</p>
+    <p>Et au développé, ton épaule tire toujours. Au squat, tu ne descends pas plus bas qu'il y a trois mois.</p>
+    <p>Ce n'est pas un problème de volonté. Ta routine ne sait rien de toi&nbsp;:</p>
+    <ul class="pb-list">
+      <li>elle a été écrite pour « tout le monde », donc pour personne&nbsp;;</li>
+      <li>elle travaille partout un peu, donc nulle part assez&nbsp;;</li>
+      <li>elle ne change jamais, donc ton corps arrête de répondre.</li>
+    </ul>
+    <p>Pendant ce temps, la zone qui coince reste celle qui coince. Celle qui te fait raccourcir une amplitude, éviter un exercice, ou repenser à ta dernière blessure.</p>
+    <p class="pb-turn">Ici, on fait l'inverse&nbsp;: on commence par mesurer.</p>
   </div>
 </section>
 
@@ -204,10 +227,14 @@
 <section aria-labelledby="t-perso" id="perso">
   <div class="wrap perso">
     <div>
-      <h2 id="t-perso">Ton programme part de ton bilan. Pas d'une routine.</h2>
-      <p class="perso-sub">100&nbsp;% personnalisé, en 4 étapes.</p>
+      <h2 id="t-perso">De « je fais des étirements » à « je sais ce que je travaille ».</h2>
+      <div class="ba">
+        <p><b>Aujourd'hui</b> tu enchaînes des exercices vus sur les réseaux, sans savoir lesquels servent ni si ça avance.</p>
+        <p><b>Dans 12 semaines</b> tu sais quelle zone tu travailles, pourquoi et combien. Ton bilan de départ te sert de point de comparaison.</p>
+      </div>
+      <p class="perso-sub">Un programme 100&nbsp;% personnalisé, en 4 étapes&nbsp;:</p>
       <ol class="psteps" id="psteps">
-        <li class="on" data-i="0"><span class="n">1</span><b>Onboarding</b><p>Tu te connectes avec l'email de ton paiement. Un code, pas de mot de passe.</p></li>
+        <li class="on" data-i="0"><span class="n">1</span><b>Onboarding</b><p>Tu te connectes avec l'email de ton paiement. Un code reçu par email, pas de mot de passe.</p></li>
         <li data-i="1"><span class="n">2</span><b>Bilan</b><p>Des tests guidés, zone par zone, mesurent où tu bloques vraiment.</p></li>
         <li data-i="2"><span class="n">3</span><b>Génération</b><p>L'algorithme part de ta zone la plus faible et règle les séries, le temps et la fréquence sur toi.</p></li>
         <li data-i="3"><span class="n">4</span><b>12 semaines</b><p>Chaque semaine monte d'un cran. À chaque séance, tu sais quoi faire, sans réfléchir.</p></li>
@@ -230,21 +257,21 @@
 <!-- 4. LES 2 CATÉGORIES -->
 <section aria-labelledby="t-cats">
   <div class="wrap">
-    <div class="sec-head"><h2 id="t-cats">Deux façons de t'y mettre.</h2></div>
+    <div class="sec-head"><h2 id="t-cats">Deux façons de t'y mettre.</h2><p class="perso-sub">Chaque fonction, et ce qu'elle change pour toi.</p></div>
     <div class="offers">
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/hanche.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Articulation</div>
         <p class="zones">Pour débloquer la zone qui te limite : épaule, hanche, cheville, colonne.</p>
         <div class="price">90 €<small>le programme</small></div>
-        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines construites sur le bilan de ta zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3, 4 ou 5 séances par semaine, selon ta vie</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Une progression semaine après semaine</li></ul>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>12 semaines construites sur le bilan de ta zone <em>→ tu travailles ce qui bloque, pas le reste</em></span></li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>3, 4 ou 5 séances par semaine <em>→ le programme rentre dans ta vie, pas l'inverse</em></span></li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Une progression semaine après semaine <em>→ ton corps ne s'habitue pas</em></span></li></ul>
       </article>
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/squat.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Warm Up</div>
         <p class="zones">Pour arriver prêt sur ton mouvement : squat, développé, tractions, soulevé de terre, course, padel.</p>
         <div class="price">49 €<small>le programme</small></div>
-        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Un échauffement taillé pour ce mouvement, avant ta séance</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Réglé sur le bilan de la zone qui travaille</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>La durée que tu choisis, 12 semaines qui progressent</li></ul>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Un échauffement taillé pour ce mouvement <em>→ tu attaques ta séance déjà dans l'amplitude</em></span></li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Réglé sur le bilan de la zone qui travaille <em>→ pas un échauffement générique</em></span></li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg><span>La durée que tu choisis <em>→ tu ne rallonges pas ta séance pour rien</em></span></li></ul>
       </article>
     </div>
     <div class="cta-row live"><a class="cta" href="/halloween/choisir" data-cta="categories">Choisir mes programmes</a></div>
@@ -307,10 +334,15 @@
 </section>
 <section class="final" aria-label="Choisir mes programmes" style="padding-top:0">
   <div class="wrap">
-    <h2 class="live">Deux programmes, un seul prix.</h2>
-    <p class="lede live">Jusqu'à samedi minuit. Après, c'est le prix normal pour chacun.</p>
+    <h2 class="live">Dans 12 semaines, il y a deux versions de toi.</h2>
+    <p class="lede live">Celle qui fait encore la même routine en espérant que ça bouge. Et celle qui sait ce qu'elle travaille, et le voit au retest.</p>
+    <ul class="prix live">
+      <li><span>2 Articulation, ou 1 Articulation + 1 Warm Up</span><b>90 €</b></li>
+      <li><span>2 Warm Up</span><b>49 €</b></li>
+    </ul>
+    <p class="risque live">Paiement unique. Pas d'abonnement, rien qui se renouvelle. Si ton bilan montre une zone plus faible que celle que tu as choisie, écris-moi avant de lancer ton programme et on l'échange.</p>
     <h2 class="ended">Les programmes t'attendent dans l'app.</h2>
-    <a class="cta live" href="/halloween/choisir" data-cta="final">Choisir mes programmes</a>
+    <a class="cta live" href="/halloween/choisir" data-cta="final">Choisir mes 2 programmes</a>
   </div>
 </section>
 </main>
@@ -326,5 +358,6 @@
 
 <script src="/assets/halloween/compte-a-rebours.js"></script>
 <script src="/assets/halloween/carrousel.js"></script>
+<script src="/assets/halloween/motion.js"></script>
 </body>
 </html>
