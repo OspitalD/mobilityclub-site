@@ -16,7 +16,7 @@
     { t: 'Ton programme', p: 'Le programme de ta zone, 12 semaines, construit sur ton bilan.' },
     { t: 'Ta fréquence', p: '3, 4 ou 5 séances par semaine : le programme rentre dans ta vie, pas l\'inverse.' },
     { t: 'Ta séance du jour', p: 'Chaque jour, la séance est décidée. Tu lances, sans réfléchir à quoi faire.' },
-    { t: '12 semaines', p: 'Chaque semaine monte d\'un cran. À la fin, tu retestes : l\'écart est mesuré.' }
+    { t: 'Ton retest', p: 'À la fin des 12 semaines, tu refais ton bilan : l\'écart est mesuré, pas ressenti.' }
   ];
   var OBJ = ['Calmer une douleur', 'Revenir d\'une blessure', 'Protéger mes articulations dans le temps', 'Performer dans mon sport'];
   var ZONES = [
@@ -47,8 +47,7 @@
     var li = document.createElement('li');
     li.className = 'hd-step' + (i === 0 ? ' on' : '');
     li.setAttribute('aria-label', 'Étape ' + (i + 1) + ' sur ' + N);
-    li.innerHTML = '<div class="hd-n" aria-hidden="true">Étape ' + (i + 1) + '/' + N + '</div><h3>' + s.t + '</h3><p>' + s.p + '</p><div class="hd-live" aria-live="polite"></div>' +
-      (i === 3 ? '<div class="hd-offer">+ un 2<sup>e</sup> programme offert jusqu\'à samedi 23&nbsp;h&nbsp;59</div>' : '');
+    li.innerHTML = '<div class="hd-txt"><h3>' + s.t + '</h3><p>' + s.p + '</p><div class="hd-live" aria-live="polite"></div></div>';
     stepsEl.appendChild(li);
     return li;
   });
@@ -83,13 +82,13 @@
   function live() {
     var z = ZONES[zi()];
     var t = [
-      obj >= 0 ? 'Ici : <b>' + OBJ[obj] + '</b>' : 'À toi : touche une réponse sur le téléphone',
-      zone >= 0 ? 'Ici : <b>' + z.n + '</b>' : 'À toi : touche une zone du corps (par défaut : Épaules)',
+      obj >= 0 ? 'Ici : <b>' + OBJ[obj] + '</b>' : 'À toi : <b>touche une réponse</b> sur le téléphone',
+      zone >= 0 ? 'Ici : <b>' + z.n + '</b>' : 'À toi : <b>touche une zone</b> du corps (par défaut : Épaules)',
       'Ici : <b>' + score() + '/100</b> à l\'épaule, glisse le curseur',
-      'Ici : <b>' + z.n + '</b>, 12 semaines · 90 €',
+      'Ici : <b>' + z.n + '</b>, 12 semaines',
       calcLine(),
-      'Décidée chaque matin, d\'après ton bilan',
-      'Retest à la semaine 12 : l\'écart est mesuré'
+      'Décidée <b>chaque matin</b>, d\'après ton bilan',
+      'Retest : <b>semaine 12</b>, l\'écart en points'
     ];
     stepEls.forEach(function (li, i) { li.querySelector('.hd-live').innerHTML = t[i]; });
   }
@@ -132,7 +131,7 @@
     if (f) f.innerHTML = zone >= 0 ? '<b>' + ZONES[zone].l + '</b><span>Pas encore mesurée</span>' : '<span class="vs-hint">Touche une zone du corps</span>';
     scopeDraw();
   }
-  function pickZone(k) { zone = k; scopePaint(); renderProg(); live(); }
+  function pickZone(k) { zone = k; scopePaint(); renderProg(); placeZoom(); live(); }
   function renderZone() {
     var el = scr[1]; setup(el, 'vs-screen');
     var bars = [44, 80, 100, 66, 36].map(function (h, i) { return '<i style="height:' + h + '%;animation-delay:' + (i * .15) + 's"></i>'; }).join('');
@@ -182,10 +181,24 @@
   /* ---------- 4 programme (carte Boutique de la zone choisie) ---------- */
   function renderProg() {
     var el = scr[3], zn = ZONES[zi()]; setup(el, 'ob-progscreen');
-    el.innerHTML = hdr(3, 'Programme') + '<div class="ob-motion ob-pbody"><div class="ob-pcard ' + (zn.img ? 'has-photo' : 'no-photo') + '">' +
-      (zn.img ? '<img src="/assets/halloween/' + zn.img + '.jpg" alt="" decoding="async"' + (zn.pos ? ' style="object-position:' + zn.pos + '"' : '') + '>' : '<span class="ob-wm" aria-hidden="true">' + zn.n + '</span>') +
+    el.innerHTML = hdr(3, 'Programme') + '<div class="ob-motion ob-pbody"><div class="ob-pcard ' + (zn.img ? 'has-photo' : 'hd-body') + '">' +
+      (zn.img ? '<img src="/assets/halloween/' + zn.img + '.jpg" alt="" decoding="async"' + (zn.pos ? ' style="object-position:' + zn.pos + '"' : '') + '>' : '<div class="hd-zoom" aria-hidden="true"><img src="/assets/app/v2/corps-repli.webp" alt="" draggable="false"></div><div class="hd-veil" aria-hidden="true"></div>') +
       '<span class="ob-ppill">12 sem.</span><p class="ob-plab">Ta zone la plus faible</p><h3 class="ob-ptitle">' + zn.n + '</h3><p class="ob-psub">3 à 5 séances / sem</p></div>' +
-      '<p class="ob-pmeta">12 semaines · 90 €</p><p class="ob-pwhy hd-orange">+ un 2<sup>e</sup> programme offert jusqu\'à samedi 23&nbsp;h&nbsp;59</p></div>';
+      '<p class="ob-pmeta">12 semaines · 90 €</p><p class="ob-pwhy hd-orange">+ un 2<sup>e</sup> programme offert jusqu\'à samedi minuit</p></div>';
+  }
+
+  function placeZoom() {
+    var card = scr[3].querySelector('.hd-body'); if (!card) return;
+    var zm = card.querySelector('.hd-zoom'), zn = ZONES[zi()], Z = 3;
+    var cw = card.offsetWidth, ch = card.offsetHeight; if (!cw || !ch) return;
+    var W = cw * Z, H = W * 410 / 340;
+    var px = 0, py = 0; zn.pts.forEach(function (q) { px += q[0]; py += q[1]; }); px /= zn.pts.length; py /= zn.pts.length;
+    zm.style.cssText = 'width:' + W + 'px;height:' + H + 'px;left:' + (cw / 2 - px * W) + 'px;top:' + (ch * 0.38 - py * H) + 'px';
+    zn.pts.forEach(function (q) {
+      var g = document.createElement('i'); g.className = 'hd-glow';
+      g.style.cssText = 'left:' + (q[0] * 100) + '%;top:' + (q[1] * 100) + '%;opacity:' + (q[2] ? 1 : .55);
+      zm.appendChild(g);
+    });
   }
 
   /* ---------- 5 fréquence ---------- */
@@ -206,13 +219,13 @@
     scr[i].innerHTML = '<img src="' + src + '" alt="' + alt + '" width="390" height="844" loading="lazy" decoding="async">';
   }
 
-  renderObj(); renderZone(); renderDiag(); renderProg(); renderFreq();
+  renderObj(); renderZone(); renderDiag(); renderProg(); renderFreq(); placeZoom();
   renderShot(5, '/assets/app/v2/today-session.jpg', 'Écran Aujourd\'hui : la séance du jour est prête');
-  renderShot(6, '/assets/halloween/app-semaines.jpg', 'Écran Programme : les semaines et les séances');
+  renderShot(6, '/assets/halloween/app-bilan.jpg', 'Écran Bilan : radar et score à refaire après 12 semaines');
   live();
 
   /* ---------- échelle du canvas (écrans conçus en 320 × 692) ---------- */
-  function scale() { canvas.style.setProperty('--k', (frame.clientHeight / 692).toFixed(4)); scopeDraw(); }
+  function scale() { canvas.style.setProperty('--k', (frame.clientHeight / 649).toFixed(4)); scopeDraw(); }
   if (typeof ResizeObserver === 'function') new ResizeObserver(scale).observe(frame);
   window.addEventListener('resize', scale, { passive: true });
   scale();
