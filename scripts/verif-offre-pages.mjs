@@ -196,12 +196,10 @@ for (const [phase, fin, v] of [['v2', PASSE, '350'], ['fenetre', FUTUR, '249']])
   await pg.close();
 }
 
-// bascule : la date limite affichée dérive de la fin d'offre (Europe/Paris), pas d'une chaîne en dur.
+// bascule : plus de date limite affichée (décision 30/10).
 {
   const pg = await ouvrir('/bascule', { fin: '2026-10-26T18:00:00.000Z' });
-  const d = await pg.innerText('#deadline');
-  const q = await pg.$$eval('#faq summary', (s) => s.map((x) => x.textContent).join(' | '));
-  verifier(d.includes('lundi 26 octobre') && q.includes('lundi 26 octobre') && !d.includes('dimanche 25'), `bascule date limite = fin d'offre (« ${d} »)`);
+  verifier(!(await pg.$('#deadline')) && !(await pg.innerText('body')).includes('26 octobre'), 'bascule sans date limite');
   await pg.close();
 }
 
