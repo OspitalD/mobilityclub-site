@@ -97,6 +97,13 @@
 
 
 /* CTA répétés */
+.lede{max-width:34ch;margin:14px auto 0;font-size:17px;line-height:1.45;color:var(--body);text-wrap:balance;}
+.hero .lede{margin-top:12px;}
+.probleme{padding-bottom:0;}
+.probleme .wrap{max-width:640px;}
+.probleme h2{font-size:clamp(28px,6vw,44px);}
+.probleme p{margin-top:16px;font-size:18px;line-height:1.55;color:var(--body);}
+.perso-sub{margin-top:10px;font-size:17px;color:var(--body);}
 .cta-row{text-align:center;margin-top:clamp(32px,5vw,52px);}
 .cta-row .cta{min-width:min(100%,300px);}
 
@@ -133,7 +140,7 @@
 .sticky-cta .cta{width:100%;}
 .sticky-cta.show{transform:none;pointer-events:auto;}
 @media (max-width:899px){.sticky-cta{display:block;}body{padding-bottom:0;}}
-@media (max-width:820px){.perso{grid-template-columns:1fr;}.psteps li:not(.on) p{display:none;}.psteps li{opacity:.55;}.pphone{order:-1;}.offers{grid-template-columns:1fr;}.offer{min-height:0;}}
+@media (max-width:820px){.perso{grid-template-columns:1fr;}.psteps li:not(.on) p{display:none;}.psteps li{opacity:.55;}.offers{grid-template-columns:1fr;}.offer{min-height:0;}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.cta,.sticky-cta,.pphone .phone img,.psteps li{transition:none;}}
 @media (min-width:900px){
   .hero-bg .sharp{inset:0 auto 0 50%;width:min(620px,48vw);transform:translateX(-50%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);}
@@ -155,6 +162,7 @@
     <span class="capsule live"><span class="tag">Halloween</span>jusqu'à samedi minuit</span>
     <span class="capsule ended"><span class="tag">Halloween</span>offre terminée</span>
     <h1>Un programme <em>ou un sort.</em></h1>
+    <p class="lede">Deux programmes de mobilité construits sur ton bilan, pas une routine de plus. <span class="live">Le deuxième est offert jusqu'à samedi minuit.</span></p>
 
     <div class="fan" aria-label="Deux programmes dans la poche : un acheté, un offert">
       <div class="pocket-back"></div>
@@ -171,9 +179,9 @@
       <div class="tile"><span id="cd-m">00</span><small>min</small></div>
       <div class="tile"><span id="cd-s">00</span><small>s</small></div>
     </div>
-    <p class="until live">2 programmes, le moins cher est offert. Fin samedi 1<sup>er</sup> novembre, 23 h 59 (Paris)</p>
+    <p class="until live">Tu paies le plus cher des deux. Fin samedi 1<sup>er</sup> novembre, 23 h 59 (Paris).</p>
     <a class="cta live" href="/halloween/choisir" data-cta="hero">Choisir mes programmes</a>
-    <p class="sub live">Tu paies ici, puis tu te connectes à l'app avec l'email de ton paiement.</p>
+    <p class="sub live">Paiement unique, pas d'abonnement. Ensuite, tu te connectes à l'app avec l'email de ton paiement.</p>
 
     <div class="ended glass ended-box" id="ended" role="status">
       <h2>L'offre est terminée.</h2>
@@ -183,16 +191,26 @@
   </div>
 </header>
 
+<!-- 1 bis. LE PROBLÈME (lead) -->
+<section class="probleme" aria-labelledby="t-pb">
+  <div class="wrap">
+    <h2 id="t-pb">Les routines des réseaux ne connaissent pas ton épaule.</h2>
+    <p>Dix minutes de mobilité « pour tout le monde ». Tu les fais deux semaines, tu ne sens pas la différence, tu lâches. Normal : personne n'a regardé ce qui coince chez toi.</p>
+    <p>Ici, on commence par mesurer. Ensuite seulement, on te dit quoi faire.</p>
+  </div>
+</section>
+
 <!-- 2. 100 % PERSONNALISÉ -->
 <section aria-labelledby="t-perso" id="perso">
   <div class="wrap perso">
     <div>
-      <h2 id="t-perso">Ton programme devient 100&nbsp;% personnalisé</h2>
+      <h2 id="t-perso">Ton programme part de ton bilan. Pas d'une routine.</h2>
+      <p class="perso-sub">100&nbsp;% personnalisé, en 4 étapes.</p>
       <ol class="psteps" id="psteps">
-        <li class="on" data-i="0"><span class="n">1</span><b>Onboarding</b><p>Tu te connectes avec ton email : un code, pas de mot de passe. Ton espace est prêt.</p></li>
-        <li data-i="1"><span class="n">2</span><b>Bilan</b><p>Des tests guidés mesurent ta mobilité, zone par zone. L'algorithme lit ton résultat.</p></li>
-        <li data-i="2"><span class="n">3</span><b>Génération</b><p>Il priorise ta zone la plus faible et règle les séries, le temps et la fréquence pour toi.</p></li>
-        <li data-i="3"><span class="n">4</span><b>12 semaines</b><p>Ton programme se déroule sur 12 semaines et fait progresser ta zone d'une semaine à l'autre.</p></li>
+        <li class="on" data-i="0"><span class="n">1</span><b>Onboarding</b><p>Tu te connectes avec l'email de ton paiement. Un code, pas de mot de passe.</p></li>
+        <li data-i="1"><span class="n">2</span><b>Bilan</b><p>Des tests guidés, zone par zone, mesurent où tu bloques vraiment.</p></li>
+        <li data-i="2"><span class="n">3</span><b>Génération</b><p>L'algorithme part de ta zone la plus faible et règle les séries, le temps et la fréquence sur toi.</p></li>
+        <li data-i="3"><span class="n">4</span><b>12 semaines</b><p>Chaque semaine monte d'un cran. À chaque séance, tu sais quoi faire, sans réfléchir.</p></li>
       </ol>
     </div>
     <div class="pphone" id="pphone" role="group" aria-roledescription="carrousel" aria-label="Les 4 étapes dans l'app">
@@ -212,21 +230,21 @@
 <!-- 4. LES 2 CATÉGORIES -->
 <section aria-labelledby="t-cats">
   <div class="wrap">
-    <div class="sec-head"><h2 id="t-cats">Deux catégories.</h2></div>
+    <div class="sec-head"><h2 id="t-cats">Deux façons de t'y mettre.</h2></div>
     <div class="offers">
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/hanche.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Articulation</div>
-        <p class="zones">Une zone : épaule, hanche, cheville, colonne…</p>
+        <p class="zones">Pour débloquer la zone qui te limite : épaule, hanche, cheville, colonne.</p>
         <div class="price">90 €<small>le programme</small></div>
-        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines générées par l'algorithme</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de ta zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3, 4 ou 5 séances par semaine</li></ul>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines construites sur le bilan de ta zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3, 4 ou 5 séances par semaine, selon ta vie</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Une progression semaine après semaine</li></ul>
       </article>
       <article class="offer glass">
         <img class="bgp" src="/assets/halloween/squat.jpg" alt="" loading="lazy" width="540" height="960" />
         <div class="name">Warm Up</div>
-        <p class="zones">Un mouvement : squat, développé, tractions, soulevé de terre, course, padel…</p>
+        <p class="zones">Pour arriver prêt sur ton mouvement : squat, développé, tractions, soulevé de terre, course, padel.</p>
         <div class="price">49 €<small>le programme</small></div>
-        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>12 semaines d'échauffement avant ta séance</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Le bilan de la zone</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>La durée que tu veux par séance</li></ul>
+        <ul class="checks"><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Un échauffement taillé pour ce mouvement, avant ta séance</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Réglé sur le bilan de la zone qui travaille</li><li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>La durée que tu choisis, 12 semaines qui progressent</li></ul>
       </article>
     </div>
     <div class="cta-row live"><a class="cta" href="/halloween/choisir" data-cta="categories">Choisir mes programmes</a></div>
@@ -273,6 +291,14 @@
         <p>Non, n'achète rien. Si tu as l'accès total (mensuel, annuel ou à vie), les programmes Articulation et Warm Up sont inclus : tu les choisis directement dans l'onglet Programme de ton app, sans payer, autant que tu veux.</p>
       </details>
       <details class="glass">
+        <summary>Je ne sais pas quelle zone choisir.</summary>
+        <p>Prends celle qui te gêne le plus, à l'entraînement ou au quotidien. Si ton bilan montre une autre zone plus faible, écris-moi avant de lancer ton programme et on l'échange.</p>
+      </details>
+      <details class="glass">
+        <summary>Je me suis déjà blessé, c'est pour moi ?</summary>
+        <p>Le programme travaille dans les amplitudes que ton bilan a mesurées, sans forcer. Si tu as une douleur aiguë ou une blessure en cours, vois d'abord un professionnel de santé.</p>
+      </details>
+      <details class="glass">
         <summary>Combien de temps dure un programme ?</summary>
         <p>12 semaines. Un programme Articulation compte 3, 4 ou 5 séances par semaine, selon ce que tu choisis. Un Warm Up s'insère avant tes séances, pour la durée que tu fixes.</p>
       </details>
@@ -281,7 +307,8 @@
 </section>
 <section class="final" aria-label="Choisir mes programmes" style="padding-top:0">
   <div class="wrap">
-    <h2 class="live">Deux programmes dans la poche.</h2>
+    <h2 class="live">Deux programmes, un seul prix.</h2>
+    <p class="lede live">Jusqu'à samedi minuit. Après, c'est le prix normal pour chacun.</p>
     <h2 class="ended">Les programmes t'attendent dans l'app.</h2>
     <a class="cta live" href="/halloween/choisir" data-cta="final">Choisir mes programmes</a>
   </div>
