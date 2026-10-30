@@ -26,8 +26,8 @@ h1{font-size:clamp(40px,8vw,64px);letter-spacing:-.045em;margin:6px 0 4px;}
 .layout{display:grid;grid-template-columns:minmax(0,1fr);gap:0;}
 .layout>*{min-width:0;}
 /* poche : collante en haut sur mobile */
-.pocketzone{position:sticky;top:0;z-index:30;margin:0 calc(-1*var(--gutter));padding:6px var(--gutter) 12px;background:linear-gradient(180deg,#0D0F0E 78%,rgba(13,15,14,0));}
-.fan.pk{width:min(270px,76vw);height:224px;margin:0 auto;transition:transform .25s var(--ease),filter .25s;}
+.pocketzone{position:sticky;top:0;z-index:30;margin:0 calc(-1*var(--gutter));padding:0 var(--gutter) 6px;background:linear-gradient(180deg,#0D0F0E 78%,rgba(13,15,14,0));}
+.fan.pk{width:min(270px,76vw);height:214px;margin:10px auto 0;transition:transform .25s var(--ease),filter .25s;}
 .fan.pk .pocket-back{height:104px;}
 .fan.pk .pocket-front{height:90px;}
 .fan.pk .pocket-front::before{top:16px;}
@@ -86,6 +86,26 @@ h1{font-size:clamp(40px,8vw,64px);letter-spacing:-.045em;margin:6px 0 4px;}
 .msg{min-height:20px;font-size:13px;color:var(--pumpkin);font-weight:600;}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
+
+/* Paquets de bonbons : bords sertis haut et bas, papier métallisé par catégorie, reflet en diagonale. */
+.pack{--z:7px;border-radius:8px;border:0;box-shadow:0 18px 30px -12px rgba(0,0,0,.8);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50% 100%/var(--z) var(--z) repeat-x,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) 50% 0/var(--z) var(--z) repeat-x,linear-gradient(#000 0 0) center/100% calc(100% - 2*var(--z)) no-repeat;
+          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50% 100%/var(--z) var(--z) repeat-x,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) 50% 0/var(--z) var(--z) repeat-x,linear-gradient(#000 0 0) center/100% calc(100% - 2*var(--z)) no-repeat;}
+.pack{--foil:linear-gradient(90deg,#9E3A0C,#F08A3E 22%,#C2551A 45%,#F7A55A 70%,#B9501A);}
+.pack[data-cat="warmup"]{--foil:linear-gradient(90deg,#24182F,#6B4E8C 22%,#35264A 45%,#8A6BB0 70%,#2A1D38);}
+.pack::before{content:"";position:absolute;z-index:2;left:0;right:0;top:0;height:22px;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 1px,transparent 1px 4px),var(--foil);box-shadow:0 2px 6px rgba(0,0,0,.35);}
+.pack::after{background:
+  repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 1px,transparent 1px 4px) bottom/100% 22px no-repeat,
+  var(--foil) bottom/100% 22px no-repeat,
+  linear-gradient(115deg,transparent 28%,rgba(255,255,255,.2) 36%,rgba(255,255,255,0) 44%),
+  linear-gradient(180deg,rgba(0,0,0,.55),transparent 50%,rgba(0,0,0,.65));}
+.pack b{top:28px;}
+.pack .pr{bottom:30px;}
+.pack.in .pr::after{content:" · dans ta poche";}
+/* Barre de paiement : poche vide = un seul bouton, sans récap. */
+.pay.vide .recap,.pay.vide .note{display:none;}
+.msg:empty{min-height:0;}
 @media (min-width:900px){
   .layout{grid-template-columns:380px minmax(0,1fr);gap:56px;align-items:start;}
   .pocketzone{position:sticky;top:20px;margin:0;padding:0;background:none;z-index:5;}

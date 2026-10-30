@@ -35,7 +35,7 @@
   Array.prototype.forEach.call(titres, decouperMots);
 
   /* ---------- ScrollReveal / Group ---------- */
-  var GROUPES = ['.hero .lede', '.hero .fan', '.hero .tiles', '.probleme p', '.pb-list li', '.ba p', '.perso-sub', '.psteps li',
+  var GROUPES = ['.hero .lede', '.hero .fan', '.hero .tiles', '.probleme p', '.routine', '.ba-col', '.ba-bar', '.perso-sub', '.psteps li',
     '.pphone', '.offer', '.clubline', '.faq details', '.final .lede', '.prix li', '.risque', '.cta-row'];
   var parent = new Map();
   GROUPES.forEach(function (sel) {

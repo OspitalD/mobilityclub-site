@@ -109,16 +109,64 @@
 .pb-list li{position:relative;padding-left:22px;font-size:18px;line-height:1.5;color:var(--text);}
 .pb-list li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:2px;border-radius:2px;background:var(--pumpkin);}
 .pb-turn{color:var(--text)!important;font-weight:700;font-style:italic;font-size:20px!important;}
-.ba{display:grid;gap:12px;margin:0 0 22px;}
-.ba p{margin:0;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:16px;line-height:1.5;}
-.ba p:last-child{box-shadow:inset 0 0 0 1px rgba(62,207,160,.35);}
-.ba b{display:block;margin-bottom:2px;font-style:italic;color:var(--text);}
-.ba p:last-child b{color:var(--green);}
 .checks em{display:block;font-style:normal;color:var(--body);font-size:.92em;margin-top:2px;}
 .prix{list-style:none;margin:22px auto 0;padding:0;max-width:440px;display:grid;gap:0;}
 .prix li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;color:var(--body);}
 .prix b{font-size:24px;font-weight:800;font-style:italic;color:var(--text);}
 .risque{max-width:440px;margin:16px auto 22px;font-size:14px;line-height:1.5;color:var(--body);}
+/* ——— Passe DA « niveau citrouille » ——— */
+.routine{margin:22px 0 6px;padding:18px 18px 8px;border-radius:24px;max-width:520px;}
+.rt-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08);}
+.rt-head b{font-size:15px;font-weight:600;color:var(--text);}
+.rt-tag{flex:none;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.1);font-size:11px;font-weight:700;letter-spacing:.01em;color:var(--body);}
+.routine ul{list-style:none;margin:0;padding:0;}
+.routine li{display:grid;gap:2px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.routine li:last-child{border-bottom:0;}
+.routine s{font-size:18px;font-weight:700;font-style:italic;color:rgba(245,245,243,.5);text-decoration:line-through;text-decoration-color:var(--pumpkin);text-decoration-thickness:2.5px;}
+.routine li span{font-size:15px;color:var(--body);}
+.ba{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 26px;}
+.ba-col{padding:16px 18px;border-radius:20px;}
+.ba-col small{display:block;margin-bottom:4px;font-size:13px;font-weight:800;font-style:italic;letter-spacing:-.01em;}
+.ba-col p{margin:0;font-size:16px;line-height:1.5;}
+.ba-avant{background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);}
+.ba-avant small{color:var(--muted,#8E918E);}
+.ba-avant p{color:rgba(201,203,200,.75);}
+.ba-apres{background:linear-gradient(160deg,rgba(62,207,160,.12),rgba(62,207,160,.03));box-shadow:inset 0 0 0 1px rgba(62,207,160,.32),0 18px 40px -22px rgba(62,207,160,.55);}
+.ba-apres small{color:var(--green);}
+.ba-apres p{color:var(--text);}
+.ba-bar{display:flex;align-items:center;gap:10px;padding:0 6px;font-size:11px;font-weight:700;color:var(--body);font-variant-numeric:tabular-nums;}
+.ba-bar i{position:relative;flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;}
+.ba-bar em{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(62,207,160,.35),var(--green));transform-origin:left;transform:scaleX(1);}
+.mo .ba-bar em{transform:scaleX(.04);transition:transform 1.6s cubic-bezier(.22,1,.36,1) .3s;}
+.mo .ba-bar.in em{transform:scaleX(1);}
+.psteps .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:800;color:var(--body);background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:all .4s var(--ease);}
+.psteps li.on .n{color:#2A0D02;background:radial-gradient(circle at 50% 38%,#FFE08A,#FF9A1F 55%,#D9561A);box-shadow:0 0 18px rgba(255,140,30,.5),inset 0 1px 0 rgba(255,255,255,.5);}
+.offer{--pad:clamp(26px,3.4vw,40px);padding:var(--pad);}
+.offer .bgp{position:relative;inset:auto;display:block;width:calc(100% + 2*var(--pad));height:200px;max-width:none;margin:calc(-1*var(--pad)) calc(-1*var(--pad)) 0;object-fit:cover;object-position:50% 40%;filter:saturate(1.05) contrast(1.04);z-index:0;
+  -webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 100%);mask-image:linear-gradient(180deg,#000 45%,transparent 100%);}
+.offer .name{position:relative;z-index:1;margin-top:-58px;font-size:clamp(30px,4vw,40px);font-weight:800;font-style:italic;letter-spacing:-.035em;line-height:1;text-shadow:0 2px 18px rgba(0,0,0,.6);}
+.offer .zones{position:relative;z-index:1;margin-top:-4px;}
+.checks em{font-size:.88em;color:rgba(201,203,200,.8);}
+.clubline.glass{display:grid;gap:16px;padding:22px;border-radius:26px;border:0;justify-content:stretch;}
+.cl-tag{display:inline-block;margin-bottom:10px;background:rgba(62,207,160,.14);color:var(--green);}
+.clubline p{margin:0;font-size:16px;color:var(--body);}
+.cl-prix{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.cl-prix li{display:grid;gap:2px;padding:12px;border-radius:16px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);}
+.cl-prix b{font-size:22px;font-weight:800;font-style:italic;letter-spacing:-.03em;color:var(--text);white-space:nowrap;}
+.cl-prix span{font-size:12px;line-height:1.3;color:var(--body);}
+.cl-prix .nw{white-space:nowrap;font-size:11px;}
+.cl-lnk{justify-self:start;font-size:15px;font-weight:600;color:var(--green);text-decoration:none;}
+.cl-lnk:hover{text-decoration:underline;text-underline-offset:3px;}
+.emblem{display:block;width:96px;height:auto;margin:0 auto 18px;filter:drop-shadow(0 12px 28px rgba(255,110,20,.45));}
+.prix li{padding:14px 18px;margin-top:8px;border:0;border-radius:18px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+.prix li:first-child{background:linear-gradient(160deg,rgba(232,116,42,.16),rgba(232,116,42,.04));box-shadow:inset 0 0 0 1px rgba(232,116,42,.38);}
+.prix b{white-space:nowrap;}
+.prix span{color:var(--text);}
+/* Ambiance : grain et lueurs de bougie très discrètes, section par section */
+.probleme{background:radial-gradient(55% 45% at 0% 35%,rgba(232,116,42,.08),transparent 70%);}
+#perso{background:radial-gradient(50% 40% at 100% 40%,rgba(62,207,160,.07),transparent 70%);}
+.final{background:radial-gradient(45% 35% at 50% 18%,rgba(255,110,20,.12),transparent 70%);}
+@media (min-width:821px){.ba{grid-template-columns:1fr 120px 1fr;align-items:stretch;}.ba-bar{flex-direction:column;justify-content:center;}.ba-bar i{flex:none;width:100%;}}
 .cta-row{text-align:center;margin-top:clamp(32px,5vw,52px);}
 .cta-row .cta{min-width:min(100%,300px);}
 
@@ -213,11 +261,14 @@
     <p>Tu fais tes dix minutes de mobilité. Tu les fais bien, même.</p>
     <p>Et au développé, ton épaule tire toujours. Au squat, tu ne descends pas plus bas qu'il y a trois mois.</p>
     <p>Ce n'est pas un problème de volonté. Ta routine ne sait rien de toi&nbsp;:</p>
-    <ul class="pb-list">
-      <li>elle a été écrite pour « tout le monde », donc pour personne&nbsp;;</li>
-      <li>elle travaille partout un peu, donc nulle part assez&nbsp;;</li>
-      <li>elle ne change jamais, donc ton corps arrête de répondre.</li>
-    </ul>
+    <div class="routine glass" role="group" aria-label="Ce que promet une routine générique, et ce qu'elle fait vraiment">
+      <div class="rt-head"><span class="rt-tag">Routine</span><b>10 min de mobilité, pour tout le monde</b></div>
+      <ul>
+        <li><s>Écrite pour toi</s><span>écrite pour « tout le monde », donc pour personne</span></li>
+        <li><s>Cible ta zone</s><span>un peu partout, donc nulle part assez</span></li>
+        <li><s>Progresse avec toi</s><span>ne change jamais, donc ton corps arrête de répondre</span></li>
+      </ul>
+    </div>
     <p>Pendant ce temps, la zone qui coince reste celle qui coince. Celle qui te fait raccourcir une amplitude, éviter un exercice, ou repenser à ta dernière blessure.</p>
     <p class="pb-turn">Ici, on fait l'inverse&nbsp;: on commence par mesurer.</p>
   </div>
@@ -229,8 +280,9 @@
     <div>
       <h2 id="t-perso">De « je fais des étirements » à « je sais ce que je travaille ».</h2>
       <div class="ba">
-        <p><b>Aujourd'hui</b> tu enchaînes des exercices vus sur les réseaux, sans savoir lesquels servent ni si ça avance.</p>
-        <p><b>Dans 12 semaines</b> tu sais quelle zone tu travailles, pourquoi et combien. Ton bilan de départ te sert de point de comparaison.</p>
+        <div class="ba-col ba-avant"><small>Aujourd'hui</small><p>Tu enchaînes des exercices vus sur les réseaux, sans savoir lesquels servent ni si ça avance.</p></div>
+        <div class="ba-bar" aria-hidden="true"><span>S1</span><i><em></em></i><span>S12</span></div>
+        <div class="ba-col ba-apres"><small>Semaine 12</small><p>Tu sais quelle zone tu travailles, pourquoi et combien. Ton bilan de départ te sert de point de comparaison.</p></div>
       </div>
       <p class="perso-sub">Un programme 100&nbsp;% personnalisé, en 4 étapes&nbsp;:</p>
       <ol class="psteps" id="psteps">
@@ -281,9 +333,14 @@
 <!-- 5. ACCÈS TOTAL -->
 <section aria-label="Accès total" style="padding:0">
   <div class="wrap">
-    <div class="clubline">
-      <p><b>Tu veux tout, tout le temps ?</b> L'accès total : 30 € / mois (7 jours d'essai), 275 € / an, 350 € à vie en 4 × 87,50 €.</p>
-      <a class="lnk" style="margin:0" href="/devenir-membre">Voir l'accès total</a>
+    <div class="clubline glass">
+      <div class="cl-txt"><span class="rt-tag cl-tag">Accès total</span><p><b>Tu veux tout, tout le temps&nbsp;?</b> La séance du jour adaptée à toi, et tous les programmes inclus.</p></div>
+      <ul class="cl-prix">
+        <li><b>30 €</b><span>par mois · 7 j d'essai</span></li>
+        <li><b>275 €</b><span>par an</span></li>
+        <li><b>350 €</b><span>à vie<br /><span class="nw">ou 4 × 87,50 €</span></span></li>
+      </ul>
+      <a class="cl-lnk" href="/devenir-membre">Voir l'accès total <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
@@ -334,6 +391,7 @@
 </section>
 <section class="final" aria-label="Choisir mes programmes" style="padding-top:0">
   <div class="wrap">
+    <svg class="emblem live" viewBox="0 0 120 104" aria-hidden="true" focusable="false"><defs><radialGradient id="emCorps" cx="45%" cy="38%" r="70%"><stop offset="0" stop-color="#F7963F"/><stop offset=".6" stop-color="#D9661C"/><stop offset="1" stop-color="#7E300C"/></radialGradient><radialGradient id="emFeu" cx="50%" cy="55%" r="65%"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".4" stop-color="#FFC24A"/><stop offset="1" stop-color="#E0520A"/></radialGradient><filter id="emLueur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2" result="f"/><feMerge><feMergeNode in="f"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M58 16 C57 9 60 4 66 2 L68 6 C64 8 63 12 64 17 Z" fill="#4E6B2C"/><ellipse cx="60" cy="60" rx="56" ry="42" fill="url(#emCorps)"/><g fill="none" stroke="#6E2808" stroke-opacity=".45" stroke-width="2"><path d="M38 22 C26 44 26 76 40 100"/><path d="M60 18 C56 46 56 76 60 102"/><path d="M82 22 C94 44 94 76 80 100"/></g><g class="jack-feu" fill="url(#emFeu)" stroke="#2E0E01" stroke-width="1.6" filter="url(#emLueur)"><path d="M26 44 L52 52 L48 55 L54 57 L38 66 L30 58 Z"/><path d="M94 44 L68 52 L72 55 L66 57 L82 66 L90 58 Z"/><path d="M60 60 L55 69 L60 67 L65 69 Z"/><path d="M22 72 L34 76 L38 88 L44 78 L52 80 L56 94 L60 80 L64 94 L68 80 L76 78 L82 88 L86 76 L98 72 L94 80 Q60 104 26 80 Z"/></g></svg>
     <h2 class="live">Dans 12 semaines, il y a deux versions de toi.</h2>
     <p class="lede live">Celle qui fait encore la même routine en espérant que ça bouge. Et celle qui sait ce qu'elle travaille, et le voit au retest.</p>
     <ul class="prix live">

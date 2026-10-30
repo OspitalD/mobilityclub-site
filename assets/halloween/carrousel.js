@@ -57,6 +57,10 @@
   /* barre CTA collante : visible une fois le héros dépassé */
   var sticky = document.getElementById('sticky'), hero = document.querySelector('.hero');
   if (sticky && hero && 'IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { sticky.classList.toggle('show', !es[0].isIntersecting); }, { threshold: 0 }).observe(hero);
+    /* La barre collante n'apparaît qu'entre le héros et l'appel final : jamais deux boutons verts à l'écran. */
+    var vus = { hero: true, fin: false }, fin = document.querySelector('.final');
+    var maj = function () { sticky.classList.toggle('show', !vus.hero && !vus.fin); };
+    new IntersectionObserver(function (es) { vus.hero = es[0].isIntersecting; maj(); }, { threshold: 0 }).observe(hero);
+    if (fin) new IntersectionObserver(function (es) { vus.fin = es[0].isIntersecting; maj(); }, { threshold: 0 }).observe(fin);
   }
 })();

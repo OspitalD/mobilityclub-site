@@ -105,3 +105,7 @@ body.is-ended span.capsule.ended{display:inline-flex;}
 /* Intérieur de la citrouille : le dos de la poche devient la cavité sombre, plus de bord dentelé. */
 .pocket-back{clip-path:none;border-radius:22px 22px 40% 40% / 18px 18px 30% 30%;background:radial-gradient(90% 60% at 50% 20%,#3a1404,#1a0802 70%);box-shadow:inset 0 8px 18px rgba(255,140,40,.25);}
 @media (prefers-reduced-motion:reduce){.jack-feu{animation:none;}}
+
+/* Grain filmique très léger sur toute la page */
+body::after{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");}

@@ -63,7 +63,7 @@
     Object.keys(CAT).forEach(function (c) {
       h += '<section class="shelf" aria-labelledby="sh-' + c + '"><h2 id="sh-' + c + '">' + CAT[c].nom + ' · ' + eur(CAT[c].prix) + '</h2><p class="d">' + CAT[c].desc + '</p><div class="row">';
       PROGRAMMES.filter(function (p) { return p.cat === c; }).forEach(function (p) {
-        h += '<div class="pack' + (p.img ? '' : ' sans-photo') + '" role="button" tabindex="0" aria-pressed="false" data-id="' + p.id + '" aria-label="' + p.titre + ', ' + CAT[c].nom + ', ' + eur(p.prix) + '. Entrée pour ajouter à la poche.">' +
+        h += '<div class="pack' + (p.img ? '' : ' sans-photo') + '" role="button" tabindex="0" aria-pressed="false" data-cat="' + p.cat + '" data-id="' + p.id + '" aria-label="' + p.titre + ', ' + CAT[c].nom + ', ' + eur(p.prix) + '. Entrée pour ajouter à la poche.">' +
           (p.img ? '<img src="/assets/halloween/' + p.img + '.jpg" alt="" draggable="false" loading="lazy"' + (p.pos ? ' style="object-position:' + p.pos + '"' : '') + ' />' : '') +
           '<b>' + p.titre + '</b><span class="pr">' + eur(p.prix) + '</span></div>';
       });
@@ -113,6 +113,7 @@
     h += '<li class="tot"><span>À payer</span><span>' + montantRoulant(dernierMontant, montant) + '</span></li>';
     dernierMontant = montant;
     recap.innerHTML = h;
+    var barre = document.querySelector('.pay'); if (barre) barre.classList.toggle('vide', !sel.length);
     majBouton(c);
   }
 
