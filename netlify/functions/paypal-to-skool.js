@@ -1,27 +1,35 @@
-// Webhook PayPal → invitation Skool automatique.
+// Webhook PayPal → compte membre dans l'app Mobility Club.
+// (Le nom du fichier date de l'époque Skool : il est GARDÉ, c'est l'URL déclarée
+// dans le webhook PayPal. Renommer = couper le webhook.)
 //
-// POURQUOI. L'annuel (197 €, paiement unique) se paie sur PayPal, mais l'accès
-// au Club vit sur Skool. Jusqu'ici Damien envoyait l'invitation à la main après
-// chaque paiement. Cette Function ferme la boucle : PayPal encaisse → Skool
-// invite, sans intervention.
+// POURQUOI. Skool est archivé depuis le 22/10/2026 : le Club vit dans l'app. Un
+// paiement PayPal ouvre donc le compte dans l'app (palier `programme`, via
+// l'endpoint `paypal-provision` du dashboard) et envoie l'email d'accès, sans
+// intervention de Damien. Deux portes :
+//   • CAPTURE (PAYMENT.CAPTURE.COMPLETED) — annuel 197 €, pass à vie, campagnes ;
+//   • ABONNEMENT (BILLING.SUBSCRIPTION.*) — plan mensuel 25 € après 7 jours
+//     gratuits (P-43F663568B911461GNLNCJBY). Résiliation : coupure programmée à la
+//     fin de la période payée, exécutée par `paypal-coupures` (planifiée).
 //
-// LE DANGER, ET COMMENT ON LE TIENT. L'URL d'invitation Skool permet à qui la
-// détient d'inviter n'importe qui dans le groupe payant. Trois verrous :
+// LE DANGER, ET COMMENT ON LE TIENT. Ce webhook crée des accès payants. Trois verrous :
 //   1. SIGNATURE — tout événement non signé par PayPal est rejeté. Sans ce
-//      verrou, un POST anonyme suffirait à se faire inviter gratuitement.
-//   2. MONTANT — on n'invite QUE sur le montant exact de l'annuel. Le même
-//      compte PayPal encaisse aussi la librairie du Timer (9/14/17 €) : sans
-//      ce filtre, un achat à 9 € ouvrirait un an de Club.
-//   3. IDEMPOTENCE — PayPal réémet ses webhooks. Une capture déjà traitée n'est
-//      jamais rejouée (store Blobs, clé = id de la capture).
-// Le secret Skool ne vit QUE dans les variables d'environnement Netlify. Il ne
-// doit jamais apparaître dans le repo ni dans une réponse HTTP.
+//      verrou, un POST anonyme suffirait à s'ouvrir un compte gratuitement.
+//   2. FILTRE — capture : on n'ouvre QUE sur les montants attendus (le même
+//      compte PayPal encaisse la librairie du Timer, 9/14/17 €). Abonnement : QUE
+//      sur le plan_id du Club.
+//   3. IDEMPOTENCE — PayPal réémet ses webhooks. Une capture ou un événement
+//      d'abonnement déjà traité n'est jamais rejoué (stores Blobs).
+// Le jeton du dashboard ne vit QUE dans les variables d'environnement Netlify. Il
+// ne doit jamais apparaître dans le repo ni dans une réponse HTTP.
 //
 // VARIABLES D'ENVIRONNEMENT REQUISES (Netlify → Site settings → Environment) :
-//   SKOOL_INVITE_WEBHOOK   l'URL d'invitation Skool (SECRET)
+//   DASHBOARD_PROVISION_TOKEN  jeton de `paypal-provision` (SECRET), cf. netlify/lib/acces-app.js
 //   PAYPAL_CLIENT_ID       app REST du dashboard développeur PayPal
 //   PAYPAL_CLIENT_SECRET   idem (SECRET)
-//   PAYPAL_WEBHOOK_ID      id du webhook créé dans cette même app
+//   PAYPAL_WEBHOOK_ID      id du webhook créé dans cette même app. Événements à
+//                          cocher : PAYMENT.CAPTURE.COMPLETED,
+//                          BILLING.SUBSCRIPTION.ACTIVATED / CANCELLED / EXPIRED / SUSPENDED
+//   PAYPAL_PLANS_ABONNEMENT  optionnel, défaut P-43F663568B911461GNLNCJBY
 //   PAYPAL_MONTANT_ANNUEL  optionnel, défaut « 197.00 »
 //   PAYPAL_MONTANTS_ACCEPTES  optionnel, liste séparée par des virgules — sert
 //                          aux campagnes à tarif différent (ex. « 197.00,100.00 »
@@ -30,17 +38,25 @@
 //                          se termine.
 //   PAYPAL_DEVISE          optionnel, défaut « EUR »
 //   PAYPAL_ENV             optionnel, « sandbox » pour tester sans encaisser
+//   SKOOL_INVITE_WEBHOOK   N'EST PLUS LU (Skool archivé) — peut être supprimée.
 
 import { connectLambda, getStore } from '@netlify/blobs';
 import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
+import {
+  appelerDashboard, deciderAbonnement, emailAccesApp, finDeDroit, planDe, storeAbonnements,
+} from '../lib/acces-app.js';
+import { journaliser, rapprocherSkool } from '../lib/bascule-journal.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
 // campagne est ouverte, tandis que cette liste décide quelles captures doivent
 // alimenter le stock public des séries.
-export const MONTANTS_LIFETIME = TIER_PRICES.map((price) => Number(price).toFixed(2));
+// 350 € = prix Lifetime de la phase V2 (après la fenêtre de lancement), servi par
+// lifetime-checkout quel que soit le palier : ces ventes comptent aussi dans le stock.
+export const PRIX_LIFETIME_V2 = 350;
+export const MONTANTS_LIFETIME = [...new Set([...TIER_PRICES, PRIX_LIFETIME_V2].map((price) => Number(price).toFixed(2)))];
 
 export const estMontantLifetime = (montant) =>
   MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));
@@ -169,10 +185,10 @@ const signatureValide = async (token, headers, evenement) => {
 };
 
 // L'événement de capture ne porte pas toujours l'email du payeur : on remonte
-// alors à la commande, qui elle l'a toujours.
-const emailDuPayeur = async (token, evenement, orderId) => {
-  const direct = evenement.resource?.payer?.email_address;
-  if (emailValide(direct)) return direct;
+// alors à la commande, qui elle l'a toujours. Le prénom sert à l'email d'accès.
+const payeurDeLaCapture = async (token, evenement, orderId) => {
+  const p = evenement.resource?.payer;
+  if (emailValide(p?.email_address)) return { email: p.email_address, prenom: p.name?.given_name || '' };
   if (!orderId) return null;
 
   const rep = await fetch(`${api()}/v2/checkout/orders/${encodeURIComponent(orderId)}`, {
@@ -181,7 +197,117 @@ const emailDuPayeur = async (token, evenement, orderId) => {
   if (!rep.ok) return null;
   const commande = await rep.json();
   const email = commande.payer?.email_address || commande.payment_source?.paypal?.email_address;
-  return emailValide(email) ? email : null;
+  if (!emailValide(email)) return null;
+  const nom = commande.payer?.name || commande.payment_source?.paypal?.name;
+  return { email, prenom: nom?.given_name || '' };
+};
+
+const emailDuPayeur = async (token, evenement, orderId) =>
+  (await payeurDeLaCapture(token, evenement, orderId))?.email || null;
+
+// L'événement d'abonnement porte normalement `subscriber` ; sinon on relit
+// l'abonnement chez PayPal.
+const abonnementComplet = async (token, resource) => {
+  if (emailValide(resource?.subscriber?.email_address)) return resource;
+  const rep = await fetch(`${api()}/v1/billing/subscriptions/${encodeURIComponent(resource.id)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!rep.ok) throw new Error(`abonnement_${rep.status}`);
+  return { ...resource, ...(await rep.json()) };
+};
+
+// ── Bascule Skool → app : email Skool lié + journal pour Hermès ─────────────
+// Appelé APRÈS l'ouverture du compte payeur. Ne jette jamais : le payeur a son
+// accès, le reste (2e email, journal) est du best-effort signalé à Damien.
+export const lierEtJournaliser = async ({ emailPaypal, prenom, formule, ref }) => {
+  const lien = await rapprocherSkool({ emailPaypal, formule, ref });
+  let skool_ouvert = false;
+  if (lien.email_skool && lien.email_skool !== emailPaypal) {
+    try {
+      await appelerDashboard('activer', { email: lien.email_skool, first_name: prenom, ref });
+      skool_ouvert = true;
+    } catch (err) {
+      console.error('[paypal-to-skool] email Skool lié non ouvert:', err?.message);
+    }
+  }
+  await journaliser({ type: 'activation', formule, prenom, email_paypal: emailPaypal, ref, ...lien, skool_ouvert });
+  return { ...lien, skool_ouvert };
+};
+
+// ── Abonnement mensuel ───────────────────────────────────────────────────────
+// Store `paypal_abonnements` :
+//   abonnes/<email>        { subscription_id, statut, acces_avant, bienvenue_pour }
+//   coupures/<sub_id>      { email, subscription_id, fin }   — exécutée par paypal-coupures
+//   evenements/<event_id>  trace d'idempotence
+// `acces_avant` : le membre avait-il DÉJÀ accès avant PayPal (ancien annuel, coaching…) ?
+// Alors la fin de l'abonnement ne le coupe pas — on ne retire pas ce que PayPal n'a pas donné.
+
+/** Coupe l'accès d'un abonné, sauf s'il s'est réabonné entre-temps ou avait accès avant. */
+export const executerCoupure = async (S, { email, subscription_id }) => {
+  const cleAbonne = `abonnes/${encodeURIComponent(email)}`;
+  const abonne = await S.get(cleAbonne, { type: 'json' });
+  let resultat;
+  if (abonne && abonne.subscription_id !== subscription_id && abonne.statut === 'active') {
+    resultat = { saute: 'reabonne' };
+  } else if (abonne?.acces_avant) {
+    resultat = { saute: 'acces_anterieur' };
+  } else {
+    const r = await appelerDashboard('couper', { email, ref: subscription_id });
+    resultat = { coupe: !!r.coupe };
+    await S.setJSON(cleAbonne, { ...(abonne || {}), subscription_id, statut: 'coupe', coupe_at: new Date().toISOString() });
+  }
+  await S.delete(`coupures/${encodeURIComponent(subscription_id)}`);
+  return resultat;
+};
+
+export const traiterAbonnement = async (evenement, verdict, token) => {
+  const S = storeAbonnements();
+  const subId = verdict.subscriptionId;
+  const cleEv = `evenements/${encodeURIComponent(evenement.id || `${subId}:${evenement.event_type}`)}`;
+  if (await S.get(cleEv, { type: 'json' })) return { deja: true };
+
+  const r = await abonnementComplet(token, evenement.resource);
+  const email = normaliserEmail(r.subscriber?.email_address);
+  if (!email) throw new Error('email_introuvable');
+  const prenom = r.subscriber?.name?.given_name || '';
+  const cleAbonne = `abonnes/${encodeURIComponent(email)}`;
+  const abonne = await S.get(cleAbonne, { type: 'json' });
+  let resultat;
+
+  if (verdict.geste === 'activer') {
+    const rep = await appelerDashboard('activer', { email, first_name: prenom, ref: subId });
+    const nouveau = abonne?.bienvenue_pour !== subId;
+    // L'email n'est marqué envoyé qu'une fois parti : sinon 500 et PayPal réessaie
+    // (le provisionnement, lui, est idempotent).
+    const plan = planDe(r.plan_id || evenement.resource?.plan_id);
+    if (nouveau) await emailAccesApp(email, prenom, { essai: plan.essai > 0 });
+    await S.setJSON(cleAbonne, {
+      subscription_id: subId,
+      statut: 'active',
+      // Un réabonnement garde l'état d'AVANT le tout premier abonnement PayPal.
+      acces_avant: abonne ? !!abonne.acces_avant : !!rep.acces_avant,
+      bienvenue_pour: subId,
+      maj_at: new Date().toISOString(),
+    });
+    // Réactivation après suspension / résiliation annulée : plus de coupure en attente.
+    await S.delete(`coupures/${encodeURIComponent(subId)}`);
+    if (nouveau) await lierEtJournaliser({ emailPaypal: email, prenom, formule: plan.formule, ref: subId });
+    resultat = { activer: true, compte_cree: !!rep.compte_cree, email_envoye: nouveau };
+  } else if (verdict.geste === 'programmer_coupure') {
+    const fin = finDeDroit(r);
+    await S.setJSON(`coupures/${encodeURIComponent(subId)}`, {
+      email, subscription_id: subId, fin, programmee_at: new Date().toISOString(),
+    });
+    if (abonne?.subscription_id === subId) await S.setJSON(cleAbonne, { ...abonne, statut: 'resilie', fin });
+    await journaliser({ type: 'resiliation', formule: planDe(r.plan_id).formule, prenom, email_paypal: email, ref: subId, fin });
+    resultat = { coupure_programmee: fin };
+  } else {
+    resultat = await executerCoupure(S, { email, subscription_id: subId });
+    await journaliser({ type: 'coupure', email_paypal: email, ref: subId, evenement: evenement.event_type, ...resultat });
+  }
+
+  await S.setJSON(cleEv, { type: evenement.event_type, subscription_id: subId, traite_at: new Date().toISOString() });
+  return resultat;
 };
 
 // ── Méthode IKEA : paiement par lien PayPal hébergé ──────────────────────────
@@ -229,22 +355,14 @@ export const traiterVenteIkea = async (evenement, token) => {
   return { offre: o.id, ok: true };
 };
 
-const inviterSurSkool = async (email) => {
-  const base = process.env.SKOOL_INVITE_WEBHOOK;
-  const url = `${base}${base.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`;
-  const rep = await fetch(url, { method: 'GET' });
-  // On ne loggue jamais `url` : elle contient le secret.
-  if (!rep.ok) throw new Error(`skool ${rep.status}`);
-};
-
 // ── Handler ───────────────────────────────────────────────────────────────────
 
 export const handler = async (req) => {
   if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
   if (req.blobs) connectLambda(req);
 
-  // SKOOL_INVITE_WEBHOOK n'est exigé qu'au moment d'inviter (plus bas) : la Méthode IKEA
-  // n'en dépend pas et doit fonctionner même si l'invitation Skool n'est pas configurée.
+  // DASHBOARD_PROVISION_TOKEN n'est exigé qu'au moment d'ouvrir un accès (plus bas) :
+  // la Méthode IKEA n'en dépend pas et doit fonctionner même sans lui.
   const requis = ['PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET', 'PAYPAL_WEBHOOK_ID'];
   const manquantes = requis.filter((v) => !process.env[v]);
   if (manquantes.length) {
@@ -289,6 +407,28 @@ export const handler = async (req) => {
     return json(500, { error: 'methode_ikea_failed' });
   }
 
+  // ── Abonnement mensuel ──
+  if (String(evenement?.event_type || '').startsWith('BILLING.SUBSCRIPTION.')) {
+    const v = deciderAbonnement(evenement);
+    if (!v.ok) {
+      console.log('[paypal-to-skool] abonnement ignoré —', v.raison);
+      return json(200, { ok: true, ignore: v.raison });
+    }
+    if (!process.env.DASHBOARD_PROVISION_TOKEN) {
+      console.error('[paypal-to-skool] variables manquantes: DASHBOARD_PROVISION_TOKEN');
+      return json(500, { error: 'not_configured' });
+    }
+    try {
+      const r = await traiterAbonnement(evenement, v, token);
+      console.log('[paypal-to-skool] abonnement', v.geste, v.subscriptionId, JSON.stringify(r));
+      return json(200, { ok: true, ...(r.deja ? { deja_traite: true } : {}) });
+    } catch (err) {
+      // 500 : PayPal réessaie. Rien n'est marqué traité avant la fin.
+      console.error('[paypal-to-skool] abonnement non traité:', v.subscriptionId, err?.message);
+      return json(500, { error: 'abonnement_failed' });
+    }
+  }
+
   // Paiement en 4× (PayPal Pay Later) : PayPal règle le marchand en UNE fois,
   // la capture porte donc le montant total (100,00 €) et non 25,00 €. Rien de
   // spécial à prévoir ici — à confirmer sur la première vraie transaction.
@@ -305,7 +445,7 @@ export const handler = async (req) => {
   }
 
   // Le stock représente les paiements réellement capturés, pas les clics ni
-  // même la réussite de l'invitation Skool. On l'écrit donc dès que PayPal a
+  // même l'ouverture du compte. On l'écrit donc dès que PayPal a
   // signé une capture acceptée. Une panne renvoie 500 pour provoquer un retry.
   try {
     await tracerVenteLifetime(
@@ -319,11 +459,13 @@ export const handler = async (req) => {
     return json(500, { error: 'lifetime_stock_failed' });
   }
 
-  if (!process.env.SKOOL_INVITE_WEBHOOK) {
-    console.error('[paypal-to-skool] variables manquantes: SKOOL_INVITE_WEBHOOK');
+  if (!process.env.DASHBOARD_PROVISION_TOKEN) {
+    console.error('[paypal-to-skool] variables manquantes: DASHBOARD_PROVISION_TOKEN');
     return json(500, { error: 'not_configured' });
   }
 
+  // Nom historique conservé : les captures déjà honorées du temps de Skool y sont
+  // tracées, une réémission PayPal ne doit pas les rouvrir une deuxième fois.
   const store = getStore('skool_invites');
   const dejaFait = await store.get(verdict.captureId, { type: 'json' }).catch(() => null);
   if (dejaFait) {
@@ -331,7 +473,8 @@ export const handler = async (req) => {
     return json(200, { ok: true, deja_traite: true });
   }
 
-  const email = await emailDuPayeur(token, evenement, verdict.orderId);
+  const payeur = await payeurDeLaCapture(token, evenement, verdict.orderId);
+  const email = normaliserEmail(payeur?.email);
   if (!email) {
     // 500 ⇒ PayPal réessaie. Mieux vaut retenter que marquer « fait » sans avoir
     // invité personne : c'est exactement le cas qui produit un membre fantôme.
@@ -340,13 +483,20 @@ export const handler = async (req) => {
   }
 
   try {
-    await inviterSurSkool(email);
+    await appelerDashboard('activer', { email, first_name: payeur.prenom, ref: verdict.captureId });
+    await emailAccesApp(email, payeur.prenom);
+    await lierEtJournaliser({
+      emailPaypal: email,
+      prenom: payeur.prenom,
+      formule: estMontantLifetime(evenement.resource?.amount?.value) ? 'vie' : 'annuel_capture',
+      ref: verdict.captureId,
+    });
   } catch (err) {
-    console.error('[paypal-to-skool] invitation échouée:', err?.message);
-    return json(500, { error: 'skool_failed' });
+    console.error('[paypal-to-skool] ouverture du compte échouée:', err?.message);
+    return json(500, { error: 'acces_failed' });
   }
 
-  // On ne marque « fait » qu'APRÈS l'invitation réussie.
+  // On ne marque « fait » qu'APRÈS le compte ouvert et l'email parti.
   await store
     .setJSON(verdict.captureId, {
       email,
@@ -354,10 +504,10 @@ export const handler = async (req) => {
       devise: evenement.resource?.amount?.currency_code,
       order_id: verdict.orderId,
       event_id: evenement.id || null,
-      invite_at: new Date().toISOString(),
+      acces_app_at: new Date().toISOString(),
     })
     .catch((err) => console.error('[paypal-to-skool] trace non écrite:', err?.message));
 
-  console.log('[paypal-to-skool] invitation envoyée pour la capture', verdict.captureId);
+  console.log('[paypal-to-skool] compte ouvert pour la capture', verdict.captureId);
   return json(200, { ok: true });
 };
