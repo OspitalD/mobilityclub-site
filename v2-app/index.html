@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mobility Club V2 — Offre de sortie</title>
+<meta name="description" content="Mobility Club V2 : toute ta pratique sportive au même endroit, avec ta mobilité intégrée et adaptée. Regarde la démo." />
+<meta name="theme-color" content="#0D0F0E" />
+<meta name="robots" content="noindex,follow" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Mobility Club V2 — La mobilité au cœur de ton entraînement" />
+<meta property="og:description" content="Toute ta pratique sportive au même endroit, avec ta mobilité intégrée et adaptée." />
+<meta property="og:image" content="https://mobilityclub.co/assets/video/lancement-16x9-v2.jpg" />
+<link rel="preload" as="image" href="/assets/video/v2-demo.jpg" fetchpriority="high" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
+<script>
+/* Offre de sortie V2. UNE heure de fin pour tout le monde. ⚠️ À reposer juste avant le deploy. */
+window.MC_SORTIE = {
+  fin: "2026-11-06T22:59:00.000Z",
+  prix: { mensuel: 30, vie: 249 },
+  prix_v2: { mensuel: 30, vie: 350 },
+  liens: {
+    fenetre: { vie: "https://www.paypal.com/ncp/payment/KT93SVXG954UE" }, /* lien PayPal fixe 249 € (4× PayPal) — doit être ACTIF */
+    v2: { vie: "/lifetime" }
+  }
+};
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
