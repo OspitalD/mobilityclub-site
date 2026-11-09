@@ -327,7 +327,10 @@ export const ajouterCapture = async (id, { octets, note, largeur, hauteur }) => 
   await store().setJSON(cleCapture(id, cid), fiche);
 
   // Deux envois simultanés peuvent passer le premier contrôle : on recompte APRÈS l'écriture et
-  // celui qui dépasse la 30e place est retiré (fiche d'abord, puis image).
+  // celui qui dépasse la 30e place est retiré (fiche d'abord, puis image). L'ordre (created_at, id) est
+  // celui des écritures à la milliseconde près : les deux concurrents voient la même liste et le même
+  // dernier, donc un seul est retiré. Si les deux se retiraient, la place resterait libre mais
+  // l'acheteur n'aurait rien perdu ; si aucun ne se retirait, on dépasserait 30 : c'est ce cas qu'on évite.
   const place = (await listerCaptures(id)).findIndex((c) => c.id === cid);
   if (place === -1 || place >= CAPTURES_MAX) {
     await store().delete(cleCapture(id, cid));

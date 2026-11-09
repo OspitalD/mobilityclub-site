@@ -43,6 +43,8 @@ mock.module('@netlify/blobs', {
 const { default: api } = await import('../netlify/functions/kit-app-sexy-api.js');
 const { hashEmail, creerJeton: creerJetonIkea, sessionValide: sessionIkea } = await import('../netlify/lib/methode-ikea.js');
 const { traiterVenteKit, emailBienvenueKit } = await import('../netlify/lib/kit-app-sexy.js');
+const { ajouterCapture } = await import('../netlify/lib/kit-espace.js');
+const { createHmac } = await import('node:crypto');
 
 const ORIGIN = 'https://www.mobilityclub.co';
 const ADMIN = 'admin-token-de-test-suffisamment-long';
@@ -225,6 +227,21 @@ test('un jeton IKEA n\'ouvre pas le kit, un jeton kit n\'ouvre pas IKEA', async 
   assert.equal(await sessionIkea(reqIkeaOk), 'ok@exemple.fr');
   // Le nom de cookie ne suffit pas non plus : mi_session ne vaut rien côté kit.
   assert.equal((await appel('moi', { cookie: `mi_session=${jetonKit}` })).status, 401);
+});
+
+test('un jeton signé avec la bonne clé mais sans le marqueur du kit est refusé (défense en profondeur)', async () => {
+  fiche('ok@exemple.fr');
+  const k = hashEmail('ok@exemple.fr');
+  const cle = createHmac('sha256', 'x'.repeat(40)).update('kit-app-sexy/session/v1').digest();
+  const signe = (data) => {
+    const payload = Buffer.from(JSON.stringify({ k, e: 'ok@exemple.fr', exp: Math.floor(Date.now() / 1000) + 3600, ...data })).toString('base64url');
+    return `${payload}.${createHmac('sha256', cle).update(payload).digest().toString('base64url')}`;
+  };
+  assert.equal((await appel('moi', { cookie: `kas_session=${signe({ d: 'kas' })}` })).status, 200, 'témoin : le montage du test est bon');
+  assert.equal((await appel('moi', { cookie: `kas_session=${signe({ d: 'ikea' })}` })).status, 401);
+  assert.equal((await appel('moi', { cookie: `kas_session=${signe({})}` })).status, 401);
+  assert.equal((await appel('moi', { cookie: `kas_session=${signe({ d: 'kas', exp: 1 })}` })).status, 401, 'expiré');
+  assert.equal((await appel('moi', { cookie: `kas_session=${signe({ d: 'kas', k: 'a'.repeat(32) })}` })).status, 401, 'fiche inexistante');
 });
 
 test('sans secret de session (< 32 caractères) : 503, jamais un jeton faible', async () => {
@@ -531,6 +548,18 @@ test('captures : 30 au plus, la 31e est refusée (409) ; écriture concurrente :
   assert.equal(images.length, 30, 'l\'écriture annulée n\'a laissé aucune image orpheline');
 });
 
+test('captures : deux écritures simultanées pour la 30e place, une seule reste (recomptage après écriture)', async () => {
+  const id = hashEmail('ok@exemple.fr');
+  // Horloge pilotée : l'ordre des captures est celui des écritures à la milliseconde près, et ici les
+  // 29 premières sont plus rapides qu'une milliseconde. Dans la vraie vie, chaque envoi est un upload.
+  mock.timers.enable({ apis: ['Date'], now: Date.now() });
+  for (let i = 0; i < 29; i++) { assert.ok((await ajouterCapture(id, { octets: PNG(50 + i) })).capture); mock.timers.tick(10); }
+  const [a, b] = await Promise.all([ajouterCapture(id, { octets: PNG(10) }), ajouterCapture(id, { octets: PNG(11) })]);
+  assert.deepEqual([Boolean(a.capture), Boolean(b.capture)].sort(), [false, true]);
+  assert.equal([...kit().keys()].filter((k) => k.startsWith(`captures/${id}/`)).length, 30);
+  assert.equal([...kit().keys()].filter((k) => k.startsWith(`images/${id}/`)).length, 30, 'aucune image orpheline');
+});
+
 test('captures : un autre acheteur obtient 404 (jamais 403) ; note ; suppression ; première capture conservée', async () => {
   fiche('a@exemple.fr');
   fiche('b@exemple.fr', { rang: 2 });
@@ -696,7 +725,7 @@ test('admin : jeton exigé partout, CORS limité, méthode inconnue 405', async 
   assert.equal((await admin('nimporte-quoi')).status, 404);
 
   process.env.METHODE_IKEA_ADMIN_TOKEN = 'court';
-  assert.equal((await admin('acheteurs')).status, 401, 'jeton serveur trop court : admin fermé');
+  assert.equal((await admin('acheteurs', { auth: 'court' })).status, 401, 'jeton serveur trop court : admin fermé, même présenté tel quel');
   process.env.METHODE_IKEA_ADMIN_TOKEN = ADMIN;
 
   const pre = await api(new Request(`${ORIGIN}/api/kit-app-sexy/admin/acheteurs`, { method: 'OPTIONS', headers: { origin: 'https://app.mobilityclub.co' } }));
