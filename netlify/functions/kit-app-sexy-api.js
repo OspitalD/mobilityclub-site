@@ -230,6 +230,9 @@ const fichier = async (_req, s, slug, nom) => {
   });
 };
 
+// Nom de fichier encodé de travers (%E0%A4%A) : null, pour répondre 404 au lieu de planter.
+const decoder = (v) => { try { return decodeURIComponent(v); } catch { return null; } };
+
 // → { handler, htmlErreurs } si la route membre existe
 const routeMembre = (action) => {
   if (action === 'moi') return { run: moi };
@@ -240,7 +243,10 @@ const routeMembre = (action) => {
   m = /^contenu\/([^/]+)$/.exec(action);
   if (m) return { run: (req, s) => contenu(req, s, m[1]), page: true };
   m = /^fichier\/([^/]+)\/([^/]+)$/.exec(action);
-  if (m) return { run: (req, s) => fichier(req, s, m[1], decodeURIComponent(m[2])) };
+  if (m) {
+    const nom = decoder(m[2]);
+    return { run: nom === null ? async () => json(404, { error: 'not_found' }) : (req, s) => fichier(req, s, m[1], nom) };
+  }
   return null;
 };
 
@@ -358,7 +364,7 @@ const adminRoute = async (req, action) => {
     return img ? reponseImage(img) : json(404, { error: 'not_found' });
   }
   if ((m = /^admin\/contenu\/([^/]+)$/.exec(action))) return adminContenu(req, m[1]);
-  if ((m = /^admin\/fichier\/([^/]+)\/([^/]+)$/.exec(action))) return adminFichier(req, m[1], decodeURIComponent(m[2]));
+  if ((m = /^admin\/fichier\/([^/]+)\/([^/]+)$/.exec(action))) { const nom = decoder(m[2]); return nom === null ? json(404, { error: 'not_found' }) : adminFichier(req, m[1], nom); }
   if (action === 'admin/annoncer') {
     if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' });
     const r = await annoncer(String((await lireJson(req)).slug ?? ''));

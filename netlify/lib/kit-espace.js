@@ -231,7 +231,7 @@ export const normaliserDossier = (brut) => {
   }
   return {
     nom: epurer(d.nom, 80),
-    lien: epurer(d.lien, 300),
+    lien: lienValide(epurer(d.lien, 300)),
     type: TYPES.includes(d.type) ? d.type : null,
     pour_qui: epurer(d.pour_qui, 200),
     couleurs: couleurs.slice(0, 5),

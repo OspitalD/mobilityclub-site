@@ -417,7 +417,7 @@ test('dossier : le serveur normalise sans refuser (couleurs, liens, troncatures)
   const d = (await appel('dossier', { cookie })).body.dossier;
   assert.equal(d.nom.length, 80);
   assert.match(d.nom, /^N+$/);
-  assert.equal(d.lien, 'monapp.fr', 'lien stocké tel quel');
+  assert.equal(d.lien, 'https://monapp.fr', 'lien normalisé au stockage');
   assert.equal(d.type, null);
   assert.equal(d.pour_qui.length, 200);
   assert.deepEqual(d.couleurs, ['#aabbcc', '#3ecfa0', '#111111', '#222222', '#333333']);
@@ -1003,4 +1003,18 @@ test('CLI : add --bienvenue, list, couper, contenu, annoncer parlent à l\'API r
     log.mock.restore();
     globalThis.fetch = suivant;
   }
+});
+
+test('nom de fichier mal encodé : 404 et non 500 (membre et admin)', async () => {
+  fiche('enc@exemple.fr');
+  const cookie = await connecter('enc@exemple.fr');
+  assert.equal((await appel('fichier/audit/%E0%A4%A.zip', { cookie })).status, 404);
+  assert.equal((await admin('fichier/audit/%E0%A4%A.zip', { method: 'PUT', raw: Buffer.alloc(10), type: 'application/zip' })).status, 404);
+});
+
+test('dossier : un lien non http(s) n\'est jamais stocké', async () => {
+  fiche('lien@exemple.fr');
+  const cookie = await connecter('lien@exemple.fr');
+  assert.equal((await appel('dossier', { method: 'PUT', cookie, body: { dossier: { lien: 'javascript:alert(1)' }, base_rev: 0 } })).status, 200);
+  assert.equal((await appel('dossier', { cookie })).body.dossier.lien, null);
 });
