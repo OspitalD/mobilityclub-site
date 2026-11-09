@@ -26,14 +26,19 @@
 :root .tk-ow__progress{gap:6px;margin-top:10px}
 :root .tk-ow__seg{height:3px;background:#1A1E1C}
 :root .tk-ow__seg>span{background:var(--vert)}
+/* Le composant trace 5 segments, l'assistant a 4 étapes : le cinquième ne mène nulle part. */
+:root .tk-ow__seg:nth-child(5){display:none}
 :root .tk-ow__body{padding:12px 22px 8px}
 :root .tk-ow__title{font-style:italic;font-weight:800;letter-spacing:-.035em;font-size:clamp(26px,6vw,34px);line-height:1.05;text-shadow:none;margin-bottom:20px}
 :root .tk-ow__title+.tk-ow__subtitle{margin:-10px 0 20px}
 :root .tk-ow__subtitle{font-size:16px;line-height:1.45;color:var(--texte-2)}
 :root .tk-ow__chips,:root .tk-ow__list,:root .tk-ow__fields{gap:10px}
-:root .tk-ow__chip{min-height:56px;padding:14px 18px;border-radius:16px;background:transparent;border:1px solid var(--filet);transition:border-color .2s,color .2s}
-:root .tk-ow__chip:hover{background:transparent;border-color:rgba(255,255,255,.2)}
-:root .tk-ow__chip.is-selected{background:transparent;border-color:var(--vert);transform:none}
+:root .tk-ow__chips,:root .tk-ow__list{gap:0}
+/* Pas de carte dans une carte : une ligne posée sur un filet bas, sans bordure complète ni radius.
+   La sélection se lit au libellé et au filet verts. */
+:root .tk-ow__chip{min-height:56px;padding:14px 2px;border:0;border-bottom:1px solid var(--filet);border-radius:0;background:transparent;box-shadow:none;transition:border-color .2s,color .2s}
+:root .tk-ow__chip:hover{background:transparent;border-bottom-color:rgba(255,255,255,.2)}
+:root .tk-ow__chip.is-selected{background:transparent;border-bottom-color:var(--vert);transform:none}
 :root .tk-ow__chip-label{font-size:17px;font-weight:700}
 :root .tk-ow__chip.is-selected .tk-ow__chip-label{color:var(--vert)}
 :root .tk-ow__field{font-size:15px;font-weight:700;color:var(--texte);gap:8px}
