@@ -41,14 +41,17 @@ section{position:relative;padding:clamp(80px,12vw,150px) 0;overflow-x:clip}
 /* ── Halo (primitives.css .os-halo) : trois lumières floutées DERRIÈRE le verre, jamais seules ── */
 .halo{position:absolute;pointer-events:none;z-index:0;width:420px;height:420px}
 .halo i{position:absolute;border-radius:50%}
-.halo .hv{left:0;top:0;width:260px;height:260px;background:var(--vert);opacity:.5;filter:blur(60px)}
-.halo .hp{right:0;top:130px;width:230px;height:230px;background:var(--violet);opacity:.42;filter:blur(64px)}
-.halo .ho{left:150px;top:240px;width:160px;height:160px;background:var(--or);opacity:.26;filter:blur(56px)}
+/* Dégradés radiaux plutôt que filter:blur : même lumière, aucun flou à recalculer au défilement (iPhone). */
+.halo .hv{left:-70px;top:-70px;width:400px;height:400px;background:radial-gradient(closest-side,rgba(62,207,160,.42),rgba(62,207,160,.16) 55%,rgba(62,207,160,0))}
+.halo .hp{right:-70px;top:60px;width:370px;height:370px;background:radial-gradient(closest-side,rgba(185,144,224,.36),rgba(185,144,224,.13) 55%,rgba(185,144,224,0))}
+.halo .ho{left:90px;top:180px;width:280px;height:280px;background:radial-gradient(closest-side,rgba(232,160,32,.24),rgba(232,160,32,.08) 55%,rgba(232,160,32,0))}
 .halo.seul-or .hv,.halo.seul-or .hp{display:none}
-.halo.seul-or .ho{left:40px;top:40px;width:300px;height:300px;opacity:.28;filter:blur(80px)}
+.halo.seul-or .ho{left:-40px;top:-40px;width:460px;height:460px;background:radial-gradient(closest-side,rgba(232,160,32,.24),rgba(232,160,32,.08) 55%,rgba(232,160,32,0))}
 
 /* ── Verre héros ── */
-.verre{position:relative;isolation:isolate;border-radius:28px;background:var(--verre-fond);border:var(--verre-bord);-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou);box-shadow:var(--verre-ombre)}
+.verre{position:relative;isolation:isolate;border-radius:28px;background:var(--verre-fond);border:var(--verre-bord);box-shadow:var(--verre-ombre)}
+/* Flou d'arrière-plan seulement sur ordinateur : sur téléphone il fait saccader le défilement. */
+@media (min-width:900px) and (hover:hover){.verre{-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou)}}
 .verre::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .verre::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;z-index:-1;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%)}
 
@@ -113,7 +116,7 @@ section{position:relative;padding:clamp(80px,12vw,150px) 0;overflow-x:clip}
 .comparer .avant{clip-path:inset(0 calc(100% - var(--x,50%)) 0 0);z-index:2}
 .comparer .poignee{position:absolute;top:0;bottom:0;left:var(--x,50%);width:0;z-index:3;pointer-events:none}
 .comparer .poignee::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:rgba(255,255,255,.9);box-shadow:0 0 18px rgba(255,255,255,.35)}
-.comparer .poignee span{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(20,22,21,.55);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 22px rgba(0,0,0,.45)}
+.comparer .poignee span{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(20,22,21,.82);border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 22px rgba(0,0,0,.45)}
 .comparer .poignee svg{width:22px;height:22px}
 .comparer .marque{position:absolute;bottom:14px;z-index:4;font-size:13px;font-weight:800;font-style:italic;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none;transition:opacity .25s}
 .comparer .marque.g{left:16px}
@@ -220,9 +223,20 @@ footer{padding:40px 0 calc(48px + env(safe-area-inset-bottom));border-top:1px so
 footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
 
 /* Apparition au défilement (Reveal 10K) */
-.apparait{opacity:0;transform:translateY(22px);transition:opacity .8s var(--courbe),transform .8s var(--courbe)}
+.apparait{opacity:0;transform:translateY(14px);transition:opacity .5s var(--courbe),transform .5s var(--courbe)}
 .apparait.vu{opacity:1;transform:none}
 
+/* ── Tablette et plus : deux colonnes dès 720 px (avant, la colonne mobile s'étirait jusqu'à 900 px) ── */
+@media (min-width:720px){
+  :root{--g:32px}
+  .entete-grille{grid-template-columns:1.2fr .8fr;gap:32px}
+  .entete-tel{width:min(300px,100%)}
+  .bonus-grille{grid-template-columns:1.2fr .8fr}
+  .facons{grid-template-columns:repeat(3,1fr);gap:0 28px}
+  .facons div,.facons div:last-child{border-bottom:none}
+  .fin-grille{grid-template-columns:1.1fr .9fr;align-items:end}
+  .etape .duo-txt{grid-template-columns:1fr 1fr;gap:28px}
+}
 /* ── Grand écran ── */
 @media (min-width:900px){
   :root{--g:40px}
@@ -238,11 +252,8 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
   .scene .comparer{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--courbe);pointer-events:none}
   .scene .comparer.actif{opacity:1;pointer-events:auto}
   .scene-cadre{position:relative;height:100%;aspect-ratio:390/844;margin:0 auto}
-  .etape .duo-txt{grid-template-columns:1fr 1fr;gap:28px;max-width:560px}
-  .bonus-grille{grid-template-columns:1.2fr .8fr}
-  .facons{grid-template-columns:repeat(3,1fr);gap:0 36px}
-  .facons div,.facons div:last-child{border-bottom:none}
-  .fin-grille{grid-template-columns:1.1fr .9fr;align-items:end}
+  .etape .duo-txt{max-width:560px}
+  .facons{gap:0 36px}
 }
 @media (max-width:420px){
   .offre{padding:22px}
@@ -392,7 +403,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
   <div class="halo seul-or" aria-hidden="true"><i class="ho"></i></div>
   <div class="w bonus-grille">
     <div class="lire apparait">
-      <h2>Bonus fondateur :<br><span class="or">ta V2, dessinée par moi.</span></h2>
+      <h2>Bonus fondateur&nbsp;:<br><span class="or">ta V2, dessinée par moi.</span></h2>
       <p style="margin-top:24px">Tu déposes les captures de ton app dans ton dossier de marque. Je repense <b>trois éléments</b> de ton app, dont <b>un en motion design</b>, et je te les renvoie sous 7 jours.</p>
       <div class="places" data-places>
         <div class="barres" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
@@ -546,8 +557,12 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
     r.addEventListener('input', function () { poser(c, r.value); });
     c.appendChild(r);
     // Tirer depuis n'importe où sur l'écran, comme une photo qu'on balaie (le curseur natif reste pour le clavier)
-    var b = null;
-    function bouge(ev) { var x = (ev.clientX - b.left) / b.width * 100; r.value = Math.round(Math.min(100, Math.max(0, x))); poser(c, r.value); }
+    var b = null, cx = 0, prevu = false;
+    // Une seule mise à jour par image, même si le doigt envoie plus d'événements
+    function bouge(ev) {
+      cx = ev.clientX; if (prevu) return; prevu = true;
+      requestAnimationFrame(function () { prevu = false; if (!b) return; var x = (cx - b.left) / b.width * 100; r.value = Math.round(Math.min(100, Math.max(0, x))); poser(c, r.value); });
+    }
     c.addEventListener('pointerdown', function (e) {
       b = c.getBoundingClientRect(); c.setPointerCapture(e.pointerId); bouge(e); c.classList.remove('indice');
     });
@@ -559,8 +574,9 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
   }
   function poser(c, v) {
     c.style.setProperty('--x', v + '%');
-    c.querySelector('.marque.g').style.opacity = v < 12 ? 0 : 1;
-    c.querySelector('.marque.d').style.opacity = v > 88 ? 0 : 1;
+    if (!c._g) { c._g = c.querySelector('.marque.g'); c._d = c.querySelector('.marque.d'); }
+    c._g.style.opacity = v < 12 ? 0 : 1;
+    c._d.style.opacity = v > 88 ? 0 : 1;
   }
 
   // Mobile : un comparateur sous chaque étape. Grand écran : une scène ancrée qui change de paire au défilement.
@@ -642,7 +658,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
       if (el.matches('.comparer')) el.classList.add('indice');
       if (el.matches('[data-compteurs]')) compter(el);
     });
-  }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px -4% 0px' }); // dès que le bord entre : on ne défile plus dans du noir
   document.querySelectorAll('.apparait, .comparer, [data-places], [data-compteurs]').forEach(function (el) { obs.observe(el); });
 
   function compter(el) {
