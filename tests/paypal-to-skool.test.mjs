@@ -7,15 +7,17 @@ import assert from 'node:assert/strict';
 const blobs = new Map();
 const lifetimeBlobs = new Map();
 const ikeaBlobs = new Map();
+const kitBlobs = new Map();
 mock.module('@netlify/blobs', {
   namedExports: {
     connectLambda: () => {},
     getStore: (opt) => {
       const name = typeof opt === 'string' ? opt : opt?.name;
-      const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : name === 'methode_ikea' ? ikeaBlobs : blobs;
+      const target = name === 'lifetime_pass_2026' ? lifetimeBlobs : name === 'methode_ikea' ? ikeaBlobs : name === 'kit_app_sexy' ? kitBlobs : blobs;
       return {
         get: async (k) => (target.has(k) ? target.get(k) : null),
         setJSON: async (k, v) => void target.set(k, v),
+        list: async ({ prefix = '' } = {}) => ({ blobs: [...target.keys()].filter((k) => k.startsWith(prefix)).map((key) => ({ key })) }),
       };
     },
   },
@@ -29,6 +31,7 @@ const vider = () => {
   blobs.clear();
   lifetimeBlobs.clear();
   ikeaBlobs.clear();
+  kitBlobs.clear();
 };
 
 const SKOOL = 'https://api2.skool.com/groups/mobility-club/webhooks/SECRET-DE-TEST';
@@ -199,11 +202,13 @@ test('capture Lifetime signée → vente réelle comptée une seule fois par cap
   brancherFetch();
   const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
   process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
+  process.env.KIT_PRIX = '999.00';
 
   await appeler(capture('199.00', 'EUR', 'CAP-LIFE-199'));
   await appeler(capture('199.00', 'EUR', 'CAP-LIFE-199'));
   await appeler(capture('249.00', 'EUR', 'CAP-LIFE-249'));
 
+  delete process.env.KIT_PRIX;
   if (avant == null) delete process.env.PAYPAL_MONTANTS_ACCEPTES;
   else process.env.PAYPAL_MONTANTS_ACCEPTES = avant;
 
@@ -218,10 +223,12 @@ test('capture Lifetime numérotée → le webhook conserve le custom_id', async 
   brancherFetch();
   const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
   process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00';
+  process.env.KIT_PRIX = '999.00';
   const customId = 'MC-LIFE-2026-T1-07-11111111-2222-4333-8444-555555555555';
 
   await appeler(capture('199.00', 'EUR', 'CAP-NUMBERED', customId));
 
+  delete process.env.KIT_PRIX;
   if (avant == null) delete process.env.PAYPAL_MONTANTS_ACCEPTES;
   else process.env.PAYPAL_MONTANTS_ACCEPTES = avant;
   assert.equal(lifetimeBlobs.get('199/CAP-NUMBERED').custom_id, customId);
@@ -389,4 +396,58 @@ test('Méthode IKEA : fonctionne même sans SKOOL_INVITE_WEBHOOK (l\'annuel, lui
   assert.equal(annuel.statusCode, 500);
   assert.equal(JSON.parse(annuel.body).error, 'not_configured');
   assert.equal(appelsSkool.length, 0);
+});
+
+// ── Kit App Sexy ─────────────────────────────────────────────────────────────
+test('Kit App Sexy : 199 € = vente du kit, jamais une invitation Club ni le stock Lifetime', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'Coach@Example.com' });
+  const avant = process.env.PAYPAL_MONTANTS_ACCEPTES;
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,199.00,249.00'; // même si 199 traîne encore dans la variable
+  const rep = await appeler(capture('199.00', 'EUR', 'CAP-KIT-1'));
+  const rejoue = await appeler(capture('199.00', 'EUR', 'CAP-KIT-1'));
+  if (avant == null) delete process.env.PAYPAL_MONTANTS_ACCEPTES; else process.env.PAYPAL_MONTANTS_ACCEPTES = avant;
+
+  assert.equal(rep.statusCode, 200);
+  assert.equal(rejoue.statusCode, 200);
+  assert.equal(appelsSkool.length, 0, 'aucune invitation Club');
+  assert.equal(lifetimeBlobs.size, 0, 'rien dans le stock Lifetime');
+  const acheteur = [...kitBlobs.entries()].find(([k]) => k.startsWith('buyers/'))[1];
+  assert.equal(acheteur.email, 'coach@example.com');
+  assert.equal(acheteur.rang, 1);
+  assert.ok(acheteur.audit && acheteur.bonus);
+  const sujets = emailsResend.map((m) => m.subject);
+  assert.equal(sujets.filter((s) => s === 'Ton Kit App Sexy est réservé').length, 1, 'bienvenue envoyée une seule fois');
+  assert.equal(emailsResend.find((m) => m.subject === 'Ton Kit App Sexy est réservé').reply_to, 'founder@mobilityclub.co', 'les réponses arrivent chez Damien');
+  assert.equal(sujets.filter((s) => s.startsWith('Kit App Sexy · vente n° 1')).length, 1, 'alerte de vente à Damien');
+});
+
+test('Kit App Sexy : le rang suit l\'ordre des achats (audit 15 premiers, bonus 5 premiers)', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  for (let i = 1; i <= 6; i++) {
+    brancherFetch({ email: `c${i}@example.com` });
+    await appeler(capture('199.00', 'EUR', `CAP-K${i}`));
+  }
+  const rangs = [...kitBlobs.entries()].filter(([k]) => k.startsWith('buyers/')).map(([, v]) => v).sort((a, b) => a.rang - b.rang);
+  assert.deepEqual(rangs.map((r) => r.rang), [1, 2, 3, 4, 5, 6]);
+  assert.equal(rangs[4].bonus, true);
+  assert.equal(rangs[5].bonus, false);
+  assert.equal(rangs[5].audit, true);
+});
+
+test('Kit App Sexy : email de bienvenue en panne → 500 et rien marqué fait (PayPal réessaie)', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch();
+  const fetchOk = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => (String(url).startsWith('https://api.resend.com/') ? new Response('ko', { status: 500 }) : fetchOk(url, opts));
+  const rep = await appeler(capture('199.00', 'EUR', 'CAP-KIT-KO'));
+  assert.equal(rep.statusCode, 500);
+  assert.equal([...kitBlobs.keys()].filter((k) => k.startsWith('ventes/')).length, 0);
+  globalThis.fetch = fetchOk;
+  const rep2 = await appeler(capture('199.00', 'EUR', 'CAP-KIT-KO'));
+  assert.equal(rep2.statusCode, 200);
+  assert.equal([...kitBlobs.keys()].filter((k) => k.startsWith('ventes/')).length, 1);
 });

@@ -270,7 +270,7 @@ const gabaritEmail = (titre, corps) => `
   <p style="font-size:12px;color:#8C908D;margin-top:28px">Tu n'es pas à l'origine de cet email ? Ignore-le simplement.</p>
 </div>`;
 
-export const envoyerEmail = async ({ to, subject, html, devLog }) => {
+export const envoyerEmail = async ({ to, subject, html, devLog, replyTo }) => {
   const key = process.env.RESEND_API_KEY || '';
   if (!key) {
     // Jamais de code dans les logs de prod : seulement sous `netlify dev`.
@@ -286,6 +286,7 @@ export const envoyerEmail = async ({ to, subject, html, devLog }) => {
       to: [to],
       subject,
       html,
+      ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
   if (!res.ok) throw new Error(`resend_${res.status}`);
