@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ErreurApi, ecrireDossier, lireDossier } from './api.ts';
-import { dossierVide, fusionner, sauvegarder } from './sauvegarde.ts';
+import { dossierVide, fusionner, lireBrouillon, restaurer, sauvegarder, serialiserBrouillon } from './sauvegarde.ts';
 import { cleBrouillon, ecrireLocal, effacerLocal, lireLocal } from './stockage.ts';
 import { T } from './textes.ts';
 import type { Dossier } from './types.ts';
@@ -41,6 +41,10 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
   gererRef.current = gerer;
 
   const poser = useCallback((d: Dossier) => { courant.current = d; setDossierEtat(d); }, []);
+  // La base est écrite avec le brouillon : voir sauvegarde.ts. Toujours relue dans les refs, jamais en état.
+  const noterBrouillon = useCallback((d: Dossier) => {
+    ecrireLocal(cleBrouillon(emailRef.current), serialiserBrouillon(rev.current, derniere.current, d));
+  }, []);
 
   const enregistrer = useCallback(async (o: { keepalive?: boolean } = {}) => {
     window.clearTimeout(minuteur.current);
@@ -77,6 +81,11 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
         sale.current = entreTemps;
         setMessage(null);
         if (!entreTemps) effacerLocal(cleBrouillon(emailRef.current));
+        // Le brouillon restant part de la nouvelle base, pas de l'ancienne.
+        else noterBrouillon(courant.current);
+        // La fusion a apporté des champs d'un autre appareil : l'assistant garde sinon ses anciennes réponses
+        // et les renverrait au prochain changement d'étape, effaçant ce qui vient d'être fusionné.
+        if (r.apporteDuServeur) setCle((c) => c + 1);
       }
       setEtat(sale.current ? 'attente' : 'sauve');
     } catch (e) {
@@ -88,7 +97,7 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
       enVol.current = false;
       if (rejouer.current) { rejouer.current = false; if (sale.current) void enregistrer(); }
     }
-  }, [poser]);
+  }, [poser, noterBrouillon]);
 
   const modifier = useCallback((f: (d: Dossier) => Dossier) => {
     const suivant = f(courant.current);
@@ -98,10 +107,10 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
     setMessage(null);
     setEtat('attente');
     // Brouillon local : si l'onglet meurt ou si la session expire avant l'envoi, rien n'est perdu.
-    ecrireLocal(cleBrouillon(emailRef.current), JSON.stringify(suivant));
+    noterBrouillon(suivant);
     window.clearTimeout(minuteur.current);
     minuteur.current = window.setTimeout(() => void enregistrer(), DEBOUNCE_MS);
-  }, [enregistrer, poser]);
+  }, [enregistrer, poser, noterBrouillon]);
 
   const charger = useCallback(async () => {
     try {
@@ -110,16 +119,12 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
       derniere.current = r.dossier;
       setCompletude(r.completude);
       setExiste(r.dossier !== null);
-      let local = r.dossier ?? dossierVide();
-      let brouillon: Dossier | null = null;
-      try {
-        const b = lireLocal(cleBrouillon(emailRef.current));
-        if (b) brouillon = { ...dossierVide(), ...(JSON.parse(b) as Partial<Dossier>) };
-      } catch { brouillon = null; }
-      if (brouillon && !egal(brouillon, local)) {
-        local = brouillon;
+      const { local, sale: aEnvoyer } = restaurer({ brouillon: lireBrouillon(lireLocal(cleBrouillon(emailRef.current))), serveur: r.dossier });
+      if (aEnvoyer) {
         sale.current = true;
         setEtat('attente');
+        // Le brouillon fusionné repart de la base fraîche : si l'envoi échoue encore, rien ne se perd.
+        noterBrouillon(local);
         minuteur.current = window.setTimeout(() => void enregistrer(), DEBOUNCE_MS);
       } else {
         effacerLocal(cleBrouillon(emailRef.current));
@@ -130,7 +135,7 @@ export function useDossier(email: string, gerer: (e: unknown) => boolean) {
     } catch (e) {
       if (!gererRef.current(e)) setCharge('erreur');
     }
-  }, [enregistrer, poser]);
+  }, [enregistrer, poser, noterBrouillon]);
 
   useEffect(() => { void charger(); }, [charger]);
 

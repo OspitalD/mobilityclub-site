@@ -242,3 +242,66 @@ test('panne réseau : une erreur normalisée « reseau », pas une exception bru
   globalThis.fetch = async () => { throw new TypeError('Failed to fetch'); };
   await assert.rejects(client.moi(), (e) => e.code === 'reseau' && e.statut === 0);
 });
+
+// ── Brouillon hors ligne et fusion (constats du correcteur du lot 2) ─────────
+// Le brouillon garde la base sur laquelle il a été écrit. Sans elle, au rechargement le brouillon ENTIER
+// remplaçait le dossier : les champs remplis ailleurs entre-temps disparaissaient, sans aucun 409 (la
+// révision lue était à jour). Ces tests rejouent le cas de bout en bout contre la vraie Function.
+const { restaurer, lireBrouillon, serialiserBrouillon } = await src('sauvegarde.ts');
+
+test('brouillon : le format garde la base et la révision, l\'ancien format (dossier nu) reste lisible', () => {
+  const base = { ...dossierVide(), nom: 'Avant' };
+  const d = { ...base, nom: 'Du métro' };
+  const lu = lireBrouillon(serialiserBrouillon(4, base, d));
+  assert.deepEqual(lu, { base_rev: 4, base, dossier: d });
+  const ancien = lireBrouillon(JSON.stringify({ ...dossierVide(), nom: 'Vieux brouillon' }));
+  assert.equal(ancien.dossier.nom, 'Vieux brouillon');
+  assert.equal(ancien.base, null, 'sans base connue : seuls les champs remplis ici gagneront');
+  assert.equal(lireBrouillon('pas du json'), null);
+  assert.equal(lireBrouillon(null), null);
+});
+
+test('brouillon ancien et serveur modifié ailleurs : les champs non touchés restent ceux du serveur', async () => {
+  fiche('ok@exemple.fr');
+  await connecter();
+  // Téléphone hors ligne : brouillon « nom » écrit sur un dossier vide (rev 0).
+  const brouillon = lireBrouillon(serialiserBrouillon(0, null, { ...dossierVide(), nom: 'Du métro' }));
+  // Le soir, l'ordinateur remplit couleurs et inspirations (rev 1).
+  const soir = { ...dossierVide(), couleurs: ['#3ecfa0', '#e8a020', '#b990e0'], inspirations: [{ url: 'https://exemple.fr/a', note: 'a' }] };
+  await client.ecrireDossier(soir, 0);
+  // Le lendemain, le téléphone rouvre le dossier.
+  const lu = await client.lireDossier();
+  const r = restaurer({ brouillon, serveur: lu.dossier });
+  assert.equal(r.local.nom, 'Du métro', 'ce que j\'ai changé gagne');
+  assert.deepEqual(r.local.couleurs, soir.couleurs, 'ce que je n\'ai pas touché vient du serveur');
+  assert.deepEqual(r.local.inspirations, soir.inspirations);
+  assert.equal(r.sale, true, 'le nom du brouillon reste à envoyer');
+  // L'effet : le PUT qui part ensuite n'efface rien sur le serveur.
+  await sauvegarder({ local: r.local, derniere: lu.dossier, rev: lu.rev, ecrire: client.ecrireDossier });
+  const fin = (await client.lireDossier()).dossier;
+  assert.equal(fin.nom, 'Du métro');
+  assert.deepEqual(fin.couleurs, soir.couleurs);
+  assert.deepEqual(fin.inspirations, soir.inspirations);
+});
+
+test('brouillon identique au serveur : rien à renvoyer', () => {
+  const s = { ...dossierVide(), nom: 'Pareil' };
+  const r = restaurer({ brouillon: { base_rev: 1, base: s, dossier: { ...s } }, serveur: s });
+  assert.equal(r.sale, false);
+  assert.deepEqual(restaurer({ brouillon: null, serveur: null }), { local: dossierVide(), sale: false });
+});
+
+test('fusion réussie au premier 409 : le résultat dit que le serveur a apporté des champs (l\'assistant doit être remonté)', async () => {
+  fiche('ok@exemple.fr');
+  await connecter();
+  await client.ecrireDossier({ ...dossierVide(), pour_qui: 'Écrit sur l\'ordinateur' }, 0);
+  const apporte = await sauvegarder({ local: { ...dossierVide(), nom: 'Mon app' }, derniere: null, rev: 0, ecrire: client.ecrireDossier });
+  assert.equal(apporte.dossier.pour_qui, 'Écrit sur l\'ordinateur');
+  assert.equal(apporte.apporteDuServeur, true);
+  // Sans conflit, ou si la fusion n'apporte rien de différent, l'assistant garde son état.
+  const direct = await sauvegarder({ local: { ...apporte.dossier, nom: 'Encore' }, derniere: apporte.dossier, rev: apporte.rev, ecrire: client.ecrireDossier });
+  assert.equal(direct.apporteDuServeur, false);
+  await client.ecrireDossier({ ...direct.dossier, nom: 'Autre appareil' }, direct.rev);
+  const memeChamp = await sauvegarder({ local: { ...direct.dossier, nom: 'Gagne ici' }, derniere: direct.dossier, rev: direct.rev, ecrire: client.ecrireDossier });
+  assert.equal(memeChamp.apporteDuServeur, false, 'conflit, mais ma version a gagné sur tous les champs : rien de neuf pour l\'écran');
+});
