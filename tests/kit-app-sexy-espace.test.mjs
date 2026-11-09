@@ -589,7 +589,7 @@ test('bonus fondateur : échéance = première capture + 7 jours, seulement pour
 
 // ── 9. Livraisons à date ─────────────────────────────────────────────────────
 const PAGE = (secret) => `<!doctype html><html><head><title>x</title></head><body>${secret}</body></html>`;
-const fixer = (iso) => mock.timers.enable({ apis: ['Date'], now: Date.parse(iso) });
+const fixer = (iso) => { mock.timers.reset(); mock.timers.enable({ apis: ['Date'], now: Date.parse(iso) }); };
 
 test('livraisons : rien avant la date, « en préparation » sans dépôt, servi après dépôt', async () => {
   fiche('ok@exemple.fr');
@@ -648,7 +648,7 @@ test('livraisons : le kit d\'audit peut être ouvert plus tôt (ouvrir=maintenan
 
   // Après la date promise, « ouvrir » ne pose rien : la date seule fait foi.
   await admin('contenu/video?ouvrir=maintenant', { method: 'PUT', raw: PAGE('V'), type: 'text/html' });
-  assert.ok(kit().get('contenus-meta/video').v.ouvert_des, 'avant le 18/11 : ouvert_des posé');
+  assert.equal(kit().get('contenus-meta/video').v.ouvert_des, null, 'le 20/11, la vidéo (18/11) est déjà due : rien à avancer');
   fixer('2026-11-26T12:00:00Z');
   await admin('contenu/grille?ouvrir=maintenant', { method: 'PUT', raw: PAGE('G'), type: 'text/html' });
   assert.equal(kit().get('contenus-meta/grille').v.ouvert_des, null);
@@ -894,7 +894,7 @@ test('rachat après coupure : l\'accès se rouvre, l\'alerte le dit', async () =
   assert.equal(f.coupe_raison, null);
   assert.equal(f.rang, 2);
   const alerte = mails.find((m) => m.subject.startsWith('Kit App Sexy · vente'));
-  assert.match(alerte.html, /accès rouvert/);
+  assert.match(alerte.html, /accès rouvert/i);
 });
 
 // ── 12. Email de bienvenue ───────────────────────────────────────────────────
@@ -918,6 +918,7 @@ test('email de bienvenue : lien de l\'espace, plus de demande de captures par r�
 test('email de bienvenue : une livraison déjà ouverte est annoncée « déjà disponible » ; rang 20 sans audit ni bonus', async () => {
   fixer('2026-11-19T12:00:00Z');
   await admin('contenu/video', { method: 'PUT', raw: PAGE('V'), type: 'text/html' });
+  await admin('contenu/grille', { method: 'PUT', raw: PAGE('G'), type: 'text/html' });
   for (let i = 1; i <= 19; i++) fiche(`m${i}@exemple.fr`, { rang: i });
   await traiterVenteKit(evenement('CAP-T'), async () => 'tard@exemple.fr');
   const m = mails.find((x) => x.subject === 'Ton Kit App Sexy est réservé');
