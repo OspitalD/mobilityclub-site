@@ -35,6 +35,7 @@ import { connectLambda, getStore } from '@netlify/blobs';
 import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
+import { traiterVenteKit } from '../lib/kit-app-sexy.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
@@ -278,6 +279,19 @@ export const handler = async (req) => {
     // 401 et non 500 : ce n'est pas une panne, c'est un événement qu'on refuse.
     console.warn('[paypal-to-skool] signature refusée, id:', evenement?.id);
     return json(401, { error: 'signature_invalide' });
+  }
+
+  // Kit App Sexy d'abord : 199 € est aussi l'ancien prix Lifetime. Une vente du kit
+  // s'arrête ici, elle n'atteint jamais le stock Lifetime ni l'invitation Club.
+  try {
+    const kit = await traiterVenteKit(evenement, (orderId) => emailDuPayeur(token, evenement, orderId));
+    if (kit) {
+      console.log('[paypal-to-skool] Kit App Sexy', kit.deja || `vente n° ${kit.rang}`);
+      return json(200, { ok: true, kit: true });
+    }
+  } catch (err) {
+    console.error('[paypal-to-skool] Kit App Sexy non traité:', err?.message);
+    return json(500, { error: 'kit_failed' });
   }
 
   try {

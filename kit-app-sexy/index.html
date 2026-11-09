@@ -146,6 +146,19 @@ section{position:relative;padding:clamp(80px,12vw,150px) 0;overflow-x:clip}
 .garant{margin-top:clamp(48px,7vw,80px);font-size:clamp(21px,2.6vw,27px);line-height:1.4;font-weight:600;letter-spacing:-.01em;max-width:780px}
 .garant em{font-style:italic;font-weight:800;color:var(--texte)}
 
+/* ═════════ ÉTUDE DE CAS ═════════ */
+.cas-nom{font-size:15px;font-weight:800;font-style:italic;color:#F6C400;margin-bottom:14px}
+/* Téléphone : une rangée qu'on fait glisser, chaque écran s'aimante. Ordinateur : les quatre côte à côte. */
+.cas-rang{display:grid;grid-auto-flow:column;grid-auto-columns:min(240px,64vw);gap:16px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding:0 var(--g);padding:0 var(--g) 8px;margin-top:clamp(36px,5vw,60px);scrollbar-width:none}
+.cas-rang::-webkit-scrollbar{display:none}
+.cas-rang figure{scroll-snap-align:start;display:flex;flex-direction:column}
+.cas-rang .tel{border-radius:30px}
+.cas-rang figcaption{margin-top:16px}
+.cas-rang figcaption b{display:block;font-size:19px;font-style:italic;letter-spacing:-.03em;line-height:1.15}
+.cas-rang figcaption span{display:block;font-size:15px;color:var(--texte-2);margin-top:6px;line-height:1.5}
+.cas-rang:focus-visible{outline:2px solid #fff;outline-offset:4px}
+.cas-note{font-size:13px;color:var(--texte-3);font-weight:600;margin-top:24px}
+
 /* ═════════ CE QUE TU REÇOIS ═════════ */
 .recois{list-style:none;margin-top:clamp(32px,5vw,56px);counter-reset:r}
 .recois li{display:grid;grid-template-columns:56px 1fr;column-gap:8px;padding:26px 0;border-top:1px solid var(--filet)}
@@ -254,6 +267,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
   .scene-cadre{position:relative;height:100%;aspect-ratio:390/844;margin:0 auto}
   .etape .duo-txt{max-width:560px}
   .facons{gap:0 36px}
+  .cas-rang{grid-auto-flow:row;grid-template-columns:repeat(4,1fr);gap:28px;overflow:visible;max-width:1120px;margin-left:auto;margin-right:auto;padding:0 var(--g)}
 }
 @media (max-width:420px){
   .offre{padding:22px}
@@ -384,6 +398,7 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
   </div>
 </section>
 
+<!-- Étude de cas FIGHTPASS : prête, en attente de l'accord de Saiyok avant publication -->
 <!-- ═════════ CE QUE TU REÇOIS ═════════ -->
 <section>
   <div class="w">
@@ -563,12 +578,26 @@ footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
       cx = ev.clientX; if (prevu) return; prevu = true;
       requestAnimationFrame(function () { prevu = false; if (!b) return; var x = (cx - b.left) / b.width * 100; r.value = Math.round(Math.min(100, Math.max(0, x))); poser(c, r.value); });
     }
+    // Au doigt : on attend de connaître la direction. Geste vertical = défilement, le curseur ne bouge pas.
+    // Geste horizontal (> 10 px, plus horizontal que vertical) = on prend la main sur le curseur.
+    var x0 = 0, y0 = 0, mode = null; // null = en attente, 'h' = balayage, 'v' = défilement
     c.addEventListener('pointerdown', function (e) {
-      b = c.getBoundingClientRect(); c.setPointerCapture(e.pointerId); bouge(e); c.classList.remove('indice');
+      b = c.getBoundingClientRect(); x0 = e.clientX; y0 = e.clientY; c.classList.remove('indice');
+      if (e.pointerType === 'mouse') { mode = 'h'; c.setPointerCapture(e.pointerId); bouge(e); } else mode = null;
     });
-    c.addEventListener('pointermove', function (e) { if (b && c.hasPointerCapture(e.pointerId)) bouge(e); });
-    c.addEventListener('pointerup', function () { b = null; });
-    c.addEventListener('pointercancel', function () { b = null; });
+    c.addEventListener('pointermove', function (e) {
+      if (!b || mode === 'v') return;
+      if (mode === null) {
+        var dx = Math.abs(e.clientX - x0), dy = Math.abs(e.clientY - y0);
+        if (dx < 10 && dy < 10) return;
+        if (dy >= dx) { mode = 'v'; return; }
+        mode = 'h'; try { c.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      bouge(e);
+    });
+    function lacher() { b = null; mode = null; }
+    c.addEventListener('pointerup', lacher);
+    c.addEventListener('pointercancel', lacher);
     c.dataset.paire = idx;
     return c;
   }
