@@ -25,3 +25,10 @@ export const noterOuverte = (email: string, slug: string) => {
   s.add(slug);
   ecrireLocal(cleOuvertes(email), JSON.stringify([...s]));
 };
+
+// Déconnexion : le brouillon et les livraisons ouvertes ne restent pas sur un appareil partagé.
+// L'email (CLE_EMAIL) est gardé : il sert seulement à préremplir la connexion.
+export const effacerDonneesAppareil = (email: string) => {
+  effacerLocal(cleBrouillon(email));
+  effacerLocal(cleOuvertes(email));
+};

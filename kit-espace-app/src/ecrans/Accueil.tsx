@@ -3,7 +3,7 @@ import { deconnecter } from '../api.ts';
 import { actionPrincipale } from '../accueil.ts';
 import { jourLisible } from '../dates.ts';
 import { useSession } from '../session.ts';
-import { lireOuvertes } from '../stockage.ts';
+import { effacerDonneesAppareil, lireOuvertes } from '../stockage.ts';
 import { T } from '../textes.ts';
 import type { Livraison } from '../types.ts';
 import { Apparait } from '../ui/Apparait.tsx';
@@ -31,6 +31,7 @@ export function Accueil() {
 
   const deco = async () => {
     try { await deconnecter(); } catch { /* le cookie sera refusé de toute façon à la prochaine requête */ }
+    effacerDonneesAppareil(moi.email);
     window.location.reload();
   };
 

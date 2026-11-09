@@ -305,3 +305,16 @@ test('fusion réussie au premier 409 : le résultat dit que le serveur a apport�
   const memeChamp = await sauvegarder({ local: { ...direct.dossier, nom: 'Gagne ici' }, derniere: direct.dossier, rev: direct.rev, ecrire: client.ecrireDossier });
   assert.equal(memeChamp.apporteDuServeur, false, 'conflit, mais ma version a gagné sur tous les champs : rien de neuf pour l\'écran');
 });
+
+test('déconnexion : brouillon et livraisons ouvertes effacés, l\'email gardé pour le préremplissage', async () => {
+  const mem = new Map();
+  globalThis.window = { localStorage: { getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), removeItem: (k) => mem.delete(k) } };
+  const st = await src('stockage.ts');
+  st.ecrireLocal(st.CLE_EMAIL, 'a@b.fr');
+  st.ecrireLocal(st.cleBrouillon('A@b.fr'), '{}');
+  st.noterOuverte('a@b.fr', 'video');
+  assert.equal(typeof st.effacerDonneesAppareil, 'function');
+  st.effacerDonneesAppareil('A@b.fr');
+  assert.deepEqual([...mem.keys()], [st.CLE_EMAIL]);
+  delete globalThis.window;
+});

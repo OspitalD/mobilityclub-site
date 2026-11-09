@@ -46,12 +46,16 @@ export function App() {
   const route = useRoute();
   const dernierChargement = useRef(0);
   const emailRef = useRef('');
+  // Route d'avant la perte de session : la reconnexion y revient au lieu de renvoyer sur l'accueil.
+  const routeAvant = useRef('#/');
+  const memoriserRoute = () => { routeAvant.current = window.location.hash || '#/'; };
 
   // 401 : retour à la connexion, email prérempli (le brouillon du dossier reste en localStorage). 403 acces_coupe :
   // écran fermé. Le reste (réseau, 500) est laissé à l'écran qui a appelé.
   const gerer = useCallback((e: unknown): boolean => {
     if (!(e instanceof ErreurApi)) return false;
     if (e.statut === 401) {
+      memoriserRoute();
       setEtat({ t: 'connexion', email: emailRef.current || lireLocal(CLE_EMAIL) || '', expiree: true });
       return true;
     }
@@ -66,7 +70,7 @@ export function App() {
       emailRef.current = m.email;
       setEtat({ t: 'ok', moi: m });
     } catch (e) {
-      if (e instanceof ErreurApi && e.statut === 401) setEtat({ t: 'connexion', email: lireLocal(CLE_EMAIL) || '', expiree: false });
+      if (e instanceof ErreurApi && e.statut === 401) { memoriserRoute(); setEtat({ t: 'connexion', email: lireLocal(CLE_EMAIL) || '', expiree: false }); }
       else if (gerer(e)) return;
       else setEtat({ t: 'reseau', message: e instanceof ErreurApi && e.code === 'reseau' ? undefined : T.erreur });
     }
@@ -101,7 +105,7 @@ export function App() {
     );
   }
   if (etat.t === 'connexion') {
-    return <Connexion emailInitial={etat.email} expiree={etat.expiree} onFerme={() => setEtat({ t: 'ferme' })} onConnecte={() => { window.location.hash = '#/'; dernierChargement.current = 0; setEtat({ t: 'chargement' }); void charger(); }} />;
+    return <Connexion emailInitial={etat.email} expiree={etat.expiree} onFerme={() => setEtat({ t: 'ferme' })} onConnecte={() => { window.location.hash = routeAvant.current; dernierChargement.current = 0; setEtat({ t: 'chargement' }); void charger(); }} />;
   }
   if (etat.t === 'ferme') return <AccesFerme />;
   if (etat.t === 'reseau') return <Reseau message={etat.message} onReessayer={() => { setEtat({ t: 'chargement' }); void charger(); }} />;

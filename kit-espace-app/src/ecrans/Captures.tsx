@@ -69,7 +69,9 @@ export function Captures() {
         const c = await envoyerCapture(r.blob, { largeur: r.largeur, hauteur: r.hauteur }, (p) => setEnCours((l) => l.map((x) => (x.cle === cle ? { ...x, progres: p } : x))));
         setListe((l) => [...(l ?? []), c]);
       } catch (e) {
-        if (!gerer(e)) setMessages((m) => [...m, messageErreur(e)]);
+        // 401 : la session est perdue, les fichiers restants ne doivent pas repartir.
+        if (gerer(e)) file.current = [];
+        else setMessages((m) => [...m, messageErreur(e)]);
         if (e instanceof ErreurApi && e.code === 'limite_atteinte') file.current = [];
       } finally {
         URL.revokeObjectURL(apercu);
@@ -99,12 +101,13 @@ export function Captures() {
   // Collage (Ctrl+V d'une capture d'écran) : utile sur ordinateur, inoffensif ailleurs.
   useEffect(() => {
     const coller = (e: ClipboardEvent) => {
+      if (horsLigne) return;
       const fichiers = [...(e.clipboardData?.files ?? [])];
       if (fichiers.length) { e.preventDefault(); ajouter(fichiers); }
     };
     window.addEventListener('paste', coller);
     return () => window.removeEventListener('paste', coller);
-  }, [ajouter]);
+  }, [ajouter, horsLigne]);
 
   const deposer = (e: DragEvent) => {
     e.preventDefault(); setGlisse(false);
@@ -173,20 +176,45 @@ function Detail({ capture, onFermer, onNote, onSupprimee }: { capture: Capture; 
   const [erreur, setErreur] = useState<string | null>(null);
   const [confirmer, setConfirmer] = useState(false);
 
-  const sauver = async () => {
-    if (note === (capture.note ?? '')) return;
+  const derniere = useRef(capture.note ?? '');
+  const noteRef = useRef(note);
+  noteRef.current = note;
+  const supprimee = useRef(false);
+
+  // Une seule voie de sauvegarde : au blur, à la fermeture, après 800 ms sans frappe et quand l'app passe
+  // en arrière-plan. Une capture en cours de suppression n'envoie plus rien.
+  const sauver = useCallback(async () => {
+    const texte = noteRef.current;
+    if (supprimee.current || texte === derniere.current) return;
+    derniere.current = texte;
     try {
-      const c = await noterCapture(capture.id, note);
+      const c = await noterCapture(capture.id, texte);
       onNote(c); setSauvee(true); setErreur(null);
-    } catch (e) { if (!gerer(e)) setErreur(T.erreur); }
-  };
+    } catch (e) {
+      derniere.current = capture.note ?? '';
+      if (!gerer(e)) setErreur(T.erreur);
+    }
+  }, [capture.id, capture.note, gerer, onNote]);
+
+  useEffect(() => {
+    if (note === derniere.current) return;
+    const t = window.setTimeout(() => void sauver(), 800);
+    return () => window.clearTimeout(t);
+  }, [note, sauver]);
+
+  useEffect(() => {
+    const f = () => { if (document.visibilityState === 'hidden') void sauver(); };
+    document.addEventListener('visibilitychange', f);
+    return () => document.removeEventListener('visibilitychange', f);
+  }, [sauver]);
 
   const supprimer = async () => {
+    supprimee.current = true;
     try { await supprimerCapture(capture.id); onSupprimee(capture.id); }
     catch (e) {
       // 404 : déjà supprimée depuis un autre appareil, le résultat voulu est atteint.
       if (e instanceof ErreurApi && e.code === 'not_found') onSupprimee(capture.id);
-      else if (!gerer(e)) setErreur(T.erreur);
+      else { supprimee.current = false; if (!gerer(e)) setErreur(T.erreur); }
     }
   };
 
