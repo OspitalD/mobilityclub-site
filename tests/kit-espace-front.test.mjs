@@ -186,7 +186,7 @@ test('deux appareils : le 409 est fusionné champ par champ et un seul nouveau P
   let puts = 0;
   const ecrire = (d, rev) => { puts += 1; return client.ecrireDossier(d, rev); };
   const local = { ...dossierVide(), pour_qui: 'Écrit sur l\'ordinateur' };
-  const r = await sauvegarder({ local, derniere: null, rev: 0, ecrire, lire: client.lireDossier });
+  const r = await sauvegarder({ local, derniere: null, rev: 0, ecrire });
   assert.equal(puts, 2, 'un PUT refusé, un PUT fusionné');
   assert.equal(r.adopteServeur, false);
   assert.equal(r.rev, 2);
@@ -208,7 +208,7 @@ test('deuxième 409 de suite : le front adopte la version du serveur et le dit',
     if (puts === 2) await client.ecrireDossier({ ...dossierVide(), nom: 'Encore plus récent' }, 1);
     return client.ecrireDossier(d, rev);
   };
-  const r = await sauvegarder({ local: { ...dossierVide(), pour_qui: 'Local' }, derniere: null, rev: 0, ecrire, lire: client.lireDossier });
+  const r = await sauvegarder({ local: { ...dossierVide(), pour_qui: 'Local' }, derniere: null, rev: 0, ecrire });
   assert.equal(r.adopteServeur, true);
   assert.equal(r.dossier.nom, 'Encore plus récent');
   assert.equal(r.dossier.pour_qui, null, 'la version du serveur remplace la mienne');

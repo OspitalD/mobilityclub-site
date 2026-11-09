@@ -1,0 +1,89 @@
+/* ADAPTATION DES COMPOSANTS 10K À LA DA DU CLUB.
+   Règle absolue : AUCUN fichier de src/components/10k/ n'est modifié (une réinstallation les écrase et le
+   build cesserait d'être reproductible). Tout passe par les props, les enveloppes de src/ui/ et cette feuille,
+   chargée APRÈS les CSS 10K. Le préfixe :root monte la spécificité d'un cran pour gagner à coup sûr, sans !important.
+   Matière visée : le .verre de kit-app-sexy/index.html (fond, bord, ombre, pas de flou sur téléphone). */
+
+/* ── web-onboarding-wizard (.tk-ow) ── */
+:root .tk-ow{
+  --tk-ow-ink:var(--texte); --tk-ow-error:var(--rouge);
+  max-width:100%; max-height:none; overflow:visible; border-radius:28px;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:var(--verre-fond); background-color:transparent;
+  border:var(--verre-bord); box-shadow:var(--verre-ombre);
+  -webkit-backdrop-filter:none; backdrop-filter:none;
+}
+@media (min-width:900px) and (hover:hover){:root .tk-ow{-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou)}}
+:root .tk-ow::before{background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25))}
+:root .tk-ow::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;z-index:-1;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%)}
+:root .tk-ow :focus-visible{outline:2px solid #fff;outline-offset:3px}
+:root .tk-ow__top{padding:20px 22px 8px}
+:root .tk-ow__back{width:44px;height:44px;background:transparent;color:var(--texte-2);font-size:20px}
+:root .tk-ow__back:hover{background:transparent;color:var(--texte)}
+:root .tk-ow__section{text-transform:none;letter-spacing:0;font-style:italic;font-weight:700;font-size:14px;color:var(--texte-3)}
+:root .tk-ow__count{font-size:13px;color:var(--texte-3)}
+:root .tk-ow__kbd{display:none}
+:root .tk-ow__progress{gap:6px;margin-top:10px}
+:root .tk-ow__seg{height:3px;background:#1A1E1C}
+:root .tk-ow__seg>span{background:var(--vert)}
+:root .tk-ow__body{padding:12px 22px 8px}
+:root .tk-ow__title{font-style:italic;font-weight:800;letter-spacing:-.035em;font-size:clamp(26px,6vw,34px);line-height:1.05;text-shadow:none;margin-bottom:10px}
+:root .tk-ow__subtitle{font-size:16px;line-height:1.45;color:var(--texte-2);margin-bottom:18px}
+:root .tk-ow__chips,:root .tk-ow__list,:root .tk-ow__fields{gap:10px}
+:root .tk-ow__chip{min-height:56px;padding:14px 18px;border-radius:16px;background:transparent;border:1px solid var(--filet);transition:border-color .2s,color .2s}
+:root .tk-ow__chip:hover{background:transparent;border-color:rgba(255,255,255,.2)}
+:root .tk-ow__chip.is-selected{background:transparent;border-color:var(--vert);transform:none}
+:root .tk-ow__chip-label{font-size:17px;font-weight:700}
+:root .tk-ow__chip.is-selected .tk-ow__chip-label{color:var(--vert)}
+:root .tk-ow__field{font-size:15px;font-weight:700;color:var(--texte);gap:8px}
+:root .tk-ow__input{height:52px;padding:0 16px;border-radius:14px;background:#17191A;color:var(--texte);border:1px solid var(--filet);font-size:17px;font-weight:500;box-shadow:none;transition:border-color .2s}
+:root .tk-ow__input::placeholder{color:var(--texte-3)}
+:root .tk-ow__input:focus{border-color:var(--vert);outline:none}
+:root .tk-ow__input:focus-visible{outline:2px solid #fff;outline-offset:2px}
+:root .tk-ow__footer{padding:12px 22px 22px}
+:root .tk-ow__error{font-size:15px;font-weight:600}
+/* Bouton vert à remplissage : le composant n'a pas de <span> pour le .rempli, le même effet passe par la taille du fond. */
+:root .tk-ow__continue{height:58px;border-radius:18px;background:linear-gradient(90deg,#9AF0D2,#E9FBF4) no-repeat left center/0% 100%,var(--vert);color:var(--fond);font-weight:800;font-size:17px;transition:background-size .7s var(--courbe),transform .18s var(--courbe),opacity .2s}
+@media (hover:hover){:root .tk-ow__continue:hover:not(:disabled){background-size:100% 100%}}
+:root .tk-ow__continue:focus-visible{background-size:100% 100%}
+:root .tk-ow__continue:active:not(:disabled){transform:scale(.97)}
+:root .tk-ow__continue:disabled{opacity:.45}
+
+/* ── web-sheet-modal (.tk-sm) ── */
+:root:root:root :is(.tk-sm,.tk-sm-empty,.tk-sm-field,.tk-sm-button,.tk-sm-primary){
+  --tk-sm-ink:var(--texte); --tk-sm-on-ink:var(--fond); --tk-sm-muted:var(--texte-2); --tk-sm-muted-2:var(--texte-3);
+  --tk-sm-line:var(--filet); --tk-sm-soft:#17191A; --tk-sm-card:#17191A; --tk-sm-link:var(--vert);
+  --tk-sm-glass:17 20 18; --tk-sm-glass-a:1; --tk-sm-hi:255 255 255; --tk-sm-hi-a:.12; --tk-sm-shade:0 0 0; --tk-sm-shade-a:.6;
+}
+:root .tk-sm{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:16px}
+:root .tk-sm-scrim{background:rgba(13,15,14,.78)}
+:root .tk-sm-modal{
+  border-radius:28px; border:var(--verre-bord);
+  background:var(--verre-fond),#111412; box-shadow:var(--verre-ombre);
+  -webkit-backdrop-filter:none; backdrop-filter:none;
+}
+:root .tk-sm-head{padding:22px 24px 14px}
+:root .tk-sm-head h2{font-size:24px;font-style:italic;font-weight:800;letter-spacing:-.035em}
+:root .tk-sm-icon-button{width:44px;height:44px;padding:0;color:var(--texte-2)}
+:root .tk-sm-icon-button:hover{background:transparent;color:var(--texte)}
+:root .tk-sm :focus-visible,:root .tk-sm-button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+:root .tk-sm-field{gap:8px;margin-bottom:0;font-size:15px}
+:root .tk-sm-field>span{font-size:15px;font-weight:700}
+:root .tk-sm-field small{font-size:14px;font-weight:500;color:var(--texte-3)}
+:root .tk-sm-field input,:root .tk-sm-field select,:root .tk-sm-field textarea{min-height:52px;padding:12px 16px;border-radius:14px;font-size:17px;font-weight:500;background:#17191A;border:1px solid var(--filet)}
+:root .tk-sm-field textarea{min-height:120px;line-height:1.5}
+:root .tk-sm-field input:focus,:root .tk-sm-field select:focus,:root .tk-sm-field textarea:focus{border-color:var(--vert);box-shadow:none}
+:root .tk-sm-button{min-height:44px;padding:0 18px;border-radius:14px;background:transparent;font-size:15px;font-weight:700}
+:root .tk-sm-button.is-copied{color:var(--vert);border-color:var(--vert)}
+:root .tk-sm-empty{min-height:0;padding:56px 0;align-items:flex-start;text-align:left;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+:root .tk-sm-empty-mark{display:none}
+:root .tk-sm-empty h3{font-size:clamp(24px,4vw,30px);font-style:italic;font-weight:800;letter-spacing:-.035em;line-height:1.1}
+:root .tk-sm-empty p{margin:12px 0 0;font-size:17px;line-height:1.5;color:var(--texte-2);max-width:380px}
+@media (min-width:900px) and (hover:hover){:root .tk-sm-modal{-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou)}}
+
+/* ── web-count-up (.tk-cu) : le rang ── */
+:root .tk-cu.rang{font-style:italic;font-weight:800;font-size:clamp(96px,22vw,168px);letter-spacing:-.06em;line-height:.9;color:var(--or);font-variant-numeric:tabular-nums}
+:root .tk-cu.rang .tk-cu-digit{padding-right:.06em;margin-right:-.06em}
+
+/* ── web-scroll-reveal (.tk-sr) : le flou du composant n'a pas sa place sur téléphone ── */
+:root .tk-sr{filter:none!important;will-change:opacity}
