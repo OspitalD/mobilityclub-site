@@ -928,3 +928,50 @@ test('email de bienvenue : une livraison déjà ouverte est annoncée « déjà 
   assert.equal(kit().get(`buyers/${hashEmail('tard@exemple.fr')}`).v.rang, 20);
   assert.equal(typeof emailBienvenueKit, 'function');
 });
+
+// ── 13. CLI : le câblage jusqu'à l'API ───────────────────────────────────────
+test('CLI : add --bienvenue, list, couper, contenu, annoncer parlent à l\'API réelle', async () => {
+  const { mkdtemp, writeFile } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  process.env.KIT_APP_SEXY_URL = 'http://cli.test';
+  const { main, rangsManquants } = await import('../scripts/kit-app-sexy.mjs');
+  const suivant = globalThis.fetch;
+  globalThis.fetch = (url, opts) => (String(url).startsWith('http://cli.test') ? api(new Request(url, opts)) : suivant(url, opts));
+  const sortie = [];
+  const log = mock.method(console, 'log', (...a) => sortie.push(a.join(' ')));
+  try {
+    fiche('a@exemple.fr', { rang: 1 });
+    fiche('c@exemple.fr', { rang: 3 });
+    await main(['add', 'b@exemple.fr', '--note', 'ami', '--bienvenue']);
+    assert.match(sortie.at(-1), /ajoutés : 1 .*emails de bienvenue : 1/);
+    assert.equal(mails.at(-1).to[0], 'b@exemple.fr');
+    assert.equal(kit().get(`buyers/${hashEmail('b@exemple.fr')}`).v.note, 'ami');
+
+    await main(['couper', 'c@exemple.fr', '--raison', 'remboursé']);
+    sortie.length = 0;
+    await main(['list']);
+    const texte = sortie.join('\n');
+    assert.match(texte, /n°1 +a@exemple\.fr +audit\/bonus +dossier +0 % +captures +0 +dernière connexion jamais/);
+    assert.match(texte, /manuel +b@exemple\.fr/);
+    assert.match(texte, /n°3 +c@exemple\.fr.*\[COUPÉ : remboursé\]/);
+    assert.match(texte, /Rangs manquants : 2/);
+    assert.deepEqual(rangsManquants([{ rang: 1 }, { rang: 4 }, { rang: null }]), [2, 3]);
+
+    fixer('2026-11-18T12:00:00Z');
+    const fichier = join(await mkdtemp(join(tmpdir(), 'kas-')), 'video.html');
+    await writeFile(fichier, '<div>PAGE-VIDEO</div>\n<div>suite</div>');
+    await main(['contenu', 'video', fichier]);
+    assert.match(sortie.at(-1), /video déposé .* état : disponible/);
+    mails.length = 0;
+    await main(['annoncer', 'video']);
+    assert.equal(mails.length, 2, 'a et b ; c est coupé');
+    sortie.length = 0;
+    await main(['list']);
+    assert.match(sortie.join('\n'), /video +2026-11-18 +disponible +annonces 2\/2/);
+    assert.doesNotMatch(sortie.join('\n'), /À ANNONCER : node scripts\/kit-app-sexy\.mjs annoncer video/);
+  } finally {
+    log.mock.restore();
+    globalThis.fetch = suivant;
+  }
+});
