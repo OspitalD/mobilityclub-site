@@ -31,3 +31,7 @@ docs/REPRISE-ACCES-PAYPAL-HERMES.md
 # Composants 10K Design (achat membre, licence) : jamais dans ce dépôt PUBLIC.
 # Réinstallation : voir v2-app/README.md. Le build compilé (v2/) suffit pour publier.
 v2-app/src/components/10k/
+
+# Composants 10K Design de l espace acheteur du Kit App Sexy (licence) : jamais dans ce depot PUBLIC.
+# Reinstallation : voir kit-espace-app/README.md. Le build compile (kit-app-sexy/espace/) suffit pour publier.
+kit-espace-app/src/components/10k/
