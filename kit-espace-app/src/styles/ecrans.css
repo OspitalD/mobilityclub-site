@@ -25,6 +25,7 @@
 .hero-titre{font-size:clamp(28px,6.4vw,40px);letter-spacing:-.035em;line-height:1.05}
 .hero-titre.grand{font-size:clamp(38px,8vw,60px);letter-spacing:-.045em}
 .hero-rang{margin:6px 0 0 -.04em;min-height:1em}
+.hero-rang .tk-cu-affix{margin-right:.14em}
 .hero-ligne{font-size:16px;font-weight:700;line-height:1.45;margin-top:18px}
 .hero-ligne+.hero-ligne{margin-top:10px}
 .hero-action{margin-top:28px}
@@ -32,7 +33,7 @@
 .frise h2{margin-bottom:20px}
 .jour-groupe{padding:22px 0;border-top:1px solid var(--filet)}
 .jour{font-size:26px;letter-spacing:-.035em;line-height:1.1}
-.jour-suffixe{font-size:14px;font-style:normal;font-weight:600;color:var(--texte-3);letter-spacing:0}
+.jour-suffixe{font-size:14px;font-style:normal;word-spacing:0;font-weight:600;color:var(--texte-3);letter-spacing:0}
 .jour-liste{list-style:none;margin-top:14px;display:grid;gap:16px}
 .liv-titre{display:block;font-weight:800;font-size:17px;letter-spacing:-.01em;line-height:1.3}
 .liv-etat{display:block;font-size:15px;font-weight:600;margin-top:2px;line-height:1.4}
@@ -60,9 +61,12 @@
 .assistant-zone{display:grid;gap:8px;max-width:520px}
 .assistant-zone .zone>.halo{left:-70px;top:-60px}
 .fiche{display:grid}
-.q{border:0;border-top:1px solid var(--filet);padding:28px 0;min-width:0}
+.q{position:relative;border:0;padding:28px 0;min-width:0}
+/* Le filet est un pseudo-élément : la bordure d'un fieldset se coupe autour de son <legend>. */
+.q::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--filet)}
 .q>*+*{margin-top:12px}
-.q legend{padding:0;margin-bottom:12px;font-size:15px;font-weight:700;color:var(--texte)}
+.q legend{float:left;width:100%;padding:0;font-size:15px;font-weight:700;color:var(--texte)}
+.q legend+*{clear:both;margin-top:12px}
 .indice{font-size:14px;color:var(--texte-3);font-weight:500;line-height:1.4}
 .choix{display:grid;gap:10px}
 .choix-ligne{width:100%;min-height:56px;padding:14px 18px;border-radius:16px;border:1px solid var(--filet);text-align:left;font-weight:700;font-size:17px;color:var(--texte);transition:border-color .2s,color .2s}

@@ -27,8 +27,9 @@
 :root .tk-ow__seg{height:3px;background:#1A1E1C}
 :root .tk-ow__seg>span{background:var(--vert)}
 :root .tk-ow__body{padding:12px 22px 8px}
-:root .tk-ow__title{font-style:italic;font-weight:800;letter-spacing:-.035em;font-size:clamp(26px,6vw,34px);line-height:1.05;text-shadow:none;margin-bottom:10px}
-:root .tk-ow__subtitle{font-size:16px;line-height:1.45;color:var(--texte-2);margin-bottom:18px}
+:root .tk-ow__title{font-style:italic;font-weight:800;letter-spacing:-.035em;font-size:clamp(26px,6vw,34px);line-height:1.05;text-shadow:none;margin-bottom:20px}
+:root .tk-ow__title+.tk-ow__subtitle{margin:-10px 0 20px}
+:root .tk-ow__subtitle{font-size:16px;line-height:1.45;color:var(--texte-2)}
 :root .tk-ow__chips,:root .tk-ow__list,:root .tk-ow__fields{gap:10px}
 :root .tk-ow__chip{min-height:56px;padding:14px 18px;border-radius:16px;background:transparent;border:1px solid var(--filet);transition:border-color .2s,color .2s}
 :root .tk-ow__chip:hover{background:transparent;border-color:rgba(255,255,255,.2)}
