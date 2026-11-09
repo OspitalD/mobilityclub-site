@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kit App Sexy</title>
+<meta name="description" content="Relooke ton app pour que tes coachés l'ouvrent chaque matin. La méthode de Damien Ospital, construite sur la V1 et la V2 de l'app du Mobility Club.">
+<meta name="theme-color" content="#0D0F0E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+<style>
+/* Jetons et matières reprises de l'app V2 : src/v2/da/jetons.css + primitives.css (verre héros, halos, bouton maintenu). */
+:root{
+  --fond:#0D0F0E; --carte:#111412; --carte-2:#17191A;
+  --texte:#F5F5F3; --texte-2:#A9ACA9; --texte-3:#8E918E; --filet:rgba(255,255,255,.08);
+  --vert:#3ECFA0; --or:#E8A020; --violet:#B990E0; --rouge:#E05A4A;
+  --verre-fond:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03) 45%,rgba(255,255,255,.05));
+  --verre-bord:1px solid rgba(255,255,255,.14);
+  --verre-flou:blur(26px) saturate(170%);
+  --verre-ombre:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 24px rgba(255,255,255,.04),0 20px 50px rgba(0,0,0,.45);
+  --courbe:cubic-bezier(.2,.8,.2,1);
+  --g:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--fond);-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--fond);color:var(--texte);font:500 17px/1.6 "Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+b,strong{font-weight:800}
+.w{max-width:1120px;margin:0 auto;padding:0 var(--g)}
+.lire{max-width:640px}
+h1,h2,.it{font-style:italic;font-weight:800;letter-spacing:-.035em;line-height:1.02}
+h1{font-size:clamp(52px,12vw,124px);letter-spacing:-.05em}
+h2{font-size:clamp(34px,6.4vw,60px);text-wrap:balance}
+p+p{margin-top:18px}
+.gris{color:var(--texte-2)}
+section{position:relative;padding:clamp(80px,12vw,150px) 0;overflow-x:clip}
+.entete{position:relative;overflow-x:clip}
+
+/* ── Halo (primitives.css .os-halo) : trois lumières floutées DERRIÈRE le verre, jamais seules ── */
+.halo{position:absolute;pointer-events:none;z-index:0;width:420px;height:420px}
+.halo i{position:absolute;border-radius:50%}
+.halo .hv{left:0;top:0;width:260px;height:260px;background:var(--vert);opacity:.5;filter:blur(60px)}
+.halo .hp{right:0;top:130px;width:230px;height:230px;background:var(--violet);opacity:.42;filter:blur(64px)}
+.halo .ho{left:150px;top:240px;width:160px;height:160px;background:var(--or);opacity:.26;filter:blur(56px)}
+.halo.seul-or .hv,.halo.seul-or .hp{display:none}
+.halo.seul-or .ho{left:40px;top:40px;width:300px;height:300px;opacity:.28;filter:blur(80px)}
+
+/* ── Verre héros ── */
+.verre{position:relative;isolation:isolate;border-radius:28px;background:var(--verre-fond);border:var(--verre-bord);-webkit-backdrop-filter:var(--verre-flou);backdrop-filter:var(--verre-flou);box-shadow:var(--verre-ombre)}
+.verre::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.verre::after{content:"";position:absolute;left:8%;right:8%;top:0;height:45%;pointer-events:none;z-index:-1;background:radial-gradient(ellipse 60% 70% at 50% 0,rgba(255,255,255,.09),rgba(255,255,255,0) 70%)}
+
+/* ── Bouton (os-bouton + bouton maintenu : remplissage clair qui court sous le libellé) ── */
+.bouton{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 26px;border-radius:18px;background:var(--vert);color:var(--fond);font-weight:800;font-size:17px;text-decoration:none;transition:transform .18s var(--courbe)}
+.bouton .rempli{position:absolute;inset:0;z-index:-1;border-radius:inherit;transform-origin:left center;transform:scaleX(0);background:linear-gradient(90deg,#9AF0D2,#E9FBF4);transition:transform .7s var(--courbe)}
+.bouton:hover .rempli,.bouton:focus-visible .rempli{transform:scaleX(1)}
+.bouton:active{transform:scale(.97)}
+.bouton svg{transition:transform .3s var(--courbe)}
+.bouton:hover svg{transform:translateX(4px)}
+.bouton:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* ── Téléphone : l'écran réel, sans faux habillage d'appareil ── */
+.tel{position:relative;aspect-ratio:390/844;border-radius:38px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 40px 80px rgba(0,0,0,.55)}
+.tel>img,.tel>video,.tel .couche>img,.tel .couche>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* ═════════ EN-TÊTE ═════════ */
+.entete{padding:calc(28px + env(safe-area-inset-top)) 0 clamp(64px,10vw,120px)}
+.signature{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:700;color:var(--texte-2)}
+.medaillon{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:30% 18%;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.entete-grille{display:grid;grid-template-columns:1fr;gap:56px;margin-top:clamp(48px,8vw,96px);align-items:center}
+.entete h1 span{display:block}
+.entete h1 .vert{color:var(--vert)}
+.chapo{font-size:clamp(20px,2.6vw,25px);line-height:1.4;color:var(--texte-2);margin-top:26px;max-width:520px;font-weight:500}
+.chapo b{color:var(--texte)}
+.offre-zone{position:relative;margin-top:44px;max-width:470px}
+.offre-zone .halo{left:-60px;top:-120px}
+.offre{position:relative;z-index:1;padding:28px}
+.prix{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.prix .chiffre{font-size:64px;font-weight:800;font-style:italic;letter-spacing:-.05em;line-height:1}
+.prix .apres{font-size:16px;color:var(--texte-2);font-weight:600;line-height:1.35}
+.offre .bouton{margin-top:22px}
+.mention{font-size:14px;line-height:1.5;color:var(--texte-2);margin-top:16px}
+.compte{display:flex;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid var(--filet);font-variant-numeric:tabular-nums}
+.compte div{display:flex;flex-direction:column}
+.compte b{font-size:28px;font-style:italic;letter-spacing:-.04em;line-height:1;color:var(--or)}
+.compte span{font-size:13px;color:var(--texte-3);font-weight:600;margin-top:4px}
+.compte p{margin:0 0 0 auto;align-self:flex-end;font-size:13px;color:var(--texte-3);font-weight:600;text-align:right;line-height:1.35}
+.entete-tel{position:relative;justify-self:center;width:min(300px,78vw)}
+.entete-tel .halo{left:-60px;top:80px}
+.entete-tel .tel{z-index:1}
+.legende{font-size:14px;color:var(--texte-3);font-weight:600;margin-top:16px;text-align:center}
+
+/* ═════════ AVANT / APRÈS ═════════ */
+.recit-intro{max-width:720px}
+.recit-intro p{margin-top:22px;font-size:19px}
+.recit{display:grid;grid-template-columns:1fr;margin-top:clamp(40px,7vw,80px)}
+.etape{padding:28px 0 64px;border-top:1px solid var(--filet)}
+.etape .num{font-style:italic;font-weight:800;font-size:15px;color:var(--texte-3);letter-spacing:-.01em}
+.etape h3{font-size:clamp(28px,4vw,40px);font-style:italic;font-weight:800;letter-spacing:-.035em;line-height:1.05;margin-top:6px}
+.etape .duo-txt{display:grid;grid-template-columns:1fr;gap:14px;margin-top:20px}
+.etape .duo-txt p{margin:0;font-size:16px;line-height:1.55;color:var(--texte-2)}
+.etape .duo-txt p strong{display:block;font-size:13px;font-weight:800;margin-bottom:2px;color:var(--texte-3)}
+.etape .duo-txt p.apres strong{color:var(--vert)}
+.etape .duo-txt p.apres{color:var(--texte)}
+.etape .tel-inline{width:min(320px,84vw);margin:32px auto 0}
+.scene{display:none}
+
+/* Curseur avant/après */
+.comparer{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize}
+.comparer .couche{position:absolute;inset:0}
+.comparer .avant{clip-path:inset(0 calc(100% - var(--x,50%)) 0 0);z-index:2}
+.comparer .poignee{position:absolute;top:0;bottom:0;left:var(--x,50%);width:0;z-index:3;pointer-events:none}
+.comparer .poignee::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:rgba(255,255,255,.9);box-shadow:0 0 18px rgba(255,255,255,.35)}
+.comparer .poignee span{position:absolute;top:50%;left:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(20,22,21,.55);border:1px solid rgba(255,255,255,.35);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 22px rgba(0,0,0,.45)}
+.comparer .poignee svg{width:22px;height:22px}
+.comparer .marque{position:absolute;bottom:14px;z-index:4;font-size:13px;font-weight:800;font-style:italic;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.8);pointer-events:none;transition:opacity .25s}
+.comparer .marque.g{left:16px}
+.comparer .marque.d{right:16px;color:var(--vert)}
+.comparer input{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:5;margin:0;pointer-events:none}
+.comparer:focus-within .poignee span{outline:2px solid #fff;outline-offset:3px}
+.comparer.indice .poignee span{animation:indice 1.6s var(--courbe) .4s 1}
+@keyframes indice{30%{transform:translateX(-26px)}65%{transform:translateX(18px)}100%{transform:none}}
+.astuce{text-align:center;font-size:13px;color:var(--texte-3);font-weight:600;margin-top:14px}
+
+/* ═════════ PROBLÈME ═════════ */
+.gros{font-size:clamp(22px,3vw,30px);line-height:1.38;font-weight:600;letter-spacing:-.015em;max-width:760px}
+.gros+.gros{margin-top:26px}
+.gros .chute{color:var(--texte);font-weight:800}
+.gros .gris{font-weight:500}
+
+/* ═════════ IA / GABARIT ═════════ */
+.contraste{display:grid;max-width:720px;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,48px);margin-top:clamp(40px,6vw,72px);align-items:start}
+.contraste figure{display:flex;flex-direction:column}
+.contraste .tel{border-radius:28px}
+.contraste .stocke .tel{filter:saturate(.75) brightness(.9)}
+.contraste figcaption{margin-top:20px}
+.contraste figcaption b{display:block;font-size:clamp(19px,2.6vw,26px);font-style:italic;letter-spacing:-.03em;line-height:1.1}
+.contraste .stocke b{color:var(--rouge)}
+.contraste .ressent b{color:var(--vert)}
+.contraste figcaption span{display:block;font-size:15px;color:var(--texte-2);margin-top:8px;line-height:1.5}
+.garant{margin-top:clamp(48px,7vw,80px);font-size:clamp(21px,2.6vw,27px);line-height:1.4;font-weight:600;letter-spacing:-.01em;max-width:780px}
+.garant em{font-style:italic;font-weight:800;color:var(--texte)}
+
+/* ═════════ CE QUE TU REÇOIS ═════════ */
+.recois{list-style:none;margin-top:clamp(32px,5vw,56px);counter-reset:r}
+.recois li{display:grid;grid-template-columns:56px 1fr;column-gap:8px;padding:26px 0;border-top:1px solid var(--filet)}
+.recois li:last-child{border-bottom:1px solid var(--filet)}
+.recois .n{grid-row:span 2;font-size:34px;font-style:italic;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--texte-3)}
+.recois h3{font-size:clamp(20px,2.4vw,24px);font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.recois p{color:var(--texte-2);font-size:16px;margin-top:4px}
+.recois li.or .n,.recois li.or h3{color:var(--or)}
+
+/* ═════════ BONUS ═════════ */
+.bonus{position:relative;overflow:hidden}
+.bonus .halo{right:-80px;top:40px}
+.bonus-grille{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
+.bonus h2 .or{color:var(--or)}
+.bonus .lire p{font-size:18px}
+.places{margin-top:34px}
+.places .barres{display:flex;gap:6px;max-width:300px}
+.places .barres i{flex:1;height:3px;border-radius:2px;background:var(--or);transform-origin:left;transform:scaleX(0);transition:transform .7s var(--courbe)}
+.places.vu .barres i{transform:none}
+.places .barres i:nth-child(2){transition-delay:.08s}.places .barres i:nth-child(3){transition-delay:.16s}.places .barres i:nth-child(4){transition-delay:.24s}.places .barres i:nth-child(5){transition-delay:.32s}
+.places p{margin-top:14px;font-weight:700;color:var(--texte)}
+.places p b{color:var(--or);font-style:italic;font-size:22px;letter-spacing:-.03em}
+.bonus-tel{justify-self:center;width:min(270px,70vw)}
+
+/* ═════════ COMMENT ÇA MARCHE (mécanique 10K web-sticky-steps : rail + numéro actif) ═════════ */
+.marche{display:grid;grid-template-columns:44px 1fr;gap:0 20px;margin-top:clamp(36px,5vw,60px)}
+.rail{position:relative}
+.rail::before{content:"";position:absolute;left:21px;top:8px;bottom:8px;border-left:1px dashed rgba(255,255,255,.18)}
+.rail .badge{position:sticky;top:42vh;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:italic;font-weight:800;font-size:18px;color:var(--fond);background:var(--vert);box-shadow:0 0 0 6px var(--fond),0 0 30px rgba(62,207,160,.45)}
+.rail .badge.bouge{animation:badge .45s var(--courbe)}
+@keyframes badge{from{transform:scale(.6);opacity:.4}}
+.pas{list-style:none}
+.pas li{padding:6px 0 clamp(48px,9vh,96px);transition:opacity .4s}
+.pas li:not(.actif){opacity:.38}
+.pas h3{font-size:clamp(24px,3.4vw,34px);font-style:italic;font-weight:800;letter-spacing:-.035em;line-height:1.1}
+.pas p{color:var(--texte-2);margin-top:8px;font-size:17px}
+
+/* ═════════ TROIS FAÇONS ═════════ */
+.facons{display:grid;grid-template-columns:1fr;margin-top:clamp(32px,5vw,56px)}
+.facons div{padding:26px 0;border-top:1px solid var(--filet)}
+.facons div:last-child{border-bottom:1px solid var(--filet)}
+.facons .k{font-size:clamp(40px,6vw,56px);font-style:italic;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--texte-3)}
+.facons b{display:block;font-size:19px;margin-top:12px;letter-spacing:-.01em}
+.facons span{display:block;color:var(--texte-2);font-size:16px;margin-top:4px}
+.facons .kit .k{color:var(--vert)}
+
+/* ═════════ GARANTIE (mécanique web-count-up) ═════════ */
+.garantie-ligne{display:flex;align-items:flex-end;gap:clamp(18px,4vw,48px);flex-wrap:wrap;margin-top:36px}
+.garantie-ligne div{display:flex;flex-direction:column}
+.garantie-ligne b{font-size:clamp(96px,18vw,180px);font-style:italic;font-weight:800;letter-spacing:-.06em;line-height:.85;font-variant-numeric:tabular-nums}
+.garantie-ligne b.or{color:var(--or)}
+.garantie-ligne span{font-size:16px;color:var(--texte-2);font-weight:600;margin-top:14px;max-width:220px;line-height:1.4}
+
+/* ═════════ QUESTIONS ═════════ */
+.questions{margin-top:clamp(28px,4vw,48px);max-width:760px}
+details{border-top:1px solid var(--filet)}
+details:last-child{border-bottom:1px solid var(--filet)}
+summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;font-weight:700;font-size:18px;letter-spacing:-.01em}
+summary::-webkit-details-marker{display:none}
+summary svg{flex:none;width:20px;height:20px;color:var(--texte-3);transition:transform .3s var(--courbe)}
+details[open] summary svg{transform:rotate(45deg);color:var(--texte)}
+details p{color:var(--texte-2);padding:0 40px 24px 0;margin-top:-6px}
+summary:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:4px}
+
+/* ═════════ FIN ═════════ */
+.fin{overflow:hidden}
+.fin .halo{left:50%;top:-40px;transform:translateX(-50%)}
+.fin-grille{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:48px}
+.ps{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;margin-top:48px;max-width:560px}
+.ps img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:30% 18%;box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.ps p{font-size:16px;color:var(--texte-2)}
+.ps p b{color:var(--texte)}
+.ps .sig{font-style:italic;font-weight:800;color:var(--texte);margin-top:10px;font-size:17px}
+footer{padding:40px 0 calc(48px + env(safe-area-inset-bottom));border-top:1px solid var(--filet);color:var(--texte-3);font-size:13px;font-weight:600}
+footer .w{display:flex;flex-wrap:wrap;gap:6px 22px}
+
+/* Apparition au défilement (Reveal 10K) */
+.apparait{opacity:0;transform:translateY(22px);transition:opacity .8s var(--courbe),transform .8s var(--courbe)}
+.apparait.vu{opacity:1;transform:none}
+
+/* ── Grand écran ── */
+@media (min-width:900px){
+  :root{--g:40px}
+  .entete-grille{grid-template-columns:1.25fr .75fr;gap:40px}
+  .entete-tel{width:320px}
+  .recit{grid-template-columns:1fr 380px;gap:80px}
+  .etape{min-height:86vh;padding-top:36px}
+  .etape .tel-inline{display:none}
+  .etape{opacity:.32;transition:opacity .5s}
+  .etape.actif{opacity:1}
+  .scene{display:block;position:sticky;top:max(40px,calc(50vh - 400px));height:min(780px,calc(100vh - 80px));align-self:start}
+  .scene .tel{height:100%;width:auto;margin:0 auto}
+  .scene .comparer{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--courbe);pointer-events:none}
+  .scene .comparer.actif{opacity:1;pointer-events:auto}
+  .scene-cadre{position:relative;height:100%;aspect-ratio:390/844;margin:0 auto}
+  .etape .duo-txt{grid-template-columns:1fr 1fr;gap:28px;max-width:560px}
+  .bonus-grille{grid-template-columns:1.2fr .8fr}
+  .facons{grid-template-columns:repeat(3,1fr);gap:0 36px}
+  .facons div,.facons div:last-child{border-bottom:none}
+  .fin-grille{grid-template-columns:1.1fr .9fr;align-items:end}
+}
+@media (max-width:420px){
+  .offre{padding:22px}
+  .prix .chiffre{font-size:56px}
+  .compte{gap:14px}
+  .compte b{font-size:24px}
+  .contraste figcaption span{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .apparait{opacity:1;transform:none}
+  .places .barres i{transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═════════ EN-TÊTE ═════════ -->
+<header class="entete">
+  <div class="w">
+    <p class="signature"><img class="medaillon" src="media/damien.jpg" alt="" width="40" height="40">Damien Ospital · Mobility Club</p>
+    <div class="entete-grille">
+      <div>
+        <h1><span>Kit App</span><span class="vert">Sexy.</span></h1>
+        <p class="chapo">Relooke ton app pour que tes coachés <b>l'ouvrent chaque matin.</b></p>
+        <div class="offre-zone">
+          <div class="halo" aria-hidden="true"><i class="hv"></i><i class="hp"></i><i class="ho"></i></div>
+          <div class="offre verre">
+            <div class="prix"><span class="chiffre">199 €</span><span class="apres">jusqu'au 22/11,<br>puis 399 €</span></div>
+            <a class="bouton" href="https://www.paypal.com/ncp/payment/UNDDLTSHYSEE2"><span class="rempli"></span>Je prends le kit<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <p class="mention">Paiement unique. Remboursé sous 14 jours si le kit ne trouve pas 5 choses à corriger.</p>
+            <div class="compte" data-compte aria-label="Temps restant avant la fin de l'offre">
+              <div><b data-j>–</b><span>jours</span></div>
+              <div><b data-h>–</b><span>heures</span></div>
+              <div><b data-m>–</b><span>min</span></div>
+              <p>avant<br>399 €</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figure class="entete-tel apparait">
+        <div class="halo" aria-hidden="true"><i class="hv"></i><i class="hp"></i><i class="ho"></i></div>
+        <div class="tel">
+          <video src="media/v2-nav.mp4" poster="media/v2-nav-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="L'app Mobility Club V2 : la navigation entre les quatre onglets"></video>
+        </div>
+        <figcaption class="legende">Mon app, filmée telle que mes membres l'ont dans la poche.</figcaption>
+      </figure>
+    </div>
+  </div>
+</header>
+
+<!-- ═════════ LA MÊME APP ═════════ -->
+<section id="avant-apres">
+  <div class="w">
+    <div class="recit-intro apparait">
+      <h2>La même app.<br>Dix jours d'écart.</h2>
+      <p class="gris">À gauche du curseur, ma V1. À droite, ma V2, ouverte à tous les membres du club début novembre. Même compte, même séance, mêmes données. Fais glisser.</p>
+    </div>
+    <div class="recit" data-recit>
+      <div class="etapes">
+        <article class="etape actif" data-paire="0">
+          <p class="num">1 / 4</p>
+          <h3>L'écran du matin</h3>
+          <div class="duo-txt">
+            <p><strong>V1</strong>Un bandeau « Phase de test », des petits titres en capitales, puis la séance noyée dans une liste.</p>
+            <p class="apres"><strong>V2</strong>Le nom de la séance en grand, la forme du jour en anneaux, un seul bouton à maintenir pour commencer.</p>
+          </div>
+        </article>
+        <article class="etape" data-paire="1">
+          <p class="num">2 / 4</p>
+          <h3>Pendant la séance</h3>
+          <div class="duo-txt">
+            <p><strong>V1</strong>Un minuteur. L'app compte, le membre exécute.</p>
+            <p class="apres"><strong>V2</strong>Les charges de la dernière fois, un mot à chaque série validée, et l'app qui te dit quand tu fais mieux.</p>
+          </div>
+        </article>
+        <article class="etape" data-paire="2">
+          <p class="num">3 / 4</p>
+          <h3>La fin de séance</h3>
+          <div class="duo-txt">
+            <p><strong>V1</strong>« Séance terminée ! » et un bouton pour faire son bilan.</p>
+            <p class="apres"><strong>V2</strong>Trois écrans à une seule idée : ta séance, ta série qui passe de 12 à 13 jours, ce qui t'attend demain.</p>
+          </div>
+        </article>
+        <article class="etape" data-paire="3">
+          <p class="num">4 / 4</p>
+          <h3>Ce qui progresse</h3>
+          <div class="duo-txt">
+            <p><strong>V1</strong>Un score sur 100 et un radar à cinq axes à interpréter.</p>
+            <p class="apres"><strong>V2</strong>Ce que le membre suit vraiment : son poids, ses records de charge, ses pas, sa course.</p>
+          </div>
+        </article>
+      </div>
+      <div class="scene" aria-hidden="true"><div class="scene-cadre" data-scene></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ PROBLÈME ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Tes clients l'ouvrent trois fois.<br><span class="gris">Puis ils l'oublient.</span></h2>
+    <div style="margin-top:clamp(32px,5vw,56px)">
+      <p class="gros apparait">Tu as créé ton app, ou tu es en train. Tes programmes sont dedans, ta méthode aussi. <span class="gris">Et pourtant, au bout de deux semaines, plus personne ne l'ouvre.</span></p>
+      <p class="gros apparait"><span class="gris">Ce n'est pas ta méthode le problème.</span> <span class="chute">C'est ce que ton app fait ressentir.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ IA / GABARIT ═════════ -->
+<section>
+  <div class="w">
+    <div class="lire apparait" style="max-width:780px">
+      <h2>Demande une app à une IA.<br>Tu obtiens un gabarit.</h2>
+      <p class="gris" style="margin-top:22px;font-size:19px">Des cartes dans des cartes, des pastilles partout, des petits titres en majuscules. Tes clients ne savent pas dire pourquoi, mais ils sentent que personne n'a pensé à eux.</p>
+    </div>
+    <div class="contraste">
+      <figure class="stocke apparait">
+        <div class="tel"><img src="media/v1-apprendre.jpg" alt="V1 : l'écran Apprendre, un plan de leçons en texte" loading="lazy"></div>
+        <figcaption><b>Une app qui stocke</b><span>Elle range tes programmes. Elle explique, elle affiche, elle attend qu'on revienne.</span></figcaption>
+      </figure>
+      <figure class="ressent apparait">
+        <div class="tel"><video src="media/v2-seance.mp4" poster="media/v2-seance-poster.jpg" muted loop playsinline preload="none" data-auto aria-label="V2 : une série validée, l'app annonce mieux que la dernière fois"></video></div>
+        <figcaption><b>Une app qui fait ressentir</b><span>Elle décide, elle récompense, elle donne une raison d'ouvrir demain matin.</span></figcaption>
+      </figure>
+    </div>
+    <p class="garant apparait"><span class="gris">L'app, c'est ce que tu places entre ton client et toi. Chaque écran est une partie de toi.</span> <em>Tu es garant de ce qu'il ressent.</em></p>
+  </div>
+</section>
+
+<!-- ═════════ CE QUE TU REÇOIS ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Ce que tu reçois</h2>
+    <ol class="recois">
+      <li class="apparait"><span class="n">1</span><h3>L'histoire</h3><p>La vidéo de ma V1 contre ma V2 : les 12 erreurs, écran contre écran.</p></li>
+      <li class="apparait"><span class="n">2</span><h3>La méthode</h3><p>La grille des émotions : pour chaque écran, l'action, la friction, la récompense, la sensation.</p></li>
+      <li class="apparait"><span class="n">3</span><h3>Le kit d'audit pour Claude</h3><p>Tu envoies tes captures, tu reçois la critique écran par écran.</p></li>
+      <li class="apparait"><span class="n">4</span><h3>Ton dossier de marque</h3><p>Tes couleurs, ta voix, tes inspirations (apps, sites, vidéos). Le kit audite selon ta marque, pas selon un modèle.</p></li>
+      <li class="apparait or"><span class="n">5</span><h3>Un audit de 20 min avec moi</h3><p>En direct sur ton app, pour les 15 premiers.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═════════ BONUS FONDATEUR ═════════ -->
+<section class="bonus">
+  <div class="halo seul-or" aria-hidden="true"><i class="ho"></i></div>
+  <div class="w bonus-grille">
+    <div class="lire apparait">
+      <h2>Bonus fondateur :<br><span class="or">ta V2, dessinée par moi.</span></h2>
+      <p style="margin-top:24px">Tu déposes les captures de ton app dans ton dossier de marque. Je repense <b>trois éléments</b> de ton app, dont <b>un en motion design</b>, et je te les renvoie sous 7 jours.</p>
+      <div class="places" data-places>
+        <div class="barres" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <p><b>5 places.</b> Ensuite, ce bonus disparaît.</p>
+      </div>
+    </div>
+    <figure class="bonus-tel apparait">
+      <div class="tel"><video src="media/v2-fin.mp4" poster="media/v2-fin-poster.jpg" muted loop playsinline preload="none" data-auto aria-label="Exemple de motion design : la fin de séance de l'app V2, la série qui passe à 13 jours"></video></div>
+      <figcaption class="legende">Un élément en mouvement : ma fin de séance.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ═════════ COMMENT ÇA MARCHE ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Comment ça marche</h2>
+    <div class="marche" data-marche>
+      <div class="rail" aria-hidden="true"><span class="badge" data-badge>1</span></div>
+      <ol class="pas">
+        <li class="actif"><h3>Tu regardes la vidéo</h3><p>Tu apprends à voir ce que ressent ton client.</p></li>
+        <li><h3>Tu remplis ton dossier de marque</h3><p>Trente minutes, une fois pour toutes.</p></li>
+        <li><h3>Le kit audite tes écrans</h3><p>Tu sais quoi corriger avant ce soir.</p></li>
+        <li><h3>Tu corriges, écran par écran</h3><p>En commençant par celui que tes clients voient chaque matin.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ TROIS FAÇONS ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Trois façons de faire</h2>
+    <div class="facons">
+      <div class="apparait"><p class="k">0 €</p><b>Continuer seul</b><span>Des mois d'essais, et tes clients qui décrochent pendant ce temps.</span></div>
+      <div class="apparait"><p class="k">€€€</p><b>Un designer UX</b><span>Un bon résultat, mais il ne connaît ni ton métier ni tes clients.</span></div>
+      <div class="apparait kit"><p class="k">199 €</p><b>Le kit</b><span>La méthode d'un coach qui l'a fait, appliquée à ta marque.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ GARANTIE ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Garantie</h2>
+    <div class="garantie-ligne" data-compteurs>
+      <div><b class="or" data-vers="5">0</b><span>choses à corriger dans ton app, au minimum.</span></div>
+      <div><b data-vers="14">0</b><span>jours pour être remboursé si le kit ne les trouve pas.</span></div>
+    </div>
+    <p class="gros apparait" style="margin-top:44px">Si le kit ne trouve pas au moins 5 choses à corriger dans ton app, je te rembourse. <span class="gris">Tu as 14 jours.</span></p>
+  </div>
+</section>
+
+<!-- ═════════ QUESTIONS ═════════ -->
+<section>
+  <div class="w">
+    <h2 class="apparait">Questions</h2>
+    <div class="questions">
+      <details><summary>Faut-il savoir coder ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Non. Le kit et la méthode portent sur ce que ressent ton client. Tu appliques les corrections avec l'outil que tu utilises déjà.</p></details>
+      <details><summary>J'utilise une plateforme (Kajabi, Trainerize…). Ça marche ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Oui. Les 12 erreurs se corrigent aussi dans les réglages, les textes et l'ordre des écrans d'une plateforme.</p></details>
+      <details><summary>Je n'ai pas encore d'app.<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>C'est le meilleur moment : tu évites les 12 erreurs avant de les faire.</p></details>
+      <details><summary>Ça marche avec ChatGPT ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>Le kit d'audit est conçu pour Claude. La méthode et la vidéo fonctionnent sans aucun outil.</p></details>
+      <details><summary>Quand est-ce que je reçois tout ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>La méthode et la vidéo le 18/11, le kit d'audit le 25/11 au plus tard. Remboursé si je ne livre pas.</p></details>
+      <details><summary>Pourquoi 199 € ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><p>C'est le prix de lancement, jusqu'au 22/11. Ensuite le kit passe à 399 €, et 499 € avec l'audit.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ FIN ═════════ -->
+<section class="fin">
+  <div class="halo" aria-hidden="true"><i class="hv"></i><i class="hp"></i><i class="ho"></i></div>
+  <div class="w fin-grille">
+    <div class="apparait">
+      <h2>Ton app mérite<br>d'être ouverte.</h2>
+      <div class="ps">
+        <img src="media/damien.jpg" alt="Damien Ospital" width="64" height="64" loading="lazy">
+        <div>
+          <p><b>PS :</b> les 15 audits et les 5 refontes partent dans l'ordre des achats. Et si le kit ne trouve pas 5 choses à corriger, tu es remboursé.</p>
+          <p class="sig">Damien</p>
+        </div>
+      </div>
+    </div>
+    <div class="offre verre apparait">
+      <div class="prix"><span class="chiffre">199 €</span><span class="apres">jusqu'au 22/11,<br>puis 399 €</span></div>
+      <a class="bouton" href="https://www.paypal.com/ncp/payment/UNDDLTSHYSEE2"><span class="rempli"></span>Je prends le kit<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <div class="compte" data-compte aria-label="Temps restant avant la fin de l'offre">
+        <div><b data-j>–</b><span>jours</span></div>
+        <div><b data-h>–</b><span>heures</span></div>
+        <div><b data-m>–</b><span>min</span></div>
+        <p>avant<br>399 €</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="w"><span>Damien Ospital · Mobility Club</span><span>Paiement sécurisé PayPal</span><a href="https://mobilityclub.co/mentions-legales">Mentions légales</a><a href="https://mobilityclub.co/cgv-kit-app-sexy">CGV</a></div></footer>
+
+<template id="poignee"><div class="poignee"><span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg></span></div></template>
+
+<script>
+(function () {
+  var reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Compte à rebours : fin de l'offre 22/11 23:59 (Paris) ── */
+  var fin = new Date('2026-11-22T22:59:00Z').getTime();
+  function compte() {
+    var d = Math.max(0, fin - Date.now());
+    var j = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4);
+    document.querySelectorAll('[data-compte]').forEach(function (c) {
+      c.querySelector('[data-j]').textContent = j;
+      c.querySelector('[data-h]').textContent = h;
+      c.querySelector('[data-m]').textContent = m;
+    });
+  }
+  compte(); setInterval(compte, 3e4);
+
+  /* ── Paires avant / après : captures réelles de l'app (media/) ── */
+  var PAIRES = [
+    { v1: 'media/v1-aujourdhui.jpg', v2: { img: 'media/v2-aujourdhui.jpg' }, alt: "l'écran Aujourd'hui" },
+    { v1: 'media/v1-seance.jpg', v2: { video: 'media/v2-seance.mp4', poster: 'media/v2-seance-poster.jpg' }, alt: 'la séance en cours' },
+    { v1: 'media/v1-fin.jpg', v2: { video: 'media/v2-fin.mp4', poster: 'media/v2-fin-poster.jpg' }, alt: 'la fin de séance' },
+    { v1: 'media/v1-progression.jpg', v2: { img: 'media/v2-progression.jpg' }, alt: "l'écran Progression" }
+  ];
+  var tplPoignee = document.getElementById('poignee');
+
+  function media(src, alt) {
+    if (src.video) {
+      var v = document.createElement('video');
+      v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'none';
+      v.poster = src.poster; v.src = src.video; v.setAttribute('data-auto', ''); v.setAttribute('aria-label', 'V2 : ' + alt);
+      return v;
+    }
+    var i = document.createElement('img'); i.src = src.img || src; i.alt = alt; i.loading = 'lazy'; i.decoding = 'async';
+    return i;
+  }
+
+  function comparer(p, idx) {
+    var c = document.createElement('div');
+    c.className = 'tel comparer';
+    c.style.setProperty('--x', '50%');
+    var apres = document.createElement('div'); apres.className = 'couche';
+    apres.appendChild(media(p.v2, 'V2, ' + p.alt));
+    var avant = document.createElement('div'); avant.className = 'couche avant';
+    avant.appendChild(media(p.v1, 'V1, ' + p.alt));
+    c.appendChild(apres); c.appendChild(avant);
+    c.appendChild(tplPoignee.content.cloneNode(true));
+    c.insertAdjacentHTML('beforeend', '<span class="marque g">V1</span><span class="marque d">V2</span>');
+    var r = document.createElement('input');
+    r.type = 'range'; r.min = 0; r.max = 100; r.value = 50; r.step = 1;
+    r.setAttribute('aria-label', 'Comparer la V1 et la V2 : ' + p.alt);
+    r.addEventListener('input', function () { poser(c, r.value); });
+    c.appendChild(r);
+    // Tirer depuis n'importe où sur l'écran, comme une photo qu'on balaie (le curseur natif reste pour le clavier)
+    var b = null;
+    function bouge(ev) { var x = (ev.clientX - b.left) / b.width * 100; r.value = Math.round(Math.min(100, Math.max(0, x))); poser(c, r.value); }
+    c.addEventListener('pointerdown', function (e) {
+      b = c.getBoundingClientRect(); c.setPointerCapture(e.pointerId); bouge(e); c.classList.remove('indice');
+    });
+    c.addEventListener('pointermove', function (e) { if (b && c.hasPointerCapture(e.pointerId)) bouge(e); });
+    c.addEventListener('pointerup', function () { b = null; });
+    c.addEventListener('pointercancel', function () { b = null; });
+    c.dataset.paire = idx;
+    return c;
+  }
+  function poser(c, v) {
+    c.style.setProperty('--x', v + '%');
+    c.querySelector('.marque.g').style.opacity = v < 12 ? 0 : 1;
+    c.querySelector('.marque.d').style.opacity = v > 88 ? 0 : 1;
+  }
+
+  // Mobile : un comparateur sous chaque étape. Grand écran : une scène ancrée qui change de paire au défilement.
+  var etapes = Array.prototype.slice.call(document.querySelectorAll('.etape'));
+  var scene = document.querySelector('[data-scene]');
+  etapes.forEach(function (e, i) {
+    var t = document.createElement('div'); t.className = 'tel-inline';
+    t.appendChild(comparer(PAIRES[i], i));
+    var a = document.createElement('p'); a.className = 'astuce'; a.textContent = 'Glisse pour comparer';
+    t.appendChild(a);
+    e.appendChild(t);
+    scene.appendChild(comparer(PAIRES[i], i));
+  });
+  var sceneCouches = scene.querySelectorAll('.comparer');
+  sceneCouches[0].classList.add('actif');
+
+  var grand = window.matchMedia('(min-width: 900px)');
+  var actif = 0;
+  function majRecit() {
+    if (!grand.matches) return;
+    var focal = window.innerHeight * 0.45, best = 0, dist = Infinity;
+    etapes.forEach(function (e, i) {
+      var b = e.getBoundingClientRect();
+      var d = Math.abs(b.top + Math.min(b.height, window.innerHeight * .5) / 2 - focal);
+      if (d < dist) { dist = d; best = i; }
+    });
+    if (best === actif) return;
+    actif = best;
+    etapes.forEach(function (e, i) { e.classList.toggle('actif', i === best); });
+    sceneCouches.forEach(function (c, i) {
+      c.classList.toggle('actif', i === best);
+      c.querySelectorAll('video').forEach(function (v) { if (i === best) jouer(v); else v.pause(); });
+    });
+  }
+
+  /* ── Rail « Comment ça marche » (mécanique web-sticky-steps : le numéro suit l'étape au point focal) ── */
+  var pas = Array.prototype.slice.call(document.querySelectorAll('.pas li'));
+  var badge = document.querySelector('[data-badge]');
+  var pasActif = 0;
+  function majPas() {
+    var focal = window.innerHeight * 0.45, best = 0, dist = Infinity;
+    pas.forEach(function (li, i) {
+      var b = li.getBoundingClientRect();
+      var d = Math.abs(b.top + 24 - focal);
+      if (d < dist) { dist = d; best = i; }
+    });
+    if (best === pasActif) return;
+    pasActif = best;
+    pas.forEach(function (li, i) { li.classList.toggle('actif', i === best); });
+    badge.textContent = best + 1;
+    badge.classList.remove('bouge'); void badge.offsetWidth; badge.classList.add('bouge');
+  }
+
+  var tic = false;
+  function planifier() {
+    if (tic) return; tic = true;
+    requestAnimationFrame(function () { tic = false; majRecit(); majPas(); });
+  }
+  window.addEventListener('scroll', planifier, { passive: true });
+  window.addEventListener('resize', planifier, { passive: true });
+  planifier();
+
+  /* ── Vidéos : ne jouent que visibles (batterie, données mobiles) ── */
+  function jouer(v) { if (reduit) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  var obsVideo = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var v = e.target;
+      var dansScene = v.closest('.scene');
+      if (e.isIntersecting && (!dansScene || v.closest('.comparer.actif'))) jouer(v); else v.pause();
+    });
+  }, { threshold: 0.35 });
+  document.querySelectorAll('video').forEach(function (v) { obsVideo.observe(v); });
+
+  /* ── Apparitions + indice sur le curseur + barres des places + compteurs ── */
+  var obs = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target; el.classList.add('vu'); obs.unobserve(el);
+      if (el.matches('.comparer')) el.classList.add('indice');
+      if (el.matches('[data-compteurs]')) compter(el);
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.apparait, .comparer, [data-places], [data-compteurs]').forEach(function (el) { obs.observe(el); });
+
+  function compter(el) {
+    el.querySelectorAll('[data-vers]').forEach(function (b, k) {
+      var cible = +b.dataset.vers;
+      if (reduit) { b.textContent = cible; return; }
+      var t0 = null, duree = 900 + k * 250;
+      function pas(t) {
+        if (!t0) t0 = t;
+        var p = Math.min(1, (t - t0) / duree), e = 1 - Math.pow(1 - p, 3);
+        b.textContent = Math.round(cible * e);
+        if (p < 1) requestAnimationFrame(pas);
+      }
+      requestAnimationFrame(pas);
+    });
+  }
+})();
+</script>
+</body>
+</html>
