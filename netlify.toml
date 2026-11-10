@@ -54,6 +54,21 @@
   to = "/retour-au-club"
   status = 302
 
+# ── Kit App Sexy : adresse courte /kit (décision Damien 2026-11-10) ─────────
+# Lien à dire en story ou en bio. 302 (pas 301) : l'offre est datée (199 € jusqu'au 22/11), un 301 resterait en cache
+# navigateur si /kit doit un jour mener ailleurs. Le query string (utm…) est conservé par Netlify.
+[[redirects]]
+  from = "/kit"
+  to = "/kit-app-sexy/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/kit/"
+  to = "/kit-app-sexy/"
+  status = 302
+  force = true
+
 # ── Bootcamp : FERMÉ (décision 2026-10-25) ────────────────────────────────────
 # La page proposait l'abonnement P-17C… ; elle n'est plus publiée (dossier retiré).
 # 302 (pas 301) : /lancement est une page temporaire, un 301 resterait en cache navigateur. force = true : la règle s'applique même si un fichier
