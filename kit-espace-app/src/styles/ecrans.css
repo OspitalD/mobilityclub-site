@@ -1,0 +1,123 @@
+/* Mise en page propre à chaque écran. Mobile d'abord (375 px, gouttière 20 px), deux colonnes dès 900 px. */
+.page.centre .corps{padding-top:clamp(40px,12vh,120px)}
+.action-simple{margin-top:32px;max-width:420px}
+.lien-mail{color:var(--texte);font-weight:800;text-underline-offset:4px}
+.tel{position:relative;z-index:1;aspect-ratio:390/844;border-radius:38px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 40px 80px rgba(0,0,0,.55)}
+.tel img{width:100%;height:100%;object-fit:cover}
+
+/* ── Connexion ── */
+.connexion{display:grid;gap:48px;margin-top:clamp(36px,7vw,80px);align-items:center}
+.connexion-form{margin-top:36px;max-width:470px}
+.connexion-form .zone>.halo{left:-60px;top:-110px}
+.verre-contenu{display:grid;gap:18px;padding:28px}
+.champ input.code{font-size:30px;font-weight:800;letter-spacing:.4em;text-align:center;font-variant-numeric:tabular-nums;padding-left:calc(16px + .4em)}
+.liens-code{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 20px}
+.connexion-tel{display:none;position:relative;justify-self:center;width:300px}
+.connexion-tel .halo{left:-60px;top:80px}
+@media (min-width:900px){
+  .connexion{grid-template-columns:1.25fr .75fr;gap:40px}
+  .connexion-tel{display:block}
+}
+
+/* ── Accueil ── */
+.accueil{display:grid;gap:48px;margin-top:clamp(32px,6vw,64px)}
+.hero{padding:28px}
+.hero-titre{font-size:clamp(28px,6.4vw,40px);letter-spacing:-.035em;line-height:1.05}
+.hero-titre.grand{font-size:clamp(38px,8vw,60px);letter-spacing:-.045em}
+.hero-rang{margin:6px 0 0 -.04em;min-height:1em}
+.hero-rang .tk-cu-affix{margin-right:.14em}
+.hero-ligne{font-size:16px;font-weight:700;line-height:1.45;margin-top:18px}
+.hero-ligne+.hero-ligne{margin-top:10px}
+.hero-action{margin-top:28px}
+.frise{margin-top:56px}
+.frise h2{margin-bottom:20px}
+.jour-groupe{padding:22px 0;border-top:1px solid var(--filet)}
+.jour{font-size:26px;letter-spacing:-.035em;line-height:1.1}
+.jour-suffixe{font-size:14px;font-style:normal;word-spacing:0;font-weight:600;color:var(--texte-3);letter-spacing:0}
+.jour-liste{list-style:none;margin-top:14px;display:grid;gap:16px}
+.liv-titre{display:block;font-weight:800;font-size:17px;letter-spacing:-.01em;line-height:1.3}
+.liv-etat{display:block;font-size:15px;font-weight:600;margin-top:2px;line-height:1.4}
+.liv.a_venir .liv-titre,.liv.a_venir .liv-etat{color:var(--texte-3)}
+.liv.en_preparation .liv-titre,.liv.en_preparation .liv-etat{color:var(--violet);opacity:.72}
+.liv.disponible .liv-titre,.liv.disponible .liv-etat{color:var(--violet)}
+.liv-lien{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;text-decoration:none}
+.liv-lien .fleche{color:var(--violet);transition:transform .3s var(--courbe)}
+@media (hover:hover){.liv-lien:hover .fleche{transform:translateX(4px)}}
+.accueil+.pied{margin-top:56px}
+.accueil+.pied+.lien{margin-top:8px}
+@media (min-width:900px){
+  .accueil{grid-template-columns:1.05fr .95fr;gap:80px;align-items:start}
+  .hero{padding:40px}
+  .accueil-suite{padding-top:6px}
+  .frise{margin-top:64px}
+}
+
+/* ── Dossier ── */
+.dossier{display:grid;gap:28px;margin-top:clamp(28px,5vw,56px)}
+.dossier-aside{display:grid;gap:12px;align-content:start}
+.pct{display:flex;align-items:baseline;gap:12px;font-weight:700}
+.pct .it{font-size:clamp(44px,10vw,68px);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.etat{min-height:1.4em}
+.assistant-zone{display:grid;gap:8px;max-width:520px}
+.assistant-zone .zone>.halo{left:-70px;top:-60px}
+.fiche{display:grid}
+.q{position:relative;border:0;padding:28px 0;min-width:0}
+/* Le filet est un pseudo-élément : la bordure d'un fieldset se coupe autour de son <legend>. */
+.q::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--filet)}
+.q>*+*{margin-top:12px}
+.q legend{float:left;width:100%;padding:0;font-size:15px;font-weight:700;color:var(--texte)}
+.q legend+*{clear:both;margin-top:12px}
+.indice{font-size:14px;color:var(--texte-3);font-weight:500;line-height:1.4}
+.choix{display:grid;gap:10px}
+.choix-ligne{width:100%;min-height:56px;padding:14px 18px;border-radius:16px;border:1px solid var(--filet);text-align:left;font-weight:700;font-size:17px;color:var(--texte);transition:border-color .2s,color .2s}
+.choix-ligne.is-on{border-color:var(--vert);color:var(--vert)}
+.rangs{list-style:none;display:grid;gap:12px}
+.rang-ligne{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center}
+.pastille-couleur{position:relative;display:block;width:28px;height:28px;margin:8px;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
+.pastille-couleur input{position:absolute;inset:-8px;width:44px;height:44px;opacity:0;cursor:pointer}
+.pastille-couleur:focus-within{outline:2px solid #fff;outline-offset:3px}
+.insp-ligne{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--filet)}
+.insp-ligne:first-child{padding-top:0;border-top:0}
+.insp-ligne .lien{justify-self:start}
+.voix{display:grid;gap:10px}
+.compteur{text-align:right;font-size:13px;font-weight:600}
+.suite{padding-top:32px;border-top:1px solid var(--filet)}
+@media (min-width:600px){.voix{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:720px){.insp-ligne{grid-template-columns:1fr 1fr auto;align-items:center}.insp-ligne:first-child{padding-top:0}}
+@media (min-width:900px){
+  .dossier{grid-template-columns:minmax(0,1fr) 320px;column-gap:80px;align-items:start}
+  .dossier-tete{grid-column:1;grid-row:1}
+  .dossier-corps{grid-column:1;grid-row:2}
+  .dossier-aside{grid-column:2;grid-row:1/3;position:sticky;top:32px;padding-top:12px}
+}
+
+/* ── Captures ── */
+.captures{display:grid;gap:40px;margin-top:clamp(28px,5vw,56px)}
+.captures-n{font-size:clamp(40px,9vw,56px);letter-spacing:-.05em;margin-top:24px;line-height:1;font-variant-numeric:tabular-nums}
+.depot{display:grid;gap:12px;margin-top:28px;padding:20px;border:1px dashed rgba(255,255,255,.18);border-radius:24px;transition:border-color .2s}
+.depot.glisse-actif{border-color:var(--vert)}
+.seul-souris{display:none}
+@media (hover:hover) and (min-width:900px){.seul-souris{display:block}}
+.messages{display:grid;gap:6px;margin-top:12px}
+.grille{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.vignette{position:relative;display:block;width:100%;border-radius:14px;overflow:hidden;background:var(--carte-2);box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.vignette img{width:100%;height:100%;object-fit:cover}
+.vignette.en-cours img{opacity:.5}
+.vignette.en-cours .barre3{position:absolute;left:0;right:0;bottom:0;border-radius:0}
+.detail-image{display:block;max-width:100%;max-height:48dvh;width:auto;height:auto;margin:0 auto 20px;border-radius:14px}
+.detail-actions{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;margin-top:8px}
+.supprimer{min-height:44px;font-weight:700;font-size:15px;color:var(--rouge);text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(224,90,74,.4)}
+@media (min-width:720px){.grille{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:900px){
+  .captures{grid-template-columns:340px minmax(0,1fr);gap:72px;align-items:start}
+  .captures-gauche{position:sticky;top:32px}
+  .grille{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+}
+
+/* ── Lecteur de livraison ── */
+.lecteur{min-height:100dvh;background:var(--fond)}
+.lecteur-barre{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 var(--g);background:var(--fond);border-bottom:1px solid var(--filet)}
+.lecteur-cadre{display:block;width:100%;height:calc(100dvh - 56px);border:0;background:#000}
+.lecteur-fichiers{padding-top:48px;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+.lecteur-fichiers h2{margin-bottom:20px}
+.lecteur-fichiers .ligne .info{display:flex;align-items:center;gap:12px}

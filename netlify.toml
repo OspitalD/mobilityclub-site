@@ -137,3 +137,23 @@
   from = "/halloween/choisir/"
   to = "/halloween-choisir.html"
   status = 200
+
+# ── Kit App Sexy : espace acheteur (React compilé, versionné) ──────────────────
+# Page privée : hors index (même traitement que /bascule). Les fichiers de app/ portent un hash dans leur
+# nom, donc le cache par défaut leur convient ; la page d'entrée, elle, ne doit JAMAIS rester figée, sinon
+# elle pointerait vers un ancien fichier après une mise à jour. Aucune règle de réécriture : le routeur de
+# l'espace est en hash (#/dossier), donc /kit-app-sexy/espace/ suffit.
+[[headers]]
+  for = "/kit-app-sexy/espace/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/kit-app-sexy/espace/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/kit-app-sexy/espace/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

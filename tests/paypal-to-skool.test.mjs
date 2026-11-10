@@ -451,3 +451,15 @@ test('Kit App Sexy : email de bienvenue en panne → 500 et rien marqué fait (P
   assert.equal(rep2.statusCode, 200);
   assert.equal([...kitBlobs.keys()].filter((k) => k.startsWith('ventes/')).length, 1);
 });
+
+test('Kit App Sexy : email de bienvenue = lien de l\'espace, plus de demande de captures par réponse', async () => {
+  vider();
+  process.env.RESEND_API_KEY = 're_test';
+  brancherFetch({ email: 'coach@example.com' });
+  await appeler(capture('199.00', 'EUR', 'CAP-KIT-ESPACE'));
+  const m = emailsResend.find((x) => x.subject === 'Ton Kit App Sexy est réservé');
+  assert.match(m.html, /\/kit-app-sexy\/espace\//);
+  assert.match(m.html, /Ouvrir mon espace/);
+  assert.doesNotMatch(m.html, /réponds à cet email/i);
+  assert.equal(m.reply_to, 'founder@mobilityclub.co');
+});

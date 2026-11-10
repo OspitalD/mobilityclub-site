@@ -1,0 +1,13 @@
+/* Jetons et matières de kit-app-sexy/index.html (lignes 14-25), recopiés à l'identique : l'espace doit être
+   la même maison que la page de vente. Ne jamais les « améliorer » ici. */
+:root{
+  --fond:#0D0F0E; --carte:#111412; --carte-2:#17191A;
+  --texte:#F5F5F3; --texte-2:#A9ACA9; --texte-3:#8E918E; --filet:rgba(255,255,255,.08);
+  --vert:#3ECFA0; --or:#E8A020; --violet:#B990E0; --rouge:#E05A4A;
+  --verre-fond:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03) 45%,rgba(255,255,255,.05));
+  --verre-bord:1px solid rgba(255,255,255,.14);
+  --verre-flou:blur(26px) saturate(170%);
+  --verre-ombre:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 24px rgba(255,255,255,.04),0 20px 50px rgba(0,0,0,.45);
+  --courbe:cubic-bezier(.2,.8,.2,1);
+  --g:20px;
+}
