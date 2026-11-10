@@ -85,7 +85,7 @@ export const T = {
     adopte: 'Ton dossier a changé ailleurs, j\'ai repris la dernière version.',
     suite: 'Passer aux captures',
     assistant: {
-      back: 'Étape précédente', close: 'Fermer', continue: 'Continuer', finish: 'Passer aux images',
+      back: 'Étape précédente', close: 'Fermer', continue: 'Continuer', finish: 'Passer aux couleurs',
       incomplete: 'Choisis une réponse pour continuer.', step: 'Étape',
       app: 'Ton app', appTitre: 'Comment s\'appelle ton app ?', appSous: 'Tu peux laisser vide et revenir plus tard.',
       nom: 'Nom de l\'app ou de la plateforme', lien: 'Lien',
