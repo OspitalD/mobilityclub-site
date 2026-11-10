@@ -28,7 +28,7 @@ export const ETAPES: WizardStep[] = [
   },
   {
     id: 'voix', kind: 'fields', section: A.voix, title: A.voixTitre, subtitle: A.voixSous,
-    fields: [1, 2, 3].map((n) => ({ key: `voix_${n}`, label: A.mot(n), required: false })),
+    fields: [1, 2, 3].map((n) => ({ key: `voix_${n}`, label: A.mot(n), placeholder: A.motEx[n - 1], required: false })),
   },
 ];
 

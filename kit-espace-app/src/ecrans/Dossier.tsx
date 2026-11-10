@@ -170,7 +170,7 @@ export function Dossier() {
                 <p className="indice">{D.fiche.voixHint}</p>
                 <div className="voix">
                   {[0, 1, 2].map((i) => (
-                    <input key={i} className="entree" type="text" aria-label={D.assistant.mot(i + 1)} placeholder={D.assistant.mot(i + 1)} maxLength={30} autoComplete="off" value={voix[i]} onChange={(e) => majVoix(i, e.target.value)} />
+                    <input key={i} className="entree" type="text" aria-label={D.assistant.mot(i + 1)} placeholder={D.assistant.motEx[i]} maxLength={30} autoComplete="off" value={voix[i]} onChange={(e) => majVoix(i, e.target.value)} />
                   ))}
                 </div>
               </fieldset>
