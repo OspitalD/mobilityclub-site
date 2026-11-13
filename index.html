@@ -194,6 +194,9 @@ html[lang="en"] .lang .thumb{ transform:translateX(100%); }
   padding:8px 16px; transition:background .25s var(--ease), transform .2s var(--ease);
 }
 .header-cta:hover{ background:var(--accent-green-dim); transform:translateY(-1px); }
+/* « Découvrir l'app » → /app (page de vente V2, décision Damien 13/11) : lien texte, reste visible sur mobile. */
+.header-link{ font-family:var(--font-sans); font-weight:600; font-size:13px; text-decoration:none; color:var(--text-primary); white-space:nowrap; transition:color .2s var(--ease); }
+.header-link:hover, .header-link:focus-visible{ color:var(--accent-green); }
 
 /* Navigation ancrée (2e rangée du header) — pills qui défilent vers les sections. */
 .jumpnav{
@@ -1497,6 +1500,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       <span class="mono" data-i18n="wm_tag">/ MANIFESTE</span>
     </a>
     <div class="header-right">
+      <a class="header-link" href="/app" data-cta="header_app" data-i18n="nav_app">Découvrir l’app</a>
       <a class="header-cta" href="/devenir-membre" data-offre-lien="achat" data-cta="header" data-i18n="nav_cta">Devenir membre</a>
       <div class="lang" role="group" aria-label="Language / Langue">
         <span class="thumb" aria-hidden="true"></span>
@@ -2532,6 +2536,7 @@ const I18N = {
     guarantee_badge: 'Garantie progression',
     guarantee_txt: "Fais tes séances pendant 90 jours. Si ton score articulaire n'a pas progressé au retest, <b>on prolonge ton accès gratuitement jusqu'à ce qu'il progresse.</b> On peut le promettre parce qu'on le mesure.",
     nav_cta: 'Devenir membre',
+    nav_app: 'Découvrir l’app',
     sticky_txt: "<b>Ton coach de mouvement, dans ta poche.</b>",
     sticky_btn: 'Devenir membre',
     trust_1k: 'Gratuit pour commencer', trust_1v: 'Diagnostic + Timer · 0€',
@@ -2691,6 +2696,7 @@ const I18N = {
     guarantee_badge: 'Progress guarantee',
     guarantee_txt: "Train for 90 days. If your joint score hasn't improved at retest, <b>we extend your access for free until it does.</b> We can promise it because we measure it.",
     nav_cta: 'Become a member',
+    nav_app: 'Discover the app',
     sticky_txt: "<b>Your movement coach, in your pocket.</b>",
     sticky_btn: 'Become a member',
     trust_1k: 'Free to start', trust_1v: 'Diagnostic + Timer · €0',
