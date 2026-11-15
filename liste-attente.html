@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Le club ferme ses portes — Mobility Club</title>
-<meta name="description" content="Le Mobility Club quitte l'abonnement. On entre désormais par saison de 12 semaines. Rejoins la liste d'attente : elle entre en premier le 26 novembre à 20 h." />
+<title>Ton calendrier de l'avent — Mobility Club</title>
+<meta name="description" content="Le club ferme ses portes. Ton calendrier de l'avent, lui, ouvre le 1er décembre : 24 cases personnalisées, gratuites, dans l'app." />
 <meta name="theme-color" content="#0D0F0E" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Le club ferme ses portes — Mobility Club" />
-<meta property="og:description" content="On entre désormais par saison de 12 semaines. La liste d'attente entre en premier le 26 novembre à 20 h." />
+<meta property="og:title" content="Ton calendrier de l'avent — Mobility Club" />
+<meta property="og:description" content="24 cases sur ton problème n° 1, ton sport et ton temps. Gratuit, dans l'app, dès le 1er décembre." />
 <meta property="og:locale" content="fr_FR" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,20 +53,20 @@ a{ color:inherit; }
 .tete img{ width:28px; height:28px; border-radius:8px; }
 
 /* ── Scène de jeu ──────────────────────────────────────────────────────────────── */
-.scene{ position:relative; margin-top:4px; height:234px; }
+.scene{ position:relative; margin-top:4px; height:246px; }
 .halo{ position:absolute; inset:-30px -16px auto; height:420px; pointer-events:none; z-index:0; }
 .halo i{ position:absolute; border-radius:50%; }
 .halo .v{ left:50%; top:90px; width:230px; height:230px; margin-left:-115px; background:var(--os-vert); opacity:.42; filter:blur(50px); }
 .halo .p{ right:-10px; top:200px; width:210px; height:210px; background:var(--os-violet); opacity:.30; filter:blur(55px); }
 .halo .o{ left:-10px; top:230px; width:150px; height:150px; background:var(--os-or); opacity:.20; filter:blur(50px); }
 .toile{
-  position:absolute; left:50%; top:4px; z-index:1; width:260px; height:200px; margin-left:-130px;
+  position:absolute; left:50%; top:4px; z-index:1; width:260px; height:212px; margin-left:-130px;
   image-rendering:pixelated; image-rendering:crisp-edges;
 }
-.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; }
 .verdict{
   position:absolute; z-index:2; left:0; right:0; top:0; text-align:center;
-  font-size:18px; color:#FFE08A; text-shadow:0 3px 0 #84612F, 0 0 18px rgba(232,160,32,.35);
+  font-size:22px; color:#FFE08A; text-shadow:0 2px 0 #3A2A14, 0 0 18px rgba(232,160,32,.30);
   opacity:0; transform:translateY(6px) scale(.96);
   transition:opacity .35s var(--os-courbe), transform .45s var(--os-ressort);
 }
@@ -119,14 +119,14 @@ footer{ margin-top:28px; padding:18px 0 calc(22px + env(safe-area-inset-bottom))
 footer a{ text-decoration:none; color:var(--os-texte-3); }
 
 @media (min-width:430px){
-  .scene{ height:330px; }
-  .toile{ width:390px; height:300px; margin-left:-195px; }
-  .verdict{ font-size:22px; }
+  .scene{ height:348px; }
+  .toile{ width:390px; height:318px; margin-left:-195px; }
+  .verdict{ font-size:24px; }
   .ouverture{ font-size:15px; bottom:0; }
 }
 @media (min-width:700px){
-  .scene{ height:420px; }
-  .toile{ width:520px; height:400px; margin-left:-260px; }
+  .scene{ height:444px; }
+  .toile{ width:520px; height:424px; margin-left:-260px; }
   .verdict{ font-size:26px; }
 }
 @media (prefers-reduced-motion:reduce){
@@ -138,27 +138,27 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
 <div class="col">
   <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
 
-  <section class="scene" id="scene" aria-label="Les portes du club sont fermées. Prochaine ouverture le 27 novembre.">
+  <section class="scene" id="scene" aria-label="Les portes du club sont fermées. 20 cases sur 24 du calendrier rouvrent la porte le 25 décembre.">
     <div class="halo" aria-hidden="true"><i class="v"></i><i class="p"></i><i class="o"></i></div>
-    <canvas class="toile" id="toile" width="130" height="100" aria-hidden="true"></canvas>
-    <p class="verdict jeu" aria-hidden="true">Portes fermées</p>
-    <p class="ouverture jeu" aria-hidden="true">Prochaine ouverture · <b>27.11</b></p>
+    <canvas class="toile" id="toile" width="130" height="106" aria-hidden="true"></canvas>
+    <p class="verdict jeu" id="verdict" aria-hidden="true">Portes fermées</p>
+    <p class="ouverture jeu" aria-hidden="true">Calendrier de l'avent · dès le <b>1er déc.</b></p>
   </section>
 
   <main class="heros">
-    <p class="sous-titre">Mobility Club · Édition 1</p>
+    <p class="sous-titre">Calendrier de l'avent · gratuit, dans l'app</p>
     <h1>Le club ferme ses portes.</h1>
-    <p class="corps">Fini l'abonnement ouvert en continu. On entre désormais par saison&nbsp;: 12&nbsp;semaines, un début, une fin, et des portes qui ne s'ouvrent que quelques jours.</p>
+    <p class="corps">Pendant qu'elles sont fermées, je te construis un calendrier de l'avent&nbsp;: 24&nbsp;cases sur ton problème n°&nbsp;1, ton sport et ton temps.</p>
     <ol class="dates">
-      <li class="toi"><span class="quoi">La liste d'attente entre en premier</span><span class="quand">Jeu. 26 nov. · 20 h</span></li>
-      <li><span class="quoi">Portes ouvertes au public</span><span class="quand">27 → 30 nov.</span></li>
-      <li><span class="quoi">La New Year Team démarre</span><span class="quand">Lun. 4 janv.</span></li>
+      <li><span class="quoi">Ton bilan, puis une case par jour</span><span class="quand">Dès le 1er déc.</span></li>
+      <li><span class="quoi">5, 10 ou 20 minutes, selon ton temps</span><span class="quand">24 cases</span></li>
+      <li class="toi"><span class="quoi">20 cases sur 24 rouvrent la porte du club</span><span class="quand">25 déc.</span></li>
     </ol>
   </main>
 
   <div class="action">
-    <a class="os-bouton" href="https://damien.eden.so/form/liste-attente">Rejoindre la liste d'attente</a>
-    <p class="note">Une question, ton email, c'est tout.</p>
+    <a class="os-bouton" href="https://damien.eden.so/form/liste-attente">Je veux mon calendrier</a>
+    <p class="note">4 questions et ton email. Tu recevras ton calendrier et mes mails.</p>
   </div>
 
   <p class="membres"><b>Déjà membre&nbsp;?</b> Un email t'explique ce qui change pour toi.</p>
@@ -176,7 +176,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
 (function(){
   var cv = document.getElementById('toile'); var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
   var scene = document.getElementById('scene');
-  var W = 130, H = 100;
+  var W = 130, H = 106; var verdict = document.getElementById('verdict');
   var OR = ['#3A2A14', '#84612F', '#DDBF75', '#FFF1BD'];
   var VERT = ['#1D5C49', '#2C7A62', '#3ECFA0', '#A8F2D6'];
   var BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
@@ -249,45 +249,64 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     }); });
   }
   var eclats = [];
-  function lanceEclats(){
-    for (var k = 0; k < 14; k++) eclats.push({ x: cx, y: haut + 34, vx: (Math.random() - .5) * 3, vy: -Math.random() * 2.6 - .6, v: 1 });
+  function lanceEclats(teinte){
+    for (var k = 0; k < 14; k++) eclats.push({ x: cx, y: haut + 34, vx: (Math.random() - .5) * 3, vy: -Math.random() * 2.6 - .6, v: 1, t: teinte });
   }
   // Le décor fixe (faisceaux, sol, cadre) est dessiné une seule fois puis recopié à chaque image.
   var fond = document.createElement('canvas'); fond.width = W; fond.height = H;
   (function(){ var vrai = ctx; ctx = fond.getContext('2d'); solTrame(); cadre(); ctx = vrai; })();
-  function dessine(ecart, dyCadenas, reflet){
+  // La jauge du calendrier : 24 cases, la 20e marquée en or (le seuil qui rouvre la porte).
+  function jauge(n){
+    for (var i = 0; i < 24; i++) {
+      var x0 = 5 + i * 5, y0 = 92, plein = i < n, seuil = i === 19;
+      for (var k = 0; k < 4; k++) {
+        px(x0 + k, y0, plein ? VERT[3] : seuil ? OR[2] : '#3A3F40');
+        px(x0 + k, y0 + 1, plein ? VERT[2] : seuil ? OR[1] : '#262A2B');
+        px(x0 + k, y0 + 2, plein ? VERT[0] : seuil ? OR[0] : '#1B1E1F');
+      }
+    }
+  }
+  function dessine(ecart, dyCadenas, reflet, n){
     ctx.clearRect(0, 0, W, H);
-    ctx.drawImage(fond, 0, 0); battants(ecart); if (ecart < 1.2) lueur(ecart);
+    ctx.drawImage(fond, 0, 0); battants(ecart); jauge(n || 0); if (ecart < 1.2) lueur(ecart);
     if (dyCadenas !== null) cadenas(dyCadenas);
     if (reflet !== null && ecart < 1.2) { for (var k = 0; k < 3; k++) px(cx, reflet + k, '#FFFFFF'); }
-    eclats.forEach(function(e){ if (e.v > 0) px(e.x, e.y, e.v > .5 ? OR[3] : OR[2]); });
+    eclats.forEach(function(e){ if (e.v > 0) px(e.x, e.y, e.v > .5 ? e.t[3] : e.t[2]); });
   }
   var arrete = false;
-  function finale(){ arrete = true; eclats = []; dessine(.6, 0, null); scene.classList.add('fini'); }
+  function finale(){ arrete = true; eclats = []; dessine(2.2, null, null, 20); verdict.textContent = 'Porte ouverte le 25 déc.'; scene.classList.add('fini'); }
 
   var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduit) { finale(); return; }
 
-  var garde = setTimeout(finale, 2600);
-  var t0 = null, phase = 0;
+  var garde = setTimeout(finale, 5200);
+  var t0 = null, phase = 0, chute = 0;
   function image(t){
     if (arrete) return;
     if (t0 === null) t0 = t; var s = (t - t0) / 1000;
-    var ecart, dy = null, reflet = null;
+    var ecart = .6, dy = null, reflet = null, n = 0;
     if (s < .35) { ecart = 12; }
-    else if (s < 1.0) {
+    else if (s < 1.0) { // les battants claquent (ressort)
       var u = (s - .35) / .65; var e = 1 - Math.pow(1 - u, 3); ecart = 12 * (1 - e) - Math.sin(u * Math.PI) * 1.2; if (ecart < .6) ecart = .6;
-    } else {
-      ecart = .6;
+    } else if (s < 1.6) { // le cadenas tombe et se pose
       var v = Math.min(1, (s - 1.0) / .35); dy = v === 1 ? 0 : Math.round(-10 * (1 - v) * (1 - v));
-      if (phase === 0 && v === 1) { phase = 1; lanceEclats(); scene.classList.add('fini'); clearTimeout(garde); }
+      if (phase === 0 && v === 1) { phase = 1; lanceEclats(OR); scene.classList.add('fini'); }
+    } else if (s < 3.0) { // les cases du calendrier se remplissent jusqu'au seuil
+      dy = 0; n = Math.min(20, Math.floor((s - 1.6) / .07) + 1);
+      if (verdict.textContent !== n + ' / 24') verdict.textContent = n + ' / 24';
+    } else { // 20 cases : le cadenas saute, la porte s'entrouvre
+      n = 20;
+      if (phase === 1) { phase = 2; lanceEclats(VERT); verdict.textContent = 'Porte ouverte le 25 déc.'; clearTimeout(garde); }
+      var w = Math.min(1, (s - 3.0) / .45); ecart = .6 + 1.6 * (1 - Math.pow(1 - w, 3));
+      chute += .9; dy = Math.round(chute * chute * .08 - chute * .9); if (dy > 60) dy = null;
       reflet = haut + 4 + ((s * 22) % (sol - haut + 30)); if (reflet > sol - 4) reflet = null;
     }
     eclats.forEach(function(e){ if (e.v > 0) { e.x += e.vx; e.y += e.vy; e.vy += .25; e.v -= .03; } });
-    dessine(ecart, dy, reflet);
+    dessine(ecart, dy, reflet, n);
+    if (phase === 2 && s > 6) return; // tout est posé : on arrête de dessiner (rien en boucle)
     requestAnimationFrame(image);
   }
-  dessine(12, null, null);
+  dessine(12, null, null, 0);
   requestAnimationFrame(image);
 })();
 </script>

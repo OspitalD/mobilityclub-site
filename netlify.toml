@@ -172,3 +172,10 @@
   for = "/kit-app-sexy/espace/"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# ── Calendrier de l'avent 2026 : adresse courte de la page d'entrée (lead magnet) ──
+# 302 et jamais 301 : la page est temporaire, un 301 resterait en cache navigateur.
+[[redirects]]
+  from = "/calendrier"
+  to = "/liste-attente"
+  status = 302
