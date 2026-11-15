@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Ton calendrier de l'avent — Mobility Club</title>
+<meta name="description" content="Le club ferme ses portes. Ton calendrier de l'avent, lui, ouvre le 1er décembre : 24 cases personnalisées, gratuites, dans l'app." />
+<meta name="theme-color" content="#0D0F0E" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Ton calendrier de l'avent — Mobility Club" />
+<meta property="og:description" content="24 cases sur ton problème n° 1, ton sport et ton temps. Gratuit, dans l'app, dès le 1er décembre." />
+<meta property="og:locale" content="fr_FR" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,800;1,800&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet" />
+<style>
+/* Liste d'attente — Édition 1. DA V2 de l'app (jetons src/v2/da/jetons.css, primitives.css) + couche rétro :
+   la typo, le verre et le bouton restent V2 ; la porte est un objet de jeu en pixel art (grille de 3 px,
+   ombrage 3 tons, métal or), texte de jeu en Pixelify Sans. */
+:root{
+  --os-fond:#0D0F0E;
+  --os-filet:rgba(255,255,255,.07);
+  --os-texte:#F5F5F3;
+  --os-texte-2:#A9ACA9;
+  --os-texte-3:#8E918E;
+  --os-texte-4:#6F716E;
+  --os-texte-doux:#C9CBC8;
+  --os-vert:#3ECFA0;
+  --os-or:#E8A020;
+  --os-violet:#B990E0;
+  --os-verre-fond:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05));
+  --os-verre-bord:1px solid rgba(255,255,255,.14);
+  --os-verre-flou:blur(26px) saturate(170%);
+  --os-verre-ombre:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06), inset 0 0 24px rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.45);
+  --os-rayon-heros:28px;
+  --os-rayon-bouton:27px;
+  --os-courbe:cubic-bezier(.2,.8,.2,1);
+  --os-ressort:cubic-bezier(.3,1.5,.5,1);
+  --largeur:560px;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; background:var(--os-fond); overflow-x:clip; }
+body{
+  min-height:100svh; background:var(--os-fond); color:var(--os-texte);
+  font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-feature-settings:'tnum' 1;
+  -webkit-font-smoothing:antialiased; overflow-x:clip;
+}
+a{ color:inherit; }
+.col{ position:relative; max-width:var(--largeur); margin:0 auto; padding:0 16px; }
+
+/* ── En-tête ───────────────────────────────────────────────────────────────────── */
+.tete{ display:flex; align-items:center; gap:10px; padding:18px 0 6px; text-decoration:none; font-weight:800; font-size:15px; letter-spacing:-.2px; width:max-content; }
+.tete img{ width:28px; height:28px; border-radius:8px; }
+
+/* ── Scène de jeu ──────────────────────────────────────────────────────────────── */
+.scene{ position:relative; margin-top:4px; height:246px; }
+.halo{ position:absolute; inset:-30px -16px auto; height:420px; pointer-events:none; z-index:0; }
+.halo i{ position:absolute; border-radius:50%; }
+.halo .v{ left:50%; top:90px; width:230px; height:230px; margin-left:-115px; background:var(--os-vert); opacity:.42; filter:blur(50px); }
+.halo .p{ right:-10px; top:200px; width:210px; height:210px; background:var(--os-violet); opacity:.30; filter:blur(55px); }
+.halo .o{ left:-10px; top:230px; width:150px; height:150px; background:var(--os-or); opacity:.20; filter:blur(50px); }
+.toile{
+  position:absolute; left:50%; top:4px; z-index:1; width:260px; height:212px; margin-left:-130px;
+  image-rendering:pixelated; image-rendering:crisp-edges;
+}
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; }
+.verdict{
+  position:absolute; z-index:2; left:0; right:0; top:0; text-align:center;
+  font-size:22px; color:#FFE08A; text-shadow:0 2px 0 #3A2A14, 0 0 18px rgba(232,160,32,.30);
+  opacity:0; transform:translateY(6px) scale(.96);
+  transition:opacity .35s var(--os-courbe), transform .45s var(--os-ressort);
+}
+.scene.fini .verdict{ opacity:1; transform:none; }
+.ouverture{
+  position:absolute; z-index:2; left:0; right:0; bottom:4px; text-align:center; font-size:14px; color:var(--os-texte-2);
+}
+.ouverture b{ color:var(--os-vert); font-weight:600; }
+
+/* ── Héros en verre ────────────────────────────────────────────────────────────── */
+.heros{
+  position:relative; isolation:isolate; z-index:2; margin-top:18px; padding:24px 22px 8px;
+  border-radius:var(--os-rayon-heros); background:var(--os-verre-fond); border:var(--os-verre-bord);
+  -webkit-backdrop-filter:var(--os-verre-flou); backdrop-filter:var(--os-verre-flou); box-shadow:var(--os-verre-ombre);
+}
+.heros::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,.25));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.heros::after{
+  content:""; position:absolute; left:8%; right:8%; top:0; height:45%; pointer-events:none; z-index:-1;
+  background:radial-gradient(ellipse 60% 70% at 50% 0, rgba(255,255,255,.09), rgba(255,255,255,0) 70%);
+}
+.sous-titre{ font-size:12px; font-weight:800; color:var(--os-texte-3); }
+h1{ margin-top:10px; font-size:clamp(34px,10.5vw,52px); font-weight:800; font-style:italic; letter-spacing:-1.6px; line-height:1; text-wrap:balance; }
+.corps{ margin-top:14px; font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); text-wrap:pretty; }
+
+.dates{ list-style:none; margin-top:18px; }
+.dates li{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:15px 0; border-top:1px solid var(--os-filet); }
+.dates .quoi{ font-size:15px; font-weight:800; letter-spacing:-.2px; }
+.dates .quand{ flex:none; font-size:12px; font-weight:800; color:var(--os-texte-3); text-align:right; }
+.dates li.toi .quand{ color:var(--os-vert); }
+
+/* ── Action ────────────────────────────────────────────────────────────────────── */
+.action{ position:relative; z-index:2; margin-top:16px; }
+.os-bouton{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+  height:54px; padding:0 24px; border-radius:var(--os-rayon-bouton); text-decoration:none;
+  background:var(--os-vert); color:var(--os-fond); font-weight:800; font-size:16px;
+  transition:transform .16s var(--os-courbe);
+}
+.os-bouton:active{ transform:scale(.96); }
+.os-bouton:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px; }
+.note{ margin-top:12px; text-align:center; font-size:13px; font-weight:500; color:var(--os-texte-4); }
+.membres{ margin-top:26px; padding:16px 0; border-top:1px solid var(--os-filet); font-size:14px; font-weight:500; color:var(--os-texte-2); }
+.membres b{ color:var(--os-texte); font-weight:800; }
+
+footer{ margin-top:28px; padding:18px 0 calc(22px + env(safe-area-inset-bottom)); border-top:1px solid var(--os-filet); display:flex; justify-content:space-between; gap:12px; font-size:12px; font-weight:500; color:var(--os-texte-4); }
+footer a{ text-decoration:none; color:var(--os-texte-3); }
+
+@media (min-width:430px){
+  .scene{ height:348px; }
+  .toile{ width:390px; height:318px; margin-left:-195px; }
+  .verdict{ font-size:24px; }
+  .ouverture{ font-size:15px; bottom:0; }
+}
+@media (min-width:700px){
+  .scene{ height:444px; }
+  .toile{ width:520px; height:424px; margin-left:-260px; }
+  .verdict{ font-size:26px; }
+}
+@media (prefers-reduced-motion:reduce){
+  .verdict{ transition:none; }
+}
+</style>
+</head>
+<body>
+<div class="col">
+  <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
+
+  <section class="scene" id="scene" aria-label="Les portes du club sont fermées. 20 cases sur 24 du calendrier rouvrent la porte le 25 décembre.">
+    <div class="halo" aria-hidden="true"><i class="v"></i><i class="p"></i><i class="o"></i></div>
+    <canvas class="toile" id="toile" width="130" height="106" aria-hidden="true"></canvas>
+    <p class="verdict jeu" id="verdict" aria-hidden="true">Portes fermées</p>
+    <p class="ouverture jeu" aria-hidden="true">Calendrier de l'avent · dès le <b>1er déc.</b></p>
+  </section>
+
+  <main class="heros">
+    <p class="sous-titre">Calendrier de l'avent · gratuit, dans l'app</p>
+    <h1>Le club ferme ses portes.</h1>
+    <p class="corps">Pendant qu'elles sont fermées, je te construis un calendrier de l'avent&nbsp;: 24&nbsp;cases sur ton problème n°&nbsp;1, ton sport et ton temps.</p>
+    <ol class="dates">
+      <li><span class="quoi">Ton bilan, puis une case par jour</span><span class="quand">Dès le 1er déc.</span></li>
+      <li><span class="quoi">5, 10 ou 20 minutes, selon ton temps</span><span class="quand">24 cases</span></li>
+      <li class="toi"><span class="quoi">20 cases sur 24 rouvrent la porte du club</span><span class="quand">25 déc.</span></li>
+    </ol>
+  </main>
+
+  <div class="action">
+    <a class="os-bouton" href="https://damien.eden.so/form/liste-attente">Je veux mon calendrier</a>
+    <p class="note">Quelques questions et ton email. Je t'explique le calendrier en vidéo, par mail.</p>
+  </div>
+
+  <p class="membres"><b>Déjà membre&nbsp;?</b> Un email t'explique ce qui change pour toi.</p>
+
+  <footer>
+    <span>© 2026 Mobility Club</span>
+    <span><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a></span>
+  </footer>
+</div>
+
+<script>
+/* La porte du club, objet de jeu sur la grille de 3 px (toile 130 × 100, affichée ×3 ou ×4) :
+   cadre en métal or, deux battants sombres, filet de lumière verte, cadenas qui tombe à la fermeture.
+   Ressort à la fermeture, éclats de pixels or, puis seul un reflet discret descend le filet. */
+(function(){
+  var cv = document.getElementById('toile'); var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+  var scene = document.getElementById('scene');
+  var W = 130, H = 106; var verdict = document.getElementById('verdict');
+  var OR = ['#3A2A14', '#84612F', '#DDBF75', '#FFF1BD'];
+  var VERT = ['#1D5C49', '#2C7A62', '#3ECFA0', '#A8F2D6'];
+  var BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  var cx = 65, sol = 82, haut = 22, demi = 19;
+  var px = function(x, y, c){ ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), 1, 1); };
+  var dansArche = function(x, y, r){
+    var top = haut + r; if (y >= top) return Math.abs(x + .5 - cx) <= r; var dx = x + .5 - cx, dy = y + .5 - top; return dx*dx + dy*dy <= r*r;
+  };
+
+  function faisceaux(){
+    for (var y = 0; y < sol; y++) for (var x = 0; x < W; x++) {
+      var t = y / sol;
+      [[30, 4], [100, -4]].forEach(function(f){
+        var c = f[0] + f[1] * t * 6, l = 3 + t * 18, k = 1 - Math.abs(x - c) / l;
+        if (k > 0 && k * (1 - t) * 10 > BAYER[y % 4][x % 4]) px(x, y, 'rgba(255,255,255,.035)');
+      });
+    }
+  }
+  function solTrame(){
+    var TONS = ['#101312', '#131615', '#161A18', '#1A1E1C'];
+    for (var y = sol; y < H; y++) for (var x = 0; x < W; x++) {
+      var v = (y - sol) / (H - sol) * 3, b = Math.floor(v), fr = v - b;
+      var bord = 1 - Math.abs(x + .5 - cx) / 64; // le sol s'éteint vers les côtés (tramé, jamais de bord net)
+      if (bord * 22 <= BAYER[(y + 1) % 4][x % 4]) continue;
+      var c = fr * 16 > BAYER[y % 4][x % 4] ? TONS[Math.min(3, b + 1)] : TONS[b];
+      var d = Math.hypot((x - cx) / 26, (y - sol - 1) / 7);
+      if (d < 1 && (1 - d) * 20 > BAYER[y % 4][x % 4]) c = d < .45 && (.45 - d) * 36 > BAYER[(y + 2) % 4][(x + 1) % 4] ? VERT[1] : VERT[0];
+      px(x, y, c);
+    }
+    for (var x2 = 0; x2 < W; x2++) { var b2 = 1 - Math.abs(x2 + .5 - cx) / 64; if (b2 * 22 > BAYER[0][x2 % 4]) px(x2, sol, '#1F2422'); }
+  }
+  function cadre(){
+    for (var y = haut - 3; y < sol; y++) for (var x = cx - demi - 3; x <= cx + demi + 3; x++) {
+      if (!dansArche(x, y, demi + 3) || dansArche(x, y, demi)) continue;
+      var ext = !dansArche(x, y, demi + 2), int = dansArche(x, y, demi + 1);
+      var c = ext ? OR[0] : int ? OR[1] : (x < cx - 6 && y < haut + demi) || (y < haut + 4) ? OR[3] : OR[2];
+      px(x, y, c);
+    }
+  }
+  function battants(ecart){
+    for (var y = haut; y < sol; y++) for (var x = cx - demi; x < cx + demi; x++) {
+      if (!dansArche(x, y, demi)) continue;
+      var dc = x + .5 - cx;
+      if (Math.abs(dc) < ecart) { px(x, y, Math.abs(dc) < Math.max(.6, ecart - 2) ? VERT[3] : VERT[2]); continue; }
+      var g = dc < 0, bordInt = Math.abs(Math.abs(dc) - ecart) < 1;
+      var xl = g ? x - (cx - demi) : (cx + demi - 1) - x;
+      var c = '#1B1E1F';
+      if (xl < 1) c = '#141617';
+      if (bordInt) c = '#2E3334';
+      if ((xl === 4 || xl === 13) && y > haut + 8 && y < sol - 5) c = '#141617';
+      if ((y === haut + 30 || y === sol - 6) && xl > 3 && xl < 14) c = '#141617';
+      if (xl === 2 && y < haut + 20) c = '#262A2B';
+      px(x, y, c);
+    }
+    [[cx - ecart - 3], [cx + ecart + 2]].forEach(function(p){
+      for (var k = 0; k < 6; k++) px(p[0], haut + 34 + k, k === 0 ? OR[3] : k < 4 ? OR[2] : OR[1]);
+    });
+  }
+  function lueur(ecart){
+    for (var y = haut + 6; y < sol; y++) for (var dx = -3; dx <= 3; dx++) {
+      if (Math.abs(dx) < ecart + 1) continue;
+      var x = cx + dx; if (Math.abs(dx) <= 2 && (3 - Math.abs(dx)) * 3 > BAYER[y % 4][x % 4]) px(x, y, 'rgba(62,207,160,.22)');
+    }
+  }
+  var CADENAS = ['..aaa..', '.a...a.', '.a...a.', 'bbbbbbb', 'bcccccb', 'bccdccb', 'bccdccb', 'bcccccb', 'bbbbbbb'];
+  function cadenas(dy){
+    var C = { a: OR[1], b: OR[0], c: OR[2], d: OR[0] };
+    CADENAS.forEach(function(l, y){ l.split('').forEach(function(ch, x){
+      if (ch === '.') return; var col = C[ch]; if (ch === 'c' && x === 1) col = OR[3]; px(cx - 3 + x, haut + 30 + y + dy, col);
+    }); });
+  }
+  var eclats = [];
+  function lanceEclats(teinte){
+    for (var k = 0; k < 14; k++) eclats.push({ x: cx, y: haut + 34, vx: (Math.random() - .5) * 3, vy: -Math.random() * 2.6 - .6, v: 1, t: teinte });
+  }
+  // Le décor fixe (faisceaux, sol, cadre) est dessiné une seule fois puis recopié à chaque image.
+  var fond = document.createElement('canvas'); fond.width = W; fond.height = H;
+  (function(){ var vrai = ctx; ctx = fond.getContext('2d'); solTrame(); cadre(); ctx = vrai; })();
+  // La jauge du calendrier : 24 cases, la 20e marquée en or (le seuil qui rouvre la porte).
+  function jauge(n){
+    for (var i = 0; i < 24; i++) {
+      var x0 = 5 + i * 5, y0 = 92, plein = i < n, seuil = i === 19;
+      for (var k = 0; k < 4; k++) {
+        px(x0 + k, y0, plein ? VERT[3] : seuil ? OR[2] : '#3A3F40');
+        px(x0 + k, y0 + 1, plein ? VERT[2] : seuil ? OR[1] : '#262A2B');
+        px(x0 + k, y0 + 2, plein ? VERT[0] : seuil ? OR[0] : '#1B1E1F');
+      }
+    }
+  }
+  function dessine(ecart, dyCadenas, reflet, n){
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(fond, 0, 0); battants(ecart); jauge(n || 0); if (ecart < 1.2) lueur(ecart);
+    if (dyCadenas !== null) cadenas(dyCadenas);
+    if (reflet !== null && ecart < 1.2) { for (var k = 0; k < 3; k++) px(cx, reflet + k, '#FFFFFF'); }
+    eclats.forEach(function(e){ if (e.v > 0) px(e.x, e.y, e.v > .5 ? e.t[3] : e.t[2]); });
+  }
+  var arrete = false;
+  function finale(){ arrete = true; eclats = []; dessine(2.2, null, null, 20); verdict.textContent = 'Porte ouverte le 25 déc.'; scene.classList.add('fini'); }
+
+  var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduit) { finale(); return; }
+
+  var garde = setTimeout(finale, 5200);
+  var t0 = null, phase = 0, chute = 0;
+  function image(t){
+    if (arrete) return;
+    if (t0 === null) t0 = t; var s = (t - t0) / 1000;
+    var ecart = .6, dy = null, reflet = null, n = 0;
+    if (s < .35) { ecart = 12; }
+    else if (s < 1.0) { // les battants claquent (ressort)
+      var u = (s - .35) / .65; var e = 1 - Math.pow(1 - u, 3); ecart = 12 * (1 - e) - Math.sin(u * Math.PI) * 1.2; if (ecart < .6) ecart = .6;
+    } else if (s < 1.6) { // le cadenas tombe et se pose
+      var v = Math.min(1, (s - 1.0) / .35); dy = v === 1 ? 0 : Math.round(-10 * (1 - v) * (1 - v));
+      if (phase === 0 && v === 1) { phase = 1; lanceEclats(OR); scene.classList.add('fini'); }
+    } else if (s < 3.0) { // les cases du calendrier se remplissent jusqu'au seuil
+      dy = 0; n = Math.min(20, Math.floor((s - 1.6) / .07) + 1);
+      if (verdict.textContent !== n + ' / 24') verdict.textContent = n + ' / 24';
+    } else { // 20 cases : le cadenas saute, la porte s'entrouvre
+      n = 20;
+      if (phase === 1) { phase = 2; lanceEclats(VERT); verdict.textContent = 'Porte ouverte le 25 déc.'; clearTimeout(garde); }
+      var w = Math.min(1, (s - 3.0) / .45); ecart = .6 + 1.6 * (1 - Math.pow(1 - w, 3));
+      chute += .9; dy = Math.round(chute * chute * .08 - chute * .9); if (dy > 60) dy = null;
+      reflet = haut + 4 + ((s * 22) % (sol - haut + 30)); if (reflet > sol - 4) reflet = null;
+    }
+    eclats.forEach(function(e){ if (e.v > 0) { e.x += e.vx; e.y += e.vy; e.vy += .25; e.v -= .03; } });
+    dessine(ecart, dy, reflet, n);
+    if (phase === 2 && s > 6) return; // tout est posé : on arrête de dessiner (rien en boucle)
+    requestAnimationFrame(image);
+  }
+  dessine(12, null, null, 0);
+  requestAnimationFrame(image);
+})();
+</script>
+</body>
+</html>
