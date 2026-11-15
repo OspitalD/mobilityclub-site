@@ -12,337 +12,283 @@
 <meta property="og:locale" content="fr_FR" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,800;1,800&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet" />
 <style>
-/* Liste d'attente — Édition 1. DA V2 du site (accueil) : fond à halos, verre, display 800,
-   italique d'accent, eyebrow en mono, une seule action primaire. */
+/* Liste d'attente — Édition 1. DA V2 de l'app (jetons src/v2/da/jetons.css, primitives.css) + couche rétro :
+   la typo, le verre et le bouton restent V2 ; la porte est un objet de jeu en pixel art (grille de 3 px,
+   ombrage 3 tons, métal or), texte de jeu en Pixelify Sans. */
 :root{
-  --bg-primary:#0D0F0E;
-  --glass:linear-gradient(160deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02) 55%, rgba(255,255,255,0.045));
-  --border-subtle:rgba(255,255,255,0.04);
-  --border-active:rgba(255,255,255,0.11);
-  --hair:rgba(255,255,255,0.07);
-  --accent-green:#3ECFA0;
-  --accent-green-dim:rgba(62,207,160,0.14);
-  --accent-gold:#E8A020;
-  --accent-red:#E05A4A;
-  --text-primary:#F5F5F3;
-  --text-secondary:#7A7C7A;
-  --text-tertiary:#4A4D4B;
-  --font-sans:'Plus Jakarta Sans', ui-sans-serif, sans-serif;
-  --font-mono:'JetBrains Mono', ui-monospace, monospace;
-  --gutter:clamp(16px, 5vw, 64px);
-  --ease:cubic-bezier(0.22, 1, 0.36, 1);
+  --os-fond:#0D0F0E;
+  --os-filet:rgba(255,255,255,.07);
+  --os-texte:#F5F5F3;
+  --os-texte-2:#A9ACA9;
+  --os-texte-3:#8E918E;
+  --os-texte-4:#6F716E;
+  --os-texte-doux:#C9CBC8;
+  --os-vert:#3ECFA0;
+  --os-or:#E8A020;
+  --os-violet:#B990E0;
+  --os-verre-fond:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05));
+  --os-verre-bord:1px solid rgba(255,255,255,.14);
+  --os-verre-flou:blur(26px) saturate(170%);
+  --os-verre-ombre:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06), inset 0 0 24px rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.45);
+  --os-rayon-heros:28px;
+  --os-rayon-bouton:27px;
+  --os-courbe:cubic-bezier(.2,.8,.2,1);
+  --os-ressort:cubic-bezier(.3,1.5,.5,1);
+  --largeur:560px;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
-html{ -webkit-text-size-adjust:100%; }
+html{ -webkit-text-size-adjust:100%; background:var(--os-fond); overflow-x:clip; }
 body{
-  font-family:var(--font-sans); background:var(--bg-primary); color:var(--text-primary);
-  line-height:1.5; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  overflow-x:hidden; min-height:100svh;
-}
-.bg-atmos{
-  position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:
-    radial-gradient(120% 80% at 78% -8%, rgba(62,207,160,0.10) 0%, rgba(62,207,160,0) 42%),
-    radial-gradient(70% 55% at 8% 62%, rgba(185,144,224,0.07) 0%, rgba(185,144,224,0) 50%),
-    radial-gradient(140% 120% at 50% 120%, rgba(62,207,160,0.05) 0%, rgba(62,207,160,0) 60%),
-    var(--bg-primary);
+  min-height:100svh; background:var(--os-fond); color:var(--os-texte);
+  font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-feature-settings:'tnum' 1;
+  -webkit-font-smoothing:antialiased; overflow-x:clip;
 }
 a{ color:inherit; }
+.col{ position:relative; max-width:var(--largeur); margin:0 auto; padding:0 16px; }
 
-/* ---------- Mise en page ---------- */
-.wrap{ max-width:1160px; margin:0 auto; padding:0 var(--gutter); }
-.top{ display:flex; align-items:center; justify-content:space-between; padding-block:22px; }
-.brand{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; font-weight:700; font-size:15px; letter-spacing:-0.2px; }
-.brand img{ width:30px; height:30px; border-radius:8px; }
-.top-note{ font-family:var(--font-mono); font-size:11px; letter-spacing:1.4px; text-transform:uppercase; color:var(--text-tertiary); }
+/* ── En-tête ───────────────────────────────────────────────────────────────────── */
+.tete{ display:flex; align-items:center; gap:10px; padding:18px 0 6px; text-decoration:none; font-weight:800; font-size:15px; letter-spacing:-.2px; width:max-content; }
+.tete img{ width:28px; height:28px; border-radius:8px; }
 
-.hero{
-  display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); gap:clamp(32px,6vw,88px);
-  align-items:center; padding-block:clamp(24px,6vh,72px) clamp(48px,8vh,96px);
+/* ── Scène de jeu ──────────────────────────────────────────────────────────────── */
+.scene{ position:relative; margin-top:4px; height:234px; }
+.halo{ position:absolute; inset:-30px -16px auto; height:420px; pointer-events:none; z-index:0; }
+.halo i{ position:absolute; border-radius:50%; }
+.halo .v{ left:50%; top:90px; width:230px; height:230px; margin-left:-115px; background:var(--os-vert); opacity:.42; filter:blur(50px); }
+.halo .p{ right:-10px; top:200px; width:210px; height:210px; background:var(--os-violet); opacity:.30; filter:blur(55px); }
+.halo .o{ left:-10px; top:230px; width:150px; height:150px; background:var(--os-or); opacity:.20; filter:blur(50px); }
+.toile{
+  position:absolute; left:50%; top:4px; z-index:1; width:260px; height:200px; margin-left:-130px;
+  image-rendering:pixelated; image-rendering:crisp-edges;
 }
-.eyebrow{
-  font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:1.6px;
-  text-transform:uppercase; color:var(--accent-green); display:inline-flex; align-items:center; gap:10px;
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+.verdict{
+  position:absolute; z-index:2; left:0; right:0; top:0; text-align:center;
+  font-size:18px; color:#FFE08A; text-shadow:0 3px 0 #84612F, 0 0 18px rgba(232,160,32,.35);
+  opacity:0; transform:translateY(6px) scale(.96);
+  transition:opacity .35s var(--os-courbe), transform .45s var(--os-ressort);
 }
-.eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent-green); box-shadow:0 0 12px rgba(62,207,160,0.8); }
-h1{
-  margin-top:18px; font-weight:800; font-size:clamp(40px,7vw,84px); line-height:0.98; letter-spacing:-0.035em;
-  text-wrap:balance;
+.scene.fini .verdict{ opacity:1; transform:none; }
+.ouverture{
+  position:absolute; z-index:2; left:0; right:0; bottom:4px; text-align:center; font-size:14px; color:var(--os-texte-2);
 }
-h1 em{ font-style:italic; font-weight:800; color:var(--accent-green); }
-.lead{ margin-top:22px; max-width:30em; font-size:clamp(16px,1.6vw,18px); color:#C9CBC8; text-wrap:pretty; }
+.ouverture b{ color:var(--os-vert); font-weight:600; }
 
-/* ---------- Calendrier ---------- */
-.dates{ margin-top:34px; list-style:none; border-top:1px solid var(--hair); max-width:520px; }
-.dates li{
-  display:grid; grid-template-columns:150px 1fr; gap:16px; align-items:baseline;
-  padding:14px 0; border-bottom:1px solid var(--hair);
+/* ── Héros en verre ────────────────────────────────────────────────────────────── */
+.heros{
+  position:relative; isolation:isolate; z-index:2; margin-top:18px; padding:24px 22px 8px;
+  border-radius:var(--os-rayon-heros); background:var(--os-verre-fond); border:var(--os-verre-bord);
+  -webkit-backdrop-filter:var(--os-verre-flou); backdrop-filter:var(--os-verre-flou); box-shadow:var(--os-verre-ombre);
 }
-.dates .when{ font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:0.6px; color:var(--text-secondary); text-transform:uppercase; }
-.dates .what{ font-size:15px; font-weight:500; }
-.dates li.first .when{ color:var(--accent-green); }
-.dates li.first .what{ font-weight:700; }
+.heros::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,.25));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.heros::after{
+  content:""; position:absolute; left:8%; right:8%; top:0; height:45%; pointer-events:none; z-index:-1;
+  background:radial-gradient(ellipse 60% 70% at 50% 0, rgba(255,255,255,.09), rgba(255,255,255,0) 70%);
+}
+.sous-titre{ font-size:12px; font-weight:800; color:var(--os-texte-3); }
+h1{ margin-top:10px; font-size:clamp(34px,10.5vw,52px); font-weight:800; font-style:italic; letter-spacing:-1.6px; line-height:1; text-wrap:balance; }
+.corps{ margin-top:14px; font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); text-wrap:pretty; }
 
-/* ---------- La porte (visuel) ---------- */
-.door-stage{ position:relative; display:flex; justify-content:center; }
-.door{
-  position:relative; width:min(340px,78vw); aspect-ratio:3/4.6;
-  border-radius:200px 200px 14px 14px; overflow:hidden;
-  background:radial-gradient(60% 45% at 50% 55%, rgba(62,207,160,0.55), rgba(62,207,160,0.08) 60%, rgba(62,207,160,0) 80%), #0a0c0b;
-  box-shadow:0 0 0 1px var(--border-active), 0 40px 120px -40px rgba(62,207,160,0.45);
-}
-.door::after{ /* sol éclairé */
-  content:""; position:absolute; left:-30%; right:-30%; bottom:-2px; height:30%;
-  background:radial-gradient(50% 60% at 50% 100%, rgba(62,207,160,0.35), rgba(62,207,160,0) 70%);
-}
-.leaf{
-  position:absolute; top:0; bottom:0; width:50%; z-index:2;
-  background:linear-gradient(180deg, #171b19, #101311);
-  border:1px solid var(--border-active);
-  transition:transform 1.8s var(--ease);
-}
-.leaf::before{ /* reflet du verre */
-  content:""; position:absolute; inset:0;
-  background:linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 40%);
-}
-.leaf::after{ /* poignée */
-  content:""; position:absolute; top:52%; width:3px; height:46px; border-radius:3px; background:rgba(255,255,255,0.18);
-}
-.leaf.l{ left:0; border-radius:200px 0 0 14px; transform:translateX(-78%); }
-.leaf.r{ right:0; border-radius:0 200px 14px 0; transform:translateX(78%); }
-.leaf.l::after{ right:14px; }
-.leaf.r::after{ left:14px; }
-.door.ferme .leaf.l{ transform:translateX(-3.5%); }
-.door.ferme .leaf.r{ transform:translateX(3.5%); }
-.slit{ /* le filet de lumière qui reste */
-  position:absolute; z-index:1; top:4%; bottom:0; left:50%; width:3px; transform:translateX(-50%);
-  background:linear-gradient(180deg, rgba(62,207,160,0), #3ECFA0 30%, #3ECFA0 80%, rgba(62,207,160,0.4));
-  box-shadow:0 0 18px 4px rgba(62,207,160,0.55);
-}
-.door-tag{
-  position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); z-index:3; white-space:nowrap;
-  font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase;
-  padding:8px 14px; border-radius:100px; background:#0D0F0E; border:1px solid var(--border-active); color:var(--text-secondary);
-}
-.door-tag b{ color:var(--accent-green); font-weight:600; }
+.dates{ list-style:none; margin-top:18px; }
+.dates li{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:15px 0; border-top:1px solid var(--os-filet); }
+.dates .quoi{ font-size:15px; font-weight:800; letter-spacing:-.2px; }
+.dates .quand{ flex:none; font-size:12px; font-weight:800; color:var(--os-texte-3); text-align:right; }
+.dates li.toi .quand{ color:var(--os-vert); }
 
-/* ---------- Formulaire ---------- */
-.join{ padding-bottom:clamp(56px,10vh,120px); }
-.card{
-  position:relative; max-width:760px; margin:0 auto; padding:clamp(22px,4vw,40px);
-  border-radius:20px; background:var(--glass); border:1px solid var(--border-active);
-  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+/* ── Action ────────────────────────────────────────────────────────────────────── */
+.action{ position:relative; z-index:2; margin-top:16px; }
+.os-bouton{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+  height:54px; padding:0 24px; border-radius:var(--os-rayon-bouton); text-decoration:none;
+  background:var(--os-vert); color:var(--os-fond); font-weight:800; font-size:16px;
+  transition:transform .16s var(--os-courbe);
 }
-.card h2{ font-size:clamp(24px,3.2vw,34px); font-weight:800; letter-spacing:-0.025em; line-height:1.08; }
-.card h2 em{ font-style:italic; color:var(--accent-green); }
-.card .sub{ margin-top:10px; color:var(--text-secondary); font-size:15px; }
-fieldset{ border:0; margin-top:26px; }
-legend, .lbl{ display:block; font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text-primary); }
-.chips{ display:flex; flex-wrap:wrap; gap:8px; }
-.chip input{ position:absolute; opacity:0; pointer-events:none; }
-.chip span{
-  display:inline-flex; align-items:center; min-height:40px; padding:8px 16px; border-radius:100px;
-  font-size:14px; font-weight:500; cursor:pointer; user-select:none;
-  border:1px solid var(--border-active); background:rgba(255,255,255,0.02); color:#D6D8D5;
-  transition:border-color .2s var(--ease), background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
-}
-.chip span:hover{ border-color:rgba(62,207,160,0.45); }
-.chip input:checked + span{ background:var(--accent-green-dim); border-color:var(--accent-green); color:var(--accent-green); }
-.chip input:focus-visible + span{ outline:2px solid var(--accent-green); outline-offset:2px; }
-.row{ display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:12px; margin-top:24px; }
-.field label{ display:block; font-size:13px; font-weight:600; margin-bottom:8px; }
-.field label small{ color:var(--text-tertiary); font-weight:500; }
-.field input{
-  width:100%; height:52px; padding:0 16px; border-radius:10px; font:500 16px var(--font-sans); color:var(--text-primary);
-  background:rgba(0,0,0,0.35); border:1px solid var(--border-active); outline:none;
-  transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
-}
-.field input::placeholder{ color:var(--text-tertiary); }
-.field input:focus{ border-color:var(--accent-green); box-shadow:0 0 0 3px var(--accent-green-dim); }
-.trap{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-.btn{
-  margin-top:22px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:10px;
-  height:56px; border:0; border-radius:10px; cursor:pointer;
-  font:700 16px var(--font-sans); background:var(--accent-green); color:var(--bg-primary);
-  transition:transform .25s var(--ease), box-shadow .25s var(--ease), opacity .2s;
-}
-.btn:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -12px rgba(62,207,160,0.55); }
-.btn:disabled{ opacity:0.6; cursor:progress; transform:none; box-shadow:none; }
-.btn .arrow{ transition:transform .25s var(--ease); }
-.btn:hover .arrow{ transform:translateX(3px); }
-.fine{ margin-top:14px; font-size:12.5px; color:var(--text-tertiary); text-align:center; }
-.fine a{ color:var(--text-secondary); }
-.err{ min-height:20px; margin-top:12px; font-size:13.5px; color:var(--accent-red); text-align:center; }
+.os-bouton:active{ transform:scale(.96); }
+.os-bouton:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px; }
+.note{ margin-top:12px; text-align:center; font-size:13px; font-weight:500; color:var(--os-texte-4); }
+.membres{ margin-top:26px; padding:16px 0; border-top:1px solid var(--os-filet); font-size:14px; font-weight:500; color:var(--os-texte-2); }
+.membres b{ color:var(--os-texte); font-weight:800; }
 
-.ok{ display:none; text-align:center; padding:12px 0 4px; }
-.card.sent form{ display:none; }
-.card.sent .ok{ display:block; }
-.ok .check{
-  width:56px; height:56px; margin:0 auto 18px; border-radius:50%; display:grid; place-items:center;
-  background:var(--accent-green-dim); border:1px solid var(--accent-green); color:var(--accent-green); font-size:24px; font-weight:800;
+footer{ margin-top:28px; padding:18px 0 calc(22px + env(safe-area-inset-bottom)); border-top:1px solid var(--os-filet); display:flex; justify-content:space-between; gap:12px; font-size:12px; font-weight:500; color:var(--os-texte-4); }
+footer a{ text-decoration:none; color:var(--os-texte-3); }
+
+@media (min-width:430px){
+  .scene{ height:330px; }
+  .toile{ width:390px; height:300px; margin-left:-195px; }
+  .verdict{ font-size:22px; }
+  .ouverture{ font-size:15px; bottom:0; }
 }
-.ok h3{ font-size:clamp(22px,3vw,28px); font-weight:800; letter-spacing:-0.02em; }
-.ok p{ margin-top:10px; color:#C9CBC8; }
-.ok p strong{ color:var(--accent-green); }
-
-.members{ max-width:760px; margin:22px auto 0; text-align:center; font-size:14px; color:var(--text-secondary); }
-
-footer{ border-top:1px solid var(--hair); padding-block:26px calc(26px + env(safe-area-inset-bottom)); }
-footer .wrap{ display:flex; flex-wrap:wrap; gap:12px 24px; justify-content:space-between; font-size:13px; color:var(--text-tertiary); }
-footer a{ color:var(--text-secondary); text-decoration:none; }
-footer a:hover{ color:var(--text-primary); }
-
-/* ---------- Entrées ---------- */
-.rise{ opacity:0; transform:translateY(14px); animation:rise .9s var(--ease) forwards; }
-.rise.d1{ animation-delay:.08s; } .rise.d2{ animation-delay:.16s; } .rise.d3{ animation-delay:.24s; } .rise.d4{ animation-delay:.32s; }
-@keyframes rise{ to{ opacity:1; transform:none; } }
-/* Filet : si l'animation ne tourne pas (onglet gelé, navigateur intégré), le contenu apparaît quand même. */
-.vu .rise{ animation:none; opacity:1; transform:none; }
-
-@media (max-width:860px){
-  .hero{ grid-template-columns:1fr; gap:32px; padding-top:4px; }
-  .door-stage{ order:-1; }
-  .door{ width:min(150px,40vw); }
-  .top-note{ display:none; }
-}
-@media (max-width:520px){
-  .dates li{ grid-template-columns:1fr; gap:2px; }
-  .row{ grid-template-columns:1fr; }
-  .chip span{ font-size:13.5px; padding:8px 14px; }
+@media (min-width:700px){
+  .scene{ height:420px; }
+  .toile{ width:520px; height:400px; margin-left:-260px; }
+  .verdict{ font-size:26px; }
 }
 @media (prefers-reduced-motion:reduce){
-  .rise{ animation:none; opacity:1; transform:none; }
-  .leaf{ transition:none; }
+  .verdict{ transition:none; }
 }
 </style>
 </head>
 <body>
-<div class="bg-atmos" aria-hidden="true"></div>
+<div class="col">
+  <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
 
-<header class="wrap top">
-  <a class="brand" href="/"><img src="assets/brand/logo-otb.png" width="30" height="30" alt="" />Mobility Club</a>
-  <span class="top-note">Édition 1 · Hiver 2027</span>
-</header>
-
-<main>
-  <section class="wrap hero">
-    <div>
-      <span class="eyebrow rise"><span class="dot" aria-hidden="true"></span>Mobility Club · Édition 1</span>
-      <h1 class="rise d1">Le club ferme <em>ses portes.</em></h1>
-      <p class="lead rise d2">Fini l'abonnement ouvert en continu. On entre désormais par saison&nbsp;: 12&nbsp;semaines, un début, une fin, et des portes qui ne s'ouvrent que quelques jours.</p>
-      <ol class="dates rise d3" aria-label="Calendrier de l'Édition 1">
-        <li class="first"><span class="when">Jeu. 26 nov. · 20 h</span><span class="what">La liste d'attente entre en premier.</span></li>
-        <li><span class="when">27 → 30 nov.</span><span class="what">Portes ouvertes au public.</span></li>
-        <li><span class="when">Lun. 4 janv. 2027</span><span class="what">La New Year Team démarre, pour 12 semaines.</span></li>
-      </ol>
-    </div>
-    <div class="door-stage rise d2" aria-hidden="true">
-      <div class="door" id="door">
-        <div class="slit"></div>
-        <div class="leaf l"></div>
-        <div class="leaf r"></div>
-      </div>
-      <span class="door-tag">Prochaine ouverture · <b>27 nov.</b></span>
-    </div>
+  <section class="scene" id="scene" aria-label="Les portes du club sont fermées. Prochaine ouverture le 27 novembre.">
+    <div class="halo" aria-hidden="true"><i class="v"></i><i class="p"></i><i class="o"></i></div>
+    <canvas class="toile" id="toile" width="130" height="100" aria-hidden="true"></canvas>
+    <p class="verdict jeu" aria-hidden="true">Portes fermées</p>
+    <p class="ouverture jeu" aria-hidden="true">Prochaine ouverture · <b>27.11</b></p>
   </section>
 
-  <section class="wrap join" id="liste">
-    <div class="card rise d4" id="card">
-      <form id="form" novalidate>
-        <h2>Rejoins la <em>liste d'attente.</em></h2>
-        <p class="sub">Elle passe avant tout le monde, le 26 novembre à 20 h.</p>
+  <main class="heros">
+    <p class="sous-titre">Mobility Club · Édition 1</p>
+    <h1>Le club ferme ses portes.</h1>
+    <p class="corps">Fini l'abonnement ouvert en continu. On entre désormais par saison&nbsp;: 12&nbsp;semaines, un début, une fin, et des portes qui ne s'ouvrent que quelques jours.</p>
+    <ol class="dates">
+      <li class="toi"><span class="quoi">La liste d'attente entre en premier</span><span class="quand">Jeu. 26 nov. · 20 h</span></li>
+      <li><span class="quoi">Portes ouvertes au public</span><span class="quand">27 → 30 nov.</span></li>
+      <li><span class="quoi">La New Year Team démarre</span><span class="quand">Lun. 4 janv.</span></li>
+    </ol>
+  </main>
 
-        <fieldset>
-          <legend>Ton problème n° 1 aujourd'hui</legend>
-          <div class="chips">
-            <label class="chip"><input type="radio" name="probleme" value="dos" /><span>Le dos</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="hanches" /><span>Les hanches</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="epaules" /><span>Les épaules</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="nuque" /><span>La nuque</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="genoux_chevilles" /><span>Genoux ou chevilles</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="raideur_generale" /><span>Raide de partout</span></label>
-            <label class="chip"><input type="radio" name="probleme" value="performance_sport" /><span>Progresser dans mon sport</span></label>
-          </div>
-        </fieldset>
+  <div class="action">
+    <a class="os-bouton" href="https://damien.eden.so/form/liste-attente">Rejoindre la liste d'attente</a>
+    <p class="note">Une question, ton email, c'est tout.</p>
+  </div>
 
-        <div class="row">
-          <div class="field">
-            <label for="prenom">Prénom <small>(facultatif)</small></label>
-            <input id="prenom" name="prenom" type="text" autocomplete="given-name" maxlength="40" placeholder="Ton prénom" />
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="toi@exemple.fr" />
-          </div>
-        </div>
-        <div class="trap" aria-hidden="true"><label for="site">Site</label><input id="site" name="site" type="text" tabindex="-1" autocomplete="off" /></div>
+  <p class="membres"><b>Déjà membre&nbsp;?</b> Un email t'explique ce qui change pour toi.</p>
 
-        <button class="btn" type="submit" id="btn">Je rejoins la liste <span class="arrow" aria-hidden="true">→</span></button>
-        <p class="err" id="err" role="alert"></p>
-        <p class="fine">Un email le 26 novembre avec ton accès en avant-première. Désinscription en un clic. <a href="/confidentialite">Confidentialité</a></p>
-      </form>
-
-      <div class="ok" role="status" aria-live="polite">
-        <div class="check" aria-hidden="true">✓</div>
-        <h3 id="ok-title">C'est noté.</h3>
-        <p id="ok-text">Tu entres en premier le <strong>jeudi 26 novembre à 20 h</strong>. Surveille ta boîte mail.</p>
-      </div>
-    </div>
-    <p class="members">Déjà membre&nbsp;? Un email t'explique ce qui change pour toi.</p>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
+  <footer>
     <span>© 2026 Mobility Club</span>
     <span><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a></span>
-  </div>
-</footer>
+  </footer>
+</div>
 
 <script>
+/* La porte du club, objet de jeu sur la grille de 3 px (toile 130 × 100, affichée ×3 ou ×4) :
+   cadre en métal or, deux battants sombres, filet de lumière verte, cadenas qui tombe à la fermeture.
+   Ressort à la fermeture, éclats de pixels or, puis seul un reflet discret descend le filet. */
 (function(){
-  setTimeout(function(){ document.documentElement.classList.add('vu'); }, 1500);
-  var door = document.getElementById('door');
-  var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduit) { door.classList.add('ferme'); }
-  else { requestAnimationFrame(function(){ setTimeout(function(){ door.classList.add('ferme'); }, 450); }); }
+  var cv = document.getElementById('toile'); var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+  var scene = document.getElementById('scene');
+  var W = 130, H = 100;
+  var OR = ['#3A2A14', '#84612F', '#DDBF75', '#FFF1BD'];
+  var VERT = ['#1D5C49', '#2C7A62', '#3ECFA0', '#A8F2D6'];
+  var BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  var cx = 65, sol = 82, haut = 22, demi = 19;
+  var px = function(x, y, c){ ctx.fillStyle = c; ctx.fillRect(Math.round(x), Math.round(y), 1, 1); };
+  var dansArche = function(x, y, r){
+    var top = haut + r; if (y >= top) return Math.abs(x + .5 - cx) <= r; var dx = x + .5 - cx, dy = y + .5 - top; return dx*dx + dy*dy <= r*r;
+  };
 
-  var form = document.getElementById('form');
-  var card = document.getElementById('card');
-  var btn = document.getElementById('btn');
-  var err = document.getElementById('err');
-  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    err.textContent = '';
-    var choix = form.querySelector('input[name="probleme"]:checked');
-    var email = form.email.value.trim();
-    if (!choix) { err.textContent = 'Choisis ton problème n° 1.'; return; }
-    if (!EMAIL.test(email)) { err.textContent = 'Vérifie ton email.'; form.email.focus(); return; }
-
-    btn.disabled = true;
-    fetch('/.netlify/functions/liste-attente', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, prenom: form.prenom.value.trim(), probleme: choix.value, site: form.site.value })
-    }).then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
-      .then(function(res){
-        if (!res.ok) throw new Error((res.d && res.d.error) || 'erreur');
-        var prenom = form.prenom.value.trim();
-        document.getElementById('ok-title').textContent = prenom ? "C'est noté, " + prenom + '.' : "C'est noté.";
-        if (res.d.deja_inscrit) {
-          document.getElementById('ok-text').innerHTML = 'Tu étais déjà sur la liste&nbsp;: ta place est gardée. Rendez-vous le <strong>jeudi 26 novembre à 20 h</strong>.';
-        }
-        card.classList.add('sent');
-      })
-      .catch(function(e2){
-        err.textContent = e2.message === 'invalid_email' ? 'Vérifie ton email.' : "Ça n'a pas marché. Réessaie dans un instant.";
-        btn.disabled = false;
+  function faisceaux(){
+    for (var y = 0; y < sol; y++) for (var x = 0; x < W; x++) {
+      var t = y / sol;
+      [[30, 4], [100, -4]].forEach(function(f){
+        var c = f[0] + f[1] * t * 6, l = 3 + t * 18, k = 1 - Math.abs(x - c) / l;
+        if (k > 0 && k * (1 - t) * 10 > BAYER[y % 4][x % 4]) px(x, y, 'rgba(255,255,255,.035)');
       });
-  });
+    }
+  }
+  function solTrame(){
+    var TONS = ['#101312', '#131615', '#161A18', '#1A1E1C'];
+    for (var y = sol; y < H; y++) for (var x = 0; x < W; x++) {
+      var v = (y - sol) / (H - sol) * 3, b = Math.floor(v), fr = v - b;
+      var bord = 1 - Math.abs(x + .5 - cx) / 64; // le sol s'éteint vers les côtés (tramé, jamais de bord net)
+      if (bord * 22 <= BAYER[(y + 1) % 4][x % 4]) continue;
+      var c = fr * 16 > BAYER[y % 4][x % 4] ? TONS[Math.min(3, b + 1)] : TONS[b];
+      var d = Math.hypot((x - cx) / 26, (y - sol - 1) / 7);
+      if (d < 1 && (1 - d) * 20 > BAYER[y % 4][x % 4]) c = d < .45 && (.45 - d) * 36 > BAYER[(y + 2) % 4][(x + 1) % 4] ? VERT[1] : VERT[0];
+      px(x, y, c);
+    }
+    for (var x2 = 0; x2 < W; x2++) { var b2 = 1 - Math.abs(x2 + .5 - cx) / 64; if (b2 * 22 > BAYER[0][x2 % 4]) px(x2, sol, '#1F2422'); }
+  }
+  function cadre(){
+    for (var y = haut - 3; y < sol; y++) for (var x = cx - demi - 3; x <= cx + demi + 3; x++) {
+      if (!dansArche(x, y, demi + 3) || dansArche(x, y, demi)) continue;
+      var ext = !dansArche(x, y, demi + 2), int = dansArche(x, y, demi + 1);
+      var c = ext ? OR[0] : int ? OR[1] : (x < cx - 6 && y < haut + demi) || (y < haut + 4) ? OR[3] : OR[2];
+      px(x, y, c);
+    }
+  }
+  function battants(ecart){
+    for (var y = haut; y < sol; y++) for (var x = cx - demi; x < cx + demi; x++) {
+      if (!dansArche(x, y, demi)) continue;
+      var dc = x + .5 - cx;
+      if (Math.abs(dc) < ecart) { px(x, y, Math.abs(dc) < Math.max(.6, ecart - 2) ? VERT[3] : VERT[2]); continue; }
+      var g = dc < 0, bordInt = Math.abs(Math.abs(dc) - ecart) < 1;
+      var xl = g ? x - (cx - demi) : (cx + demi - 1) - x;
+      var c = '#1B1E1F';
+      if (xl < 1) c = '#141617';
+      if (bordInt) c = '#2E3334';
+      if ((xl === 4 || xl === 13) && y > haut + 8 && y < sol - 5) c = '#141617';
+      if ((y === haut + 30 || y === sol - 6) && xl > 3 && xl < 14) c = '#141617';
+      if (xl === 2 && y < haut + 20) c = '#262A2B';
+      px(x, y, c);
+    }
+    [[cx - ecart - 3], [cx + ecart + 2]].forEach(function(p){
+      for (var k = 0; k < 6; k++) px(p[0], haut + 34 + k, k === 0 ? OR[3] : k < 4 ? OR[2] : OR[1]);
+    });
+  }
+  function lueur(ecart){
+    for (var y = haut + 6; y < sol; y++) for (var dx = -3; dx <= 3; dx++) {
+      if (Math.abs(dx) < ecart + 1) continue;
+      var x = cx + dx; if (Math.abs(dx) <= 2 && (3 - Math.abs(dx)) * 3 > BAYER[y % 4][x % 4]) px(x, y, 'rgba(62,207,160,.22)');
+    }
+  }
+  var CADENAS = ['..aaa..', '.a...a.', '.a...a.', 'bbbbbbb', 'bcccccb', 'bccdccb', 'bccdccb', 'bcccccb', 'bbbbbbb'];
+  function cadenas(dy){
+    var C = { a: OR[1], b: OR[0], c: OR[2], d: OR[0] };
+    CADENAS.forEach(function(l, y){ l.split('').forEach(function(ch, x){
+      if (ch === '.') return; var col = C[ch]; if (ch === 'c' && x === 1) col = OR[3]; px(cx - 3 + x, haut + 30 + y + dy, col);
+    }); });
+  }
+  var eclats = [];
+  function lanceEclats(){
+    for (var k = 0; k < 14; k++) eclats.push({ x: cx, y: haut + 34, vx: (Math.random() - .5) * 3, vy: -Math.random() * 2.6 - .6, v: 1 });
+  }
+  // Le décor fixe (faisceaux, sol, cadre) est dessiné une seule fois puis recopié à chaque image.
+  var fond = document.createElement('canvas'); fond.width = W; fond.height = H;
+  (function(){ var vrai = ctx; ctx = fond.getContext('2d'); solTrame(); cadre(); ctx = vrai; })();
+  function dessine(ecart, dyCadenas, reflet){
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(fond, 0, 0); battants(ecart); if (ecart < 1.2) lueur(ecart);
+    if (dyCadenas !== null) cadenas(dyCadenas);
+    if (reflet !== null && ecart < 1.2) { for (var k = 0; k < 3; k++) px(cx, reflet + k, '#FFFFFF'); }
+    eclats.forEach(function(e){ if (e.v > 0) px(e.x, e.y, e.v > .5 ? OR[3] : OR[2]); });
+  }
+  var arrete = false;
+  function finale(){ arrete = true; eclats = []; dessine(.6, 0, null); scene.classList.add('fini'); }
+
+  var reduit = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduit) { finale(); return; }
+
+  var garde = setTimeout(finale, 2600);
+  var t0 = null, phase = 0;
+  function image(t){
+    if (arrete) return;
+    if (t0 === null) t0 = t; var s = (t - t0) / 1000;
+    var ecart, dy = null, reflet = null;
+    if (s < .35) { ecart = 12; }
+    else if (s < 1.0) {
+      var u = (s - .35) / .65; var e = 1 - Math.pow(1 - u, 3); ecart = 12 * (1 - e) - Math.sin(u * Math.PI) * 1.2; if (ecart < .6) ecart = .6;
+    } else {
+      ecart = .6;
+      var v = Math.min(1, (s - 1.0) / .35); dy = v === 1 ? 0 : Math.round(-10 * (1 - v) * (1 - v));
+      if (phase === 0 && v === 1) { phase = 1; lanceEclats(); scene.classList.add('fini'); clearTimeout(garde); }
+      reflet = haut + 4 + ((s * 22) % (sol - haut + 30)); if (reflet > sol - 4) reflet = null;
+    }
+    eclats.forEach(function(e){ if (e.v > 0) { e.x += e.vx; e.y += e.vy; e.vy += .25; e.v -= .03; } });
+    dessine(ecart, dy, reflet);
+    requestAnimationFrame(image);
+  }
+  dessine(12, null, null);
+  requestAnimationFrame(image);
 })();
 </script>
 </body>
