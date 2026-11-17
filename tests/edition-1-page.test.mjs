@@ -14,12 +14,16 @@ test('la page edition-1.html existe', () => {
   assert.equal(existsSync(PAGE), true);
 });
 
-test('la case de renonciation (L221-28) est présente et le bouton part désactivé', async () => {
+test('renonciation (L221-28) : mention claire collée au bouton, bouton actif, pas de case', async () => {
   const h = await html();
-  assert.match(h, /<input type="checkbox" id="renonciation"/);
-  assert.ok(h.includes("Je demande l'accès immédiat au club et je renonce à mon droit de rétractation de 14&nbsp;jours."));
-  assert.match(h, /<button[^>]*id="payer"[^>]*disabled/);
-  assert.ok(h.includes('Paiement unique, ou en 4 fois avec PayPal.'));
+  assert.doesNotMatch(h, /type="checkbox"/);
+  assert.doesNotMatch(h, /<button[^>]*id="payer"[^>]*disabled/);
+  const i = h.indexOf('id="payer"');
+  const m = h.indexOf('id="mention-acces"');
+  assert.ok(i > 0 && m > i && m - i < 400, 'la mention doit suivre immédiatement le bouton');
+  const mention = h.slice(m, h.indexOf('</p>', m));
+  assert.match(mention, /dès le paiement/);
+  assert.match(mention, /renonces au délai de rétractation de 14&nbsp;jours/);
 });
 
 test('aucun prix barré (L112-1-1) : ni <s>, ni <del>, ni <strike>, ni line-through', async () => {
@@ -91,7 +95,7 @@ test('vidéo du concept : lecteur prévu, jamais affiché sans fichier (repli «
   assert.ok(h.includes('Vidéo bientôt'));
 });
 
-test('les CGV de l\'Édition 1 sont liées depuis la case et le pied de page', async () => {
+test('les CGV de l\'Édition 1 sont liées depuis la mention du bouton et le pied de page', async () => {
   const { readFile } = await import('node:fs/promises');
   const h = await readFile(new URL('../edition-1.html', import.meta.url), 'utf8');
   assert.equal((h.match(/href="\/cgv-edition-1"/g) || []).length, 2);

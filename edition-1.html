@@ -240,6 +240,7 @@ dialog.lecteur .fermer{ display:block; margin:12px auto 0; padding:10px 18px; bo
 
 footer{ margin-top:40px; padding:18px 0 calc(22px + env(safe-area-inset-bottom)); border-top:1px solid var(--os-filet); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 12px; font-size:12px; font-weight:500; color:var(--os-texte-4); }
 .cgv{ margin:10px 0 0; font-size:12px; color:var(--os-texte-3); }
+.action .cgv{ text-align:center; max-width:420px; margin-left:auto; margin-right:auto; }
 footer a{ text-decoration:none; color:var(--os-texte-3); }
 
 @media (min-width:430px){
@@ -466,15 +467,10 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
           <span class="prix" id="prix-final">97&nbsp;€</span>
         </div>
         <p class="ensuite-final" id="ensuite-final">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture&nbsp;: 149&nbsp;€.</p>
-        <label class="case">
-          <input type="checkbox" id="renonciation" />
-          <span class="boite" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke="#0D0F0E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span>Je demande l'accès immédiat au club et je renonce à mon droit de rétractation de 14&nbsp;jours.</span>
-        </label>
-        <p class="cgv">En payant, tu acceptes les <a class="lien" href="/cgv-edition-1">conditions générales de vente</a>.</p>
         <div class="action">
-          <button class="os-bouton" type="button" id="payer" disabled>Prendre ma place — 97&nbsp;€</button>
+          <button class="os-bouton" type="button" id="payer">Prendre ma place — 97&nbsp;€</button>
           <p class="note">Paiement unique, ou en 4 fois avec PayPal.</p>
+          <p class="cgv" id="mention-acces">Ton accès au club s'ouvre dès le paiement. En validant, tu acceptes les <a class="lien" href="/cgv-edition-1">CGV</a> et renonces au délai de rétractation de 14&nbsp;jours.</p>
           <p class="erreur" id="erreur" role="alert" hidden></p>
         </div>
       </div>
@@ -632,11 +628,11 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
       .catch(function(){ /* Repli : la page reste à 97 €, compteurs et décompte masqués. */ });
   }
 
-  // ── Case de renonciation et paiement ──
+  // ── Paiement : le clic sur le bouton, avec la mention juste dessous, vaut demande d'accès immédiat
+  //    et renonciation au délai de rétractation (L221-28) ; l'heure est tracée côté serveur. ──
   var occupe = false;
-  $('renonciation').addEventListener('change', function(){ $('payer').disabled = !this.checked || occupe; $('erreur').hidden = true; });
   $('payer').addEventListener('click', function(){
-    if (!$('renonciation').checked || occupe) return;
+    if (occupe) return;
     occupe = true; var bouton = this; bouton.disabled = true; bouton.textContent = 'Redirection vers PayPal…'; $('erreur').hidden = true;
     var message = MSG_ERREUR;
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'create', renonciation: true }) })
@@ -644,11 +640,10 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
       .then(function(res){
         if (res.status === 201 && res.d.approve_url) { location.href = res.d.approve_url; return; }
         if (res.status === 409 && res.d.error === 'ferme') { applique({ ouvert: false }); message = null; }
-        else if (res.status === 400 && res.d.error === 'renonciation_requise') { $('renonciation').checked = false; message = 'Coche la case pour continuer.'; }
         throw new Error('echec');
       })
       .catch(function(){
-        occupe = false; bouton.textContent = libellePrix(etat.prix); bouton.disabled = !$('renonciation').checked;
+        occupe = false; bouton.textContent = libellePrix(etat.prix); bouton.disabled = false;
         if (message) { $('erreur').textContent = message; $('erreur').hidden = false; }
       });
   });
