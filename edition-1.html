@@ -138,6 +138,8 @@ button.video:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px
 .os-bouton:active{ transform:scale(.96); }
 .os-bouton:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px; }
 .os-bouton:disabled{ background:#26292A; color:var(--os-texte-3); cursor:not-allowed; transform:none; }
+.os-bouton.secondaire{ background:transparent; color:var(--os-vert); border:1px solid rgba(62,207,160,.55); margin-top:16px; }
+.os-bouton.secondaire:hover{ background:rgba(62,207,160,.08); }
 .note{ margin-top:10px; text-align:center; font-size:12px; font-weight:500; line-height:1.45; color:var(--os-texte-3); }
 .lien{ color:var(--os-vert); font-weight:800; text-decoration:none; }
 .lien:hover{ text-decoration:underline; }
@@ -384,6 +386,14 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
         <p>Chaque séance faite remplit ta série. Tu vois où tu en es, chaque jour.</p>
       </div>
       <div class="telephone-halo or"><div class="telephone"><img src="/sites/mc2/tapes-7-serie.webp" width="1170" height="2391" loading="lazy" alt="Écran de fin de séance : 13 jours de série." /></div></div>
+    </section>
+
+    <!-- 2 bis. Renvoi vers la démo complète de l'app (/app/) -->
+    <section class="bloc demo-app" aria-labelledby="t-demo">
+      <p class="num jeu">L'app en vrai</p>
+      <h2 id="t-demo">Vois l'app tourner avant de prendre ta place.</h2>
+      <p class="corps">Séance prête, durée qui s'adapte, programme importé, coach vocal&nbsp;: toute la démo, écran par écran.</p>
+      <a class="os-bouton secondaire" href="/app/">Découvrir l'app →</a>
     </section>
 
     <!-- 3. La récompense, au centre de l'offre -->
