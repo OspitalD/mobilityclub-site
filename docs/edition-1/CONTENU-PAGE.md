@@ -60,3 +60,9 @@ Tout texte ci-dessous qui n'est pas marqué « fiche » est NOUVEAU → à relir
 ## Interdits
 - « dès la semaine 1 », « objectif en semaine 8 », 33 % / 1,7 séance, prix barré, « sans douleur » dans le nom.
 - Aucun avis membre inventé ni reformulé.
+
+## Décisions Damien 17/11 (QCM, après relecture)
+- Récompense 80 % → 50 % : en crédit seulement, jamais en argent (confirmé).
+- Podium 299/149/75 € en crédits : REMIS sur la page, sous la récompense.
+- CGV section 7 (remboursement seulement si annulation de notre fait) : gardée.
+- Publication sans la vidéo (photo + « Vidéo bientôt ») ; la vidéo viendra dans un 2e déploiement.

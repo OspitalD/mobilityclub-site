@@ -66,12 +66,12 @@ test('textes de la fiche repris mot pour mot', async () => {
   ]) assert.ok(h.includes(t), `manquant : ${t}`);
 });
 
-test('la récompense est au centre, mot pour mot, avec sa précision « en crédit » ; le podium a disparu', async () => {
+test('la récompense est au centre, mot pour mot, avec sa précision « en crédit » et le podium (remis par Damien le 17/11)', async () => {
   const h = (await html()).replace(/&nbsp;/g, ' ').replace(/<\/?em>/g, '');
   assert.ok(h.includes('Réalise 80 % de ton plan et tu récupères 50 % de ce que tu as payé.'));
   assert.ok(h.includes('Versés en crédit sur ta prochaine saison ou sur l\'accès à vie.'));
   assert.ok(h.includes('Une séance compte quand tu la fais avec le minuteur de l\'app.'));
-  assert.equal(/299\s*€/.test(h), false, 'le podium 299/149/75 € ne doit plus apparaître');
+  assert.ok(h.replace(/<\/?b>/g, '').includes('Podium de la saison : 299 € · 149 € · 75 € en crédits'), 'podium 299/149/75 € attendu');
 });
 
 test('chaque <img> pointe vers un fichier existant du dépôt (écrans réels de sites/mc2/)', async () => {
