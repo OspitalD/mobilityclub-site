@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Ta place de membre — Édition 1 — Mobility Club</title>
+<meta name="description" content="Tu es déjà membre du Mobility Club : ta place dans l'Édition 1 est gratuite." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0D0F0E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0F0E'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%233ECFA0'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,800;1,800&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet" />
+<style>
+/* Même DA que /edition-1 (verre V2, italique 800, Pixelify pour l'objet de jeu). */
+:root{
+  --os-fond:#0D0F0E; --os-texte:#F5F5F3; --os-texte-3:#8E918E; --os-texte-doux:#C9CBC8;
+  --os-vert:#3ECFA0; --os-or:#E8A020; --os-violet:#B990E0; --os-rouge:#E05A4A;
+  --os-verre-fond:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05));
+  --os-verre-bord:1px solid rgba(255,255,255,.14);
+  --os-verre-flou:blur(26px) saturate(170%);
+  --os-verre-ombre:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06), inset 0 0 24px rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.45);
+  --os-courbe:cubic-bezier(.2,.8,.2,1);
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; background:var(--os-fond); overflow-x:clip; }
+body{ min-height:100svh; background:var(--os-fond); color:var(--os-texte); font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; -webkit-font-smoothing:antialiased; overflow-x:clip; }
+a{ color:inherit; }
+[hidden]{ display:none !important; }
+.col{ position:relative; max-width:520px; margin:0 auto; padding:0 16px 48px; }
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; font-size:11px; color:#FFE08A; }
+.tete{ display:flex; align-items:center; gap:10px; padding:14px 0 4px; text-decoration:none; font-weight:800; font-size:15px; width:max-content; }
+.tete img{ width:28px; height:28px; border-radius:8px; }
+.halo{ position:absolute; top:0; left:50%; width:100vw; margin-left:-50vw; height:600px; pointer-events:none; z-index:0; overflow:hidden; }
+.halo i{ position:absolute; border-radius:50%; }
+.halo .v{ left:calc(50% - 60px); top:60px; width:240px; height:240px; background:var(--os-vert); opacity:.28; filter:blur(60px); }
+.halo .p{ right:-60px; top:260px; width:200px; height:200px; background:var(--os-violet); opacity:.22; filter:blur(60px); }
+.verre{ position:relative; z-index:2; margin-top:18px; padding:24px 20px; border-radius:28px; background:var(--os-verre-fond); border:var(--os-verre-bord); -webkit-backdrop-filter:var(--os-verre-flou); backdrop-filter:var(--os-verre-flou); box-shadow:var(--os-verre-ombre); }
+h1{ margin-top:8px; font-size:30px; font-weight:800; font-style:italic; letter-spacing:-.8px; line-height:1.08; }
+.texte{ margin-top:12px; font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
+.texte b{ color:var(--os-texte); font-weight:800; }
+label{ display:block; margin-top:22px; font-size:13px; font-weight:800; color:var(--os-texte-doux); }
+input{ display:block; width:100%; margin-top:8px; height:52px; padding:0 16px; border-radius:16px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.35); color:var(--os-texte); font:inherit; font-size:16px; font-weight:500; }
+input:focus{ outline:2px solid var(--os-vert); outline-offset:2px; }
+.os-bouton{ display:flex; align-items:center; justify-content:center; width:100%; height:54px; margin-top:14px; border:0; border-radius:27px; background:var(--os-vert); color:var(--os-fond); font:inherit; font-weight:800; font-size:16px; cursor:pointer; text-decoration:none; transition:transform .16s var(--os-courbe); }
+.os-bouton:active{ transform:scale(.96); }
+.os-bouton:disabled{ background:#26292A; color:var(--os-texte-3); cursor:not-allowed; transform:none; }
+.retour{ margin-top:16px; padding:14px 16px; border-radius:18px; font-size:15px; font-weight:800; line-height:1.45; }
+.retour.ok{ border:1px solid rgba(62,207,160,.4); background:rgba(62,207,160,.10); color:#B7F2DD; }
+.retour.info{ border:1px solid rgba(232,160,32,.35); background:rgba(232,160,32,.08); color:#FFE08A; }
+.retour.ko{ border:1px solid rgba(224,90,74,.4); background:rgba(224,90,74,.10); color:#F6B7AE; }
+.retour a{ color:var(--os-vert); }
+.note{ margin-top:14px; font-size:12px; font-weight:500; line-height:1.45; color:var(--os-texte-3); text-align:center; }
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="halo" aria-hidden="true"><i class="v"></i><i class="p"></i></div>
+  <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
+
+  <main class="verre">
+    <p class="jeu">Édition 1 · Membres</p>
+    <h1>Ta place t'attend.</h1>
+    <p class="texte">Tu es déjà membre : ta place dans l'Édition 1 est <b>gratuite</b>. Elle compte dans les 100 places. Premier arrivé, premier servi.</p>
+
+    <form id="form" novalidate>
+      <label for="email">Ton email de membre</label>
+      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="ton@email.com" required />
+      <button class="os-bouton" type="submit" id="bouton">Je prends ma place</button>
+    </form>
+    <p class="retour" id="retour" role="status" aria-live="polite" hidden></p>
+    <p class="note">C'est l'adresse avec laquelle tu te connectes à l'app.</p>
+  </main>
+</div>
+<script>
+(function(){
+  var form = document.getElementById('form'), input = document.getElementById('email');
+  var bouton = document.getElementById('bouton'), retour = document.getElementById('retour');
+  var MESSAGES = {
+    reservee: ['ok', 'Ta place est réservée. Tu reçois une confirmation par email dans la minute.'],
+    deja: ['info', 'Ta place est déjà réservée. Rien à faire de plus.'],
+    pas_membre: ['ko', 'Cette adresse n\'est pas celle d\'un membre. Vérifie l\'email de ton compte, ou <a href="/edition-1">prends ta place ici</a>.'],
+    ferme: ['info', 'Les portes de l\'Édition 1 sont fermées.'],
+    email_invalide: ['ko', 'Cette adresse email ne semble pas valide.'],
+    erreur: ['ko', 'La réservation n\'a pas pu se faire. Réessaie dans une minute.']
+  };
+  function montre(cle){
+    var m = MESSAGES[cle] || MESSAGES.erreur;
+    retour.className = 'retour ' + m[0]; retour.innerHTML = m[1]; retour.hidden = false;
+  }
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { montre('email_invalide'); return; }
+    bouton.disabled = true; bouton.textContent = 'Réservation…'; retour.hidden = true;
+    fetch('/.netlify/functions/saison-membre', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok: r.ok, d: d || {} }; }); })
+      .then(function(res){
+        var cle = res.d.statut || (res.d.error === 'email_invalide' ? 'email_invalide' : 'erreur');
+        montre(cle);
+        if (cle === 'reservee' || cle === 'deja') { form.hidden = true; }
+      })
+      .catch(function(){ montre('erreur'); })
+      .then(function(){ bouton.disabled = false; bouton.textContent = 'Je prends ma place'; });
+  });
+})();
+</script>
+</body>
+</html>

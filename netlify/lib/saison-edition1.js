@@ -6,11 +6,16 @@
 //
 // Un prix n'est JAMAIS calculé côté navigateur : la page lit l'état ici, et la commande
 // PayPal est créée au prix du palier en cours au moment du clic (le serveur décide).
+import { createHash } from 'node:crypto';
 import { getStore } from '@netlify/blobs';
 
 export const STORE = 'saison_edition1';
 export const PREFIX_VENTE = 'ventes/';
 export const PREFIX_COMMANDE = 'commandes/';
+// Places gratuites des membres actuels (bouton /edition-1/membre ou saisie à la main).
+export const PREFIX_MEMBRE = 'membres/';
+// Empreintes SHA-256 des emails des membres actifs au 17/11 (liste figée : l'abonnement est fermé).
+export const CLE_MEMBRES_AUTORISES = 'config/membres-autorises';
 export const CUSTOM_PREFIX = 'MC-SAISON-E1-';
 
 // 23 h 59 min 59 s heure de Paris (UTC+1 en novembre).
@@ -37,9 +42,9 @@ const horsSite = (env = process.env) => {
 const lire = (v) => Date.parse(v);
 
 // Pur : testable sans réseau. `ventes` = { total, palier1 } compté dans le store.
-export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0 }, env = process.env } = {}) => {
+export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0, membres: 0 }, env = process.env } = {}) => {
   const t = Number(now);
-  const vendues = ventes.total + horsSite(env);
+  const vendues = ventes.total + (ventes.membres || 0) + horsSite(env);
   const restantes = Math.max(0, PLACES_TOTAL - vendues);
   const p1Restantes = Math.max(0, PALIERS[1].places - ventes.palier1);
   const avant = t < lire(OUVERTURE);
@@ -71,7 +76,8 @@ export const compterVentes = async (S = store()) => {
     const v = await S.get(key, { type: 'json' }).catch(() => null);
     if (v?.palier === 1) palier1++;
   }
-  return { total: blobs.length, palier1 };
+  const { blobs: membres = [] } = await S.list({ prefix: PREFIX_MEMBRE });
+  return { total: blobs.length, palier1, membres: membres.length };
 };
 
 export const estVenteSaison = (customId) => typeof customId === 'string' && customId.startsWith(CUSTOM_PREFIX);
@@ -109,4 +115,23 @@ export const enregistrerVenteSaison = async ({ captureId, orderId, palier, monta
     paid_at: new Date().toISOString(),
   });
   return { deja: false };
+};
+
+// ── Places des membres actuels ────────────────────────────────────────────────
+
+export const normaliserEmail = (e) => String(e || '').trim().toLowerCase();
+export const empreinte = (email) => createHash('sha256').update(normaliserEmail(email)).digest('hex');
+export const emailPlausible = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normaliserEmail(e)) && normaliserEmail(e).length <= 254;
+
+// Résultat : 'pas_membre' | 'deja' | 'ferme' | 'reservee'. Idempotent (clé = empreinte).
+export const reserverPlaceMembre = async ({ email, source, now = Date.now(), env = process.env }, S = store()) => {
+  const h = empreinte(email);
+  const autorises = (await S.get(CLE_MEMBRES_AUTORISES, { type: 'json' }).catch(() => null)) || [];
+  if (!Array.isArray(autorises) || !autorises.includes(h)) return { statut: 'pas_membre' };
+  const cle = `${PREFIX_MEMBRE}${h}`;
+  if (await S.get(cle, { type: 'json' }).catch(() => null)) return { statut: 'deja' };
+  const etat = etatSaison({ now, ventes: await compterVentes(S), env });
+  if (!etat.ouvert) return { statut: 'ferme' };
+  await S.setJSON(cle, { email: normaliserEmail(email), source, reserved_at: new Date(Number(now)).toISOString() });
+  return { statut: 'reservee' };
 };

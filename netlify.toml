@@ -179,3 +179,16 @@
   from = "/calendrier"
   to = "/liste-attente"
   status = 302
+
+# ── Édition 1 : bouton des membres actuels (17/11) ───────────────────────────
+# Adresse courte à mettre dans les mails et stories : /edition-1/membre.
+# 200 = réécriture (l'adresse reste /edition-1/membre dans la barre).
+[[redirects]]
+  from = "/edition-1/membre"
+  to = "/membre-edition-1"
+  status = 200
+
+[[headers]]
+  for = "/membre-edition-1"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
