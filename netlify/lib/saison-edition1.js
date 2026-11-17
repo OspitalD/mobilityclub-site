@@ -67,9 +67,7 @@ export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0, 
   };
 };
 
-// Cohérence forte : une place réservée doit être relue tout de suite (sinon double réservation
-// et double mail de confirmation, constaté en prod le 17/11 avec la cohérence par défaut).
-export const store = () => getStore({ name: STORE, consistency: 'strong' });
+export const store = () => getStore(STORE);
 
 export const compterVentes = async (S = store()) => {
   const { blobs = [] } = await S.list({ prefix: PREFIX_VENTE });
