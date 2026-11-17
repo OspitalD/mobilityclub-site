@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Édition 1 — 12 semaines pour bouger libre — Mobility Club</title>
+<meta name="description" content="Une saison de 12 semaines, du 4 janvier au 28 mars 2027. Ton programme personnalisé, ajusté par Damien. Réalise 80 % de ton plan et tu récupères 50 % de ce que tu as payé." />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0D0F0E" />
+<link rel="canonical" href="https://www.mobilityclub.co/edition-1" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0F0E'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%233ECFA0'/%3E%3C/svg%3E" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.mobilityclub.co/edition-1" />
+<meta property="og:title" content="12 semaines pour bouger libre. — Mobility Club, Édition 1" />
+<meta property="og:description" content="Réalise 80 % de ton plan et tu récupères 50 % de ce que tu as payé. 100 places." />
+<meta property="og:image" content="https://www.mobilityclub.co/sites/mc2/fondateur-damien.webp" />
+<meta property="og:locale" content="fr_FR" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,800;1,800&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet" />
+<style>
+/* Édition 1 — page de vente de la saison. DA V2 (verre, titres italiques 800, bouton 54 px vert) + couche rétro :
+   les jauges (places fondateur, promesse tenue) sont des objets de jeu en pixel art (cases 3 tons), texte de jeu en
+   Pixelify Sans. Les écrans sont les VRAIS écrans de l'app (sites/mc2/, ceux de /app), jamais redessinés.
+   Aucun prix barré (L112-1-1). Données live : /.netlify/functions/saison-checkout. */
+:root{
+  --os-fond:#0D0F0E;
+  --os-filet:rgba(255,255,255,.07);
+  --os-texte:#F5F5F3;
+  --os-texte-2:#A9ACA9;
+  --os-texte-3:#8E918E;
+  --os-texte-4:#6F716E;
+  --os-texte-doux:#C9CBC8;
+  --os-vert:#3ECFA0;
+  --os-or:#E8A020;
+  --os-violet:#B990E0;
+  --os-verre-fond:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05));
+  --os-verre-bord:1px solid rgba(255,255,255,.14);
+  --os-verre-flou:blur(26px) saturate(170%);
+  --os-verre-ombre:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06), inset 0 0 24px rgba(255,255,255,.04), 0 20px 50px rgba(0,0,0,.45);
+  --os-rayon-heros:28px;
+  --os-rayon-bouton:27px;
+  --os-courbe:cubic-bezier(.2,.8,.2,1);
+  --os-ressort:cubic-bezier(.3,1.5,.5,1);
+  --largeur:560px;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; background:var(--os-fond); overflow-x:clip; scroll-behavior:smooth; }
+body{
+  min-height:100svh; background:var(--os-fond); color:var(--os-texte);
+  font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-feature-settings:'tnum' 1;
+  -webkit-font-smoothing:antialiased; overflow-x:clip;
+}
+a{ color:inherit; }
+img{ display:block; max-width:100%; }
+[hidden]{ display:none !important; }
+.col{ position:relative; max-width:var(--largeur); margin:0 auto; padding:0 16px; }
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; }
+.or-txt{ color:#FFE08A; }
+
+/* ── En-tête ───────────────────────────────────────────────────────────────────── */
+.tete{ display:flex; align-items:center; gap:10px; padding:14px 0 4px; text-decoration:none; font-weight:800; font-size:15px; letter-spacing:-.2px; width:max-content; }
+.tete img{ width:28px; height:28px; border-radius:8px; }
+.bandeau{
+  margin-top:10px; padding:13px 16px; border-radius:18px; border:1px solid rgba(232,160,32,.35);
+  background:rgba(232,160,32,.08); font-size:14px; font-weight:800; color:#FFE08A;
+}
+
+/* ── Halos + verre ─────────────────────────────────────────────────────────────── */
+.halo{ position:absolute; top:0; left:50%; width:100vw; margin-left:-50vw; height:700px; pointer-events:none; z-index:0; overflow:hidden; }
+.halo i{ position:absolute; border-radius:50%; }
+.halo .v{ left:calc(50% - 60px); top:40px; width:240px; height:240px; background:var(--os-vert); opacity:.30; filter:blur(60px); }
+.halo .p{ right:-60px; top:260px; width:220px; height:220px; background:var(--os-violet); opacity:.26; filter:blur(60px); }
+.halo .o{ left:-60px; top:400px; width:180px; height:180px; background:var(--os-or); opacity:.18; filter:blur(55px); }
+.verre{
+  position:relative; isolation:isolate; z-index:2;
+  border-radius:var(--os-rayon-heros); background:var(--os-verre-fond); border:var(--os-verre-bord);
+  -webkit-backdrop-filter:var(--os-verre-flou); backdrop-filter:var(--os-verre-flou); box-shadow:var(--os-verre-ombre);
+}
+.verre::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.55), rgba(255,255,255,0) 30%, rgba(255,255,255,0) 70%, rgba(255,255,255,.25));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.verre::after{
+  content:""; position:absolute; left:8%; right:8%; top:0; height:45%; pointer-events:none; z-index:-1;
+  background:radial-gradient(ellipse 60% 70% at 50% 0, rgba(255,255,255,.09), rgba(255,255,255,0) 70%);
+}
+
+/* ── Héros : tout ce qu'il faut savoir en 10 s ─────────────────────────────────── */
+.heros{
+  margin-top:10px; padding:18px 18px 18px;
+  display:grid; grid-template-columns:1fr 84px; column-gap:14px;
+  grid-template-areas:"titre titre" "quoi video" "prix prix" "rec rec" "cta cta";
+}
+.h-titre{ grid-area:titre; }
+.sous-titre{ font-size:12px; font-weight:800; color:var(--os-texte-3); }
+h1{ margin-top:6px; font-size:clamp(30px,8.6vw,52px); font-weight:800; font-style:italic; letter-spacing:-1.4px; line-height:1; text-wrap:balance; }
+.h-quoi{ grid-area:quoi; margin-top:12px; align-self:center; font-size:15px; font-weight:500; line-height:1.45; color:var(--os-texte-doux); text-wrap:pretty; }
+.h-quoi b{ color:var(--os-texte); font-weight:800; }
+
+/* Vidéo du concept : vignette 9:16 ; tant que concept.mp4 n'existe pas, photo de Damien + « Vidéo bientôt ». */
+.video{
+  grid-area:video; position:relative; margin-top:12px; width:100%; aspect-ratio:9/16; border-radius:16px; overflow:hidden;
+  border:1px solid rgba(255,255,255,.14); background:#17191A; padding:0; font:inherit; color:inherit; text-align:left;
+}
+button.video{ cursor:pointer; }
+.video img{ width:100%; height:100%; object-fit:cover; object-position:50% 30%; }
+.video::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(13,15,14,0) 45%, rgba(13,15,14,.85)); }
+.video .etiquette{ position:absolute; z-index:1; left:0; right:0; bottom:8px; text-align:center; font-size:11px; font-weight:800; color:var(--os-texte); }
+.video .lecture{ position:absolute; z-index:1; left:50%; top:50%; width:38px; height:38px; margin:-19px 0 0 -19px; border-radius:50%; background:rgba(13,15,14,.6); border:1px solid rgba(255,255,255,.4); display:grid; place-items:center; }
+.video .lecture svg{ width:14px; height:14px; margin-left:2px; }
+button.video:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px; }
+
+.h-prix{ grid-area:prix; margin-top:16px; padding-top:14px; border-top:1px solid var(--os-filet); display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.palier-nom{ font-size:12px; font-weight:800; color:var(--os-texte-3); }
+.prix{ font-size:44px; font-weight:800; font-style:italic; letter-spacing:-1.6px; line-height:1; margin-top:2px; }
+.compteurs{ text-align:right; min-width:0; }
+.places{ font-size:12px; font-weight:800; color:var(--os-texte-2); }
+.places b{ color:#FFE08A; }
+.cases{ display:flex; justify-content:flex-end; gap:2px; margin-top:6px; }
+.cases i{ width:4px; height:9px; background:linear-gradient(#5A5F60 0 3px, #3A3F40 3px 6px, #262A2B 6px); }
+.cases i.prise{ background:linear-gradient(#FFF1BD 0 3px, #DDBF75 3px 6px, #84612F 6px); }
+.horloge{ margin-top:7px; font-size:13px; color:var(--os-texte-2); white-space:nowrap; }
+.horloge span{ color:#FFE08A; font-weight:800; }
+.h-rec{ grid-area:rec; margin-top:14px; padding:12px 14px; border-radius:18px; background:rgba(232,160,32,.08); border:1px solid rgba(232,160,32,.28); display:flex; gap:12px; align-items:center; }
+.h-rec .badge{ flex:none; font-size:17px; font-weight:800; font-style:italic; letter-spacing:-.5px; color:#FFE08A; white-space:nowrap; }
+.h-rec p{ font-size:14px; font-weight:800; line-height:1.35; letter-spacing:-.1px; }
+.h-cta{ grid-area:cta; margin-top:14px; }
+
+/* ── Boutons ───────────────────────────────────────────────────────────────────── */
+.os-bouton{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+  height:54px; padding:0 20px; border:0; border-radius:var(--os-rayon-bouton); text-decoration:none; cursor:pointer;
+  background:var(--os-vert); color:var(--os-fond); font:inherit; font-weight:800; font-size:16px; white-space:nowrap;
+  transition:transform .16s var(--os-courbe), background .2s, color .2s;
+}
+.os-bouton:active{ transform:scale(.96); }
+.os-bouton:focus-visible{ outline:2px solid var(--os-vert); outline-offset:3px; }
+.os-bouton:disabled{ background:#26292A; color:var(--os-texte-3); cursor:not-allowed; transform:none; }
+.note{ margin-top:10px; text-align:center; font-size:12px; font-weight:500; line-height:1.45; color:var(--os-texte-3); }
+.lien{ color:var(--os-vert); font-weight:800; text-decoration:none; }
+.lien:hover{ text-decoration:underline; }
+.ferme-haut{ font-size:15px; font-weight:800; }
+.ferme-haut .os-bouton{ margin-top:12px; }
+
+/* ── Sections de l'offre : un message, un écran réel ───────────────────────────── */
+.offre{ margin-top:64px; display:grid; gap:20px; align-items:center; }
+.offre .num{ text-transform:none; letter-spacing:.6px; font-size:17px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+h2{ margin-top:8px; font-size:28px; font-weight:800; font-style:italic; letter-spacing:-1.1px; line-height:1.05; text-wrap:balance; }
+.offre p, .bloc > p.corps{ margin-top:10px; font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); text-wrap:pretty; }
+.offre .valeur{ margin-top:12px; font-size:13px; font-weight:500; color:var(--os-texte-3); }
+.offre .valeur b{ color:var(--os-texte-2); font-weight:800; }
+.telephone{
+  justify-self:center; width:min(250px, 72vw); position:relative;
+  background:#0D0F0E; border:9px solid #1A1E1C; border-radius:40px; overflow:hidden;
+  box-shadow:0 0 0 1px #262B28, inset 0 1px rgba(255,255,255,.08), 0 30px 60px rgba(0,0,0,.5);
+}
+.telephone img{ width:100%; height:auto; }
+.telephone-halo{ position:relative; justify-self:center; }
+.telephone-halo::before{ content:""; position:absolute; inset:15% -10%; border-radius:50%; background:var(--os-vert); opacity:.16; filter:blur(50px); z-index:-1; }
+.telephone-halo.violet::before{ background:var(--os-violet); opacity:.2; }
+.telephone-halo.or::before{ background:var(--os-or); opacity:.16; }
+
+/* ── La récompense, au centre ──────────────────────────────────────────────────── */
+.recompense{ margin-top:64px; padding:26px 20px 22px; text-align:center; }
+.recompense .eyebrow{ font-size:16px; color:#FFE08A; text-shadow:0 2px 0 #3A2A14; }
+.recompense .phrase{ margin-top:12px; font-size:clamp(26px,7.4vw,38px); font-weight:800; font-style:italic; letter-spacing:-1.1px; line-height:1.08; text-wrap:balance; }
+.recompense .phrase em{ font-style:inherit; color:#FFE08A; }
+.recompense .credit{ margin-top:12px; font-size:13px; font-weight:500; color:var(--os-texte-3); }
+.jauge{ display:flex; justify-content:center; gap:4px; margin:22px auto 0; }
+.jauge i{ width:18px; height:18px; background:linear-gradient(#3A3F40 0 6px, #262A2B 6px 12px, #1B1E1F 12px); }
+.jauge i.ok{ background:linear-gradient(#A8F2D6 0 6px, #3ECFA0 6px 12px, #1D5C49 12px); }
+.jauge-legende{ display:flex; justify-content:center; gap:10px; margin-top:8px; font-size:13px; font-weight:800; color:var(--os-texte-3); }
+.recompense .mesure{ margin-top:18px; padding-top:14px; border-top:1px solid var(--os-filet); font-size:14px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
+.recompense .titre-tenue{ margin-top:6px; font-size:13px; font-weight:500; color:var(--os-texte-3); }
+.recompense .titre-tenue b{ color:var(--os-texte-2); font-weight:800; }
+
+/* ── Sections texte ────────────────────────────────────────────────────────────── */
+section.bloc{ margin-top:64px; }
+.chapo{ margin-top:6px; font-size:12px; font-weight:800; color:var(--os-texte-3); }
+.table{ list-style:none; margin-top:14px; }
+.table li{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:13px 0; border-top:1px solid var(--os-filet); }
+.table .quoi{ font-size:14px; font-weight:800; letter-spacing:-.1px; line-height:1.35; }
+.table .pourquoi{ display:block; margin-top:3px; font-size:12px; font-weight:500; letter-spacing:0; line-height:1.45; color:var(--os-texte-3); }
+.table .val{ flex:none; font-size:14px; font-weight:800; color:var(--os-texte-2); }
+.table li.total{ border-top:1px solid rgba(255,255,255,.18); }
+.table li.total .quoi, .table li.total .val{ font-size:16px; color:var(--os-texte); }
+.sous{ margin-top:24px; font-size:12px; font-weight:800; color:var(--os-texte-3); }
+.puces{ list-style:none; margin-top:6px; }
+.puces li{ position:relative; padding:9px 0 9px 20px; font-size:14px; font-weight:500; line-height:1.45; color:var(--os-texte-doux); border-top:1px solid var(--os-filet); }
+.puces li::before{ content:""; position:absolute; left:2px; top:15px; width:6px; height:6px; background:var(--os-vert); box-shadow:0 -3px 0 #A8F2D6 inset; }
+.puces.or li::before{ background:var(--os-or); box-shadow:0 -3px 0 #FFE08A inset; }
+.puces.or li{ color:var(--os-texte); font-weight:800; }
+.etapes{ list-style:none; margin-top:14px; }
+.etapes li{ display:grid; grid-template-columns:40px 1fr; gap:3px 10px; padding:13px 0; border-top:1px solid var(--os-filet); }
+.etapes .n{ grid-row:span 2; font-size:18px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+.etapes .quand{ font-size:15px; font-weight:800; letter-spacing:-.2px; }
+.etapes .quoi{ font-size:14px; font-weight:500; line-height:1.45; color:var(--os-texte-doux); }
+.ancre{ margin-top:48px; padding:16px 0; border-top:1px solid var(--os-filet); border-bottom:1px solid var(--os-filet); font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
+.ancre a{ color:var(--os-violet); font-weight:800; text-decoration:none; }
+.ancre a:hover{ text-decoration:underline; }
+.faq{ list-style:none; margin-top:14px; }
+.faq li{ padding:13px 0; border-top:1px solid var(--os-filet); font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
+.faq b{ display:block; color:var(--os-texte); font-weight:800; letter-spacing:-.2px; }
+
+/* ── Bloc final : case + bouton ────────────────────────────────────────────────── */
+.final{ margin-top:64px; padding:24px 20px 22px; scroll-margin-top:16px; }
+.final h2{ margin-top:0; font-size:30px; }
+.final .rappel{ margin-top:8px; font-size:14px; font-weight:500; line-height:1.45; color:var(--os-texte-2); }
+.final .prix-final{ margin-top:16px; display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding-top:14px; border-top:1px solid var(--os-filet); }
+.final .prix-final .prix{ font-size:38px; }
+.final .ensuite-final{ margin-top:8px; font-size:12px; font-weight:500; line-height:1.5; color:var(--os-texte-3); }
+.case{ display:flex; gap:12px; align-items:flex-start; margin-top:18px; cursor:pointer; font-size:14px; font-weight:500; line-height:1.45; color:var(--os-texte-doux); }
+.case input{ position:absolute; opacity:0; width:1px; height:1px; }
+.case .boite{
+  flex:none; width:24px; height:24px; margin-top:1px; border-radius:7px; border:1.5px solid rgba(255,255,255,.4);
+  display:grid; place-items:center; transition:background .15s, border-color .15s;
+}
+.case .boite svg{ width:14px; height:14px; opacity:0; transform:scale(.6); transition:opacity .15s, transform .25s var(--os-ressort); }
+.case input:checked + .boite{ background:var(--os-vert); border-color:var(--os-vert); }
+.case input:checked + .boite svg{ opacity:1; transform:none; }
+.case input:focus-visible + .boite{ outline:2px solid var(--os-vert); outline-offset:3px; }
+.final .action{ margin-top:18px; }
+.erreur{ margin-top:12px; text-align:center; font-size:14px; font-weight:800; color:#FFB0A6; }
+.ferme p{ margin-top:14px; font-size:14px; font-weight:500; line-height:1.5; color:var(--os-texte-2); }
+
+/* ── Lecteur vidéo ─────────────────────────────────────────────────────────────── */
+dialog.lecteur{ margin:auto; padding:0; border:0; background:transparent; max-width:min(420px, 92vw); max-height:92svh; }
+dialog.lecteur::backdrop{ background:rgba(13,15,14,.88); }
+dialog.lecteur video{ display:block; width:100%; max-height:84svh; border-radius:22px; background:#000; }
+dialog.lecteur .fermer{ display:block; margin:12px auto 0; padding:10px 18px; border-radius:20px; border:1px solid rgba(255,255,255,.2); background:transparent; color:var(--os-texte); font:inherit; font-weight:800; font-size:14px; cursor:pointer; }
+
+/* ── Confirmation ──────────────────────────────────────────────────────────────── */
+.confirmation{ margin-top:18px; padding:26px 22px; }
+.confirmation h1{ margin-top:10px; }
+.confirmation h1:focus{ outline:none; }
+.confirmation .corps{ margin-top:14px; font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
+.confirmation .action{ margin-top:18px; }
+
+footer{ margin-top:40px; padding:18px 0 calc(22px + env(safe-area-inset-bottom)); border-top:1px solid var(--os-filet); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 12px; font-size:12px; font-weight:500; color:var(--os-texte-4); }
+.cgv{ margin:10px 0 0; font-size:12px; color:var(--os-texte-3); }
+footer a{ text-decoration:none; color:var(--os-texte-3); }
+
+@media (min-width:430px){
+  .heros{ grid-template-columns:1fr 96px; padding:22px 22px 20px; }
+}
+/* Grand écran : héros en deux colonnes (texte | vidéo), sections texte | téléphone. */
+@media (min-width:900px){
+  .col{ max-width:1040px; padding:0 32px; }
+  .heros{
+    margin-top:14px; padding:30px 34px 28px; column-gap:40px;
+    grid-template-columns:1fr 250px;
+    grid-template-areas:"titre video" "quoi video" "prix video" "rec video" "cta video";
+  }
+  h1{ font-size:52px; letter-spacing:-1.8px; }
+  .h-quoi{ font-size:17px; align-self:start; }
+  .video{ margin-top:0; align-self:center; border-radius:24px; }
+  .video .etiquette{ font-size:14px; bottom:14px; }
+  .video .lecture{ width:58px; height:58px; margin:-29px 0 0 -29px; }
+  .video .lecture svg{ width:20px; height:20px; }
+  .h-rec{ padding:14px 18px; }
+  .h-rec p{ font-size:16px; }
+  .h-cta{ max-width:420px; }
+  .offre{ grid-template-columns:1fr 280px; gap:64px; margin-top:96px; padding:0 40px; }
+  .offre.inverse{ grid-template-columns:280px 1fr; }
+  .offre.inverse .texte{ order:2; }
+  .offre h2{ font-size:38px; letter-spacing:-1.4px; }
+  .offre p{ font-size:17px; }
+  .telephone{ width:270px; }
+  .recompense{ margin:96px auto 0; max-width:760px; padding:40px 48px 34px; }
+  section.bloc, .ancre, .final{ max-width:640px; margin-left:auto; margin-right:auto; }
+  section.bloc, .final{ margin-top:88px; }
+}
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  .case .boite svg, .os-bouton{ transition:none; }
+}
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="halo" aria-hidden="true"><i class="v"></i><i class="p"></i><i class="o"></i></div>
+  <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
+  <p class="bandeau" id="bandeau-annule" role="status" hidden>Paiement annulé, ta place n'est pas prise.</p>
+
+  <!-- ── Écran de confirmation (retour PayPal) ── -->
+  <main class="verre confirmation" id="confirmation" hidden>
+    <p class="sous-titre">Édition 1 · New Year Team</p>
+    <h1 id="conf-titre" tabindex="-1">Validation du paiement…</h1>
+    <p class="corps" id="conf-corps">Ne ferme pas cette page.</p>
+    <div class="action" id="conf-action" hidden>
+      <button class="os-bouton" type="button" id="conf-reessayer">Réessayer</button>
+    </div>
+  </main>
+
+  <div id="page">
+    <!-- 1. Héros : ce que c'est, combien, ce qui te revient, le bouton -->
+    <main class="verre heros">
+      <div class="h-titre">
+        <p class="sous-titre">Édition 1 · New Year Team</p>
+        <h1>12 semaines pour bouger libre.</h1>
+      </div>
+      <p class="h-quoi">Une saison de <b>12&nbsp;semaines</b>, du 4&nbsp;janvier au 28&nbsp;mars. Ton programme personnalisé, <b>ajusté par Damien</b>.</p>
+
+      <div class="video" id="video-vignette">
+        <img src="/sites/mc2/fondateur-damien.webp" id="video-image" width="905" height="1131" alt="Damien Ospital, fondateur du Mobility Club" />
+        <span class="lecture" id="video-lecture" aria-hidden="true" hidden><svg viewBox="0 0 14 14"><path d="M3 1.5v11l9-5.5z" fill="#F5F5F3"/></svg></span>
+        <span class="etiquette" id="video-etiquette">Vidéo bientôt</span>
+      </div>
+
+      <div class="h-prix" id="h-prix">
+        <div>
+          <p class="palier-nom" id="palier-nom">Palier fondateur</p>
+          <p class="prix" id="prix">97&nbsp;€</p>
+        </div>
+        <div class="compteurs">
+          <p class="places" id="places" hidden></p>
+          <div class="cases" id="cases" aria-hidden="true" hidden></div>
+          <p class="horloge" id="decompte" hidden>Fin dans <span id="horloge">—</span></p>
+        </div>
+      </div>
+
+      <div class="h-rec">
+        <span class="badge" aria-hidden="true">80&nbsp;% → 50&nbsp;%</span>
+        <p>Réalise 80&nbsp;% de ton plan et tu récupères 50&nbsp;% de ce que tu as payé.</p>
+      </div>
+
+      <div class="h-cta" id="cta-haut">
+        <a class="os-bouton" href="#prendre" id="bouton-haut">Prendre ma place — 97&nbsp;€</a>
+        <p class="note" id="ensuite">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture&nbsp;: 149&nbsp;€.</p>
+      </div>
+      <div class="h-cta ferme-haut" id="ferme-haut" hidden>
+        <p>Les portes sont fermées</p>
+        <a class="os-bouton" href="/liste-attente">Rejoindre la liste d'attente</a>
+      </div>
+    </main>
+
+    <!-- 2. L'offre, un élément par section, un écran réel par élément -->
+    <section class="offre" aria-labelledby="t-seance">
+      <div class="texte">
+        <p class="num jeu">Chaque jour</p>
+        <h2 id="t-seance">Ta séance est prête chaque jour.</h2>
+        <p>Tu ouvres l'app, ta séance du jour t'attend. Tu n'as rien à choisir.</p>
+      </div>
+      <div class="telephone-halo"><div class="telephone"><img src="/sites/mc2/hero-aujourdhui.webp" width="1170" height="2391" loading="lazy" alt="Écran Aujourd'hui de l'app : la séance du jour, prête à commencer." /></div></div>
+    </section>
+
+    <section class="offre inverse" aria-labelledby="t-ajuste">
+      <div class="texte">
+        <p class="num jeu">Sur mesure</p>
+        <h2 id="t-ajuste">Damien ajuste ton programme.</h2>
+        <p>Programme 100&nbsp;% personnalisé de 12&nbsp;semaines, ajusté à la main par Damien à la demande.</p>
+        <p class="valeur">Sans le club&nbsp;: <b>400&nbsp;€</b> (Le Suivi, coaching individuel de Damien&nbsp;: 400&nbsp;€ les 12&nbsp;semaines)</p>
+      </div>
+      <div class="telephone-halo violet"><div class="telephone"><img src="/sites/mc2/voix-4-ajustee.webp" width="1170" height="2391" loading="lazy" alt="Écran de l'app : la séance du jour, marquée « Séance ajustée »." /></div></div>
+    </section>
+
+    <section class="offre" aria-labelledby="t-video">
+      <div class="texte">
+        <p class="num jeu">Retour vidéo</p>
+        <h2 id="t-video">3 bilans vidéo avec Damien.</h2>
+        <p>Au jour 1, à la semaine 6 et au jour 84. Tu filmes, Damien te répond.</p>
+      </div>
+      <div class="telephone-halo"><div class="telephone"><img src="/sites/mc2/video-1-retour.webp" width="1170" height="2391" loading="lazy" alt="Écran Retour du coach : une vidéo de membre commentée par Damien." /></div></div>
+    </section>
+
+    <section class="offre inverse" aria-labelledby="t-bilan">
+      <div class="texte">
+        <p class="num jeu">Jour 1 et jour 84</p>
+        <h2 id="t-bilan">Ton bilan articulaire, au début et à la fin.</h2>
+        <p>Bilan articulaire complet au jour 1 et au jour 84. Tu vois ce qui a bougé.</p>
+        <p class="valeur">Sans le club&nbsp;: <b>200&nbsp;€</b> (un professionnel te le facture ~100&nbsp;€, 2&nbsp;bilans)</p>
+      </div>
+      <div class="telephone-halo violet"><div class="telephone"><img src="/sites/mc2/mesure-bilan.webp" width="1170" height="2391" loading="lazy" alt="Écran Ton bilan : score articulaire et zones mesurées." /></div></div>
+    </section>
+
+    <section class="offre" aria-labelledby="t-promesse">
+      <div class="texte">
+        <p class="num jeu">Ta promesse</p>
+        <h2 id="t-promesse">Ta promesse se coche séance après séance.</h2>
+        <p>Tiens ta promesse 12 semaines, et ta zone la plus raide progresse.</p>
+        <p>Chaque séance faite remplit ta série. Tu vois où tu en es, chaque jour.</p>
+      </div>
+      <div class="telephone-halo or"><div class="telephone"><img src="/sites/mc2/tapes-7-serie.webp" width="1170" height="2391" loading="lazy" alt="Écran de fin de séance : 13 jours de série." /></div></div>
+    </section>
+
+    <!-- 3. La récompense, au centre de l'offre -->
+    <section class="verre recompense" aria-labelledby="t-recompense">
+      <p class="eyebrow jeu">Promesse tenue</p>
+      <h2 class="phrase" id="t-recompense">Réalise <em>80&nbsp;%</em> de ton plan et tu récupères <em>50&nbsp;%</em> de ce que tu as payé.</h2>
+      <p class="credit">Versés en crédit sur ta prochaine saison ou sur l'accès à vie.</p>
+      <div class="jauge" aria-hidden="true"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i></i><i></i></div>
+      <p class="jauge-legende" aria-hidden="true"><span>8 / 10</span><span class="or-txt">→ 50&nbsp;% récupérés</span></p>
+      <p class="mesure">Une séance compte quand tu la fais avec le minuteur de l'app.</p>
+      <p class="titre-tenue">Titre <b>«&nbsp;Promesse tenue&nbsp;»</b> à 80&nbsp;% ou plus.</p>
+    </section>
+
+    <!-- 4. Tout ce qui est inclus + ce que ça coûterait sans le club -->
+    <section class="bloc" aria-labelledby="t-recois">
+      <h2 id="t-recois">Ce que tu reçois</h2>
+      <p class="chapo">Ce que ça te coûterait sans le club</p>
+      <ul class="table">
+        <li><span class="quoi">Programme 100&nbsp;% personnalisé de 12&nbsp;semaines, ajusté à la main par Damien à la demande, avec 3&nbsp;bilans vidéo (J1, S6, J84)<span class="pourquoi">Le Suivi, coaching individuel de Damien&nbsp;: 400&nbsp;€ les 12&nbsp;semaines</span></span><span class="val">400&nbsp;€</span></li>
+        <li><span class="quoi">Bilan articulaire complet au jour 1 et au jour 84<span class="pourquoi">Un professionnel te le facture ~100&nbsp;€, 2&nbsp;bilans</span></span><span class="val">200&nbsp;€</span></li>
+        <li><span class="quoi">Rituel d'entrée, 4&nbsp;semaines pour poser les fondations</span><span class="val">39&nbsp;€</span></li>
+        <li class="total"><span class="quoi">Total</span><span class="val">≈&nbsp;640&nbsp;€</span></li>
+      </ul>
+      <p class="sous">Inclus</p>
+      <ul class="puces">
+        <li>Accès au club offert dès aujourd'hui jusqu'au 4/01</li>
+        <li>1 live par semaine avec replay</li>
+        <li>Contenu exclusif de la saison</li>
+        <li>Classement à la promesse tenue</li>
+        <li>Bilan du jour 84</li>
+        <li>Carte des douleurs</li>
+        <li>Guide «&nbsp;Tenir 12 semaines&nbsp;»</li>
+      </ul>
+      <p class="sous">Ce qui ne s'achète pas</p>
+      <ul class="puces or">
+        <li>Titre «&nbsp;Première promotion&nbsp;»</li>
+        <li>Numéro de membre</li>
+        <li>Plaque de rang</li>
+      </ul>
+    </section>
+
+    <!-- 5. Comment ça se passe -->
+    <section class="bloc" aria-labelledby="t-comment">
+      <h2 id="t-comment">Comment ça se passe</h2>
+      <ol class="etapes">
+        <li><span class="n jeu">01</span><span class="quand">Tu prends ta place</span><span class="quoi">L'accès au club s'ouvre tout de suite.</span></li>
+        <li><span class="n jeu">02</span><span class="quand">4 janvier</span><span class="quoi">Bilan du jour 1, ton programme est construit pour toi.</span></li>
+        <li><span class="n jeu">03</span><span class="quand">12 semaines</span><span class="quoi">Un live chaque semaine, Damien ajuste ton programme à la demande.</span></li>
+        <li><span class="n jeu">04</span><span class="quand">Jour 84</span><span class="quoi">Ton bilan, et le classement de la promesse tenue.</span></li>
+      </ol>
+    </section>
+
+    <!-- 6. Ancrage à vie -->
+    <p class="ancre">Tu veux ne plus jamais te poser la question&nbsp;? <a href="/lifetime">L'accès à vie&nbsp;: 350&nbsp;€, ou 4&nbsp;×&nbsp;87,50&nbsp;€.</a></p>
+
+    <!-- 7. Déjà membre -->
+    <section class="bloc" aria-labelledby="t-membre">
+      <h2 id="t-membre">Déjà membre&nbsp;?</h2>
+      <p class="corps">Ton inscription à l'Édition 1 est gratuite tant que ton abonnement est actif. Réponds au mail d'ouverture pour réserver ta place.</p>
+    </section>
+
+    <!-- 8. FAQ -->
+    <section class="bloc" aria-labelledby="t-faq">
+      <h2 id="t-faq">Questions</h2>
+      <ul class="faq">
+        <li><b>Paiement unique, rien ne se reconduit.</b></li>
+        <li><b>Et après la semaine 12&nbsp;?</b>Tu repasses en gratuit, ton historique et ton bilan restent lisibles, et tu es prioritaire à la prochaine ouverture.</li>
+        <li><b>Paiement en 4 fois&nbsp;:</b>oui, avec PayPal.</li>
+      </ul>
+    </section>
+
+    <!-- 9. CTA final -->
+    <section class="verre final" id="prendre" aria-labelledby="t-prendre">
+      <h2 id="t-prendre">Prends ta place.</h2>
+      <p class="rappel">Édition 1 · du 4&nbsp;janvier au 28&nbsp;mars 2027 · 100&nbsp;places</p>
+
+      <div id="bloc-ouvert">
+        <div class="prix-final">
+          <span class="palier-nom" id="palier-nom-final">Palier fondateur</span>
+          <span class="prix" id="prix-final">97&nbsp;€</span>
+        </div>
+        <p class="ensuite-final" id="ensuite-final">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture&nbsp;: 149&nbsp;€.</p>
+        <label class="case">
+          <input type="checkbox" id="renonciation" />
+          <span class="boite" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke="#0D0F0E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span>Je demande l'accès immédiat au club et je renonce à mon droit de rétractation de 14&nbsp;jours.</span>
+        </label>
+        <p class="cgv">En payant, tu acceptes les <a class="lien" href="/cgv-edition-1">conditions générales de vente</a>.</p>
+        <div class="action">
+          <button class="os-bouton" type="button" id="payer" disabled>Prendre ma place — 97&nbsp;€</button>
+          <p class="note">Paiement unique, ou en 4 fois avec PayPal.</p>
+          <p class="erreur" id="erreur" role="alert" hidden></p>
+        </div>
+      </div>
+
+      <div class="ferme" id="bloc-ferme" hidden>
+        <p>À la prochaine ouverture&nbsp;: 149&nbsp;€. <a class="lien" href="/liste-attente">Rejoindre la liste d'attente</a></p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span>© 2026 Mobility Club</span>
+    <span><a href="/cgv-edition-1">CGV</a> · <a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a></span>
+  </footer>
+</div>
+
+<dialog class="lecteur" id="lecteur" aria-label="Vidéo : le concept de l'Édition 1">
+  <video id="video-concept" controls playsinline preload="metadata" data-src="/assets/edition-1/concept.mp4" data-poster="/assets/edition-1/concept-poster.webp"></video>
+  <button class="fermer" type="button" id="lecteur-fermer">Fermer</button>
+</dialog>
+
+<script>
+/* ── Vidéo du concept ──
+   Le lecteur n'existe pour le visiteur que si assets/edition-1/concept.mp4 répond : sinon la vignette reste
+   la photo de Damien avec « Vidéo bientôt » (jamais un lecteur cassé). */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var video = $('video-concept'), src = video.getAttribute('data-src'), poster = video.getAttribute('data-poster');
+  fetch(src, { method: 'HEAD', cache: 'no-store' }).then(function(r){
+    var type = r.headers.get('Content-Type') || '';
+    if (!r.ok || type.indexOf('video') !== 0) return;
+    var ancien = $('video-vignette'), bouton = document.createElement('button');
+    bouton.type = 'button'; bouton.className = 'video'; bouton.id = 'video-vignette';
+    bouton.setAttribute('aria-label', 'Regarder la vidéo du concept');
+    while (ancien.firstChild) bouton.appendChild(ancien.firstChild);
+    ancien.parentNode.replaceChild(bouton, ancien);
+    var img = $('video-image');
+    var essai = new Image(); essai.onload = function(){ img.src = poster; img.alt = ''; }; essai.src = poster;
+    $('video-etiquette').textContent = 'Le concept';
+    $('video-lecture').hidden = false;
+    var dlg = $('lecteur');
+    bouton.addEventListener('click', function(){
+      if (!video.getAttribute('src')) { video.src = src; video.poster = poster; }
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+      var p = video.play(); if (p && p.catch) p.catch(function(){});
+    });
+    var ferme = function(){ video.pause(); if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); };
+    $('lecteur-fermer').addEventListener('click', ferme);
+    dlg.addEventListener('click', function(e){ if (e.target === dlg) ferme(); });
+    dlg.addEventListener('close', function(){ video.pause(); });
+  }).catch(function(){});
+})();
+
+/* ── Données live, compte à rebours et paiement ─────────────────────────────────
+   Contrat : GET/POST /.netlify/functions/saison-checkout. Une seule horloge : la fin du palier vient de l'API,
+   et l'écart entre l'horloge du serveur (en-tête Date) et celle du téléphone est corrigé. */
+(function(){
+  var API = '/.netlify/functions/saison-checkout';
+  var MSG_ERREUR = 'Le paiement n\'a pas pu démarrer, réessaie dans une minute.';
+  var $ = function(id){ return document.getElementById(id); };
+  var etat = { ouvert: true, prix: 97, palier: 1, fin: null };
+  var ecartHorloge = 0; // serveur − téléphone, en ms
+  var minuterie = null, rechargeFaite = false;
+
+  var estNombre = function(n){ return typeof n === 'number' && isFinite(n); };
+  var euros = function(n){ return (Math.round(n * 100) % 100 ? n.toFixed(2).replace('.', ',') : String(Math.round(n))) + ' €'; };
+  var deux = function(n){ return (n < 10 ? '0' : '') + n; };
+  function dateParis(iso){
+    var d = new Date(iso); if (isNaN(d.getTime())) return null;
+    try {
+      var p = {}; new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })
+        .formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
+      return p.weekday + ' ' + p.day + '/' + p.month + ', ' + p.hour + ' h ' + p.minute;
+    } catch (e) { return null; }
+  }
+  function libellePrix(prix){ return 'Prendre ma place — ' + euros(prix); }
+
+  function afficheDecompte(){
+    if (!etat.fin) { $('decompte').hidden = true; return; }
+    var reste = etat.fin - (Date.now() + ecartHorloge);
+    if (reste <= 0) {
+      $('horloge').textContent = '0\u00a0j 00:00:00';
+      clearInterval(minuterie); minuterie = null;
+      if (!rechargeFaite) { rechargeFaite = true; setTimeout(charge, 1500); }
+      return;
+    }
+    var s = Math.floor(reste / 1000), j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    $('horloge').textContent = j + '\u00a0j ' + deux(h) + ':' + deux(m) + ':' + deux(s % 60);
+    $('decompte').hidden = false;
+  }
+
+  function applique(d){
+    // Repli : si la réponse est incomplète, on garde 97 € et on masque tout ce qui serait faux.
+    etat.ouvert = d.ouvert !== false;
+    var palier = d.palier === 2 ? 2 : 1;
+    var p1 = d.palier1 || {}, p2 = d.palier2 || {};
+    var prix = estNombre(d.prix) ? d.prix : (palier === 2 && estNombre(p2.prix) ? p2.prix : 97);
+    etat.palier = palier; etat.prix = prix;
+
+    var nom = palier === 2 ? 'Palier 2' : 'Palier fondateur';
+    $('palier-nom').textContent = nom; $('palier-nom-final').textContent = nom;
+    $('prix').textContent = euros(prix); $('prix-final').textContent = euros(prix);
+    $('payer').textContent = libellePrix(prix);
+    $('bouton-haut').textContent = libellePrix(prix);
+
+    // Compteur : places fondateur au palier 1, places sur 100 au palier 2. Jamais un nombre absent.
+    var r1 = p1.places_restantes, t1 = p1.places_total, rt = d.places_restantes, tt = estNombre(d.places_total) ? d.places_total : 100;
+    var cases = $('cases'); cases.innerHTML = '';
+    if (palier === 1 && estNombre(r1) && estNombre(t1) && t1 > 0) {
+      r1 = Math.max(0, Math.min(t1, r1));
+      $('places').innerHTML = '<b>' + r1 + '</b> places fondateur sur ' + t1;
+      for (var i = 0; i < t1; i++) { var c = document.createElement('i'); if (i < t1 - r1) c.className = 'prise'; cases.appendChild(c); }
+      $('places').hidden = false; cases.hidden = false;
+    } else if (estNombre(rt)) {
+      $('places').innerHTML = '<b>' + Math.max(0, rt) + '</b> places sur ' + tt;
+      $('places').hidden = false; cases.hidden = true;
+    } else { $('places').hidden = true; cases.hidden = true; }
+
+    var finIso = palier === 2 ? p2.fin : p1.fin;
+    etat.fin = finIso && dateParis(finIso) ? new Date(finIso).getTime() : null;
+
+    var prochain = estNombre(d.prix_prochaine_ouverture) ? d.prix_prochaine_ouverture : 149;
+    var ensuite;
+    if (palier === 1) {
+      var p2prix = estNombre(p2.prix) ? p2.prix : 119, p2fin = (p2.fin && dateParis(p2.fin)) || 'lundi 30/11, 23 h 59';
+      ensuite = 'Ensuite : ' + euros(p2prix) + ' jusqu\'au ' + p2fin + '. À la prochaine ouverture : ' + euros(prochain) + '.';
+    } else {
+      var fin2 = p2.fin && dateParis(p2.fin);
+      ensuite = (fin2 ? 'Jusqu\'au ' + fin2 + ', puis les portes ferment. ' : '') + 'À la prochaine ouverture : ' + euros(prochain) + '.';
+    }
+    $('ensuite').textContent = ensuite; $('ensuite-final').textContent = ensuite;
+
+    $('h-prix').hidden = !etat.ouvert;
+    $('cta-haut').hidden = !etat.ouvert;
+    $('ferme-haut').hidden = etat.ouvert;
+    $('bloc-ouvert').hidden = !etat.ouvert;
+    $('bloc-ferme').hidden = etat.ouvert;
+    $('t-prendre').textContent = etat.ouvert ? 'Prends ta place.' : 'Les portes sont fermées';
+    if (!etat.ouvert) etat.fin = null;
+
+    if (minuterie) { clearInterval(minuterie); minuterie = null; }
+    afficheDecompte();
+    if (etat.fin) minuterie = setInterval(afficheDecompte, 1000);
+  }
+
+  function charge(){
+    return fetch(API, { headers: { 'Accept': 'application/json' }, cache: 'no-store' })
+      .then(function(r){
+        if (!r.ok) throw new Error('http ' + r.status);
+        var date = Date.parse(r.headers.get('Date') || '');
+        if (!isNaN(date)) ecartHorloge = date - Date.now();
+        return r.json();
+      })
+      .then(function(d){ if (!d || typeof d !== 'object') throw new Error('vide'); applique(d); })
+      .catch(function(){ /* Repli : la page reste à 97 €, compteurs et décompte masqués. */ });
+  }
+
+  // ── Case de renonciation et paiement ──
+  var occupe = false;
+  $('renonciation').addEventListener('change', function(){ $('payer').disabled = !this.checked || occupe; $('erreur').hidden = true; });
+  $('payer').addEventListener('click', function(){
+    if (!$('renonciation').checked || occupe) return;
+    occupe = true; var bouton = this; bouton.disabled = true; bouton.textContent = 'Redirection vers PayPal…'; $('erreur').hidden = true;
+    var message = MSG_ERREUR;
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'create', renonciation: true }) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { status: r.status, d: d || {} }; }); })
+      .then(function(res){
+        if (res.status === 201 && res.d.approve_url) { location.href = res.d.approve_url; return; }
+        if (res.status === 409 && res.d.error === 'ferme') { applique({ ouvert: false }); message = null; }
+        else if (res.status === 400 && res.d.error === 'renonciation_requise') { $('renonciation').checked = false; message = 'Coche la case pour continuer.'; }
+        throw new Error('echec');
+      })
+      .catch(function(){
+        occupe = false; bouton.textContent = libellePrix(etat.prix); bouton.disabled = !$('renonciation').checked;
+        if (message) { $('erreur').textContent = message; $('erreur').hidden = false; }
+      });
+  });
+
+  // ── Retour PayPal ──
+  var params = new URLSearchParams(location.search);
+  var nettoie = function(){ history.replaceState(null, '', location.pathname + location.hash); };
+  function capture(orderId){
+    $('conf-titre').textContent = 'Validation du paiement…';
+    $('conf-corps').textContent = 'Ne ferme pas cette page.';
+    $('conf-action').hidden = true;
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'capture', order_id: orderId }) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { status: r.status, d: d || {} }; }); })
+      .then(function(res){
+        if (res.status !== 200 || !res.d.ok) throw new Error('capture');
+        nettoie();
+        $('conf-titre').textContent = 'Ta place est prise.';
+        $('conf-corps').textContent = 'Tu reçois ton invitation au club par email dans quelques minutes.';
+        $('conf-titre').focus();
+      })
+      .catch(function(){
+        $('conf-titre').textContent = 'Le paiement n\'a pas pu être confirmé.';
+        $('conf-corps').textContent = 'Réessaie dans une minute. Si le problème continue, écris à founder@mobilityclub.co.';
+        $('conf-action').hidden = false;
+      });
+  }
+  if (params.get('paypal') === 'return' && params.get('token')) {
+    var orderId = params.get('token');
+    $('page').hidden = true; $('confirmation').hidden = false;
+    $('conf-reessayer').addEventListener('click', function(){ capture(orderId); });
+    capture(orderId);
+  } else {
+    if (params.get('paypal') === 'cancel') { $('bandeau-annule').hidden = false; nettoie(); }
+    charge();
+  }
+})();
+</script>
+</body>
+</html>

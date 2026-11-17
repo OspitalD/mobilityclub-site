@@ -36,6 +36,13 @@ import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 import { traiterVenteKit } from '../lib/kit-app-sexy.js';
+import {
+  MONTANTS_SAISON,
+  enregistrerVenteSaison,
+  estVenteSaison,
+  montantSaisonValide,
+  palierDuCustomId,
+} from '../lib/saison-edition1.js';
 
 // Les montants configurés pour les séries Lifetime. Ils restent séparés de
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
@@ -281,6 +288,19 @@ export const handler = async (req) => {
     return json(401, { error: 'signature_invalide' });
   }
 
+  // Saison Édition 1 AVANT tout le reste : 97 € est aussi le prix de la Méthode IKEA
+  // (avec appels). On route sur le custom_id posé par saison-checkout, jamais sur le
+  // montant seul ; le montant doit en plus être celui du palier inscrit dans le custom_id.
+  const customId = evenement?.resource?.custom_id;
+  const saison = estVenteSaison(customId);
+  if (saison) {
+    const palier = palierDuCustomId(customId);
+    if (!montantSaisonValide(evenement.resource?.amount?.value, palier)) {
+      console.error('[paypal-to-skool] saison: montant inattendu', evenement.resource?.amount?.value, customId);
+      return json(200, { ok: true, ignore: 'saison_montant' });
+    }
+  }
+
   // Kit App Sexy d'abord : 199 € est aussi l'ancien prix Lifetime. Une vente du kit
   // s'arrête ici, elle n'atteint jamais le stock Lifetime ni l'invitation Club.
   try {
@@ -295,7 +315,7 @@ export const handler = async (req) => {
   }
 
   try {
-    const ikea = await traiterVenteIkea(evenement, token);
+    const ikea = saison ? null : await traiterVenteIkea(evenement, token);
     if (ikea) console.log('[paypal-to-skool] Méthode IKEA', ikea.offre, ikea.deja || 'accès ouvert');
   } catch (err) {
     // 500 : PayPal réessaie ; ticket et acheteur sont idempotents, l'email n'est marqué envoyé qu'une fois parti.
@@ -307,7 +327,7 @@ export const handler = async (req) => {
   // la capture porte donc le montant total (100,00 €) et non 25,00 €. Rien de
   // spécial à prévoir ici — à confirmer sur la première vraie transaction.
   const attendu = {
-    montants: montantsAttendus(),
+    montants: saison ? MONTANTS_SAISON : montantsAttendus(),
     devise: process.env.PAYPAL_DEVISE || 'EUR',
   };
   const verdict = decider(evenement, attendu);
@@ -331,6 +351,21 @@ export const handler = async (req) => {
   } catch (err) {
     console.error('[paypal-to-skool] stock lifetime non écrit:', err?.message);
     return json(500, { error: 'lifetime_stock_failed' });
+  }
+
+  if (saison) {
+    try {
+      await enregistrerVenteSaison({
+        captureId: verdict.captureId,
+        orderId: verdict.orderId,
+        palier: palierDuCustomId(customId),
+        montant: evenement.resource?.amount?.value,
+        source: 'webhook',
+      });
+    } catch (err) {
+      console.error('[paypal-to-skool] vente saison non écrite:', err?.message);
+      return json(500, { error: 'saison_vente_failed' });
+    }
   }
 
   if (!process.env.SKOOL_INVITE_WEBHOOK) {

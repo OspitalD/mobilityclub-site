@@ -463,3 +463,37 @@ test('Kit App Sexy : email de bienvenue = lien de l\'espace, plus de demande de 
   assert.doesNotMatch(m.html, /réponds à cet email/i);
   assert.equal(m.reply_to, 'founder@mobilityclub.co');
 });
+
+// ── Saison Édition 1 : 97 € ne doit JAMAIS être pris pour la Méthode IKEA ─────
+test('saison : capture 97 € marquée MC-SAISON-E1 → invitation Skool, vente tracée, aucun traitement IKEA', async () => {
+  vider();
+  brancherFetch();
+  delete process.env.PAYPAL_MONTANTS_ACCEPTES; // la saison ne dépend pas de la variable de campagne
+  const rep = await appeler(capture('97.00', 'EUR', 'CAP-S1', 'MC-SAISON-E1-P1-abc'));
+  assert.equal(rep.statusCode, 200);
+  assert.equal(appelsSkool.length, 1);
+  assert.equal(ikeaBlobs.size, 0);
+  assert.equal(emailsResend.length, 0);
+  const vente = blobs.get('ventes/CAP-S1');
+  assert.equal(vente.palier, 1);
+  assert.equal(vente.source, 'webhook');
+});
+
+test('saison : palier 2 à 119 € invite ; montant qui ne correspond pas au palier → ignoré', async () => {
+  vider();
+  brancherFetch();
+  assert.equal((await appeler(capture('119.00', 'EUR', 'CAP-S2', 'MC-SAISON-E1-P2-def'))).statusCode, 200);
+  assert.equal(appelsSkool.length, 1);
+  brancherFetch();
+  const rep = await appeler(capture('97.00', 'EUR', 'CAP-S3', 'MC-SAISON-E1-P2-ghi'));
+  assert.equal(JSON.parse(rep.body).ignore, 'saison_montant');
+  assert.equal(appelsSkool.length, 0);
+});
+
+test('saison : webhook rejoué → une seule invitation', async () => {
+  vider();
+  brancherFetch();
+  await appeler(capture('97.00', 'EUR', 'CAP-S4', 'MC-SAISON-E1-P1-x'));
+  await appeler(capture('97.00', 'EUR', 'CAP-S4', 'MC-SAISON-E1-P1-x'));
+  assert.equal(appelsSkool.length, 1);
+});
