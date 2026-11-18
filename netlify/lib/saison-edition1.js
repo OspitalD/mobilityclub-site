@@ -135,3 +135,10 @@ export const reserverPlaceMembre = async ({ email, source, now = Date.now(), env
   await S.setJSON(cle, { email: normaliserEmail(email), source, reserved_at: new Date(Number(now)).toISOString() });
   return { statut: 'reservee' };
 };
+
+// Le webhook ne connaît l'email qu'après coup : on le range dans la vente (cohorte du 4/01).
+export const completerEmailVente = async (captureId, email, S = store()) => {
+  const key = `${PREFIX_VENTE}${encodeURIComponent(captureId)}`;
+  const v = await S.get(key, { type: 'json' }).catch(() => null);
+  if (v && !v.email) await S.setJSON(key, { ...v, email });
+};

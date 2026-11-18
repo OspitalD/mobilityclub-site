@@ -63,11 +63,18 @@ const capture = (montant = '197.00', devise = 'EUR', id = 'CAP-1', customId = nu
 // ── Faux PayPal / Skool ──────────────────────────────────────────────────────
 let appelsSkool = [];
 let emailsResend = [];
+let appelsProvision = [];
+process.env.DASHBOARD_ADMIN_TOKEN = 'tok-dashboard';
 const brancherFetch = ({ signature = 'SUCCESS', email = 'membre@example.com', skoolOk = true } = {}) => {
   appelsSkool = [];
   emailsResend = [];
+  appelsProvision = [];
   globalThis.fetch = async (url, opts) => {
     const u = String(url);
+    if (u.includes('/.netlify/functions/admin-provision-user')) {
+      appelsProvision.push({ auth: opts.headers.Authorization, body: JSON.parse(opts.body) });
+      return new Response(JSON.stringify({ ok: true }));
+    }
     if (u.startsWith('https://api.resend.com/')) {
       emailsResend.push(JSON.parse(opts.body));
       return new Response(JSON.stringify({ id: 'mail-1' }));
@@ -214,7 +221,9 @@ test('capture Lifetime signée → vente réelle comptée une seule fois par cap
 
   assert.deepEqual([...lifetimeBlobs.keys()].sort(), ['199/CAP-LIFE-199', '249/CAP-LIFE-249']);
   assert.equal(lifetimeBlobs.size, 2);
-  assert.equal(appelsSkool.length, 2, 'une invitation par capture Lifetime unique');
+  // Depuis le 18/11, l'à vie ouvre l'accès à l'app (plus Skool) : un compte par capture unique.
+  assert.equal(appelsSkool.length, 0);
+  assert.equal(appelsProvision.length, 2, 'un accès app par capture Lifetime unique');
 });
 
 test('capture Lifetime numérotée → le webhook conserve le custom_id', async () => {
@@ -464,36 +473,65 @@ test('Kit App Sexy : email de bienvenue = lien de l\'espace, plus de demande de 
   assert.equal(m.reply_to, 'founder@mobilityclub.co');
 });
 
-// ── Saison Édition 1 : 97 € ne doit JAMAIS être pris pour la Méthode IKEA ─────
-test('saison : capture 97 € marquée MC-SAISON-E1 → invitation Skool, vente tracée, aucun traitement IKEA', async () => {
+// ── Saison Édition 1 et accès à vie : accès direct à l'app, jamais Skool ni IKEA ─────
+test('saison 97 € (MC-SAISON-E1) → compte app + mail de bienvenue, vente tracée avec email, ni IKEA ni Skool', async () => {
   vider();
-  brancherFetch();
-  delete process.env.PAYPAL_MONTANTS_ACCEPTES; // la saison ne dépend pas de la variable de campagne
+  brancherFetch({ email: 'Acheteur@Example.com' });
+  delete process.env.PAYPAL_MONTANTS_ACCEPTES;
   const rep = await appeler(capture('97.00', 'EUR', 'CAP-S1', 'MC-SAISON-E1-P1-abc'));
   assert.equal(rep.statusCode, 200);
-  assert.equal(appelsSkool.length, 1);
+  assert.equal(appelsSkool.length, 0);
   assert.equal(ikeaBlobs.size, 0);
-  assert.equal(emailsResend.length, 0);
+  assert.equal(appelsProvision.length, 1);
+  assert.equal(appelsProvision[0].auth, 'Bearer tok-dashboard');
+  assert.deepEqual(appelsProvision[0].body, { email: 'acheteur@example.com', tier: 'programme' });
+  assert.equal(emailsResend.length, 1);
+  assert.match(emailsResend[0].subject, /Édition 1/);
   const vente = blobs.get('ventes/CAP-S1');
   assert.equal(vente.palier, 1);
-  assert.equal(vente.source, 'webhook');
+  assert.equal(vente.email, 'acheteur@example.com');
 });
 
-test('saison : palier 2 à 119 € invite ; montant qui ne correspond pas au palier → ignoré', async () => {
+test('saison palier 2 à 119 € ouvre l\'accès ; montant incohérent avec le palier → ignoré', async () => {
   vider();
   brancherFetch();
   assert.equal((await appeler(capture('119.00', 'EUR', 'CAP-S2', 'MC-SAISON-E1-P2-def'))).statusCode, 200);
-  assert.equal(appelsSkool.length, 1);
+  assert.equal(appelsProvision.length, 1);
   brancherFetch();
   const rep = await appeler(capture('97.00', 'EUR', 'CAP-S3', 'MC-SAISON-E1-P2-ghi'));
   assert.equal(JSON.parse(rep.body).ignore, 'saison_montant');
-  assert.equal(appelsSkool.length, 0);
+  assert.equal(appelsProvision.length, 0);
 });
 
-test('saison : webhook rejoué → une seule invitation', async () => {
+test('webhook rejoué → un seul compte, un seul mail', async () => {
   vider();
   brancherFetch();
   await appeler(capture('97.00', 'EUR', 'CAP-S4', 'MC-SAISON-E1-P1-x'));
   await appeler(capture('97.00', 'EUR', 'CAP-S4', 'MC-SAISON-E1-P1-x'));
-  assert.equal(appelsSkool.length, 1);
+  assert.equal(appelsProvision.length, 1);
+  assert.equal(emailsResend.length, 1);
+});
+
+test('accès à vie 350 € → compte app + mail « à vie », pas Skool', async () => {
+  vider();
+  brancherFetch();
+  process.env.PAYPAL_MONTANTS_ACCEPTES = '197.00,100.00,249.00,350.00';
+  const rep = await appeler(capture('350.00', 'EUR', 'CAP-V1', 'MC-LIFE-2026-T3-07-tok'));
+  assert.equal(rep.statusCode, 200);
+  assert.equal(appelsSkool.length, 0);
+  assert.equal(appelsProvision.length, 1);
+  assert.match(emailsResend[0].subject, /à vie/);
+  delete process.env.PAYPAL_MONTANTS_ACCEPTES;
+});
+
+test('clé dashboard absente → 500 (PayPal réessaie), aucun accès marqué ouvert', async () => {
+  vider();
+  brancherFetch();
+  const cle = process.env.DASHBOARD_ADMIN_TOKEN;
+  delete process.env.DASHBOARD_ADMIN_TOKEN;
+  const rep = await appeler(capture('97.00', 'EUR', 'CAP-S5', 'MC-SAISON-E1-P1-y'));
+  process.env.DASHBOARD_ADMIN_TOKEN = cle;
+  assert.equal(rep.statusCode, 500);
+  assert.equal(appelsProvision.length, 0);
+  assert.equal([...blobs.keys()].some((k) => k === 'CAP-S5'), false);
 });
