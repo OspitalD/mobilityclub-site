@@ -36,8 +36,10 @@ import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
 import { traiterVenteKit } from '../lib/kit-app-sexy.js';
+import { accesConfigure, ouvrirAccesApp } from '../lib/acces-app.js';
 import {
   MONTANTS_SAISON,
+  completerEmailVente,
   enregistrerVenteSaison,
   estVenteSaison,
   montantSaisonValide,
@@ -365,6 +367,32 @@ export const handler = async (req) => {
     } catch (err) {
       console.error('[paypal-to-skool] vente saison non écrite:', err?.message);
       return json(500, { error: 'saison_vente_failed' });
+    }
+  }
+
+  // Saison Édition 1 et accès à vie : accès direct à l'app (plus de Skool pour ces offres).
+  const formule = saison ? 'saison' : estMontantLifetime(evenement.resource?.amount?.value) ? 'vie' : null;
+  if (formule) {
+    if (!accesConfigure()) {
+      console.error('[paypal-to-skool] variables manquantes: DASHBOARD_ADMIN_TOKEN');
+      return json(500, { error: 'not_configured' });
+    }
+    const email = normaliserEmail(await emailDuPayeur(token, evenement, verdict.orderId));
+    if (!email) {
+      console.error('[paypal-to-skool] email introuvable, capture:', verdict.captureId);
+      return json(500, { error: 'email_introuvable' });
+    }
+    try {
+      const r = await ouvrirAccesApp({ captureId: verdict.captureId, email, formule, montant: evenement.resource?.amount?.value });
+      if (saison) {
+        await enregistrerVenteSaison({ captureId: verdict.captureId, orderId: verdict.orderId, palier: palierDuCustomId(customId), montant: evenement.resource?.amount?.value, source: 'webhook' }).catch(() => {});
+        await completerEmailVente(verdict.captureId, email).catch(() => {});
+      }
+      console.log('[paypal-to-skool] accès app', formule, r.deja ? 'déjà ouvert' : 'ouvert', verdict.captureId);
+      return json(200, { ok: true, acces: formule, deja: r.deja });
+    } catch (err) {
+      console.error('[paypal-to-skool] accès app non ouvert:', err?.message);
+      return json(500, { error: 'acces_app_failed' });
     }
   }
 
