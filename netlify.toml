@@ -180,6 +180,34 @@
   to = "/liste-attente"
   status = 302
 
+# ── Adresses courtes des descriptions YouTube (décision Damien 20/11) ───────────
+# Liens lisibles dans les descriptions : mobilityclub.co/avent et mobilityclub.co/bilan.
+# Le suivi UTM est porté par la redirection (source youtube) ; pour Instagram, créer d'autres adresses.
+# 302 et jamais 301 : les cibles sont temporaires (calendrier de décembre), un 301 resterait en cache.
+[[redirects]]
+  from = "/avent"
+  to = "/liste-attente?utm_source=youtube&utm_medium=video&utm_campaign=youtube-description"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/avent/"
+  to = "/liste-attente?utm_source=youtube&utm_medium=video&utm_campaign=youtube-description"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/bilan"
+  to = "https://diagnostic.mobilityclub.co/?utm_source=youtube&utm_medium=video&utm_campaign=youtube-description"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/bilan/"
+  to = "https://diagnostic.mobilityclub.co/?utm_source=youtube&utm_medium=video&utm_campaign=youtube-description"
+  status = 302
+  force = true
+
 # ── Édition 1 : bouton des membres actuels (17/11) ───────────────────────────
 # Adresse courte à mettre dans les mails et stories : /edition-1/membre.
 # 200 = réécriture (l'adresse reste /edition-1/membre dans la barre).
