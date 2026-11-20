@@ -66,3 +66,11 @@ Tout texte ci-dessous qui n'est pas marqué « fiche » est NOUVEAU → à relir
 - Podium 299/149/75 € en crédits : REMIS sur la page, sous la récompense.
 - CGV section 7 (remboursement seulement si annulation de notre fait) : gardée.
 - Publication sans la vidéo (photo + « Vidéo bientôt ») ; la vidéo viendra dans un 2e déploiement.
+
+## Enseignements audience 20/11 (analyse de 991 DM Instagram — docs/audience/ du dépôt dashboard)
+Textes NOUVEAUX, à relire par Damien :
+- Sous le prix : « une fois, soit ≈ 8 € la semaine » (calculé en direct : prix ÷ 12 ; 119 € → ≈ 10 €). L'équivalent hebdo/mensuel a fait signer en DM.
+- Nouvelle section « C'est pour toi si… » après le héros : 4 situations vécues de l'ICP (sportif régulier, zone qui bloque, exos piochés sur Insta, durer).
+- Section séance : « Fini de piocher des exos au hasard. » + « Pas 30 minutes de plus : ta mobilité se cale au début de ta séance, à la place de ton échauffement. » (réponse n°1 à l'objection temps en DM).
+- FAQ réécrite autour des objections réelles : abonnement ?, pas le temps, je sais pas quoi faire, déjà un coach/kiné, IA ?, et si ça marche pas, App Store ?
+- Confirmation de paiement : « Pas de mail ? Regarde dans tes spams. » (accès non reçu = 1er incident après achat).

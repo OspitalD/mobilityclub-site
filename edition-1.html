@@ -202,6 +202,7 @@ section.bloc{ margin-top:64px; }
 .ancre{ margin-top:48px; padding:16px 0; border-top:1px solid var(--os-filet); border-bottom:1px solid var(--os-filet); font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
 .ancre a{ color:var(--os-violet); font-weight:800; text-decoration:none; }
 .ancre a:hover{ text-decoration:underline; }
+.semaine{ margin-top:2px; font-size:12px; font-weight:600; color:var(--os-texte-3); }
 .faq{ list-style:none; margin-top:14px; }
 .faq li{ padding:13px 0; border-top:1px solid var(--os-filet); font-size:15px; font-weight:500; line-height:1.5; color:var(--os-texte-doux); }
 .faq b{ display:block; color:var(--os-texte); font-weight:800; letter-spacing:-.2px; }
@@ -316,6 +317,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
         <div>
           <p class="palier-nom" id="palier-nom">Palier fondateur</p>
           <p class="prix" id="prix">97&nbsp;€</p>
+          <p class="semaine" id="par-semaine">une fois, soit ≈&nbsp;8&nbsp;€ la semaine</p>
         </div>
         <div class="compteurs">
           <p class="places" id="places" hidden></p>
@@ -339,12 +341,24 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
       </div>
     </main>
 
+    <!-- 1 bis. Pour qui (situations vécues tirées des messages de l'audience, analyse du 20/11) -->
+    <section class="bloc pour-qui" aria-labelledby="t-pour-qui">
+      <h2 id="t-pour-qui">C'est pour toi si…</h2>
+      <ul class="puces">
+        <li>Tu t'entraînes plusieurs fois par semaine&nbsp;: salle, CrossFit, course, combat, sport co.</li>
+        <li>Une zone bloque&nbsp;: ton squat ne descend pas, tes hanches sont verrouillées, ton épaule pince.</li>
+        <li>Tu pioches tes exos de mobilité sur Insta, et tu tournes en rond.</li>
+        <li>Tu veux durer dans ton sport, pas juste t'étirer.</li>
+      </ul>
+    </section>
+
     <!-- 2. L'offre, un élément par section, un écran réel par élément -->
     <section class="offre" aria-labelledby="t-seance">
       <div class="texte">
         <p class="num jeu">Chaque jour</p>
         <h2 id="t-seance">Ta séance est prête chaque jour.</h2>
-        <p>Tu ouvres l'app, ta séance du jour t'attend. Tu n'as rien à choisir.</p>
+        <p>Tu ouvres l'app, ta séance du jour t'attend. Tu n'as rien à choisir. Fini de piocher des exos au hasard.</p>
+        <p>Pas 30&nbsp;minutes de plus&nbsp;: ta mobilité se cale au début de ta séance, à la place de ton échauffement.</p>
       </div>
       <div class="telephone-halo"><div class="telephone"><img src="/sites/mc2/hero-aujourdhui.webp" width="1170" height="2391" loading="lazy" alt="Écran Aujourd'hui de l'app : la séance du jour, prête à commencer." /></div></div>
     </section>
@@ -460,7 +474,13 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     <section class="bloc" aria-labelledby="t-faq">
       <h2 id="t-faq">Questions</h2>
       <ul class="faq">
-        <li><b>Paiement unique, rien ne se reconduit.</b></li>
+        <li><b>C'est un abonnement&nbsp;?</b>Non. Paiement unique, rien ne se reconduit.</li>
+        <li><b>Je n'ai pas le temps.</b>Ta mobilité se fait au début de ta séance, à la place de ton échauffement. Pas une séance de plus dans ta semaine.</li>
+        <li><b>Je ne sais pas quoi faire, c'est justement mon problème.</b>C'est le principe&nbsp;: ton bilan du jour 1 trouve tes priorités, l'app te donne ta séance, tu n'as rien à choisir.</li>
+        <li><b>J'ai déjà un coach ou un kiné.</b>Le club se cale à côté. Tu peux importer le programme de ton coach dans l'app, ta mobilité s'adapte à ce que tu fais.</li>
+        <li><b>C'est de l'IA&nbsp;?</b>Non. Un algorithme construit sur la méthode de Damien, et Damien ajuste ton programme à la main à la demande.</li>
+        <li><b>Et si ça ne marche pas pour moi&nbsp;?</b>Ton bilan du jour 1 et du jour 84 montre ce qui a bougé. Et si tu tiens 80&nbsp;% de ton plan, 50&nbsp;% de ce que tu as payé te reviennent en crédit.</li>
+        <li><b>L'app est sur l'App Store&nbsp;?</b>Non, c'est une web app&nbsp;: tu l'ouvres depuis le lien reçu par email et tu l'ajoutes à ton écran d'accueil.</li>
         <li><b>Et après la semaine 12&nbsp;?</b>Tu repasses en gratuit, ton historique et ton bilan restent lisibles, et tu es prioritaire à la prochaine ouverture.</li>
         <li><b>Paiement en 4 fois&nbsp;:</b>oui, avec PayPal.</li>
       </ul>
@@ -583,6 +603,8 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     var nom = palier === 2 ? 'Palier 2' : 'Palier fondateur';
     $('palier-nom').textContent = nom; $('palier-nom-final').textContent = nom;
     $('prix').textContent = euros(prix); $('prix-final').textContent = euros(prix);
+    // Prix ramené à la semaine (12 semaines) : l'argument qui a fait signer en message privé (« ≈ 8 €/sem. »).
+    $('par-semaine').textContent = 'une fois, soit ≈ ' + Math.round(prix / 12) + ' € la semaine';
     $('payer').textContent = libellePrix(prix);
     $('bouton-haut').textContent = libellePrix(prix);
 
@@ -672,7 +694,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
         if (res.status !== 200 || !res.d.ok) throw new Error('capture');
         nettoie();
         $('conf-titre').textContent = 'Ta place est prise.';
-        $('conf-corps').textContent = 'Tu reçois ton invitation au club par email dans quelques minutes.';
+        $('conf-corps').textContent = 'Tu reçois ton accès par email dans quelques minutes. Pas de mail ? Regarde dans tes spams.';
         $('conf-titre').focus();
       })
       .catch(function(){
