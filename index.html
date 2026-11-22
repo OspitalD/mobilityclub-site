@@ -1999,7 +1999,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
 
     <div class="doors-cta reveal">
       <a href="/devenir-membre" class="btn btn-primary" data-offre-lien="achat" data-cta="doors"><span data-i18n="doors_cta">Devenir membre</span><span class="arrow">→</span></a>
-      <p class="doors-cta-note" data-i18n="doors_cta_note">Essai gratuit de 7 jours · garantie progression</p>
+      <p class="doors-cta-note" data-i18n="doors_cta_note">Édition 1 · du 4 janvier au 28 mars · inscriptions jusqu’au 30 novembre</p>
     </div>
   </div>
 </section>
@@ -2055,7 +2055,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       ],
       open: 'Voir le tableau détaillé', close: 'Masquer le tableau', sub: 'Fonctions et prix des 8 applis',
       rows: ['Un programme créé pour toi, personnalisé','Importer ton programme (PDF, photo, texte)','Créer ton propre programme','Bilan articulaire de départ','Coach vocal qui ajuste ta séance','Ton geste corrigé en vidéo par un vrai coach','Accès à vie','Prix au mois','Prix sur un an'],
-      soon: 'bientôt',
+      soon: 'bientôt', nosub: 'Sans abonnement',
       parts: {
         0: ['◐ Hevy : seulement via ChatGPT, pas dans l\'appli','◐ Ladder : t\'oriente vers une équipe, programme commun à tous'],
         1: ['◐ Fitbod : une séance en photo, sur Android seulement','◐ Hevy : via un outil externe, pas dans l\'appli'],
@@ -2092,7 +2092,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
       ],
       open: 'See the detailed table', close: 'Hide the table', sub: 'Features and prices of 8 apps',
       rows: ['A personalised program built for you','Import your program (PDF, photo, text)','Build your own program','Starting joint assessment','Voice coach that adjusts your session','Form corrected on video by a real coach','Lifetime access','Monthly price','Yearly price'],
-      soon: 'soon',
+      soon: 'soon', nosub: 'No subscription',
       parts: {
         0: ['◐ Hevy: only through ChatGPT, not in the app','◐ Ladder: points you to a team, same program for everyone'],
         1: ['◐ Fitbod: one session from a photo, Android only','◐ Hevy: through an external tool, not in the app'],
@@ -2125,8 +2125,8 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
     ['●','—','—','—','◐','—','◐','◐'],
     ['●','—','—','—','—','—','—','—'],
     ['P:vie','—','—','—','◐',89.99,'—','—'],
-    ['P:mensuel',22.99,9.29,13.49,'—',3.49,19.99,14.99],
-    ['P:annuel',199.99,84.99,81.99,79.99,26.49,119.99,94.99]
+    ['NOSUB',22.99,9.29,13.49,'—',3.49,19.99,14.99],
+    ['NOSUB',199.99,84.99,81.99,79.99,26.49,119.99,94.99]
   ];
   var OUTILS = [
     { k: 'us', us: true, cout: function(){ return P.vie; } },
@@ -2153,7 +2153,7 @@ html.lenis{ scroll-behavior:auto !important; }   /* Lenis pilote → pas de smoo
   var root = document.getElementById('cmpRoot');
   if (!root) return;
   function eur(n, t){ return n.toLocaleString(t.locale, { style: 'currency', currency: 'EUR', minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  function cell(v, t){ return v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : (typeof v === 'string' && v.indexOf('P:') === 0 ? eur(P[v.slice(2)], t) : v)); }
+  function cell(v, t){ return v === 'NOSUB' ? t.nosub : v === 'SOON' ? t.soon : (typeof v === 'number' ? eur(v, t) : (typeof v === 'string' && v.indexOf('P:') === 0 ? eur(P[v.slice(2)], t) : v)); }
   function prix(str, t){ return str.replace('{vie}', eur(P.vie, t)); }
   function build(){
     var t = T[st.lang], i;
@@ -2408,7 +2408,7 @@ const I18N = {
     hero_cta: 'Devenir membre',
     hero_secondary: 'ou commence par le diagnostic gratuit →',
     doors_cta: 'Devenir membre',
-    doors_cta_note: "Essai gratuit de 7 jours · garantie progression",
+    doors_cta_note: "Édition 1 · du 4 janvier au 28 mars · inscriptions jusqu’au 30 novembre",
     hero_proof: '<b><span class="num" data-count="330">330</span> membres</b> · méthode terrain',
     scroll_hint: 'Défile',
     shot_today: 'Ta séance du jour — déjà là',
@@ -2529,7 +2529,7 @@ const I18N = {
     plan_cta: 'Devenir membre',
     plan_per_mo: '/mois',
     plan_per_yr: '/an',
-    plan_flex: 'Essai gratuit 7 jours · sans engagement',
+    plan_flex: 'Sans abonnement',
     plan_save: 'Un an d\'accès, sans reconduction',
     plan_reco: 'Recommandé',
     plan_permo: '≈ 18,33 €/mois',
@@ -2568,7 +2568,7 @@ const I18N = {
     hero_cta: 'Become a member',
     hero_secondary: 'or start with the free diagnostic →',
     doors_cta: 'Become a member',
-    doors_cta_note: '7-day free trial · progress guarantee',
+    doors_cta_note: 'Edition 1 · 4 January to 28 March · sign-ups until 30 November',
     hero_proof: '<b><span class="num" data-count="330">330</span> members</b> · field-tested method',
     scroll_hint: 'Scroll',
     shot_today: "Today's session — already there",
@@ -2689,7 +2689,7 @@ const I18N = {
     plan_cta: 'Become a member',
     plan_per_mo: '/mo',
     plan_per_yr: '/yr',
-    plan_flex: '7-day free trial · no commitment',
+    plan_flex: 'No subscription',
     plan_save: 'One year of access, no auto-renewal',
     plan_reco: 'Recommended',
     plan_permo: '≈ €18.33/mo',

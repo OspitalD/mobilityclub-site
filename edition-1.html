@@ -333,7 +333,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
 
       <div class="h-cta" id="cta-haut">
         <a class="os-bouton" href="#prendre" id="bouton-haut">Prendre ma place — 97&nbsp;€</a>
-        <p class="note" id="ensuite">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture&nbsp;: 149&nbsp;€.</p>
+        <p class="note" id="ensuite">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture, en mars&nbsp;: 149&nbsp;€.</p>
       </div>
       <div class="h-cta ferme-haut" id="ferme-haut" hidden>
         <p>Les portes sont fermées</p>
@@ -496,7 +496,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
           <span class="palier-nom" id="palier-nom-final">Palier fondateur</span>
           <span class="prix" id="prix-final">97&nbsp;€</span>
         </div>
-        <p class="ensuite-final" id="ensuite-final">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture&nbsp;: 149&nbsp;€.</p>
+        <p class="ensuite-final" id="ensuite-final">Ensuite&nbsp;: 119&nbsp;€ jusqu'au lundi 30/11, 23&nbsp;h&nbsp;59. À la prochaine ouverture, en mars&nbsp;: 149&nbsp;€.</p>
         <div class="action">
           <button class="os-bouton" type="button" id="payer">Prendre ma place — 97&nbsp;€</button>
           <p class="note">Paiement unique, ou en 4 fois avec PayPal.</p>
@@ -506,7 +506,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
       </div>
 
       <div class="ferme" id="bloc-ferme" hidden>
-        <p>À la prochaine ouverture&nbsp;: 149&nbsp;€. <a class="lien" href="/liste-attente">Rejoindre la liste d'attente</a></p>
+        <p>À la prochaine ouverture, en mars&nbsp;: 149&nbsp;€. <a class="lien" href="/liste-attente">Rejoindre la liste d'attente</a></p>
       </div>
     </section>
   </div>
@@ -629,10 +629,10 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     var ensuite;
     if (palier === 1) {
       var p2prix = estNombre(p2.prix) ? p2.prix : 119, p2fin = (p2.fin && dateParis(p2.fin)) || 'lundi 30/11, 23 h 59';
-      ensuite = 'Ensuite : ' + euros(p2prix) + ' jusqu\'au ' + p2fin + '. À la prochaine ouverture : ' + euros(prochain) + '.';
+      ensuite = 'Ensuite : ' + euros(p2prix) + ' jusqu\'au ' + p2fin + '. À la prochaine ouverture, en mars : ' + euros(prochain) + '.';
     } else {
       var fin2 = p2.fin && dateParis(p2.fin);
-      ensuite = (fin2 ? 'Jusqu\'au ' + fin2 + ', puis les portes ferment. ' : '') + 'À la prochaine ouverture : ' + euros(prochain) + '.';
+      ensuite = (fin2 ? 'Jusqu\'au ' + fin2 + ', puis les portes ferment. ' : '') + 'À la prochaine ouverture, en mars : ' + euros(prochain) + '.';
     }
     $('ensuite').textContent = ensuite; $('ensuite-final').textContent = ensuite;
 
