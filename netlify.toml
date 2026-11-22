@@ -39,6 +39,21 @@
 # On ne peut pas rappeler un mail, donc toutes les formulations plausibles du
 # lien atterrissent ici. 302 et jamais 301 : un 301 se grave dans le cache des
 # navigateurs et survivrait à la fermeture de la campagne.
+# ── Abonnement fermé le 17/11/2026 : « Devenir membre » mène à l'Édition 1 ─────
+# 302 (jamais 301) : la page /devenir-membre reviendra avec la prochaine offre.
+# force = true : le fichier devenir-membre.html existe, la règle doit passer devant.
+[[redirects]]
+  from = "/devenir-membre"
+  to = "/edition-1"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/devenir-membre.html"
+  to = "/edition-1"
+  status = 302
+  force = true
+
 [[redirects]]
   from = "/retour"
   to = "/retour-au-club"
