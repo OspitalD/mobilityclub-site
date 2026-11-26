@@ -462,7 +462,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     </section>
 
     <!-- 6. Ancrage à vie -->
-    <p class="ancre">Tu veux ne plus jamais te poser la question&nbsp;? <a href="/lifetime">L'accès à vie&nbsp;: 350&nbsp;€, ou 4&nbsp;×&nbsp;87,50&nbsp;€.</a></p>
+    <p class="ancre">Tu veux ne plus jamais te poser la question&nbsp;? <a href="/lifetime" id="ancre-vie">L'accès à vie&nbsp;: 350&nbsp;€, ou 4&nbsp;×&nbsp;87,50&nbsp;€.</a></p>
 
     <!-- 7. Déjà membre -->
     <section class="bloc" aria-labelledby="t-membre">
@@ -592,7 +592,15 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     $('decompte').hidden = false;
   }
 
+  // Ancre à vie : prix lu de l'API (hausse 350 → 500 € le 27/11 à 0 h), le HTML n'est qu'un repli.
+  function appliqueVie(v){
+    var a = $('ancre-vie');
+    if (!a || !v || !estNombre(v.prix)) return;
+    var q = estNombre(v.quatre_fois) ? v.quatre_fois : v.prix / 4;
+    a.textContent = 'L\u2019accès à vie\u00a0: ' + euros(v.prix).replace(' ', '\u00a0') + ', ou 4\u00a0×\u00a0' + euros(q).replace(' ', '\u00a0') + '.';
+  }
   function applique(d){
+    if (d) appliqueVie(d.vie);
     // Repli : si la réponse est incomplète, on garde 97 € et on masque tout ce qui serait faux.
     etat.ouvert = d.ouvert !== false;
     var palier = d.palier === 2 ? 2 : 1;

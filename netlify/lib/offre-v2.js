@@ -36,6 +36,14 @@ export const DUREE_BONUS_MS = 5 * 60 * 1000;
 export const PRIX_FENETRE = { mensuel: 25, annuel: 220, vie: 249 };
 export const PRIX_V2 = { mensuel: 30, annuel: 275, vie: 350 };
 
+// Hausse de l'accès à vie (décision de Damien du 26/11/2026, annoncée par mail) : 350 € jusqu'au
+// jeudi 26/11 23 h 59 59 (Paris), 500 € à partir de vendredi 27/11 00 h 00 (Paris).
+// Une seule horloge pour la caisse (lifetime-ticketing), la saison (saison-edition1) et les pages.
+export const HAUSSE_VIE = '2026-11-26T23:00:00.000Z';
+export const VIE_APRES_HAUSSE = 500;
+export const prixVie = (now = Date.now()) => (Number(now) >= Date.parse(HAUSSE_VIE) ? VIE_APRES_HAUSSE : PRIX_V2.vie);
+const prixV2 = (now) => ({ ...PRIX_V2, vie: prixVie(now) });
+
 // Paiement en 4 fois PayPal de l'accès à vie, arrondi au centime (62,25 / 87,50).
 const avec4x = (prix) => ({ ...prix, vie_4x: Math.round((prix.vie * 100) / 4) / 100 });
 
@@ -58,8 +66,8 @@ export const etatOffre = (now = Date.now()) => {
     phase,
     fin,
     maintenant: new Date(maintenant).toISOString(),
-    prix: avec4x(phase === 'v2' ? PRIX_V2 : PRIX_FENETRE),
-    prix_v2: avec4x(PRIX_V2),
+    prix: avec4x(phase === 'v2' ? prixV2(maintenant) : PRIX_FENETRE),
+    prix_v2: avec4x(prixV2(maintenant)),
     liens: {
       // Plan V2 pas encore créé : on renvoie vers la page d'achat plutôt que vers un ancien plan.
       mensuel: plans.mensuel ?? '/devenir-membre',

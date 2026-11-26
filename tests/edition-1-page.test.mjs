@@ -66,7 +66,7 @@ test('textes de la fiche repris mot pour mot', async () => {
     'Tiens ta promesse 12 semaines, et ta zone la plus raide progresse.',
     'Bilan articulaire complet au jour 1 et au jour 84',
     'Rituel d\'entrée, 4 semaines pour poser les fondations',
-    'Tu veux ne plus jamais te poser la question ? <a href="/lifetime">L\'accès à vie : 350 €, ou 4 × 87,50 €.</a>',
+    'Tu veux ne plus jamais te poser la question ? <a href="/lifetime" id="ancre-vie">L\'accès à vie : 350 €, ou 4 × 87,50 €.</a>',
   ]) assert.ok(h.includes(t), `manquant : ${t}`);
 });
 

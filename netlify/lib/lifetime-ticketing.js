@@ -1,5 +1,5 @@
 import { getStore } from '@netlify/blobs';
-import { etatOffre, PRIX_V2 } from './offre-v2.js';
+import { etatOffre, prixVie } from './offre-v2.js';
 
 export const TIER_SIZE = 20;
 // Une nouvelle série s'ajoute ici uniquement lorsque son prix a été décidé.
@@ -33,7 +33,7 @@ export const tierValide = (tier) =>
 // 199 → 249 était un levier de rareté de la fenêtre, plus de la V2. La phase vient de
 // offre-v2 (même horloge que les pages), jamais d'un calcul local.
 const prixDuPalier = (tier, now = Date.now()) =>
-  etatOffre(now).phase === 'v2' ? PRIX_V2.vie : TIER_PRICES[Number(tier) - 1];
+  etatOffre(now).phase === 'v2' ? prixVie(now) : TIER_PRICES[Number(tier) - 1];
 const cleTicket = (ticket) => String(Number(ticket)).padStart(2, '0');
 
 export const ticketValide = (ticket) =>
