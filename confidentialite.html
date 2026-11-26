@@ -35,7 +35,7 @@ li{margin:6px 0}
 <main>
   <a class="retour" href="/">← Mobility Club</a>
   <h1>Politique de confidentialité</h1>
-  <p class="maj">Dernière mise à jour : 2 novembre 2026 (Garmin : données reçues, historique des activités, durées de conservation)</p>
+  <p class="maj">Dernière mise à jour : 26 novembre 2026 (compétitions entre membres, lecture des captures d'écran, exception WHOOP ; retrait de Strava)</p>
 
   <p>L'application <strong>Mobility Club</strong> (app.mobilityclub.co et les applications mobiles du même nom) est éditée par <strong>Damien Ospital, entrepreneur individuel</strong> (« nous »). Cette page explique quelles données personnelles nous traitons, pourquoi, avec qui, et quels sont tes droits.</p>
 
@@ -52,9 +52,9 @@ li{margin:6px 0}
       <tr><td>Ressenti déclaré (douleur, fatigue)</td><td>Adapter la séance du jour</td><td>Exécution du contrat</td></tr>
       <tr><td>Note vocale (coach vocal, facultatif)</td><td>Comprendre ta demande. L'audio n'est jamais conservé : il est supprimé après transcription, seul le texte est gardé</td><td>Consentement</td></tr>
       <tr><td>Données WHOOP (facultatif) : récupération, variabilité cardiaque, fréquence cardiaque au repos, sommeil, charge du jour</td><td>Les afficher dans l'app, si tu connectes ton compte WHOOP</td><td>Consentement</td></tr>
-      <tr><td>Données Strava (facultatif) : tes séances (sport, date, durée, distance, fréquence cardiaque moyenne)</td><td>Afficher ta dernière séance et ton volume des 7 derniers jours, si tu connectes ton compte Strava</td><td>Consentement</td></tr>
       <tr><td>Données Garmin (facultatif) : sommeil, stress, Body Battery, variabilité cardiaque (VFC), fréquence cardiaque au repos, pas, activités (type, nom, date, durée, distance, fréquence cardiaque moyenne, charge d'entraînement si Garmin la fournit)</td><td>Les afficher dans l'app (écrans Aujourd'hui et Progrès) et suivre ta progression sur la durée. Pour l'instant, elles ne modifient pas ta séance</td><td>Consentement</td></tr>
       <tr><td>Données Polar (facultatif) : sommeil (durée, phases, score), Nightly Recharge (statut, variabilité cardiaque, fréquence cardiaque nocturne), pas de la journée</td><td>Les afficher dans l'app et suivre ta progression sur la durée, si tu connectes ton compte Polar</td><td>Consentement</td></tr>
+      <tr><td>Compétitions (facultatif) : l'initiale de ton nom, ta mesure de la semaine pour chaque thème où tu t'inscris, le chiffre et la date lus sur tes captures d'écran</td><td>Te classer avec les autres membres inscrits (voir section 3 bis)</td><td>Consentement</td></tr>
       <tr><td>Jeton de notification</td><td>T'envoyer un rappel de séance, si tu l'actives</td><td>Consentement</td></tr>
       <tr><td>Événements d'usage (séance terminée, leçon vue…)</td><td>Améliorer le produit et mesurer l'engagement</td><td>Intérêt légitime</td></tr>
     </tbody>
@@ -63,12 +63,8 @@ li{margin:6px 0}
   <p>Nous ne collectons ni ta localisation précise, ni tes contacts, ni de données de suivi publicitaire. Nous ne suivons pas ton activité sur d'autres apps ou sites.</p>
 
   <h2>2. WHOOP</h2>
-  <p>La connexion à WHOOP est facultative et se fait depuis <strong>Réglages</strong>. Tu choisis sur l'écran WHOOP d'autoriser l'accès en lecture à ta récupération, ton sommeil et tes cycles. Nous lisons ces mesures au moment où tu ouvres l'app pour les afficher, et elles ne sont jamais conservées chez nous : ni historique, ni copie d'analyse. Nous ne les revendons pas, ne les partageons avec personne et ne les utilisons pas pour la publicité. Les jetons d'accès WHOOP sont stockés côté serveur, jamais dans ton navigateur.</p>
+  <p>La connexion à WHOOP est facultative et se fait depuis <strong>Réglages</strong>. Tu choisis sur l'écran WHOOP d'autoriser l'accès en lecture à ta récupération, ton sommeil et tes cycles. Nous lisons ces mesures au moment où tu ouvres l'app pour les afficher, et elles ne sont jamais conservées chez nous : ni historique, ni copie d'analyse. Une seule exception : si tu t'inscris au thème « pas » d'une compétition, nous lisons tes pas chez WHOOP au moment où le classement est calculé, et seul ton total de pas de la semaine reste dans le classement, 8 semaines au plus (voir section 3 bis). Nous ne les revendons pas, ne les partageons avec personne et ne les utilisons pas pour la publicité. Les jetons d'accès WHOOP sont stockés côté serveur, jamais dans ton navigateur.</p>
   <p>Tu peux couper l'accès à tout moment depuis <strong>Réglages → Déconnecter WHOOP</strong> (nous révoquons alors l'autorisation chez WHOOP et effaçons les jetons) ou directement depuis ton compte WHOOP. La suppression de ton compte Mobility Club révoque aussi l'accès WHOOP.</p>
-
-  <h2>2 bis. Strava</h2>
-  <p>La connexion à Strava est facultative et se fait depuis <strong>Réglages</strong>. Tu autorises sur l'écran Strava la lecture de tes séances. Nous les lisons pour t'afficher, à toi seul, ta dernière séance et ton volume de la semaine ; un résumé est gardé au plus 15 minutes pour limiter les appels. Elles ne sont montrées à personne d'autre, ni revendues, ni utilisées pour la publicité ou pour entraîner un modèle d'intelligence artificielle.</p>
-  <p>Tu peux couper l'accès à tout moment depuis <strong>Réglages → Déconnecter Strava</strong> (nous révoquons alors l'autorisation chez Strava et effaçons les jetons) ou depuis Strava (Paramètres → Mes applications). La suppression de ton compte Mobility Club révoque aussi l'accès Strava.</p>
 
   <h2>2 ter. Garmin</h2>
   <p>La connexion à Garmin est facultative (fonction en cours d'ouverture) et se fait depuis <strong>Toi → Appareils</strong>. Sur l'écran Garmin Connect, tu choisis les catégories de données que tu acceptes de partager (santé, activités). Tu ne relies qu'un seul capteur à la fois, Garmin ou WHOOP : relier Garmin alors que WHOOP est connecté commence par déconnecter WHOOP, après ta confirmation.</p>
@@ -91,6 +87,13 @@ li{margin:6px 0}
   <h2>3. Voix et micro</h2>
   <p>Le coach vocal n'accède au micro qu'au moment où tu appuies pour parler. L'enregistrement est envoyé à notre prestataire de transcription puis supprimé. Seul le résultat texte est utilisé pour agir dans l'app.</p>
 
+  <h2>3 bis. Compétitions entre membres</h2>
+  <p>Les compétitions sont facultatives. Chaque mois, quelques thèmes sont proposés (par exemple : charge sur un mouvement, nombre de pas, kilomètres de course, assiduité à tes séances de mobilité). Tu n'apparais que dans les thèmes auxquels tu choisis de t'inscrire, et tu peux en sortir à tout moment depuis l'onglet Progrès.</p>
+  <p><strong>Ce que les autres membres de ton groupe voient</strong>, pour chaque thème où tu es inscrit : ton prénom suivi de l'initiale de ton nom (par exemple « Damien O. »), que tu renseignes en t'inscrivant ; ta place, ton métal (de Bronze à Diamant) et ta mesure de la semaine pour ce thème, et seulement celle-là : ta série la plus lourde de la semaine sur le mouvement du thème (thème charge), ton total de pas de la semaine (thème pas), tes kilomètres de course de la semaine (thème course), ton pourcentage de séances de mobilité faites dans la semaine (thème mobilité).</p>
+  <p><strong>Ce qu'ils ne voient jamais</strong> : ton e-mail, ton poids, le détail de tes séances, tes autres charges, tes données de montre autres que la mesure du thème (sommeil, fréquence cardiaque, récupération), ton ressenti du matin (forme, raideur, douleur). Ton ressenti du matin n'entre jamais dans une compétition.</p>
+  <p><strong>D'où viennent les mesures.</strong> Elles sont calculées par nos serveurs à partir de ce que tu fais déjà dans l'app (séances enregistrées) et de ta montre si tu l'as connectée (WHOOP, Garmin, Polar). Pour les pas et la course, tu peux aussi envoyer une capture d'écran : elle est lue par un modèle d'intelligence artificielle de notre prestataire Anthropic, puis tu confirmes le chiffre lu. Nous gardons seulement ce chiffre et sa date ; l'image n'est jamais enregistrée chez nous.</p>
+  <p><strong>Combien de temps.</strong> Si tu quittes un thème, ton nom disparaît tout de suite du classement en cours. Les classements des semaines passées sont gardés 8 semaines, puis effacés. La suppression de ton compte efface aussi ta participation, y compris dans les semaines passées.</p>
+
   <h2>4. Avec qui nous partageons</h2>
   <p>Nous faisons appel à des sous-traitants techniques qui traitent les données pour notre compte :</p>
   <ul>
@@ -100,8 +103,8 @@ li{margin:6px 0}
     <li><strong>MailerLite</strong> — e-mails de suivi.</li>
     <li><strong>Sentry</strong> — détection d'erreurs techniques (e-mail, nom et adresse IP retirés).</li>
     <li><strong>Groq</strong> — transcription et structuration des notes vocales (audio non conservé).</li>
+    <li><strong>Anthropic</strong> — lecture des captures d'écran que tu envoies pour une compétition (image non conservée chez nous ; Anthropic ne l'utilise pas pour entraîner ses modèles).</li>
     <li><strong>WHOOP</strong> — source des données WHOOP, uniquement si tu le connectes.</li>
-    <li><strong>Strava</strong> — source de tes séances, uniquement si tu le connectes.</li>
     <li><strong>Garmin</strong> — source de tes données de santé et d'activité, uniquement si tu le connectes.</li>
     <li><strong>Polar</strong> — source de ton sommeil, de ta Nightly Recharge et de tes pas, uniquement si tu le connectes.</li>
   </ul>
