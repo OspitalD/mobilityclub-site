@@ -8,6 +8,7 @@
 // PayPal est créée au prix du palier en cours au moment du clic (le serveur décide).
 import { createHash } from 'node:crypto';
 import { getStore } from '@netlify/blobs';
+import { prixVie } from './offre-v2.js';
 
 export const STORE = 'saison_edition1';
 export const PREFIX_VENTE = 'ventes/';
@@ -29,7 +30,12 @@ export const PALIERS = {
 };
 export const PLACES_TOTAL = 100;
 export const PRIX_PROCHAINE_OUVERTURE = 149;
-export const VIE = { prix: 350, quatre_fois: 87.5, lien: '/lifetime' };
+// Prix de l'accès à vie : même horloge que la caisse (offre-v2.js, hausse 350 → 500 € le 27/11 à 0 h Paris).
+export const vieA = (now = Date.now()) => {
+  const prix = prixVie(now);
+  return { prix, quatre_fois: Math.round((prix * 100) / 4) / 100, lien: '/lifetime' };
+};
+export const VIE = vieA(0);
 export const MONTANTS_SAISON = Object.values(PALIERS).map((p) => p.prix.toFixed(2));
 
 // Places prises hors du site (membres actuels inscrits gratuitement à la main), posées
@@ -62,7 +68,7 @@ export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0, 
     places_total: PLACES_TOTAL,
     places_restantes: restantes,
     prix_prochaine_ouverture: PRIX_PROCHAINE_OUVERTURE,
-    vie: VIE,
+    vie: vieA(t),
     maintenant: new Date(t).toISOString(),
   };
 };
