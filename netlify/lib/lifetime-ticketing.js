@@ -186,7 +186,7 @@ const muterInventaire = async (mutation, now = Date.now()) => {
   throw error;
 };
 
-export const reserverTicket = async ({ ticket, token, now = Date.now() }) => {
+export const reserverTicket = async ({ ticket, token, now = Date.now(), prix = null }) => {
   if (!ticketValide(ticket) || !/^[a-f0-9-]{36}$/i.test(String(token || ''))) {
     const error = new Error('invalid_ticket');
     error.code = 'invalid_ticket';
@@ -211,9 +211,10 @@ export const reserverTicket = async ({ ticket, token, now = Date.now() }) => {
       token: String(token).toLowerCase(),
       created_at: new Date(now).toISOString(),
       expires_at: expiresAt,
-      price: prixDuPalier(tier, now),
+      price: prix ?? prixDuPalier(tier, now),
+      ...(prix !== null ? { flash: true } : {}),
     };
-    return { tier, ticket: Number(ticket), token: String(token).toLowerCase(), price: prixDuPalier(tier, now), expires_at: expiresAt };
+    return { tier, ticket: Number(ticket), token: String(token).toLowerCase(), price: prix ?? prixDuPalier(tier, now), expires_at: expiresAt };
   }, now);
 };
 

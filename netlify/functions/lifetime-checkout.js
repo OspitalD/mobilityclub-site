@@ -4,11 +4,25 @@ import {
   customIdLifetime,
   enregistrerVente,
   libererReservation,
+  lireEtatCampagne,
   lireReservation,
   reserverTicket,
   tierValide,
   ticketValide,
 } from '../lib/lifetime-ticketing.js';
+import { PREFIX_FLASH, compterVentes, etatSaison, flashActif, prixVieFlash, store as storeSaison, vieFlashVivante } from '../lib/saison-edition1.js';
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+// Offre flash /panier, 2e panier : jeton vivant → accès à vie à 350 € ; le serveur prend le premier ticket libre.
+const prixFlash = async (id) => {
+  if (!UUID.test(String(id || ''))) return { erreur: json(400, { error: 'flash_invalide' }) };
+  const S = storeSaison();
+  const jeton = await S.get(`${PREFIX_FLASH}${id}`, { type: 'json' }).catch(() => null);
+  const etat = etatSaison({ ventes: await compterVentes(S) });
+  if (!flashActif(etat) || !vieFlashVivante(jeton)) return { erreur: json(410, { error: 'flash_expire' }) };
+  return { prix: prixVieFlash() };
+};
 
 const paypalBase = () =>
   process.env.PAYPAL_ENV === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
@@ -139,14 +153,29 @@ const capturerCommande = async ({ orderId, reservation }) => {
 };
 
 const creer = async (body) => {
-  if (!ticketValide(body.ticket)) return json(400, { error: 'invalid_ticket' });
+  let prix = null;
+  if (body.flash !== undefined) {
+    const f = await prixFlash(body.flash);
+    if (f.erreur) return f.erreur;
+    prix = f.prix;
+  }
   const token = randomUUID();
   let reservation;
-  try {
-    reservation = await reserverTicket({ ticket: Number(body.ticket), token });
-  } catch (err) {
-    if (err?.code === 'ticket_unavailable') return json(409, { error: 'ticket_unavailable' });
-    throw err;
+  if (prix !== null && body.ticket === undefined) {
+    const etat = await lireEtatCampagne();
+    const libres = etat.sold_out ? [] : etat.tickets.filter((t) => t.status === 'available').map((t) => t.number);
+    for (const ticket of libres) {
+      try { reservation = await reserverTicket({ ticket, token, prix }); break; } catch (err) { if (err?.code !== 'ticket_unavailable') throw err; }
+    }
+    if (!reservation) return json(409, { error: 'ticket_unavailable' });
+  } else {
+    if (!ticketValide(body.ticket)) return json(400, { error: 'invalid_ticket' });
+    try {
+      reservation = await reserverTicket({ ticket: Number(body.ticket), token, prix });
+    } catch (err) {
+      if (err?.code === 'ticket_unavailable') return json(409, { error: 'ticket_unavailable' });
+      throw err;
+    }
   }
   if (!montantAccepte(reservation.price)) {
     await libererReservation(reservation).catch(() => {});

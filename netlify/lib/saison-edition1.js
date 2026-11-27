@@ -36,6 +36,25 @@ export const vieA = (now = Date.now()) => {
   return { prix, quatre_fois: Math.round((prix * 100) / 4) / 100, lien: '/lifetime' };
 };
 export const VIE = vieA(0);
+// ── Offre flash « panier » (décision Damien 27/11/2026) ─────────────────────────────────────────
+// Après la fin du palier 1, un jeu de basket (/panier) rouvre le prix fondateur 97 € pendant 5 min
+// à qui marque un panier (« 2 semaines offertes » ≈ 119 − 97 €). Le serveur délivre un jeton daté :
+// la commande PayPal n'est créée à 97 € que sur un jeton vivant. Coupure sans redéployer : FLASH_PANIER_OFF=1.
+export const PREFIX_FLASH = 'flash/';
+export const DUREE_FLASH_MS = 5 * 60 * 1000;
+// Le temps de passer chez PayPal après un clic à 4 min 59 : la commande, pas le paiement, doit tomber dans la fenêtre.
+export const GRACE_FLASH_MS = 30 * 1000;
+export const PRIX_FLASH = PALIERS[1].prix;
+export const CUSTOM_FLASH = 'FLASH-';
+export const flashActif = (etat, env = process.env) => Boolean(etat && etat.ouvert && etat.palier === 2) && env.FLASH_PANIER_OFF !== '1';
+export const jetonFlashVivant = (jeton, now = Date.now()) =>
+  Boolean(jeton && Number.isFinite(Date.parse(jeton.expire_at))) && Number(now) <= Date.parse(jeton.expire_at) + GRACE_FLASH_MS;
+// 2e panier (option, plus dur) : l'accès à vie à prixVie − 150 € (500 → 350 €), 5 min à partir de ce 2e panier.
+export const REMISE_VIE_FLASH = 150;
+export const prixVieFlash = (now = Date.now()) => prixVie(now) - REMISE_VIE_FLASH;
+export const vieFlashVivante = (jeton, now = Date.now()) => jetonFlashVivant(jeton && jeton.vie, now);
+export const estVenteFlash = (customId) => String(customId || '').startsWith(`${CUSTOM_PREFIX}P1-${CUSTOM_FLASH}`);
+
 export const MONTANTS_SAISON = Object.values(PALIERS).map((p) => p.prix.toFixed(2));
 
 // Places prises hors du site (membres actuels inscrits gratuitement à la main), posées
@@ -69,6 +88,7 @@ export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0, 
     places_restantes: restantes,
     prix_prochaine_ouverture: PRIX_PROCHAINE_OUVERTURE,
     vie: vieA(t),
+    flash: { actif: flashActif({ ouvert, palier }, env), prix: PRIX_FLASH, duree_ms: DUREE_FLASH_MS, prix_vie: prixVie(t) - REMISE_VIE_FLASH },
     maintenant: new Date(t).toISOString(),
   };
 };
