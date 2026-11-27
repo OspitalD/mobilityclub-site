@@ -140,6 +140,14 @@ export const T = {
     alt: (n: number) => `Capture ${n}`,
   },
 
+  rendu: {
+    titre: 'Ton rendu',
+    chapo: 'Fait pour ton app. Toi seul le vois.',
+    page: 'Ton avant / après',
+    voir: 'Voir',
+    fichiers: 'Fichiers à télécharger',
+  },
+
   livraison: {
     arrive: (jour: string, auPlusTard: boolean) => `Arrive${auPlusTard ? ' au plus tard' : ''} le ${jour}`,
     enPreparation: 'C\'est le jour. Je finis la mise en ligne, reviens dans quelques heures.',

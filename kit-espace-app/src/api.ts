@@ -113,4 +113,7 @@ export const envoyerCapture = (blob: Blob, meta: MetaCapture, onProgress?: (rati
 };
 
 export const urlContenu = (slug: string) => `${BASE}/contenu/${encodeURIComponent(slug)}`;
+// « / » final obligatoire : les images de la page se résolvent contre cette adresse.
+export const urlPersoPage = () => `${BASE}/perso/page/`;
+export const urlPersoFichier = (nom: string) => `${BASE}/perso/fichier/${encodeURIComponent(nom)}`;
 export const urlFichier = (slug: string, nom: string) => `${BASE}/fichier/${encodeURIComponent(slug)}/${encodeURIComponent(nom)}`;

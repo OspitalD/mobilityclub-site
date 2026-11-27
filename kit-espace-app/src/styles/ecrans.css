@@ -43,6 +43,11 @@
 .liv-lien{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;text-decoration:none}
 .liv-lien .fleche{color:var(--violet);transition:transform .3s var(--courbe)}
 @media (hover:hover){.liv-lien:hover .fleche{transform:translateX(4px)}}
+/* « Ton rendu » : en tête de l'accueil, sur toute la largeur, seulement s'il existe. */
+.rendu{grid-column:1/-1}
+.rendu .chapo{margin-top:10px;margin-bottom:20px}
+.rendu .ligne .t{color:var(--vert)}
+.rendu .ligne .info{display:flex;align-items:center;gap:12px}
 .accueil+.pied{margin-top:56px}
 .accueil+.pied+.lien{margin-top:8px}
 @media (min-width:900px){

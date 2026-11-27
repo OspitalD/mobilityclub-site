@@ -18,10 +18,15 @@
 //   GET | PATCH { note } | DELETE  captures/<cid>   (404 pour la capture d'un autre : jamais 403)
 //   GET   contenu/<slug>                 → page HTML de la livraison, après contrôle de session ET de date
 //   GET   fichier/<slug>/<nom>           → pièce jointe en téléchargement, même règle de date
+//   GET   perso/fichier/<nom>            → fichier du rendu personnel de CET acheteur (404 pour tout autre)
+//   GET   perso/page/[<chemin>]          → sa page personnelle (index.html, images, polices) ; sans « / » final : 302
 // Admin (Authorization: Bearer METHODE_IKEA_ADMIN_TOKEN, CORS METHODE_IKEA_ADMIN_ORIGINS) :
 //   GET admin/acheteurs · GET|DELETE admin/acheteur · POST|PATCH admin/acces · POST|DELETE admin/alias
 //   GET admin/capture?email=&id= · PUT|GET admin/contenu/<slug>[?ouvrir=maintenant]
 //   PUT admin/fichier/<slug>/<nom> · POST admin/annoncer { slug }
+//   GET admin/perso?email= · PUT|DELETE admin/perso/<nom>?email= (nom = « page » : retire la page)
+//   PUT admin/perso-page/<chemin>?email=[&titre=]  (index.html en dernier : il rend la page visible)
+//   Aucun email n'est envoyé par les routes perso.
 // Contrat détaillé : scripts/kit-app-sexy.mjs (CLI) et tests/kit-app-sexy-espace.test.mjs.
 
 import { createHash, timingSafeEqual } from 'node:crypto';
@@ -29,8 +34,8 @@ import { normaliserEmail } from '../lib/methode-ikea.js';
 import {
   CID, CAPTURE_MAX_OCTETS, CAPTURES_MAX, CONTACT, DOSSIER_MAX_OCTETS, FICHIER_MAX_OCTETS, NOM_FICHIER,
   accesOuvert, ajouterAlias, ajouterCapture, ajouterManuel, annoncer, construireMoi, cookieEfface, cookieSession,
-  couper, creerJeton, deposerContenu, deposerFichier, detailAdmin, ecrireDossier, emailCodeKit, etatLivraison,
-  lireContenu, lireDossier, lireFichier, lireImage, listerAdmin, listerCaptures, noterCapture, noterConnexion,
+  CHEMIN_PAGE, NOM_PERSO, couper, creerJeton, deposerContenu, deposerElementPage, deposerFichier, deposerPerso, detailAdmin, ecrireDossier, emailCodeKit, etatLivraison,
+  lireContenu, lireDossier, lireElementPage, lireFichier, lireImage, lirePerso, persoDe, retirerPerso, listerAdmin, listerCaptures, noterCapture, noterConnexion,
   nouveauCode, purger, renvoyerBienvenue, resoudreFiche, retirerAlias, rouvrir, sessionKit, supprimerCapture,
   toucherActivite, verifierCode,
 } from '../lib/kit-espace.js';
@@ -230,11 +235,43 @@ const fichier = async (_req, s, slug, nom) => {
   });
 };
 
+// Rendu personnel : l'id vient de la SESSION (s.id). Le nom ou le chemin demandé ne fait que choisir un
+// fichier dans le préfixe de cet acheteur ; celui d'un autre n'y est jamais : 404, comme pour les captures.
+const persoFichier = async (_req, s, nom) => {
+  if (!NOM_PERSO.test(nom)) return json(404, { error: 'not_found' });
+  const f = await lirePerso(s.id, nom);
+  if (!f) return json(404, { error: 'not_found' });
+  return new Response(f.octets, {
+    status: 200,
+    headers: {
+      'Content-Type': f.type, 'Content-Length': String(f.octets.length),
+      'Content-Disposition': `attachment; filename="${nom}"`,
+      'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff',
+    },
+  });
+};
+
+const persoPage = async (req, s, chemin, finSlash) => {
+  // Les liens relatifs de la page (v-or.png, fonts/...) se résolvent contre l'URL : il faut le « / » final.
+  if (!chemin && !finSlash) return new Response(null, { status: 302, headers: { Location: `${new URL(req.url).pathname}/`, 'Cache-Control': 'no-store' } });
+  const cible = chemin || 'index.html';
+  const f = CHEMIN_PAGE.test(cible) ? await lireElementPage(s.id, cible) : null;
+  if (!f) return chemin ? json(404, { error: 'not_found' }) : pageMessage(404, 'Rien ici', 'Ton rendu n\'est pas encore en ligne.');
+  return new Response(f.octets, {
+    status: 200,
+    headers: {
+      ...ENTETES_PAGE,
+      'Content-Type': f.type, 'Content-Length': String(f.octets.length), 'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "frame-ancestors 'self'",
+    },
+  });
+};
+
 // Nom de fichier encodé de travers (%E0%A4%A) : null, pour répondre 404 au lieu de planter.
 const decoder = (v) => { try { return decodeURIComponent(v); } catch { return null; } };
 
 // → { handler, htmlErreurs } si la route membre existe
-const routeMembre = (action) => {
+const routeMembre = (action, finSlash = false) => {
   if (action === 'moi') return { run: moi };
   if (action === 'dossier') return { run: dossier };
   if (action === 'captures') return { run: capturesListe };
@@ -242,6 +279,16 @@ const routeMembre = (action) => {
   if (m) return { run: (req, s) => capture(req, s, m[1]) };
   m = /^contenu\/([^/]+)$/.exec(action);
   if (m) return { run: (req, s) => contenu(req, s, m[1]), page: true };
+  m = /^perso\/fichier\/([^/]+)$/.exec(action);
+  if (m) {
+    const nom = decoder(m[1]);
+    return { run: nom === null ? async () => json(404, { error: 'not_found' }) : (req, s) => persoFichier(req, s, nom) };
+  }
+  m = /^perso\/page(?:\/(.+))?$/.exec(action);
+  if (m) {
+    const chemin = m[1] === undefined ? '' : decoder(m[1]);
+    return { run: chemin === null ? async () => json(404, { error: 'not_found' }) : (req, s) => persoPage(req, s, chemin, finSlash), page: true };
+  }
   m = /^fichier\/([^/]+)\/([^/]+)$/.exec(action);
   if (m) {
     const nom = decoder(m[2]);
@@ -334,6 +381,38 @@ const adminFichier = async (req, slug, nom) => {
   return r.erreur ? json(400, { error: r.erreur }) : json(200, { ok: true, octets: r.octets });
 };
 
+// Dépôts du rendu personnel : l'acheteur est désigné par ?email= (email PayPal ou alias).
+const corpsBorne = async (req) => {
+  if (Number(req.headers.get('content-length') || 0) > FICHIER_MAX_OCTETS + 1000) return null;
+  return Buffer.from(await req.arrayBuffer());
+};
+const reponseDepot = (r, extra = {}) => {
+  if (r.erreur === 'too_large') return json(413, { error: 'too_large' });
+  if (r.erreur === 'not_found') return json(404, { error: 'not_found' });
+  return r.erreur ? json(400, { error: r.erreur }) : json(200, { ok: true, ...extra, ...r });
+};
+
+const adminPerso = async (req, nom) => {
+  const email = normaliserEmail(new URL(req.url).searchParams.get('email'));
+  if (!email) return json(400, { error: 'invalid_email' });
+  if (req.method === 'PUT') {
+    const octets = await corpsBorne(req);
+    return octets ? reponseDepot(await deposerPerso(email, nom, octets)) : json(413, { error: 'too_large' });
+  }
+  if (req.method === 'DELETE') return reponseDepot(await retirerPerso(email, nom));
+  return json(405, { error: 'method_not_allowed' });
+};
+
+const adminPersoPage = async (req, chemin) => {
+  if (req.method !== 'PUT') return json(405, { error: 'method_not_allowed' });
+  const u = new URL(req.url).searchParams;
+  const email = normaliserEmail(u.get('email'));
+  if (!email) return json(400, { error: 'invalid_email' });
+  const octets = await corpsBorne(req);
+  if (!octets) return json(413, { error: 'too_large' });
+  return reponseDepot(await deposerElementPage(email, chemin, octets, { titre: u.get('titre') }));
+};
+
 const adminRoute = async (req, action) => {
   let m;
   if (action === 'admin/acheteurs') return req.method === 'GET' ? json(200, await listerAdmin()) : json(405, { error: 'method_not_allowed' });
@@ -363,6 +442,13 @@ const adminRoute = async (req, action) => {
     const img = r ? await lireImage(r.id, u.get('id') || '') : null;
     return img ? reponseImage(img) : json(404, { error: 'not_found' });
   }
+  if (action === 'admin/perso') {
+    if (req.method !== 'GET') return json(405, { error: 'method_not_allowed' });
+    const r = await resoudreFiche(normaliserEmail(new URL(req.url).searchParams.get('email')) || '');
+    return r ? json(200, await persoDe(r.id)) : json(404, { error: 'not_found' });
+  }
+  if ((m = /^admin\/perso\/([^/]+)$/.exec(action))) { const nom = decoder(m[1]); return nom === null ? json(404, { error: 'not_found' }) : adminPerso(req, nom); }
+  if ((m = /^admin\/perso-page\/(.+)$/.exec(action))) { const c = decoder(m[1]); return c === null ? json(404, { error: 'not_found' }) : adminPersoPage(req, c); }
   if ((m = /^admin\/contenu\/([^/]+)$/.exec(action))) return adminContenu(req, m[1]);
   if ((m = /^admin\/fichier\/([^/]+)\/([^/]+)$/.exec(action))) { const nom = decoder(m[2]); return nom === null ? json(404, { error: 'not_found' }) : adminFichier(req, m[1], nom); }
   if (action === 'admin/annoncer') {
@@ -386,7 +472,8 @@ const admin = async (req, action) => {
 const PUBLIC = { 'request-code': demanderCode, 'verify-code': validerCode };
 
 export default async (req) => {
-  const action = new URL(req.url).pathname.replace(/^\/api\/kit-app-sexy\/?/, '').replace(/\/$/, '');
+  const { pathname } = new URL(req.url);
+  const action = pathname.replace(/^\/api\/kit-app-sexy\/?/, '').replace(/\/$/, '');
   try {
     if (action.startsWith('admin/')) return await admin(req, action);
     if (action === 'logout' || PUBLIC[action]) {
@@ -394,7 +481,7 @@ export default async (req) => {
       if (action === 'logout') return json(200, { ok: true }, { 'Set-Cookie': cookieEfface(req) });
       return await PUBLIC[action](req);
     }
-    const route = routeMembre(action);
+    const route = routeMembre(action, pathname.endsWith('/'));
     if (!route) return json(404, { error: 'not_found' });
     return await membre(req, route);
   } catch (err) {
