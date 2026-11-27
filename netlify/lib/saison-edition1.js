@@ -49,6 +49,10 @@ export const CUSTOM_FLASH = 'FLASH-';
 export const flashActif = (etat, env = process.env) => Boolean(etat && etat.ouvert && etat.palier === 2) && env.FLASH_PANIER_OFF !== '1';
 export const jetonFlashVivant = (jeton, now = Date.now()) =>
   Boolean(jeton && Number.isFinite(Date.parse(jeton.expire_at))) && Number(now) <= Date.parse(jeton.expire_at) + GRACE_FLASH_MS;
+// 2e panier (option, plus dur) : l'accès à vie à prixVie − 150 € (500 → 350 €), 5 min à partir de ce 2e panier.
+export const REMISE_VIE_FLASH = 150;
+export const prixVieFlash = (now = Date.now()) => prixVie(now) - REMISE_VIE_FLASH;
+export const vieFlashVivante = (jeton, now = Date.now()) => jetonFlashVivant(jeton && jeton.vie, now);
 export const estVenteFlash = (customId) => String(customId || '').startsWith(`${CUSTOM_PREFIX}P1-${CUSTOM_FLASH}`);
 
 export const MONTANTS_SAISON = Object.values(PALIERS).map((p) => p.prix.toFixed(2));
@@ -84,7 +88,7 @@ export const etatSaison = ({ now = Date.now(), ventes = { total: 0, palier1: 0, 
     places_restantes: restantes,
     prix_prochaine_ouverture: PRIX_PROCHAINE_OUVERTURE,
     vie: vieA(t),
-    flash: { actif: flashActif({ ouvert, palier }, env), prix: PRIX_FLASH, duree_ms: DUREE_FLASH_MS },
+    flash: { actif: flashActif({ ouvert, palier }, env), prix: PRIX_FLASH, duree_ms: DUREE_FLASH_MS, prix_vie: prixVie(t) - REMISE_VIE_FLASH },
     maintenant: new Date(t).toISOString(),
   };
 };

@@ -1,13 +1,28 @@
 /* Le jeu de l'offre flash /panier (27/11/2026) : un seul ballon de basket, la physique et les pixels du panier validé dans l'app
    (src/v2/ecrans/aujourdhui/panier, 08/11), recopiés tels quels dans ce dossier. On TIRE le ballon vers le bas, on vise, on lâche.
    Un aimant discret grandit à chaque raté : tout le monde finit par marquer. Le panier appelle `surPanier()` une seule fois. */
-import { ARC, F, PANNEAU, RB, SOL, TIRAGE_MIN, Y0, Y_REPOS, Z0, avancer, conseil, lancer, proj, trajectoire } from './physique.js';
-import { METAL, dessinePanier, dessineSol, ligneMur, sombre } from './pixels.js';
+import { ARC, F, PANNEAU, RB, SLOTS, SOL, TIRAGE_MIN, Y0, Y_REPOS, Z0, avancer, conseil, lancer, proj, trajectoire } from './physique.js';
+import { METAL, dessinePanier, dessineSol, dessineTexte, largeurTexte, ligneMur, sombre } from './pixels.js';
 import { creerSons } from './sons.js';
 
 export const LARGEUR = 390;
 export const HAUTEUR = 760;
-const I = 2; // le ballon du centre (x = 195) : xRepos = 0
+/* Deux niveaux, réglés par balayage (simuler sur dy 40..110 × dx −60..60, gestes au hasard) :
+   1 (97 €)   : ballon à mi-côté, vent 0,2 à 0,35 m/s affiché, viseur court (8 points, vent compris), aimant qui grandit → ≈ 30–50 % par tir.
+   2 (à vie)  : ballon au bord, vent 0,4 à 0,5 m/s vers l'autre côté, AUCUN viseur, AUCUN aimant, 3 essais → ≈ 7–12 % par tir au hasard. */
+const NIVEAUX = {
+  1: { slots: [1, 3], vent: [0.2, 0.35], viseur: 8, aimant: true },
+  // Le vent du niveau 2 souffle TOUJOURS du côté du ballon vers l'autre côté (ballon à gauche → vent vers la droite) : dans
+  // l'autre sens, un tir plein pot rentrait par la planche presque quel que soit le geste (balayage du 27/11). Dans ce sens :
+  // 7 à 12 % des gestes marquent, et plein pot ne marque jamais.
+  2: { slots: [0, 4], vent: [0.4, 0.5], viseur: 0, aimant: false, essais: 3, exterieur: true },
+};
+const tirage = (n) => {
+  const slot = n.slots[Math.floor(Math.random() * n.slots.length)];
+  const fort = n.vent[0] + Math.random() * (n.vent[1] - n.vent[0]);
+  const sens = n.exterieur ? (slot < 2 ? 1 : -1) : (Math.random() < 0.5 ? -1 : 1);
+  return { i: slot, vent: Math.round(fort * 100) / 100 * sens };
+};
 const N = 19;
 const IMAGES = 24;
 const ORANGE = ['#E8742A', '#FFC08A'];
@@ -53,10 +68,11 @@ function decor() {
 }
 
 /**
- * Monte le jeu dans `toile` (canvas). `surPanier()` au premier panier ; `surConseil(texte)` après un raté ; `surVise(bool)` quand
- * le joueur tient le ballon. Rend { arreter() }.
+ * Monte le jeu dans `toile` (canvas). `surPanier(niveau)` au panier ; `surConseil(texte, restants)` après un raté (restants = essais
+ * qui restent au niveau 2, null sinon) ; `surVise(bool)` quand le joueur tient le ballon.
+ * Rend { arreter(), niveau(n) (relance au niveau n), bloquer() }.
  */
-export function monterJeu(toile, { surPanier, surConseil, surVise }) {
+export function monterJeu(toile, { surPanier, surConseil, surVise, bloque = false }) {
   const dpr = Math.min(3, window.devicePixelRatio || 1);
   toile.width = LARGEUR * dpr; toile.height = HAUTEUR * dpr;
   const ctx = toile.getContext('2d');
@@ -75,7 +91,8 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
   const atlas = atlasBallon();
   const d = decor();
   const sons = creerSons();
-  const j = { mode: 'repos', vise: null, b: null, rates: 0, marqueT: null, gagne: false, toucheT: -9 };
+  const j = { mode: 'repos', vise: null, b: null, rates: 0, marqueT: null, gagne: bloque, toucheT: -9, niveau: 1, essais: null, ...tirage(NIVEAUX[1]) };
+  const ventLabel = document.createElement('canvas');
   let t0 = performance.now(); let horloge = 0; let id = 0; let actif = true;
 
   const versScene = (e) => {
@@ -103,7 +120,7 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
     if (j.mode !== 'vise') return;
     const v = j.vise; depart = null; surVise && surVise(false);
     if (!v || v.dy < TIRAGE_MIN) { j.mode = 'repos'; j.vise = null; return; }
-    j.b = lancer(I, v.dx, v.dy); j.mode = 'vol'; j.vise = null;
+    j.b = lancer(j.i, v.dx, v.dy, SLOTS, j.vent); j.mode = 'vol'; j.vise = null;
     sons.souffle(700, 1800, 0.22, 0.05);
   };
   toile.addEventListener('pointerdown', bas);
@@ -117,7 +134,7 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
     const tt = (performance.now() - t0) / 1000; const dt = Math.min(0.05, tt - horloge); horloge = tt;
     if (j.mode === 'vol') {
       const b = j.b;
-      const fini = avancer(b, dt, j.rates, tt, !reduit);
+      const fini = avancer(b, dt, NIVEAUX[j.niveau].aimant ? j.rates : -1, tt, !reduit);
       for (const e of b.evts.splice(0)) {
         if (e === 'planche') sons.bip([110, 82], 0.02, 0.06, 'triangle');
         if (e === 'cerceau') { sons.bip([1568, 2349], 0, 0.025, 'triangle'); sons.bip([196], 0, 0.04, 'triangle'); }
@@ -126,13 +143,21 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
           setTimeout(() => sons.bip([523, 659, 784, 1047], 0.06, 0.04), 340); sons.foule(0.13, 1.6);
           try { navigator.vibrate && navigator.vibrate([20, 40, 60]); } catch { /* accessoire */ }
           j.marqueT = tt;
-          if (!j.gagne) { j.gagne = true; surPanier && surPanier(); }
+          if (!j.gagne) { j.gagne = true; surPanier && surPanier(j.niveau); }
         }
       }
       if (fini) {
-        if (b.marque === null) { j.rates += 1; sons.foule(0.06, 0.7, true); surConseil && surConseil(conseil(b), j.rates); }
-        j.mode = 'repos'; j.b = j.gagne ? b : null;
-        if (j.gagne) j.mode = 'fin';
+        if (b.marque === null) {
+          j.rates += 1; sons.foule(0.06, 0.7, true);
+          if (j.essais !== null) j.essais -= 1;
+          const fini2 = j.essais !== null && j.essais <= 0;
+          if (fini2) j.gagne = true; // plus d'essai : le jeu s'arrête, la page reprend la main
+          surConseil && surConseil(conseil(b), j.essais);
+        }
+        j.mode = 'repos'; j.b = j.gagne && b.marque !== null ? b : null;
+        if (j.gagne && b.marque !== null) j.mode = 'fin';
+        // Nouveau tir : nouvelle place et nouveau vent.
+        if (!j.gagne) Object.assign(j, tirage(NIVEAUX[j.niveau]));
       }
     }
     peindre(tt);
@@ -176,7 +201,7 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
     ctx.fillStyle = '#2A2E2C'; ctx.fillRect(grille(d.hg.x), -20, 3, d.hg.y + 20); ctx.fillRect(grille(d.hd.x), -20, 3, d.hd.y + 20);
 
     // Le ballon.
-    let bx = 195; let by = Y_REPOS; let sc = F / Z0; let image = 0; let entre = false; let opacite = 1;
+    let bx = SLOTS[j.i]; let by = Y_REPOS; let sc = F / Z0; let image = 0; let entre = false; let opacite = 1;
     if (j.mode === 'vise' && j.vise) {
       const v = j.vise; const l = Math.hypot(v.dx, v.dy); const k = l > 0 ? Math.min(1, 70 / l) : 1;
       bx += v.dx * 0.42 * k; by += v.dy * 0.42 * k;
@@ -193,7 +218,7 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
     const dia = 2 * RB * sc;
     // Ombre au sol.
     {
-      const fp = vol ? proj(vol.x, SOL, vol.z) : { x: 195, y: Y_REPOS + 34, s: F / Z0 };
+      const fp = vol ? proj(vol.x, SOL, vol.z) : { x: SLOTS[j.i], y: Y_REPOS + 34, s: F / Z0 };
       const hh = vol ? vol.y - Y0 : 0; const w = vol ? 2 * RB * fp.s : 54;
       ctx.fillStyle = `rgba(0,0,0,${(0.55 * Math.max(0, 1 - hh / 2.4) * opacite).toFixed(3)})`;
       ctx.beginPath(); ctx.ellipse(fp.x, vol ? fp.y - 4 : fp.y, w / 2, w / 7, 0, 0, Math.PI * 2); ctx.fill();
@@ -210,8 +235,9 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
     if (!entre) ballon();
 
     // Trajectoire pendant la visée ; traînée en vol.
-    if (j.mode === 'vise' && j.vise && j.vise.dy > 10) {
-      trajectoire(I, j.vise.dx, j.vise.dy).forEach((p, q) => {
+    const nv = NIVEAUX[j.niveau];
+    if (j.mode === 'vise' && j.vise && j.vise.dy > 10 && nv.viseur > 0) {
+      trajectoire(j.i, j.vise.dx, j.vise.dy, SLOTS, j.vent).slice(0, nv.viseur).forEach((p, q) => {
         const sz = q < 6 ? 6 : q < 16 ? 4.5 : 3;
         ctx.fillStyle = `rgba(245,245,243,${Math.max(0.14, 0.9 - q * 0.03).toFixed(2)})`;
         ctx.fillRect(grille(p.x) - sz / 2, grille(p.y) - sz / 2, sz, sz);
@@ -234,10 +260,27 @@ export function monterJeu(toile, { surPanier, surConseil, surVise }) {
       }
     }
     ctx.restore();
+
+    // Le vent : « VENT » en pixels + une flèche dont la longueur dit la force (un cran = 0,1 m/s), sous le panier.
+    if (!j.gagne || j.mode === 'vol') {
+      const crans = Math.max(1, Math.round(Math.abs(j.vent) * 10)); const sens = Math.sign(j.vent) || 1;
+      const txt = 'VENT'; const lw = largeurTexte(txt);
+      if (ventLabel.width !== lw) { ventLabel.width = lw; ventLabel.height = 9; const c2 = ventLabel.getContext('2d'); dessineTexte(c2, txt, 0, 0, '#8E918E'); }
+      const L = crans * 12; const y = 448; const w = lw * 3 + 9 + L + 9; const x0 = Math.round((LARGEUR - w) / 2 / 3) * 3;
+      ctx.drawImage(ventLabel, x0, y - 6, lw * 3, 27);
+      const xa = x0 + lw * 3 + 9; ctx.fillStyle = '#FFE08A';
+      ctx.fillRect(xa, y + 3, L, 3);
+      const pointe = sens > 0 ? xa + L : xa - 3;
+      for (let k = 0; k < 3; k++) ctx.fillRect(pointe + (sens > 0 ? -3 * k : 3 * k), y + 3 - 3 * k, 3, 3 + 6 * k);
+    }
   }
 
   id = requestAnimationFrame(tic);
   const stop = () => { actif = false; if (ro) ro.disconnect(); cancelAnimationFrame(id); sons.fermer(); };
   window.addEventListener('pagehide', stop, { once: true });
-  return { arreter: stop, etat: j };
+  const niveau = (n) => {
+    Object.assign(j, { mode: 'repos', vise: null, b: null, marqueT: null, gagne: false, niveau: n, rates: 0, essais: NIVEAUX[n].essais ?? null, ...tirage(NIVEAUX[n]) });
+  };
+  const bloquer = () => { j.gagne = true; };
+  return { arreter: stop, etat: j, niveau, bloquer };
 }

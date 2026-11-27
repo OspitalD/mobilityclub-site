@@ -3,6 +3,7 @@
 //   POST {action:'create', renonciation:true} → commande PayPal au prix du palier EN COURS
 //   POST {action:'flash'}            → jeton de l'offre flash /panier (97 € pendant 5 min)
 //   POST {action:'create', renonciation:true, flash:<jeton>} → commande à 97 € si le jeton vit encore
+//   POST {action:'flash2', jeton}    → 2e panier : l'accès à vie à 350 € pendant 5 min (payé par lifetime-checkout)
 //   POST {action:'capture', order_id} → capture au retour de PayPal + vente enregistrée
 // L'invitation au club part du webhook paypal-to-skool (custom_id MC-SAISON-E1-…),
 // jamais d'ici : un seul chemin d'accès, idempotent.
@@ -14,6 +15,7 @@ import {
   DUREE_FLASH_MS,
   PREFIX_FLASH,
   PRIX_FLASH,
+  prixVieFlash,
   flashActif,
   jetonFlashVivant,
   PREFIX_COMMANDE,
@@ -145,6 +147,24 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 // Le panier est marqué : 5 min à 97 €, horloge du serveur. Un jeton déjà délivré est rendu tel quel
 // (rejouer la page ne rallonge pas le temps).
+// 2e panier : exige un 1er panier encore vivant ; l'offre à vie a sa propre horloge de 5 min, posée une seule fois.
+const delivrerFlashVie = async (body, S) => {
+  const etat = await etatCourant(S);
+  if (!flashActif(etat)) return json(409, { error: 'flash_ferme' });
+  const id = String(body.jeton || '');
+  if (!UUID.test(id)) return json(400, { error: 'flash_invalide' });
+  const cle = `${PREFIX_FLASH}${id}`;
+  const jeton = await S.get(cle, { type: 'json' }).catch(() => null);
+  if (!jeton) return json(410, { error: 'flash_expire' });
+  if (!jeton.vie) {
+    if (!jetonFlashVivant(jeton)) return json(410, { error: 'flash_expire' });
+    const now = Date.now();
+    jeton.vie = { cree_at: new Date(now).toISOString(), expire_at: new Date(now + DUREE_FLASH_MS).toISOString() };
+    await S.setJSON(cle, jeton);
+  }
+  return json(200, { ok: true, jeton: id, expire_at: jeton.vie.expire_at, prix: prixVieFlash() });
+};
+
 const delivrerFlash = async (body, S) => {
   const etat = await etatCourant(S);
   if (!flashActif(etat)) return json(409, { error: 'flash_ferme' });
@@ -203,6 +223,7 @@ export const handler = async (req) => {
     if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) return json(503, { error: 'paypal_not_configured' });
     const body = parseBody(req);
     if (body.action === 'flash') return await delivrerFlash(body, S);
+    if (body.action === 'flash2') return await delivrerFlashVie(body, S);
     if (body.action === 'create') return await creer(body, S);
     if (body.action === 'capture') return await capturer(body, S);
     return json(400, { error: 'invalid_action' });

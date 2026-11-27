@@ -71,7 +71,7 @@ function ouvrir({ gagne }) {
       <h2 class="mcf-titre" id="mcf-titre">${gagne ? 'Ton 97 € t’attend.' : 'Un panier, 2 semaines offertes.'}</h2>
       <p class="mcf-corps">${gagne
         ? 'Ton panier est marqué. Il te reste quelques minutes pour prendre ta place à <b>97 €</b>.'
-        : 'Mets le ballon dans le panier&nbsp;: la saison Édition&nbsp;1 repasse à <b>97&nbsp;€</b> pendant 5&nbsp;minutes.'}</p>
+        : 'Mets le ballon dans le panier&nbsp;: la saison Édition&nbsp;1 repasse à <b>97&nbsp;€</b> pendant 5&nbsp;minutes. Un 2e panier, plus dur, pour l\u2019accès à vie à <b>350&nbsp;€</b>.'}</p>
       <a class="mcf-bouton" href="/panier">${gagne ? 'Reprendre' : 'Jouer'}</a>
       <button class="mcf-non" type="button">Plus tard</button>
     </div>`;
@@ -90,7 +90,7 @@ function ouvrir({ gagne }) {
   if (q.get('paypal') || q.get('flash') === '0') return;
   const forcer = q.get('flash') === '1';
   let deja = null; try { deja = JSON.parse(lire(localStorage, CLE) || 'null'); } catch { deja = null; }
-  const vivant = deja && deja.jeton && !deja.fini && Date.parse(deja.expire_at) > Date.now();
+  const vivant = deja && deja.jeton && ((!deja.fini && Date.parse(deja.expire_at) > Date.now()) || Date.parse(deja.vie_expire_at) > Date.now());
   if (deja && deja.jeton && !vivant) return; // déjà joué, temps écoulé : on ne relance pas
   if (!forcer && !vivant && lire(sessionStorage, VU)) return;
   let etat = null;

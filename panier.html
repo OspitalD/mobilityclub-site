@@ -53,6 +53,7 @@ a{ color:inherit; }
   border-radius:30px; background:var(--os-verre-fond), rgba(13,15,14,.72); border:var(--os-verre-bord); box-shadow:var(--os-verre-ombre);
   -webkit-backdrop-filter:blur(24px) saturate(170%); backdrop-filter:blur(24px) saturate(170%);
   animation:monte .5s var(--os-ressort) both;
+  max-height:calc(100svh - 70px); overflow-y:auto; overscroll-behavior:contain;
 }
 @keyframes monte{ from{ transform:translateY(40px); opacity:0; } to{ transform:none; opacity:1; } }
 @media (prefers-reduced-motion: reduce){ .feuille{ animation:none; } }
@@ -75,6 +76,16 @@ a{ color:inherit; }
 .cgv{ margin-top:10px; font-size:12px; line-height:1.45; color:var(--os-texte-3); }
 .cgv a{ color:var(--os-vert); font-weight:800; text-decoration:none; }
 .erreur{ margin-top:10px; font-size:13px; font-weight:800; color:#E05A4A; }
+.bonus{ margin-top:16px; padding-top:14px; border-top:1px solid var(--os-filet); }
+.bonus .eyebrow{ font-size:12px; color:#FFE08A; }
+.bonus p.t{ margin-top:6px; font-size:14px; font-weight:500; line-height:1.45; color:var(--os-texte-doux); text-wrap:pretty; }
+.bonus p.t b{ color:var(--os-texte); font-weight:800; }
+.bonus .os-bouton{ margin-top:12px; }
+.mini-horloge{ font-size:13px; color:#FFE08A; }
+.feuille.compacte{ padding-top:16px; }
+.feuille.compacte h2{ font-size:26px; }
+.feuille.compacte .horloge{ font-size:34px; }
+.lien-texte{ display:inline-block; margin-top:12px; font-size:13px; font-weight:800; color:var(--os-vert); text-decoration:none; background:none; border:0; cursor:pointer; font-family:inherit; }
 .bandeau{ position:relative; z-index:3; margin:10px 16px 0; padding:11px 14px; border-radius:18px; border:1px solid rgba(232,160,32,.35); background:rgba(232,160,32,.08); font-size:13px; font-weight:800; color:#FFE08A; text-align:center; }
 </style>
 </head>
@@ -84,7 +95,7 @@ a{ color:inherit; }
 
   <header class="tete">
     <a href="/edition-1"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
-    <span class="jeu">Offre flash</span>
+    <span class="jeu" id="coin">Offre flash</span>
   </header>
   <p class="bandeau" id="bandeau-annule" role="status" hidden>Paiement annulé, ta place n'est pas prise.</p>
 
@@ -96,7 +107,7 @@ a{ color:inherit; }
   <p class="aide jeu" id="aide" aria-live="polite">Tire vers le bas, vise, lâche</p>
 
   <!-- Gagné : 5 min à 97 €, horloge du serveur. -->
-  <section class="feuille" id="gagne" role="dialog" aria-labelledby="g-titre" hidden>
+  <section class="feuille compacte" id="gagne" role="dialog" aria-labelledby="g-titre" hidden>
     <p class="verdict jeu">Panier !</p>
     <h2 id="g-titre">2&nbsp;semaines offertes.</h2>
     <p class="horloge jeu" id="horloge" aria-live="off">05:00</p>
@@ -105,6 +116,24 @@ a{ color:inherit; }
     <button class="os-bouton" type="button" id="payer">Prendre ma place — 97&nbsp;€</button>
     <p class="cgv">Ton accès au club s'ouvre dès le paiement. En validant, tu acceptes les <a href="/cgv-edition-1">CGV</a> et renonces au délai de rétractation de 14&nbsp;jours.</p>
     <p class="erreur" id="erreur" role="alert" hidden></p>
+    <!-- Option : un 2e panier, plus dur, pour l'accès à vie. Une seule tentative (3 tirs). -->
+    <div class="bonus" id="bonus">
+      <p class="eyebrow jeu" id="bonus-titre">Bonus · 2e panier</p>
+      <p class="t" id="bonus-texte">Plus dur&nbsp;: ballon au bord, vent fort, sans viseur, <b>3&nbsp;essais</b>. Marque-le et l'accès à vie repasse à <b>350&nbsp;€</b> (500&nbsp;€ aujourd'hui).</p>
+      <button class="os-bouton secondaire" type="button" id="tenter">Tenter le 2e panier</button>
+    </div>
+  </section>
+
+  <!-- 2e panier marqué : l'accès à vie à 350 € pendant 5 min (horloge à part). -->
+  <section class="feuille compacte" id="gagne-vie" role="dialog" aria-labelledby="v-titre" hidden>
+    <p class="verdict jeu" style="color:#FFE08A">2e panier !</p>
+    <h2 id="v-titre">L'accès à vie à 350&nbsp;€.</h2>
+    <p class="horloge jeu" id="horloge-vie" aria-live="off">05:00</p>
+    <p class="horloge-l">pour le prendre à 350&nbsp;€</p>
+    <p class="corps">Tu paies une fois, tu gardes le Mobility Club à vie, saisons comprises. Ou 4&nbsp;×&nbsp;87,50&nbsp;€ avec PayPal.</p>
+    <button class="os-bouton" type="button" id="payer-vie">Prendre l'accès à vie — 350&nbsp;€</button>
+    <p class="erreur" id="erreur-vie" role="alert" hidden></p>
+    <button class="lien-texte" type="button" id="retour-saison" hidden>Ou la saison à 97&nbsp;€</button>
   </section>
 
   <!-- Temps écoulé, ou offre terminée / indisponible. -->
@@ -120,91 +149,147 @@ a{ color:inherit; }
 import { monterJeu } from './assets/panier-flash/jeu.js';
 
 const API = '/.netlify/functions/saison-checkout';
+const API_VIE = '/.netlify/functions/lifetime-checkout';
 const CLE = 'mc_flash_panier';
 const $ = (id) => document.getElementById(id);
 const deux = (n) => String(n).padStart(2, '0');
 let ecart = 0; // horloge serveur − téléphone (ms)
-let flash = null; // { jeton, expire_at }
+// { jeton, expire_at, vie_expire_at?, vie_rate?, fini? } — gardé dans le navigateur : une partie par visiteur.
+let flash = null;
+let jeu = null;
 let minuterie = null;
 
 const lireLocal = () => { try { return JSON.parse(localStorage.getItem(CLE) || 'null'); } catch { return null; } };
-const ecrireLocal = (v) => { try { localStorage.setItem(CLE, JSON.stringify(v)); } catch { /* navigation privée : la session suffit */ } };
+const ecrireLocal = () => { try { localStorage.setItem(CLE, JSON.stringify(flash)); } catch { /* navigation privée */ } };
 const caleHorloge = (r) => { const d = Date.parse(r.headers.get('Date') || ''); if (!isNaN(d)) ecart = d - Date.now(); };
-const poster = (body) => fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+const maintenant = () => Date.now() + ecart;
+const reste = (iso) => (iso ? Date.parse(iso) - maintenant() : -1);
+const mmss = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${deux(Math.floor(s / 60))}:${deux(s % 60)}`; };
+const poster = (url, body) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
   .then((r) => { caleHorloge(r); return r.json().catch(() => ({})).then((d) => ({ status: r.status, d: d || {} })); });
 
+const FEUILLES = ['gagne', 'gagne-vie', 'fini'];
+const montrer = (id) => {
+  FEUILLES.forEach((f) => { $(f).hidden = f !== id; });
+  const jeuVisible = !id;
+  $('titre').hidden = !jeuVisible || (flash && flash.jeton); $('aide').hidden = !jeuVisible;
+};
+const vivant97 = () => flash && !flash.fini && reste(flash.expire_at) > 0;
+const vivantVie = () => flash && reste(flash.vie_expire_at) > 0;
+
 function montrerFini(verdict, titre, corps) {
-  $('gagne').hidden = true; $('titre').hidden = true; $('aide').hidden = true;
   if (verdict) $('f-verdict').textContent = verdict;
   if (titre) $('f-titre').textContent = titre;
   if (corps) $('f-corps').textContent = corps;
-  $('fini').hidden = false;
+  montrer('fini'); $('coin').textContent = 'Offre flash';
 }
 
+// Une seule horloge d'affichage pour les deux offres ; chacune a son heure de fin, donnée par le serveur.
 function tic() {
-  const reste = Date.parse(flash.expire_at) - (Date.now() + ecart);
-  if (reste <= 0) { clearInterval(minuterie); $('horloge').textContent = '00:00'; ecrireLocal({ ...flash, fini: true }); montrerFini(); return; }
-  const s = Math.ceil(reste / 1000);
-  $('horloge').textContent = `${deux(Math.floor(s / 60))}:${deux(s % 60)}`;
+  const r97 = reste(flash.expire_at); const rv = reste(flash.vie_expire_at);
+  $('horloge').textContent = mmss(r97);
+  if (flash.vie_expire_at) $('horloge-vie').textContent = mmss(rv);
+  const enJeu = !$('gagne').hidden || !$('gagne-vie').hidden ? null : 'jeu';
+  $('coin').textContent = enJeu && r97 > 0 ? `97 € · ${mmss(r97)}` : 'Offre flash';
+  $('retour-saison').hidden = !(r97 > 0);
+  if (r97 <= 0 && !flash.fini) { flash.fini = true; ecrireLocal(); }
+  if (r97 <= 0 && rv <= 0) { clearInterval(minuterie); montrerFini(); return; }
+  if (!$('gagne').hidden && r97 <= 0) { montrerFini(); }
+  if (!$('gagne-vie').hidden && rv <= 0) { r97 > 0 ? montrerGagne() : montrerFini(); }
 }
+const demarrerHorloge = () => { clearInterval(minuterie); minuterie = setInterval(tic, 250); tic(); };
 
-function montrerGagne() {
-  $('titre').hidden = true; $('aide').hidden = true; $('fini').hidden = true; $('gagne').hidden = false;
-  tic(); clearInterval(minuterie); minuterie = setInterval(tic, 250);
-  $('payer').focus({ preventScroll: true });
+function montrerGagne(message) {
+  // Le bonus n'est proposé qu'une fois : ni après un 2e panier raté, ni s'il est déjà gagné.
+  const bonusPossible = !flash.vie_rate && !flash.vie_expire_at;
+  $('bonus').hidden = !bonusPossible && !message;
+  if (message) {
+    $('bonus-titre').textContent = message.titre; $('bonus-texte').textContent = message.texte; $('tenter').hidden = true;
+  }
+  montrer('gagne'); demarrerHorloge();
 }
+const montrerVie = () => { montrer('gagne-vie'); demarrerHorloge(); };
 
-// Le panier est marqué : le serveur délivre (ou rend) le jeton, l'heure de fin vient de lui.
-async function surPanier() {
+async function surPanier(niveau) {
   $('aide').textContent = 'Panier !'; $('aide').classList.remove('conseil');
   try {
-    const deja = lireLocal();
-    const r = await poster({ action: 'flash', ...(deja && deja.jeton ? { jeton: deja.jeton } : {}) });
+    if (niveau === 2) {
+      const r = await poster(API, { action: 'flash2', jeton: flash.jeton });
+      if (!r.d.ok) throw Object.assign(new Error('flash2'), { status: r.status });
+      flash.vie_expire_at = r.d.expire_at; ecrireLocal();
+      setTimeout(montrerVie, 900);
+      return;
+    }
+    const r = await poster(API, { action: 'flash', ...(flash && flash.jeton ? { jeton: flash.jeton } : {}) });
     if (!r.d.ok) throw Object.assign(new Error('flash'), { status: r.status });
-    flash = { jeton: r.d.jeton, expire_at: r.d.expire_at };
-    ecrireLocal(flash);
-    setTimeout(montrerGagne, 900);
+    flash = { jeton: r.d.jeton, expire_at: r.d.expire_at }; ecrireLocal();
+    setTimeout(() => montrerGagne(), 900);
   } catch (e) {
+    if (niveau === 2 && vivant97()) { setTimeout(() => montrerGagne({ titre: 'Trop tard', texte: 'Le temps du 1er panier était passé. Ton 97 € tient encore.' }), 900); return; }
     setTimeout(() => montrerFini('Offre terminée', 'L’offre flash est terminée.', e.status === 409 ? 'La saison Édition 1 reste ouverte jusqu’à lundi 30/11, 23 h 59.' : 'Le serveur ne répond pas. Réessaie dans une minute.'), 900);
   }
 }
 
-let occupe = false;
-$('payer').addEventListener('click', async () => {
-  if (occupe || !flash) return;
-  occupe = true; const b = $('payer'); b.disabled = true; b.textContent = 'Redirection vers PayPal…'; $('erreur').hidden = true;
-  try {
-    const r = await poster({ action: 'create', renonciation: true, flash: flash.jeton });
-    if (r.status === 201 && r.d.approve_url) { location.href = r.d.approve_url; return; }
-    if (r.status === 410) { ecrireLocal({ ...flash, fini: true }); clearInterval(minuterie); montrerFini(); return; }
-    throw new Error('echec');
-  } catch {
-    occupe = false; b.disabled = false; b.textContent = 'Prendre ma place — 97 €';
-    $('erreur').textContent = 'Le paiement n’a pas pu démarrer, réessaie.'; $('erreur').hidden = false;
-  }
+function surConseil(texte, restants) {
+  const a = $('aide'); a.classList.add('conseil');
+  if (restants === null || restants === undefined) { a.textContent = texte; return; }
+  if (restants > 0) { a.textContent = `${texte} · ${restants} essai${restants > 1 ? 's' : ''}`; return; }
+  // 3 ratés : le bonus est perdu, le 97 € reste si son horloge tourne.
+  flash.vie_rate = true; ecrireLocal();
+  a.textContent = 'Raté';
+  setTimeout(() => (vivant97()
+    ? montrerGagne({ titre: 'Raté de peu', texte: 'Pas d’accès à vie cette fois. Ton 97 € tient toujours.' })
+    : montrerFini()), 1100);
+}
+
+$('tenter').addEventListener('click', () => {
+  if (!vivant97()) { montrerFini(); return; }
+  montrer(null); $('titre').hidden = true;
+  const a = $('aide'); a.classList.remove('conseil'); a.textContent = 'Sans viseur · 3 essais';
+  jeu.niveau(2);
 });
 
-// Au chargement : un jeton déjà gagné reprend son horloge (pas de nouveau jeu) ; sinon on joue si l'offre est active.
+function brancherPaiement(bouton, erreur, libelle, appel) {
+  let occupe = false;
+  bouton.addEventListener('click', async () => {
+    if (occupe || !flash) return;
+    occupe = true; bouton.disabled = true; bouton.textContent = 'Redirection vers PayPal…'; erreur.hidden = true;
+    try {
+      const r = await appel();
+      const url = r.d.approve_url;
+      if (r.status === 201 && url) { location.href = url; return; }
+      if (r.status === 410) { tic(); throw new Error('expire'); }
+      throw new Error('echec');
+    } catch (e) {
+      occupe = false; bouton.disabled = false; bouton.textContent = libelle;
+      erreur.textContent = e.message === 'expire' ? 'Le temps est écoulé.' : 'Le paiement n’a pas pu démarrer, réessaie.'; erreur.hidden = false;
+    }
+  });
+}
+brancherPaiement($('payer'), $('erreur'), 'Prendre ma place — 97 €', () => poster(API, { action: 'create', renonciation: true, flash: flash.jeton }));
+brancherPaiement($('payer-vie'), $('erreur-vie'), 'Prendre l’accès à vie — 350 €', () => poster(API_VIE, { action: 'create', flash: flash.jeton, return_path: '/lifetime' }));
+$('retour-saison').addEventListener('click', () => montrerGagne());
+
+// Au chargement : une partie déjà jouée reprend là où elle en était ; sinon on joue si l'offre est active.
 (async () => {
   const params = new URLSearchParams(location.search);
   if (params.get('paypal') === 'cancel') { $('bandeau-annule').hidden = false; history.replaceState(null, '', location.pathname); }
-  const deja = lireLocal();
+  flash = lireLocal();
   let etat = null;
   try { const r = await fetch(API, { cache: 'no-store' }); caleHorloge(r); etat = await r.json(); } catch { /* repli plus bas */ }
-  if (deja && deja.jeton) {
-    flash = deja;
-    if (deja.fini || Date.parse(deja.expire_at) <= Date.now() + ecart) { montrerFini(); return; }
-    montrerGagne(); return;
+  const actif = !!(etat && etat.flash && etat.flash.actif);
+  jeu = monterJeu($('toile'), { surPanier, surConseil, bloque: !!(flash && flash.jeton) || !actif,
+    surVise: (v) => { if (v) { const a = $('aide'); a.classList.remove('conseil'); if (jeu && jeu.etat.niveau === 1) a.textContent = 'Vise… et lâche'; } } });
+  if (location.hostname === 'localhost') window.__jeu = jeu; // prévisualisation locale seulement (tir calculé par le juge)
+  if (flash && flash.jeton) {
+    if (vivantVie()) return montrerVie();
+    if (vivant97()) return montrerGagne();
+    return montrerFini();
   }
-  if (!etat || !etat.flash || !etat.flash.actif) {
+  flash = null;
+  if (!actif) {
     montrerFini('Offre terminée', 'L’offre flash est terminée.', etat && etat.ouvert ? 'La saison Édition 1 reste ouverte jusqu’à lundi 30/11, 23 h 59.' : 'Les portes de l’Édition 1 sont fermées.');
-    return;
   }
-  monterJeu($('toile'), {
-    surPanier,
-    surConseil: (texte) => { const a = $('aide'); a.textContent = texte; a.classList.add('conseil'); },
-    surVise: (v) => { if (v) { const a = $('aide'); a.textContent = 'Vise… et lâche'; a.classList.remove('conseil'); } },
-  });
 })();
 </script>
 </body>

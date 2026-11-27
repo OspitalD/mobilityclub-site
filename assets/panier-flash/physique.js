@@ -43,10 +43,11 @@ export function vitesse(dx, dy, x0) {
 }
 
 /** Un ballon qui part du repos `i` (parmi `slots`) avec le geste (dx, dy). `evts` reçoit les chocs (planche, cerceau, panier) pour le son. */
-export function lancer(i, dx, dy, slots = SLOTS) {
+// Site, offre flash : `vent` (m/s) pousse le ballon de côté ; le joueur le compense avec son geste.
+export function lancer(i, dx, dy, slots = SLOTS, vent = 0) {
   const x0 = xRepos(i, slots);
   const v = vitesse(dx, dy, x0);
-  return { x: x0, y: Y0, z: Z0, vx: v.x, vy: v.y, vz: v.z, tourne: 0, vtourne: 9 + 8 * v.p, age: 0, marque: null, planche: false, cerceau: 0, passe: null, hautMax: Y0, evts: [], sons: {}, trace: [], traceT: -1 };
+  return { x: x0, y: Y0, z: Z0, vx: v.x + vent, vy: v.y, vz: v.z, tourne: 0, vtourne: 9 + 8 * v.p, age: 0, marque: null, planche: false, cerceau: 0, passe: null, hautMax: Y0, evts: [], sons: {}, trace: [], traceT: -1 };
 }
 
 const evenement = (b, type, temps) => {
@@ -57,7 +58,8 @@ const evenement = (b, type, temps) => {
 };
 
 function aimant(b, dt, rates) {
-  if (b.vy >= 0) return;
+  // Site, offre flash : rates < 0 = aucun aimant (le 2e panier, celui de l'accès à vie).
+  if (b.vy >= 0 || rates < 0) return;
   const qx = b.x; const qz = b.z - ARC.z; const d = Math.hypot(qx, qz); const haut = b.y - ARC.y;
   if (haut > 0 && haut < 0.55 && d < ARC.r + RB * 1.3) {
     const k = 9 + 7 * Math.min(3, rates);
@@ -125,8 +127,8 @@ export function conseil(b) {
 }
 
 /** Les points de la trajectoire montrée pendant la visée (la même physique, sans chocs), un toutes les 40 ms. */
-export function trajectoire(i, dx, dy, slots = SLOTS) {
-  const b = lancer(i, dx, dy, slots);
+export function trajectoire(i, dx, dy, slots = SLOTS, vent = 0) {
+  const b = lancer(i, dx, dy, slots, vent);
   const points = [];
   for (let k = 0; k < 140; k++) {
     pas(b, 1 / 120, false);
@@ -137,8 +139,8 @@ export function trajectoire(i, dx, dy, slots = SLOTS) {
 }
 
 /** Un tir joué jusqu'au bout à pas fixes (tests, réglage) : { marque, planche, conseil }. */
-export function simuler(i, dx, dy, rates = 0, slots = SLOTS) {
-  const b = lancer(i, dx, dy, slots);
+export function simuler(i, dx, dy, rates = 0, slots = SLOTS, vent = 0) {
+  const b = lancer(i, dx, dy, slots, vent);
   let temps = 0;
   for (let k = 0; k < 2000; k++) {
     temps += 1 / 60;

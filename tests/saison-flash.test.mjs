@@ -28,7 +28,7 @@ test('palier 2 : le GET annonce le flash actif à 97 € pour 5 min', async () =
   reset(); a(VENDREDI);
   const e = await lire();
   assert.equal(e.palier, 2);
-  assert.deepEqual(e.flash, { actif: true, prix: 97, duree_ms: 300000 });
+  assert.deepEqual(e.flash, { actif: true, prix: 97, duree_ms: 300000, prix_vie: 350 });
 });
 
 test('panier marqué → jeton de 5 min, commande PayPal à 97 € marquée FLASH (palier 1 pour le webhook)', async () => {
@@ -95,4 +95,27 @@ test('portes fermées (après lun. 30/11 23 h 59) ou coupure FLASH_PANIER_OFF �
 test('palier 1 encore ouvert → pas de flash (le prix est déjà 97 €)', () => {
   const e = lib.etatSaison({ now: Date.parse('2026-11-20T10:00:00Z'), ventes: { total: 0, palier1: 0 }, env: {} });
   assert.equal(e.flash.actif, false);
+});
+
+test('2e panier : exige un 1er panier vivant, pose une horloge à vie de 5 min, une seule fois', async () => {
+  reset(); a(VENDREDI);
+  assert.equal((await poster({ action: 'flash2', jeton: '00000000-0000-4000-8000-000000000000' })).status, 410);
+  const j = await poster({ action: 'flash' });
+  mock.timers.setTime(VENDREDI + 60 * 1000);
+  const v = await poster({ action: 'flash2', jeton: j.d.jeton });
+  assert.equal(v.status, 200);
+  assert.equal(v.d.prix, 350);
+  assert.equal(Date.parse(v.d.expire_at), VENDREDI + 60 * 1000 + 5 * 60 * 1000);
+  mock.timers.setTime(VENDREDI + 2 * 60 * 1000);
+  assert.equal((await poster({ action: 'flash2', jeton: j.d.jeton })).d.expire_at, v.d.expire_at);
+  const stocke = magasin(lib.STORE).get(`${lib.PREFIX_FLASH}${j.d.jeton}`).v;
+  assert.ok(lib.vieFlashVivante(stocke, VENDREDI + 5 * 60 * 1000));
+  assert.ok(!lib.vieFlashVivante(stocke, VENDREDI + 7 * 60 * 1000));
+});
+
+test('2e panier tenté après les 5 min du 1er → refusé', async () => {
+  reset(); a(VENDREDI);
+  const j = await poster({ action: 'flash' });
+  mock.timers.setTime(VENDREDI + 6 * 60 * 1000);
+  assert.equal((await poster({ action: 'flash2', jeton: j.d.jeton })).status, 410);
 });
