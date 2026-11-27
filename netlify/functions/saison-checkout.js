@@ -1,13 +1,21 @@
 // Checkout de la saison Édition 1 (/edition-1).
 //   GET                              → état des paliers et des places (lu par la page)
 //   POST {action:'create', renonciation:true} → commande PayPal au prix du palier EN COURS
+//   POST {action:'flash'}            → jeton de l'offre flash /panier (97 € pendant 5 min)
+//   POST {action:'create', renonciation:true, flash:<jeton>} → commande à 97 € si le jeton vit encore
 //   POST {action:'capture', order_id} → capture au retour de PayPal + vente enregistrée
 // L'invitation au club part du webhook paypal-to-skool (custom_id MC-SAISON-E1-…),
 // jamais d'ici : un seul chemin d'accès, idempotent.
 import { randomUUID } from 'node:crypto';
 import { connectLambda } from '@netlify/blobs';
 import {
+  CUSTOM_FLASH,
   CUSTOM_PREFIX,
+  DUREE_FLASH_MS,
+  PREFIX_FLASH,
+  PRIX_FLASH,
+  flashActif,
+  jetonFlashVivant,
   PREFIX_COMMANDE,
   compterVentes,
   enregistrerVenteSaison,
@@ -73,17 +81,28 @@ const creer = async (body, S) => {
   const etat = await etatCourant(S);
   if (!etat.ouvert) return json(409, { error: 'ferme' });
 
+  // Offre flash : un jeton vivant délivré par action:'flash' ramène la commande au prix fondateur.
+  let flash = null;
+  if (body.flash !== undefined) {
+    const id = String(body.flash || '');
+    if (!UUID.test(id)) return json(400, { error: 'flash_invalide' });
+    flash = await S.get(`${PREFIX_FLASH}${id}`, { type: 'json' }).catch(() => null);
+    if (!flashActif(etat) || !jetonFlashVivant(flash)) return json(410, { error: 'flash_expire' });
+  }
+  const palier = flash ? 1 : etat.palier;
+  const prix = flash ? PRIX_FLASH : etat.prix;
+
   const token = randomUUID();
-  const customId = `${CUSTOM_PREFIX}P${etat.palier}-${token}`;
-  const value = etat.prix.toFixed(2);
-  const libelle = `Mobility Club — Saison Édition 1 (New Year Team)${etat.palier === 1 ? ' — prix fondateur' : ''}`;
+  const customId = `${CUSTOM_PREFIX}P${palier}-${flash ? CUSTOM_FLASH : ''}${token}`;
+  const value = prix.toFixed(2);
+  const libelle = `Mobility Club — Saison Édition 1 (New Year Team)${flash ? ' — offre flash' : palier === 1 ? ' — prix fondateur' : ''}`;
   const { response, data } = await paypalRequest('/v2/checkout/orders', {
     requestId: `saison-create-${token}`,
     body: {
       intent: 'CAPTURE',
       purchase_units: [
         {
-          reference_id: `saison-e1-p${etat.palier}`,
+          reference_id: `saison-e1-p${palier}${flash ? '-flash' : ''}`,
           custom_id: customId,
           description: libelle,
           amount: { currency_code: 'EUR', value, breakdown: { item_total: { currency_code: 'EUR', value } } },
@@ -99,7 +118,7 @@ const creer = async (body, S) => {
             shipping_preference: 'NO_SHIPPING',
             user_action: 'PAY_NOW',
             return_url: `${siteOrigin()}/edition-1?paypal=return`,
-            cancel_url: `${siteOrigin()}/edition-1?paypal=cancel`,
+            cancel_url: `${siteOrigin()}${flash ? '/panier' : '/edition-1'}?paypal=cancel`,
           },
         },
       },
@@ -114,11 +133,29 @@ const creer = async (body, S) => {
   await S.setJSON(`${PREFIX_COMMANDE}${encodeURIComponent(data.id)}`, {
     order_id: data.id,
     custom_id: customId,
-    palier: etat.palier,
+    palier,
     prix: value,
+    ...(flash ? { flash: flash.id } : {}),
     renonciation_at: new Date().toISOString(),
   });
-  return json(201, { ok: true, palier: etat.palier, prix: etat.prix, approve_url: approveUrl });
+  return json(201, { ok: true, palier, prix, approve_url: approveUrl });
+};
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+// Le panier est marqué : 5 min à 97 €, horloge du serveur. Un jeton déjà délivré est rendu tel quel
+// (rejouer la page ne rallonge pas le temps).
+const delivrerFlash = async (body, S) => {
+  const etat = await etatCourant(S);
+  if (!flashActif(etat)) return json(409, { error: 'flash_ferme' });
+  if (body.jeton !== undefined && UUID.test(String(body.jeton))) {
+    const deja = await S.get(`${PREFIX_FLASH}${body.jeton}`, { type: 'json' }).catch(() => null);
+    if (deja) return json(200, { ok: true, jeton: deja.id, expire_at: deja.expire_at, prix: PRIX_FLASH });
+  }
+  const now = Date.now();
+  const jeton = { id: randomUUID(), cree_at: new Date(now).toISOString(), expire_at: new Date(now + DUREE_FLASH_MS).toISOString() };
+  await S.setJSON(`${PREFIX_FLASH}${jeton.id}`, jeton);
+  return json(201, { ok: true, jeton: jeton.id, expire_at: jeton.expire_at, prix: PRIX_FLASH });
 };
 
 const capturer = async (body, S) => {
@@ -165,6 +202,7 @@ export const handler = async (req) => {
     if (req.httpMethod !== 'POST') return json(405, { error: 'method_not_allowed' });
     if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) return json(503, { error: 'paypal_not_configured' });
     const body = parseBody(req);
+    if (body.action === 'flash') return await delivrerFlash(body, S);
     if (body.action === 'create') return await creer(body, S);
     if (body.action === 'capture') return await capturer(body, S);
     return json(400, { error: 'invalid_action' });
