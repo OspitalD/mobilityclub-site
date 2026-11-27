@@ -32,7 +32,7 @@ export const mailBienvenue = ({ email, formule }) => {
     html: `<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#0D0F0E">
   <h1 style="font-size:22px;margin:0 0 16px">${saison ? 'Ta place est prise.' : 'Ton accès à vie est ouvert.'}</h1>
   ${saison
-    ? p('Ton accès au club est ouvert dès maintenant, offert jusqu\'au début de la saison, le 4 janvier.') + p('La saison New Year Team dure 12 semaines, du 4 janvier au 28 mars. Black Friday : tu as un mois offert en plus, ton accès court jusqu\'au 28 avril.')
+    ? p('Ton accès au club est ouvert dès maintenant, offert jusqu\'au début de la saison, le 4 janvier.') + p('La saison New Year Team dure 12 semaines, du 4 janvier au 28 mars.')
     : p('Tu as accès au club et à toutes les saisons à venir.')}
   ${p('Pour entrer : va sur <a href="https://app.mobilityclub.co" style="color:#1F9E78;font-weight:700">app.mobilityclub.co</a> et connecte-toi avec cette adresse email. Tu reçois un code, c\'est tout.')}
   ${p('Une question ? Réponds simplement à ce mail.')}
