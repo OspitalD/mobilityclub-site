@@ -1,7 +1,7 @@
 import { test, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { etatOffre, FIN_FENETRE, PLANS } from '../netlify/lib/offre-v2.js';
+import { etatOffre, FIN_FENETRE, PLANS, prixVie } from '../netlify/lib/offre-v2.js';
 import offreHandler from '../netlify/functions/offre-v2.js';
 
 const fin = Date.parse(FIN_FENETRE);
@@ -69,6 +69,7 @@ test('la Function renvoie réellement la phase calculée, en no-store', async ()
   assert.equal(r.headers.get('cache-control'), 'no-store');
   const body = await r.json();
   assert.equal(body.phase, 'v2');
-  assert.equal(body.prix.vie, 350);
+  // Prix à vie selon l'horloge réelle : 350 € jusqu'au 26/11 23 h 59, 500 € ensuite.
+  assert.equal(body.prix.vie, prixVie(Date.now()));
   assert.equal((await offreHandler(new Request('https://x/', { method: 'POST' }))).status, 405);
 });
