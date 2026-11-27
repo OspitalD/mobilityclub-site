@@ -16,12 +16,17 @@
 //   fichier <slug> <chemin>                     pièce jointe d'une livraison (zip, md, pdf, txt, json ≤ 4 Mo)
 //   annoncer <slug>                             email d'annonce à tous les acheteurs (idempotent, par lots de 25)
 //   capture <email> <id> [--sortie chemin]      télécharge une capture déposée par l'acheteur
+//   perso <email> <fichier>                     « Ton rendu » : fichier pour CET acheteur seul (zip, md, pdf ≤ 4 Mo)
+//   perso-page <email> <dossier>                « Ton rendu » : page HTML + images/polices du dossier, servie à
+//                                               cet acheteur connecté seulement (remplace la page précédente)
+//   perso-retirer <email> <nom|page>            retire un fichier du rendu, ou toute la page avec « page »
+//   (aucune commande perso n'envoie d'email : prévenir l'acheteur reste une décision de Damien)
 //
 // Cible : KIT_APP_SEXY_URL, sinon METHODE_IKEA_URL, sinon https://www.mobilityclub.co (http://localhost:4930 en local).
 // Le contenu payant ne doit JAMAIS être commité : le dépôt est public.
 
-import { readFile, writeFile } from 'node:fs/promises';
-import { basename } from 'node:path';
+import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { basename, join, relative, sep } from 'node:path';
 import { ajouterSquelette } from './methode-ikea.mjs';
 
 const BASE = (process.env.KIT_APP_SEXY_URL || process.env.METHODE_IKEA_URL || 'https://www.mobilityclub.co').replace(/\/$/, '');
@@ -52,6 +57,28 @@ const drapeau = (args, nom) => {
   if (i !== -1) args.splice(i, 1);
   return i !== -1;
 };
+
+// Mêmes règles que le serveur (netlify/lib/kit-espace.js) : on refuse AVANT d'envoyer quoi que ce soit.
+const CHEMIN_PAGE = /^(?:[A-Za-z0-9][A-Za-z0-9._-]{0,80}\/){0,3}[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(html|css|js|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|json|mp4|webm)$/;
+const MAX_OCTETS = 4_000_000;
+const MAX_PAGE = 20_000_000;
+
+// Fichiers de la page, chemins relatifs avec « / ». Les dossiers et fichiers cachés (.netlify, .DS_Store) sont ignorés.
+export const fichiersDuDossier = async (racine) => {
+  const out = [];
+  const parcourir = async (dir) => {
+    for (const e of await readdir(dir, { withFileTypes: true })) {
+      if (e.name.startsWith('.')) continue;
+      const complet = join(dir, e.name);
+      if (e.isDirectory()) await parcourir(complet);
+      else if (e.isFile()) out.push({ chemin: relative(racine, complet).split(sep).join('/'), complet, octets: (await stat(complet)).size });
+    }
+  };
+  await parcourir(racine);
+  return out.sort((a, b) => a.chemin.localeCompare(b.chemin));
+};
+
+const q = (email) => `email=${encodeURIComponent(email || '')}`;
 
 const jour = (iso) => (iso ? String(iso).slice(0, 10) : null);
 
@@ -173,8 +200,47 @@ export const main = async ([cmd, ...args]) => {
       console.log(`capture enregistrée : ${chemin}`);
       return;
     }
+    case 'perso': {
+      const [email, chemin] = args;
+      if (!email || !chemin) throw new Error('Usage : perso <email> <fichier>');
+      const nom = basename(chemin).toLowerCase();
+      const r = await appel('PUT', `perso/${encodeURIComponent(nom)}?${q(email)}`, await readFile(chemin), 'application/octet-stream');
+      console.log(`${nom} déposé pour ${email} (${r.octets} octets) — visible par cet acheteur seulement, aucun email envoyé`);
+      return;
+    }
+    case 'perso-page': {
+      const [email, dossier] = args;
+      if (!email || !dossier) throw new Error('Usage : perso-page <email> <dossier>');
+      const fichiers = await fichiersDuDossier(dossier);
+      const index = fichiers.find((f) => f.chemin === 'index.html');
+      if (!index) throw new Error(`Pas de index.html dans ${dossier}.`);
+      const refuses = fichiers.filter((f) => !CHEMIN_PAGE.test(f.chemin));
+      if (refuses.length) throw new Error(`Noms refusés (lettres, chiffres, . _ - ; types web) : ${refuses.map((f) => f.chemin).join(', ')}`);
+      const gros = fichiers.filter((f) => f.octets > MAX_OCTETS);
+      if (gros.length) throw new Error(`Trop gros (> 4 Mo) : ${gros.map((f) => f.chemin).join(', ')}`);
+      const total = fichiers.reduce((s, f) => s + f.octets, 0);
+      if (total > MAX_PAGE) throw new Error(`Page trop lourde : ${total} octets (max ${MAX_PAGE}).`);
+      const html = await readFile(index.complet, 'utf8');
+      const titre = (/<title>([^<]*)<\/title>/i.exec(html)?.[1] || '').trim();
+      // On repart de zéro : un ancien élément retiré du dossier ne doit pas rester en ligne.
+      await appel('DELETE', `perso/page?${q(email)}`);
+      // index.html en DERNIER : c'est lui qui rend la page visible, une fois toutes ses images en place.
+      for (const f of [...fichiers.filter((x) => x !== index), index]) {
+        const chemin = f.chemin.split('/').map(encodeURIComponent).join('/');
+        await appel('PUT', `perso-page/${chemin}?${q(email)}${f === index && titre ? `&titre=${encodeURIComponent(titre)}` : ''}`, await readFile(f.complet), 'application/octet-stream');
+      }
+      console.log(`page déposée pour ${email} : ${fichiers.length} fichiers, ${total} octets${titre ? ` (« ${titre} »)` : ''} — visible par cet acheteur seulement, aucun email envoyé`);
+      return;
+    }
+    case 'perso-retirer': {
+      const [email, nom] = args;
+      if (!email || !nom) throw new Error('Usage : perso-retirer <email> <nom|page>');
+      const r = await appel('DELETE', `perso/${encodeURIComponent(nom === 'page' ? nom : nom.toLowerCase())}?${q(email)}`);
+      console.log(r.retires ? `retiré pour ${email} : ${nom}${nom === 'page' ? ` (${r.retires} fichiers)` : ''}` : `rien à retirer : ${nom}`);
+      return;
+    }
     default:
-      console.log('Commandes : list | show <email> | add <email…> [--note …] [--bienvenue] | couper <email> [--raison …] | rouvrir <email> | alias <email-paypal> <autre> | purger <email> | contenu <slug> <fichier.html> [--maintenant] | fichier <slug> <chemin> | annoncer <slug> | capture <email> <id> [--sortie chemin]');
+      console.log('Commandes : list | show <email> | add <email…> [--note …] [--bienvenue] | couper <email> [--raison …] | rouvrir <email> | alias <email-paypal> <autre> | purger <email> | contenu <slug> <fichier.html> [--maintenant] | fichier <slug> <chemin> | annoncer <slug> | capture <email> <id> [--sortie chemin] | perso <email> <fichier> | perso-page <email> <dossier> | perso-retirer <email> <nom|page>');
   }
 };
 

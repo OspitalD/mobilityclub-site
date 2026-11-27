@@ -41,6 +41,13 @@ export interface Moi {
   dossier: { completude: number; updated_at: string | null };
   captures: { nombre: number; max: number };
   bonus_echeance: string | null;
+  // Le rendu fait pour CET acheteur ; null quand il n'y a rien (la section ne s'affiche pas).
+  perso: Perso | null;
+}
+
+export interface Perso {
+  fichiers: FichierJoint[];
+  page: { titre: string | null } | null;
 }
 
 export interface ReponseDossier {

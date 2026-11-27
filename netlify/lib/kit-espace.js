@@ -423,6 +423,103 @@ export const lireFichier = async (slug, nom) => {
   return donnees ? { octets: Buffer.from(donnees), type: meta.type } : null;
 };
 
+// ── Rendu personnel (« Ton rendu ») ──────────────────────────────────────────
+//
+// Fichiers et page faits pour UN acheteur (son avant/après contient des captures de SON app). Même verrou
+// 4 que les captures : la clé est construite avec l'id de la FICHE DE LA SESSION, jamais avec un id ou un
+// email fourni par le client. Un autre acheteur qui tape l'URL lit son propre préfixe, vide : 404.
+//   perso/<id>/fichiers/<nom>      octets d'un fichier à télécharger (zip | md | pdf)
+//   perso/<id>/page/<chemin>       une page HTML et ses images, polices, scripts (index.html obligatoire)
+//   perso-meta/<id>/...            type, octets, date de dépôt ; perso-meta/<id>/page-info = titre (pas « page » : une clé ne peut pas être aussi un dossier en local)
+export const NOM_PERSO = /^[a-z0-9][a-z0-9._-]{0,80}\.(zip|md|pdf)$/;
+// Sous-dossiers permis (captures/02.jpg), chaque segment commence par une lettre ou un chiffre : « .. » et
+// les fichiers cachés sont impossibles par construction.
+export const CHEMIN_PAGE = /^(?:[A-Za-z0-9][A-Za-z0-9._-]{0,80}\/){0,3}[A-Za-z0-9][A-Za-z0-9._-]{0,80}\.(html|css|js|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|json|mp4|webm)$/;
+export const PAGE_MAX_OCTETS = 20_000_000;
+const MIME_PAGE = {
+  html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'text/javascript; charset=utf-8',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', svg: 'image/svg+xml',
+  avif: 'image/avif', ico: 'image/x-icon', woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf', otf: 'font/otf',
+  json: 'application/json', mp4: 'video/mp4', webm: 'video/webm',
+};
+const extensionDe = (nom) => nom.split('.').pop().toLowerCase();
+
+const metasSous = async (prefix) => {
+  const { blobs } = await store().list({ prefix });
+  const metas = await Promise.all(blobs.map((b) => lire(b.key)));
+  return blobs.map((b, i) => ({ nom: b.key.slice(prefix.length), octets: metas[i]?.octets ?? 0, depose_le: metas[i]?.depose_le ?? null }))
+    .sort((a, b) => a.nom.localeCompare(b.nom));
+};
+
+// Ce que l'acheteur voit : noms et tailles, titre de la page. Jamais rien d'un autre id.
+export const persoDe = async (id) => {
+  const [fichiers, page, elements] = await Promise.all([
+    metasSous(`perso-meta/${id}/fichiers/`), lire(`perso-meta/${id}/page-info`), metasSous(`perso-meta/${id}/page/`),
+  ]);
+  const aPage = Boolean(page) && elements.some((e) => e.nom === 'index.html');
+  return {
+    fichiers: fichiers.map(({ nom, octets }) => ({ nom, octets })),
+    page: aPage ? { titre: page.titre || null, octets: elements.reduce((s, e) => s + e.octets, 0), elements: elements.length } : null,
+  };
+};
+
+// → { octets } | { erreur: 'not_found' | 'invalid_name' | 'too_large' }
+export const deposerPerso = async (email, nom, octets) => {
+  const r = await resoudreFiche(email);
+  if (!r) return { erreur: 'not_found' };
+  if (!NOM_PERSO.test(nom)) return { erreur: 'invalid_name' };
+  if (octets.length > FICHIER_MAX_OCTETS) return { erreur: 'too_large' };
+  await store().set(`perso/${r.id}/fichiers/${nom}`, bufferVersArrayBuffer(octets));
+  await store().setJSON(`perso-meta/${r.id}/fichiers/${nom}`, { type: MIME_FICHIER[extensionDe(nom)], octets: octets.length, depose_le: iso() });
+  return { octets: octets.length };
+};
+
+export const lirePerso = async (id, nom) => {
+  if (!NOM_PERSO.test(nom)) return null;
+  const meta = await lire(`perso-meta/${id}/fichiers/${nom}`);
+  const donnees = meta ? await store().get(`perso/${id}/fichiers/${nom}`, { type: 'arrayBuffer' }) : null;
+  return donnees ? { octets: Buffer.from(donnees), type: meta.type } : null;
+};
+
+// Un élément de la page. index.html en dernier (la CLI le garantit) : il pose le titre et rend la page visible.
+// → { octets, total } | { erreur: 'not_found' | 'invalid_name' | 'too_large' }
+export const deposerElementPage = async (email, chemin, octets, { titre } = {}) => {
+  const r = await resoudreFiche(email);
+  if (!r) return { erreur: 'not_found' };
+  if (!CHEMIN_PAGE.test(chemin)) return { erreur: 'invalid_name' };
+  if (octets.length > FICHIER_MAX_OCTETS) return { erreur: 'too_large' };
+  const autres = (await metasSous(`perso-meta/${r.id}/page/`)).filter((e) => e.nom !== chemin);
+  const total = autres.reduce((s, e) => s + e.octets, 0) + octets.length;
+  if (total > PAGE_MAX_OCTETS) return { erreur: 'too_large' };
+  await store().set(`perso/${r.id}/page/${chemin}`, bufferVersArrayBuffer(octets));
+  await store().setJSON(`perso-meta/${r.id}/page/${chemin}`, { type: MIME_PAGE[extensionDe(chemin)], octets: octets.length, depose_le: iso() });
+  if (chemin === 'index.html') await store().setJSON(`perso-meta/${r.id}/page-info`, { titre: epurer(titre, 120), depose_le: iso() });
+  return { octets: octets.length, total };
+};
+
+export const lireElementPage = async (id, chemin) => {
+  if (!CHEMIN_PAGE.test(chemin) || !(await lire(`perso-meta/${id}/page-info`))) return null;
+  const meta = await lire(`perso-meta/${id}/page/${chemin}`);
+  const donnees = meta ? await store().get(`perso/${id}/page/${chemin}`, { type: 'arrayBuffer' }) : null;
+  return donnees ? { octets: Buffer.from(donnees), type: meta.type } : null;
+};
+
+// nom = un fichier (zip | md | pdf) ou « page » pour retirer toute la page. → { retires } | { erreur }
+export const retirerPerso = async (email, nom) => {
+  const r = await resoudreFiche(email);
+  if (!r) return { erreur: 'not_found' };
+  let cles;
+  if (nom === 'page') {
+    cles = [`perso-meta/${r.id}/page-info`, ...(await toutesLesCles(`perso-meta/${r.id}/page/`)), ...(await toutesLesCles(`perso/${r.id}/page/`))];
+  } else {
+    if (!NOM_PERSO.test(nom)) return { erreur: 'invalid_name' };
+    cles = [`perso-meta/${r.id}/fichiers/${nom}`, `perso/${r.id}/fichiers/${nom}`];
+  }
+  const existantes = (await Promise.all(cles.map(async (c) => ((await store().get(c)) !== null ? c : null)))).filter(Boolean);
+  for (const c of existantes) await store().delete(c);
+  return { retires: existantes.filter((c) => c.startsWith('perso-meta/') && c !== `perso-meta/${r.id}/page-info`).length };
+};
+
 // ── Vue de l'acheteur connecté ───────────────────────────────────────────────
 
 export const bonusEcheance = (fiche, activite) => (fiche.bonus && activite?.premiere_capture_at
@@ -430,11 +527,12 @@ export const bonusEcheance = (fiche, activite) => (fiche.bonus && activite?.prem
   : null);
 
 export const construireMoi = async ({ id, email, fiche }, maintenant = new Date()) => {
-  const [metas, dossier, nombre, activite] = await Promise.all([
+  const [metas, dossier, nombre, activite, perso] = await Promise.all([
     Promise.all(LIVRAISONS.map((l) => lire(cleMeta(l.slug)))),
     lireDossier(id),
     nombreCaptures(id),
     lireActivite(id),
+    persoDe(id),
   ]);
   const livraisons = await Promise.all(LIVRAISONS.map(async (l, i) => {
     const etat = calculerEtat(l, metas[i], maintenant);
@@ -456,6 +554,8 @@ export const construireMoi = async ({ id, email, fiche }, maintenant = new Date(
     dossier: { completude: dossier.completude, updated_at: dossier.updated_at },
     captures: { nombre, max: CAPTURES_MAX },
     bonus_echeance: bonusEcheance(fiche, activite),
+    // Le rendu de CET acheteur (id de la session) ; null s'il n'y a rien : l'espace n'affiche pas la section.
+    perso: perso.fichiers.length || perso.page ? { fichiers: perso.fichiers, page: perso.page && { titre: perso.page.titre } } : null,
   };
 };
 
@@ -514,8 +614,8 @@ export const listerAdmin = async (maintenant = new Date()) => {
 export const detailAdmin = async (email) => {
   const r = await resoudreFiche(email);
   if (!r) return null;
-  const [dossier, captures, activite, alias, clesAnnonces] = await Promise.all([
-    lireDossier(r.id), listerCaptures(r.id), lireActivite(r.id), aliasParFiche(), toutesLesCles('annonces/'),
+  const [dossier, captures, activite, alias, clesAnnonces, perso] = await Promise.all([
+    lireDossier(r.id), listerCaptures(r.id), lireActivite(r.id), aliasParFiche(), toutesLesCles('annonces/'), persoDe(r.id),
   ]);
   return {
     id: r.id,
@@ -527,6 +627,7 @@ export const detailAdmin = async (email) => {
     activite,
     alias: alias.get(r.id) || [],
     annonces: clesAnnonces.filter((c) => c.endsWith(`/${r.id}`)).map((c) => c.split('/')[1]),
+    perso,
   };
 };
 
@@ -579,7 +680,7 @@ export const retirerAlias = async (autre) => {
   return true;
 };
 
-// Effacement RGPD : tout ce que l'acheteur a déposé part ; restent email, rang et achats
+// Effacement RGPD : tout ce que l'acheteur a déposé part (et son rendu personnel) ; restent email, rang et achats
 // (comptabilité, ordre des rangs). La fiche est coupée : plus d'accès, plus d'envoi.
 export const purger = async (email) => {
   const r = await resoudreFiche(email);
@@ -589,6 +690,9 @@ export const purger = async (email) => {
     cleDossier(r.id), `activite/${r.id}`, `otp/${hashEmail(r.fiche.email)}`,
     ...(await toutesLesCles(`captures/${r.id}/`)),
     ...(await toutesLesCles(`images/${r.id}/`)),
+    // Le rendu personnel contient des captures de son app : il part avec le reste.
+    ...(await toutesLesCles(`perso/${r.id}/`)),
+    ...(await toutesLesCles(`perso-meta/${r.id}/`)),
     ...(await toutesLesCles('annonces/')).filter((c) => c.endsWith(`/${r.id}`)),
   ];
   for (const cle of await toutesLesCles('alias/')) {

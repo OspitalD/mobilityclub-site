@@ -1018,3 +1018,190 @@ test('dossier : un lien non http(s) n\'est jamais stocké', async () => {
   assert.equal((await appel('dossier', { method: 'PUT', cookie, body: { dossier: { lien: 'javascript:alert(1)' }, base_rev: 0 } })).status, 200);
   assert.equal((await appel('dossier', { cookie })).body.dossier.lien, null);
 });
+
+// ── 14. Rendu personnel (« Ton rendu ») : visible par UN acheteur ─────────────
+test('rendu perso : fichier vu et téléchargé par son propriétaire seul ; autre acheteur 404, non connecté 401', async () => {
+  fiche('seb@exemple.fr', { rang: 1 });
+  fiche('autre@exemple.fr', { rang: 2 });
+  const zip = Buffer.concat([Buffer.from('PK\x03\x04'), Buffer.alloc(306_000, 7)]);
+  const depot = await admin('perso/implementation.zip?email=seb@exemple.fr', { method: 'PUT', raw: zip, type: 'application/octet-stream' });
+  assert.equal(depot.status, 200);
+  assert.equal(depot.body.octets, zip.length);
+  assert.equal(mails.length, 0, 'aucun email au dépôt');
+
+  const seb = await connecter('seb@exemple.fr');
+  const autre = await connecter('autre@exemple.fr');
+  assert.deepEqual((await appel('moi', { cookie: seb })).body.perso, { fichiers: [{ nom: 'implementation.zip', octets: zip.length }], page: null });
+  assert.equal((await appel('moi', { cookie: autre })).body.perso, null, 'l\'autre acheteur ne voit pas de section');
+
+  const ok = await appel('perso/fichier/implementation.zip', { cookie: seb });
+  assert.equal(ok.status, 200);
+  assert.ok(ok.buf.equals(zip), 'octets identiques');
+  assert.match(ok.headers.get('content-disposition'), /attachment; filename="implementation\.zip"/);
+  assert.equal(ok.headers.get('content-type'), 'application/zip');
+  assert.equal(ok.headers.get('cache-control'), 'private, no-store');
+
+  assert.equal((await appel('perso/fichier/implementation.zip', { cookie: autre })).status, 404, 'URL directe par un autre acheteur');
+  assert.equal((await appel('perso/fichier/implementation.zip')).status, 401, 'non connecté');
+  assert.equal((await appel('perso/fichier/implementation.zip', { cookie: 'kas_session=forge.forge' })).status, 401, 'cookie forgé');
+  assert.equal((await appel('perso/fichier/..%2Fimplementation.zip', { cookie: seb })).status, 404);
+  assert.equal((await appel('perso/fichier/%E0%A4%A.zip', { cookie: seb })).status, 404);
+
+  // Coupé (remboursement) : plus rien.
+  await admin('acces', { method: 'PATCH', body: { email: 'seb@exemple.fr', coupe: true } });
+  assert.equal((await appel('perso/fichier/implementation.zip', { cookie: seb })).status, 403);
+});
+
+test('rendu perso : taille max 4 Mo, noms et types contrôlés, acheteur inconnu 404, alias = même rendu', async () => {
+  fiche('seb@exemple.fr');
+  const r = (nom, raw, email = 'seb@exemple.fr') => admin(`perso/${nom}?email=${encodeURIComponent(email)}`, { method: 'PUT', raw, type: 'application/octet-stream' });
+  assert.equal((await r('ok.zip', Buffer.alloc(4_000_000))).status, 200, '4 000 000 octets : accepté');
+  assert.equal((await r('gros.zip', Buffer.alloc(4_000_001))).status, 413, '4 000 001 octets : refusé');
+  assert.equal((await r('notes.md', Buffer.from('# hello'))).status, 200);
+  assert.equal((await r('guide.pdf', Buffer.from('%PDF-1.4'))).status, 200);
+  assert.equal((await r('evil.exe', Buffer.from('x'))).body.error, 'invalid_name');
+  assert.equal((await r('page.html', Buffer.from('x'))).body.error, 'invalid_name', 'pas de HTML en téléchargement');
+  assert.equal((await r('a.zip', Buffer.from('x'), 'personne@exemple.fr')).status, 404);
+  assert.equal((await admin('perso/a.zip', { method: 'PUT', raw: Buffer.from('x') })).status, 400, 'sans email');
+
+  await admin('alias', { method: 'POST', body: { email: 'seb@exemple.fr', autre: 'seb.pro@exemple.fr' } });
+  const viaAlias = await connecter('seb.pro@exemple.fr');
+  assert.deepEqual((await appel('moi', { cookie: viaAlias })).body.perso.fichiers.map((f) => f.nom), ['guide.pdf', 'notes.md', 'ok.zip']);
+
+  const retrait = await admin('perso/ok.zip?email=seb@exemple.fr', { method: 'DELETE' });
+  assert.deepEqual(retrait.body, { ok: true, retires: 1 });
+  assert.equal((await appel('perso/fichier/ok.zip', { cookie: viaAlias })).status, 404);
+  assert.equal((await admin('perso/ok.zip?email=seb@exemple.fr', { method: 'DELETE' })).body.retires, 0);
+});
+
+test('rendu perso : page HTML servie avec ses images et polices au propriétaire seul', async () => {
+  fiche('seb@exemple.fr');
+  fiche('autre@exemple.fr', { rang: 2 });
+  const html = '<!doctype html><html><head><title>Avant / après</title><style>@font-face{font-family:O;src:url(fonts/oswald-700.ttf)}</style></head><body><img src="v-or.png"><img src="captures/02.jpg"></body></html>';
+  const put = (chemin, raw, extra = '') => admin(`perso-page/${chemin}?email=seb@exemple.fr${extra}`, { method: 'PUT', raw, type: 'application/octet-stream' });
+  assert.equal((await put('v-or.png', PNG(5000))).status, 200);
+  assert.equal((await put('captures/02.jpg', JPG(8000))).status, 200);
+  assert.equal((await put('fonts/oswald-700.ttf', Buffer.alloc(3000, 9))).status, 200);
+  const seb = await connecter('seb@exemple.fr');
+  assert.equal((await appel('moi', { cookie: seb })).body.perso, null, 'sans index.html, pas encore de page : pas de section');
+  assert.equal((await put('index.html', Buffer.from(html), '&titre=Avant%20%2F%20apr%C3%A8s')).status, 200);
+  assert.deepEqual((await appel('moi', { cookie: seb })).body.perso.page, { titre: 'Avant / après' });
+
+  // Sans « / » final : redirection, pour que v-or.png se résolve sous /perso/page/.
+  const sansSlash = await appel('perso/page', { cookie: seb });
+  assert.equal(sansSlash.status, 302);
+  assert.equal(sansSlash.headers.get('location'), '/api/kit-app-sexy/perso/page/');
+  const page = await appel('perso/page/', { cookie: seb });
+  assert.equal(page.status, 200);
+  assert.equal(page.text, html);
+  assert.match(page.headers.get('content-type'), /^text\/html/);
+  assert.equal(page.headers.get('x-frame-options'), 'SAMEORIGIN');
+  assert.match(page.headers.get('content-security-policy'), /frame-ancestors 'self'/);
+  assert.equal(page.headers.get('cache-control'), 'private, no-store');
+
+  // Chaque ressource que la page appelle, résolue comme le ferait le navigateur.
+  const base = `${ORIGIN}/api/kit-app-sexy/perso/page/`;
+  const attendus = { 'v-or.png': 'image/png', 'captures/02.jpg': 'image/jpeg', 'fonts/oswald-700.ttf': 'font/ttf' };
+  for (const [ref, type] of Object.entries(attendus)) {
+    const chemin = new URL(ref, base).pathname.replace('/api/kit-app-sexy/', '');
+    const res = await appel(chemin, { cookie: seb });
+    assert.equal(res.status, 200, ref);
+    assert.equal(res.headers.get('content-type'), type, ref);
+    assert.equal(res.headers.get('x-content-type-options'), 'nosniff');
+  }
+  assert.equal((await appel('perso/page/absent.png', { cookie: seb })).status, 404);
+  assert.equal((await appel('perso/page/..%2F..%2Fdossier', { cookie: seb })).status, 404);
+
+  // Un autre acheteur, même avec l'URL exacte : 404 ; non connecté : 401 en page lisible.
+  const autre = await connecter('autre@exemple.fr');
+  for (const chemin of ['perso/page/', 'perso/page/v-or.png', 'perso/page/captures/02.jpg']) {
+    const res = await appel(chemin, { cookie: autre });
+    assert.equal(res.status, 404, chemin);
+    assert.doesNotMatch(res.text, /Avant \/ après/);
+    const anonyme = await appel(chemin);
+    assert.equal(anonyme.status, 401, chemin);
+    assert.match(anonyme.headers.get('content-type'), /^text\/html/);
+  }
+
+  // Noms refusés et taille de chaque élément.
+  assert.equal((await put('..%2Fx.png', PNG())).status, 400);
+  assert.equal((await put('.cache%2Fx.png', PNG())).status, 400);
+  assert.equal((await put('script.exe', PNG())).status, 400);
+  assert.equal((await put('gros.png', Buffer.alloc(4_000_001))).status, 413);
+  assert.equal(mails.length, 2, 'seuls les 2 codes de connexion : aucun email de dépôt');
+
+  // Retirer la page : tout part, l'admin voit la liste vide.
+  const retrait = await admin('perso/page?email=seb@exemple.fr', { method: 'DELETE' });
+  assert.equal(retrait.body.retires, 4);
+  assert.equal((await appel('perso/page/', { cookie: seb })).status, 404);
+  assert.equal((await appel('perso/page/v-or.png', { cookie: seb })).status, 404);
+  assert.deepEqual((await admin('perso?email=seb@exemple.fr')).body, { fichiers: [], page: null });
+  assert.equal((await appel('moi', { cookie: seb })).body.perso, null);
+});
+
+test('rendu perso : admin sans jeton ou mauvais jeton refusé (401) ; purge RGPD efface le rendu', async () => {
+  fiche('seb@exemple.fr');
+  for (const [chemin, method] of [['perso?email=seb@exemple.fr', 'GET'], ['perso/a.zip?email=seb@exemple.fr', 'PUT'], ['perso/a.zip?email=seb@exemple.fr', 'DELETE'], ['perso/page?email=seb@exemple.fr', 'DELETE'], ['perso-page/index.html?email=seb@exemple.fr', 'PUT']]) {
+    assert.equal((await appel(`admin/${chemin}`, { method, raw: 'x' })).status, 401, `${method} ${chemin}`);
+    assert.equal((await appel(`admin/${chemin}`, { method, raw: 'x', auth: 'mauvais-jeton-mauvais-jeton-mauvais' })).status, 401, `${method} ${chemin} (mauvais jeton)`);
+  }
+  const cookie = await connecter('seb@exemple.fr');
+  assert.equal((await appel('admin/perso/a.zip?email=seb@exemple.fr', { method: 'PUT', raw: 'x', cookie })).status, 401, 'cookie membre ≠ jeton admin');
+  assert.equal([...kit().keys()].filter((k) => k.startsWith('perso')).length, 0, 'rien n\'a été écrit');
+
+  await admin('perso/a.zip?email=seb@exemple.fr', { method: 'PUT', raw: Buffer.from('PK'), type: 'application/octet-stream' });
+  await admin('perso-page/index.html?email=seb@exemple.fr', { method: 'PUT', raw: Buffer.from('<!doctype html>x'), type: 'application/octet-stream' });
+  assert.ok([...kit().keys()].some((k) => k.startsWith('perso/')));
+  assert.deepEqual((await admin('acheteur?email=seb@exemple.fr')).body.perso.fichiers, [{ nom: 'a.zip', octets: 2 }]);
+  await admin('acheteur', { method: 'DELETE', body: { email: 'seb@exemple.fr' } });
+  assert.deepEqual([...kit().keys()].filter((k) => k.startsWith('perso')), [], 'purge : rendu effacé');
+});
+
+test('CLI : perso, perso-page (index.html en dernier, dossiers cachés ignorés), perso-retirer', async () => {
+  const { mkdtemp, mkdir, writeFile } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  process.env.KIT_APP_SEXY_URL = 'http://cli.test';
+  const { main } = await import('../scripts/kit-app-sexy.mjs');
+  const suivant = globalThis.fetch;
+  const ordre = [];
+  globalThis.fetch = (url, opts) => {
+    if (!String(url).startsWith('http://cli.test')) return suivant(url, opts);
+    ordre.push(`${opts.method} ${new URL(url).pathname.replace('/api/kit-app-sexy/admin/', '')}`);
+    return api(new Request(url, opts));
+  };
+  const sortie = [];
+  const log = mock.method(console, 'log', (...a) => sortie.push(a.join(' ')));
+  try {
+    fiche('seb@exemple.fr');
+    const dir = await mkdtemp(join(tmpdir(), 'kas-perso-'));
+    await writeFile(join(dir, 'Implementation.zip'), Buffer.alloc(1234, 1));
+    await main(['perso', 'seb@exemple.fr', join(dir, 'Implementation.zip')]);
+    assert.match(sortie.at(-1), /implementation\.zip déposé pour seb@exemple\.fr \(1234 octets\).*aucun email/);
+
+    const site = join(dir, 'site');
+    await mkdir(join(site, 'fonts'), { recursive: true });
+    await mkdir(join(site, '.netlify'), { recursive: true });
+    await writeFile(join(site, 'index.html'), '<!doctype html><title>Avant / après</title><img src="v-or.png">');
+    await writeFile(join(site, 'v-or.png'), PNG(100));
+    await writeFile(join(site, 'fonts', 'oswald-700.ttf'), Buffer.alloc(50));
+    await writeFile(join(site, '.netlify', 'state.json'), '{}');
+    ordre.length = 0;
+    await main(['perso-page', 'seb@exemple.fr', site]);
+    assert.deepEqual(ordre, ['DELETE perso/page', 'PUT perso-page/fonts/oswald-700.ttf', 'PUT perso-page/v-or.png', 'PUT perso-page/index.html']);
+    assert.match(sortie.at(-1), /page déposée pour seb@exemple\.fr : 3 fichiers.*« Avant \/ après »/);
+    const cookie = await connecter('seb@exemple.fr');
+    assert.equal((await appel('perso/page/fonts/oswald-700.ttf', { cookie })).status, 200);
+
+    await writeFile(join(site, 'Mauvais Nom.png'), PNG(10));
+    await assert.rejects(main(['perso-page', 'seb@exemple.fr', site]), /Noms refusés.*Mauvais Nom\.png/);
+
+    await main(['perso-retirer', 'seb@exemple.fr', 'page']);
+    assert.match(sortie.at(-1), /retiré pour seb@exemple\.fr : page \(3 fichiers\)/);
+    await main(['perso-retirer', 'seb@exemple.fr', 'implementation.zip']);
+    assert.equal((await appel('moi', { cookie })).body.perso, null);
+  } finally {
+    log.mock.restore();
+    globalThis.fetch = suivant;
+  }
+});

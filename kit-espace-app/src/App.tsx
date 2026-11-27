@@ -6,6 +6,7 @@ import { Captures } from './ecrans/Captures.tsx';
 import { Connexion } from './ecrans/Connexion.tsx';
 import { Dossier } from './ecrans/Dossier.tsx';
 import { Livraison } from './ecrans/Livraison.tsx';
+import { Rendu } from './ecrans/Rendu.tsx';
 import { Reseau } from './ecrans/Reseau.tsx';
 import { SessionCtx, type Session } from './session.ts';
 import { CLE_EMAIL, lireLocal } from './stockage.ts';
@@ -27,6 +28,7 @@ const lireRoute = () => {
   const [a, b] = h.split('/');
   if (a === 'dossier') return { nom: 'dossier' as const };
   if (a === 'captures') return { nom: 'captures' as const };
+  if (a === 'rendu') return { nom: 'rendu' as const };
   if (a === 'livraison' && b) return { nom: 'livraison' as const, slug: decodeURIComponent(b) };
   return { nom: 'accueil' as const };
 };
@@ -115,6 +117,7 @@ export function App() {
       {route.nom === 'dossier' ? <Dossier />
         : route.nom === 'captures' ? <Captures />
         : route.nom === 'livraison' ? <Livraison slug={route.slug} />
+        : route.nom === 'rendu' ? <Rendu />
         : <Accueil />}
     </SessionCtx.Provider>
   );

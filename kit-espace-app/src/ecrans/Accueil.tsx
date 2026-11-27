@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
-import { deconnecter } from '../api.ts';
+import { deconnecter, urlPersoFichier } from '../api.ts';
 import { actionPrincipale } from '../accueil.ts';
-import { jourLisible } from '../dates.ts';
+import { jourLisible, tailleLisible } from '../dates.ts';
 import { useSession } from '../session.ts';
 import { effacerDonneesAppareil, lireOuvertes } from '../stockage.ts';
 import { T } from '../textes.ts';
@@ -38,6 +38,32 @@ export function Accueil() {
   return (
     <Page>
       <div className="accueil">
+        {moi.perso && (
+          <Apparait className="rendu">
+            <section aria-labelledby="titre-rendu">
+              <h2 id="titre-rendu">{T.rendu.titre}</h2>
+              <p className="chapo">{T.rendu.chapo}</p>
+              <ul className="lignes">
+                {moi.perso.page && (
+                  <li>
+                    <a className="ligne" href="#/rendu">
+                      <span className="t">{moi.perso.page.titre || T.rendu.page}</span>
+                      <span className="info">{T.rendu.voir} <span className="fleche"><Fleche /></span></span>
+                    </a>
+                  </li>
+                )}
+                {moi.perso.fichiers.map((f) => (
+                  <li key={f.nom}>
+                    <a className="ligne" href={urlPersoFichier(f.nom)} download>
+                      <span className="t">{f.nom}</span>
+                      <span className="info">{tailleLisible(f.octets)} <span className="fleche"><Fleche /></span></span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </Apparait>
+        )}
         <Apparait className="accueil-hero">
           <Verre halo>
             <div className="hero">
