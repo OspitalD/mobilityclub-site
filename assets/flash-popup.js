@@ -71,7 +71,7 @@ function ouvrir({ gagne }) {
       <h2 class="mcf-titre" id="mcf-titre">${gagne ? 'Ton 97 € t’attend.' : 'Un panier, 2 semaines offertes.'}</h2>
       <p class="mcf-corps">${gagne
         ? 'Ton panier est marqué. Il te reste quelques minutes pour prendre ta place à <b>97 €</b>.'
-        : 'Mets le ballon dans le panier&nbsp;: la saison Édition&nbsp;1 repasse à <b>97&nbsp;€</b> pendant 5&nbsp;minutes. Un 2e panier, plus dur, pour l\u2019accès à vie à <b>350&nbsp;€</b>.'}</p>
+        : 'Mets le ballon dans le panier&nbsp;: la saison Édition&nbsp;1 repasse à <b>97&nbsp;€</b> pendant 5&nbsp;minutes. Un 2e panier = <b>150&nbsp;€ de réduction</b> sur l\u2019accès à vie.'}</p>
       <a class="mcf-bouton" href="/panier">${gagne ? 'Reprendre' : 'Jouer'}</a>
       <button class="mcf-non" type="button">Plus tard</button>
     </div>`;

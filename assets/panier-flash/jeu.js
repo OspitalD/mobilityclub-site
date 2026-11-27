@@ -9,13 +9,12 @@ export const LARGEUR = 390;
 export const HAUTEUR = 760;
 /* Deux niveaux, réglés par balayage (simuler sur dy 40..110 × dx −60..60, gestes au hasard) :
    1 (97 €)   : ballon à mi-côté, vent 0,2 à 0,35 m/s affiché, viseur court (8 points, vent compris), aimant qui grandit → ≈ 30–50 % par tir.
-   2 (à vie)  : ballon au bord, vent 0,4 à 0,5 m/s vers l'autre côté, AUCUN viseur, AUCUN aimant, 3 essais → ≈ 7–12 % par tir au hasard. */
+   2 (à vie)  : ballon décalé (bord ou mi-côté), vent 0,25 à 0,4 m/s, viseur de 6 points, aimant, essais illimités. */
 const NIVEAUX = {
   1: { slots: [1, 3], vent: [0.2, 0.35], viseur: 8, aimant: true },
-  // Le vent du niveau 2 souffle TOUJOURS du côté du ballon vers l'autre côté (ballon à gauche → vent vers la droite) : dans
-  // l'autre sens, un tir plein pot rentrait par la planche presque quel que soit le geste (balayage du 27/11). Dans ce sens :
-  // 7 à 12 % des gestes marquent, et plein pot ne marque jamais.
-  2: { slots: [0, 4], vent: [0.4, 0.5], viseur: 0, aimant: false, essais: 3, exterieur: true },
+  // 27/11 soir, Damien : le 2e panier « beaucoup trop dur » (bord + vent fort + sans viseur + 3 essais) → même jeu qu'au 1er,
+  // un cran au-dessus : n'importe quelle place décalée, vent un peu plus fort, viseur plus court, aimant, essais illimités.
+  2: { slots: [0, 1, 3, 4], vent: [0.25, 0.4], viseur: 6, aimant: true },
 };
 const tirage = (n) => {
   const slot = n.slots[Math.floor(Math.random() * n.slots.length)];

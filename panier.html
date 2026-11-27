@@ -119,7 +119,7 @@ a{ color:inherit; }
     <!-- Option : un 2e panier, plus dur, pour l'accès à vie. Une seule tentative (3 tirs). -->
     <div class="bonus" id="bonus">
       <p class="eyebrow jeu" id="bonus-titre">Bonus · 2e panier</p>
-      <p class="t" id="bonus-texte">Plus dur&nbsp;: ballon au bord, vent fort, sans viseur, <b>3&nbsp;essais</b>. Marque-le et l'accès à vie repasse à <b>350&nbsp;€</b> (500&nbsp;€ aujourd'hui).</p>
+      <p class="t" id="bonus-texte">Un panier de plus = <b>150&nbsp;€ de réduction</b> sur l'accès à vie&nbsp;: <b>350&nbsp;€</b> au lieu de 500&nbsp;€.</p>
       <button class="os-bouton secondaire" type="button" id="tenter">Tenter le 2e panier</button>
     </div>
   </section>
@@ -127,9 +127,9 @@ a{ color:inherit; }
   <!-- 2e panier marqué : l'accès à vie à 350 € pendant 5 min (horloge à part). -->
   <section class="feuille compacte" id="gagne-vie" role="dialog" aria-labelledby="v-titre" hidden>
     <p class="verdict jeu" style="color:#FFE08A">2e panier !</p>
-    <h2 id="v-titre">L'accès à vie à 350&nbsp;€.</h2>
+    <h2 id="v-titre">150&nbsp;€ de réduction sur l'accès à vie.</h2>
     <p class="horloge jeu" id="horloge-vie" aria-live="off">05:00</p>
-    <p class="horloge-l">pour le prendre à 350&nbsp;€</p>
+    <p class="horloge-l">pour le prendre à 350&nbsp;€ au lieu de 500&nbsp;€</p>
     <p class="corps">Tu paies une fois, tu gardes le Mobility Club à vie, saisons comprises. Ou 4&nbsp;×&nbsp;87,50&nbsp;€ avec PayPal.</p>
     <button class="os-bouton" type="button" id="payer-vie">Prendre l'accès à vie — 350&nbsp;€</button>
     <p class="erreur" id="erreur-vie" role="alert" hidden></p>
@@ -245,7 +245,7 @@ function surConseil(texte, restants) {
 $('tenter').addEventListener('click', () => {
   if (!vivant97()) { montrerFini(); return; }
   montrer(null); $('titre').hidden = true;
-  const a = $('aide'); a.classList.remove('conseil'); a.textContent = 'Sans viseur · 3 essais';
+  const a = $('aide'); a.classList.remove('conseil'); a.textContent = '150\u00a0€ de réduction à la clé';
   jeu.niveau(2);
 });
 
