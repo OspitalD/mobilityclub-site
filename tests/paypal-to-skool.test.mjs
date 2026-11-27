@@ -105,6 +105,8 @@ test('estMontantLifetime : seuls les deux paliers 199 € et 249 € alimentent 
   assert.ok(estMontantLifetime('199'));
   assert.ok(estMontantLifetime('249.00'));
   for (const v of ['100.00', '197.00', '9.00', null]) assert.ok(!estMontantLifetime(v), String(v));
+  // Accès à vie à 500 € depuis le 27/11 : la capture doit ouvrir l'accès à l'app.
+  assert.ok(estMontantLifetime('500.00'));
 });
 
 test('emailValide rejette ce qui ne partirait nulle part', () => {

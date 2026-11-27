@@ -1,4 +1,6 @@
-import { test } from 'node:test';
+import { test, mock } from 'node:test';
+// Horloge figée avant la hausse à vie 350 → 500 € (27/11 0 h) : ces tests décrivent la série à 350 €.
+mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-20T12:00:00.000Z') });
 import assert from 'node:assert/strict';
 import {
   customIdLifetime,

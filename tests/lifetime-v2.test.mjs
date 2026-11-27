@@ -1,5 +1,7 @@
 // Lifetime en phase V2 : 350 € quel que soit le palier, côté serveur (checkout ET état renvoyé).
 import { test, mock, beforeEach } from 'node:test';
+// Horloge figée avant la hausse à vie 350 → 500 € (27/11 0 h) : ces tests décrivent la série à 350 €.
+mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-20T12:00:00.000Z') });
 import assert from 'node:assert/strict';
 
 const stores = new Map();

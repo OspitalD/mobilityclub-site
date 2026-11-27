@@ -35,6 +35,7 @@ import { connectLambda, getStore } from '@netlify/blobs';
 import { consommerTicket } from '../lib/methode-ikea-tickets.js';
 import { ajouterAcheteur, emailBienvenue, normaliserEmail, offre as offreIkea, store as storeIkea } from '../lib/methode-ikea.js';
 import { TIER_PRICES } from '../lib/lifetime-ticketing.js';
+import { VIE_APRES_HAUSSE } from '../lib/offre-v2.js';
 import { traiterVenteKit } from '../lib/kit-app-sexy.js';
 import { accesConfigure, ouvrirAccesApp } from '../lib/acces-app.js';
 import {
@@ -50,7 +51,8 @@ import {
 // PAYPAL_MONTANTS_ACCEPTES : cette variable d'environnement décide si la
 // campagne est ouverte, tandis que cette liste décide quelles captures doivent
 // alimenter le stock public des séries.
-export const MONTANTS_LIFETIME = TIER_PRICES.map((price) => Number(price).toFixed(2));
+// + 500 € : prix de l'accès à vie depuis la hausse du 27/11 0 h (offre-v2.js VIE_APRES_HAUSSE).
+export const MONTANTS_LIFETIME = [...TIER_PRICES, VIE_APRES_HAUSSE].map((price) => Number(price).toFixed(2));
 
 export const estMontantLifetime = (montant) =>
   MONTANTS_LIFETIME.some((attendu) => memeMontant(montant, attendu));
