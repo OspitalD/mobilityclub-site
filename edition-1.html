@@ -307,7 +307,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
         <p class="sous-titre">Édition 1 · New Year Team</p>
         <h1>12 semaines pour bouger libre.</h1>
       </div>
-      <p class="h-quoi">Une saison de <b>12&nbsp;semaines</b>, du 4&nbsp;janvier au 28&nbsp;mars. Ton programme personnalisé, <b>ajusté par Damien</b>.<span class="h-bf"><b>Black Friday&nbsp;: 1&nbsp;mois offert.</b> Ton accès court jusqu'au 28&nbsp;avril.</span></p>
+      <p class="h-quoi">Une saison de <b>12&nbsp;semaines</b>, du 4&nbsp;janvier au 28&nbsp;mars. Ton programme personnalisé, <b>ajusté par Damien</b>.<span class="h-bf"><b>Black Friday&nbsp;: 1&nbsp;mois offert.</b> Ton accès s'ouvre dès le paiement&nbsp;: tu commences en décembre, sans attendre janvier.</span></p>
 
       <div class="video" id="video-vignette">
         <img src="/sites/mc2/fondateur-damien.webp" id="video-image" width="905" height="1131" alt="Damien Ospital, fondateur du Mobility Club" />
@@ -483,7 +483,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
         <li><b>C'est de l'IA&nbsp;?</b>Non. Un algorithme construit sur la méthode de Damien, et Damien ajuste ton programme à la main à la demande.</li>
         <li><b>Et si ça ne marche pas pour moi&nbsp;?</b>Ton bilan du jour 1 et du jour 84 montre ce qui a bougé. Et si tu tiens 80&nbsp;% de ton plan, 50&nbsp;% de ce que tu as payé te reviennent en crédit.</li>
         <li><b>L'app est sur l'App Store&nbsp;?</b>Non, c'est une web app&nbsp;: tu l'ouvres depuis le lien reçu par email et tu l'ajoutes à ton écran d'accueil.</li>
-        <li><b>Et après la semaine 12&nbsp;?</b>Black Friday&nbsp;: tu gardes tout le club un mois de plus, jusqu'au 28&nbsp;avril. Ensuite, tu repasses en gratuit, ton historique et ton bilan restent lisibles, et tu es prioritaire à la prochaine ouverture.</li>
+        <li><b>Et après la semaine 12&nbsp;?</b>Tu repasses en gratuit, ton historique et ton bilan restent lisibles, et tu es prioritaire à la prochaine ouverture.</li>
         <li><b>Paiement en 4 fois&nbsp;:</b>oui, avec PayPal&nbsp;: 4&nbsp;×&nbsp;29,75&nbsp;€.</li>
       </ul>
     </section>
@@ -491,7 +491,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     <!-- 9. CTA final -->
     <section class="verre final" id="prendre" aria-labelledby="t-prendre">
       <h2 id="t-prendre">Prends ta place.</h2>
-      <p class="rappel">Édition 1 · du 4&nbsp;janvier au 28&nbsp;mars 2027 · 1&nbsp;mois offert, accès jusqu'au 28&nbsp;avril · 100&nbsp;places</p>
+      <p class="rappel">Édition 1 · du 4&nbsp;janvier au 28&nbsp;mars 2027 · 1&nbsp;mois offert, accès dès le paiement · 100&nbsp;places</p>
 
       <div id="bloc-ouvert">
         <div class="prix-final">
@@ -614,7 +614,7 @@ footer a{ text-decoration:none; color:var(--os-texte-3); }
     $('palier-nom').textContent = nom; $('palier-nom-final').textContent = nom;
     $('prix').textContent = euros(prix); $('prix-final').textContent = euros(prix);
     // Prix ramené à la semaine (12 semaines) : l'argument qui a fait signer en message privé (« ≈ 8 €/sem. »).
-    // Black Friday (27/11) : 12 semaines + 1 mois offert = 16 semaines d'accès ; le 4 fois PayPal est affiché en clair.
+    // Black Friday (27/11) : décembre offert (accès dès le paiement) + 12 semaines ≈ 16 semaines ; le 4 fois PayPal est affiché en clair.
     var quart = Math.round(prix * 25) / 100;
     $('par-semaine').textContent = 'une fois ou 4\u00a0×\u00a0' + euros(quart) + ', soit ≈\u00a0' + Math.round(prix / 16) + '\u00a0€ la semaine';
     $('note-4x').textContent = 'Paiement unique, ou en 4 fois avec PayPal\u00a0: 4\u00a0×\u00a0' + euros(quart) + '.';
