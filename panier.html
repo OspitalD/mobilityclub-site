@@ -255,7 +255,12 @@ function brancherPaiement(bouton, erreur, libelle, appel) {
     if (occupe || !flash) return;
     occupe = true; bouton.disabled = true; bouton.textContent = 'Redirection vers PayPal…'; erreur.hidden = true;
     try {
-      const r = await appel();
+      // Le jeton vient d'être écrit : le stockage peut mettre quelques secondes à le propager. Tant que l'horloge
+      // locale tourne, un 410 est retenté 3 fois (2 s) avant de dire « temps écoulé ».
+      let r = await appel();
+      for (let k = 0; k < 3 && r.status === 410 && (vivant97() || vivantVie()); k++) {
+        await new Promise((ok) => setTimeout(ok, 2000)); r = await appel();
+      }
       const url = r.d.approve_url;
       if (r.status === 201 && url) { location.href = url; return; }
       if (r.status === 410) { tic(); throw new Error('expire'); }

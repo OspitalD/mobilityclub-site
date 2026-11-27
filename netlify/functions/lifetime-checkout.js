@@ -10,7 +10,8 @@ import {
   tierValide,
   ticketValide,
 } from '../lib/lifetime-ticketing.js';
-import { PREFIX_FLASH, compterVentes, etatSaison, flashActif, prixVieFlash, store as storeSaison, vieFlashVivante } from '../lib/saison-edition1.js';
+import { getStore } from '@netlify/blobs';
+import { PREFIX_FLASH, STORE as STORE_SAISON, compterVentes, etatSaison, flashActif, prixVieFlash, store as storeSaison, vieFlashVivante } from '../lib/saison-edition1.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -18,7 +19,10 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const prixFlash = async (id) => {
   if (!UUID.test(String(id || ''))) return { erreur: json(400, { error: 'flash_invalide' }) };
   const S = storeSaison();
-  const jeton = await S.get(`${PREFIX_FLASH}${id}`, { type: 'json' }).catch(() => null);
+  // Lecture FORTE : le 2e panier vient d'être écrit par saison-checkout ; en lecture par défaut (éventuelle), un clic
+  // rapide sur « payer » voyait encore le jeton sans `vie` → 410 (constaté en prod le 27/11). Cette function est au
+  // format Request (export default) : la cohérence forte y marche, contrairement aux functions handler + connectLambda.
+  const jeton = await getStore({ name: STORE_SAISON, consistency: 'strong' }).get(`${PREFIX_FLASH}${id}`, { type: 'json' }).catch(() => null);
   const etat = etatSaison({ ventes: await compterVentes(S) });
   if (!flashActif(etat) || !vieFlashVivante(jeton)) return { erreur: json(410, { error: 'flash_expire' }) };
   return { prix: prixVieFlash() };
