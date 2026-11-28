@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Le plan squat de Jonathan — Mobility Club</title>
+<meta name="description" content="Comment Jonathan, pompier, a débloqué son squat en 30 jours avec l'app Mobility Club : le bilan, son emploi du temps, le choix des exercices, sa douleur jour après jour." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0D0F0E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D0F0E'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%233ECFA0'/%3E%3C/svg%3E" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="30 jours pour débloquer le squat de Jonathan" />
+<meta property="og:description" content="Le plan exact, étape par étape." />
+<meta property="og:image" content="https://www.mobilityclub.co/mail/john-avant-apres-v3.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,800;1,800&family=Pixelify+Sans:wght@600&display=swap" rel="stylesheet" />
+<style>
+/* /squat — ressource envoyée par mail (formulaire Eden « squat »). DA V2 de /edition-1 : verre, titres
+   italiques 800, bouton 54 px vert ; objets de jeu (courbe de douleur, semaine) en cases pixel 3 tons.
+   Données : prod Mobility Club, compte de Jonathan, relevées le 28/11/2026. Page hors index. */
+:root{
+  --fond:#0D0F0E; --filet:rgba(255,255,255,.07);
+  --t1:#F5F5F3; --t2:#A9ACA9; --t3:#8E918E; --t4:#6F716E; --doux:#C9CBC8;
+  --vert:#3ECFA0; --or:#E8A020; --violet:#B990E0; --rouge:#E05A4A; --orange:#E8742A;
+  --verre-fond:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05));
+  --verre-ombre:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06), 0 20px 50px rgba(0,0,0,.45);
+  --courbe:cubic-bezier(.2,.8,.2,1);
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; background:var(--fond); overflow-x:clip; }
+body{ min-height:100svh; background:var(--fond); color:var(--t1); font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-feature-settings:'tnum' 1; -webkit-font-smoothing:antialiased; overflow-x:clip; }
+a{ color:inherit; }
+img{ display:block; max-width:100%; }
+.col{ position:relative; max-width:600px; margin:0 auto; padding:0 16px 40px; }
+.jeu{ font-family:'Pixelify Sans', monospace; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; }
+
+.tete{ display:flex; align-items:center; gap:10px; padding:14px 0 4px; text-decoration:none; font-weight:800; font-size:15px; width:max-content; }
+.tete img{ width:28px; height:28px; border-radius:8px; }
+
+.halo{ position:absolute; top:0; left:50%; width:100vw; margin-left:-50vw; height:760px; pointer-events:none; overflow:hidden; }
+.halo i{ position:absolute; border-radius:50%; }
+.halo .v{ left:calc(50% - 80px); top:120px; width:260px; height:260px; background:var(--vert); opacity:.26; filter:blur(64px); }
+.halo .o{ right:-70px; top:420px; width:200px; height:200px; background:var(--or); opacity:.16; filter:blur(58px); }
+.verre{ position:relative; z-index:2; border-radius:28px; background:var(--verre-fond); border:1px solid rgba(255,255,255,.14); -webkit-backdrop-filter:blur(26px) saturate(170%); backdrop-filter:blur(26px) saturate(170%); box-shadow:var(--verre-ombre); }
+
+/* ── Héros ── */
+.heros{ margin-top:14px; padding:20px 18px 18px; }
+.sous-titre{ font-size:12px; font-weight:800; color:var(--t3); }
+h1{ margin-top:6px; font-size:clamp(32px,9vw,50px); font-weight:800; font-style:italic; letter-spacing:-1.4px; line-height:1; text-wrap:balance; }
+.chapeau{ margin-top:12px; font-size:15px; font-weight:500; line-height:1.5; color:var(--doux); text-wrap:pretty; }
+.chapeau b{ color:var(--t1); font-weight:800; }
+.photo{ margin-top:16px; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.12); background:#17191A; }
+.photo img{ width:100%; height:auto; }
+.chiffres{ display:grid; grid-template-columns:repeat(3,1fr); margin-top:16px; border-top:1px solid var(--filet); }
+.chiffres div{ padding:12px 4px 0; text-align:center; }
+.chiffres b{ display:block; font-size:24px; font-weight:800; font-style:italic; letter-spacing:-.8px; }
+.chiffres span{ display:block; margin-top:2px; font-size:11px; font-weight:800; color:var(--t3); }
+
+/* ── Sections ── */
+section{ margin-top:64px; }
+.num{ font-size:16px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+.num.or{ color:#FFE08A; text-shadow:0 2px 0 #3A2A14; }
+h2{ margin-top:8px; font-size:28px; font-weight:800; font-style:italic; letter-spacing:-1.1px; line-height:1.05; text-wrap:balance; }
+p.corps{ margin-top:12px; font-size:15px; font-weight:500; line-height:1.55; color:var(--doux); text-wrap:pretty; }
+p.corps b{ color:var(--t1); font-weight:800; }
+.citation{ margin-top:16px; padding:2px 0 2px 16px; border-left:3px solid var(--vert); font-size:17px; font-weight:800; font-style:italic; letter-spacing:-.3px; line-height:1.35; }
+.citation small{ display:block; margin-top:6px; font-size:12px; font-style:normal; font-weight:800; color:var(--t3); letter-spacing:0; }
+
+/* Bilan : jauges par zone (cases pixel) */
+.bilan{ margin-top:18px; padding:16px 16px 14px; }
+.zone{ display:grid; grid-template-columns:120px 1fr 40px; align-items:center; gap:10px; padding:8px 0; }
+.zone + .zone{ border-top:1px solid var(--filet); }
+.zone .nom{ font-size:14px; font-weight:800; }
+.zone .val{ text-align:right; font-size:14px; font-weight:800; color:var(--t2); }
+.barre{ display:flex; gap:2px; }
+.barre i{ flex:1; height:12px; background:linear-gradient(#3A3F40 0 4px, #262A2B 4px 8px, #1B1E1F 8px); }
+.barre i.r{ background:linear-gradient(#FFB0A6 0 4px, #E05A4A 4px 8px, #7B3129 8px); }
+.barre i.v{ background:linear-gradient(#A8F2D6 0 4px, #3ECFA0 4px 8px, #1D5C49 8px); }
+.zone.prio .nom{ color:#FFB0A6; }
+.legende{ margin-top:10px; font-size:12px; font-weight:500; line-height:1.45; color:var(--t3); }
+
+/* Semaine */
+.semaine{ margin-top:18px; padding:14px 12px; display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.jour{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; }
+.jour .j{ font-size:12px; font-weight:800; color:var(--t3); }
+.jour .pile{ display:flex; flex-direction:column-reverse; gap:3px; height:96px; justify-content:flex-start; }
+.jour .pile i{ width:22px; height:14px; }
+.c-cheville{ background:linear-gradient(#A8F2D6 0 5px, #3ECFA0 5px 10px, #1D5C49 10px); }
+.c-hanche{ background:linear-gradient(#FFE08A 0 5px, #E8A020 5px 10px, #84612F 10px); }
+.c-epaule{ background:linear-gradient(#E6D2F7 0 5px, #B990E0 5px 10px, #5A4470 10px); }
+.c-autre{ background:linear-gradient(#5A5F60 0 5px, #3A3F40 5px 10px, #262A2B 10px); }
+.jour .min{ font-size:12px; font-weight:800; }
+.jour.off .min{ color:var(--t4); }
+.cles{ display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:12px; font-size:12px; font-weight:800; color:var(--t2); }
+.cles span{ display:inline-flex; align-items:center; gap:6px; }
+.cles i{ width:12px; height:10px; display:inline-block; }
+
+/* Dose */
+.dose{ list-style:none; margin-top:16px; }
+.dose li{ display:grid; grid-template-columns:64px 1fr; gap:4px 12px; padding:13px 0; border-top:1px solid var(--filet); }
+.dose .s{ grid-row:span 2; font-size:15px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; padding-top:1px; }
+.dose .quoi{ font-size:15px; font-weight:800; letter-spacing:-.2px; }
+.dose .det{ font-size:13px; font-weight:500; line-height:1.45; color:var(--t3); }
+.dose .det b{ color:var(--t2); font-weight:800; }
+
+/* Douleur : barres pixel, une par séance */
+.douleur{ margin-top:18px; padding:16px 14px 12px; }
+.graphe{ display:flex; align-items:flex-end; gap:3px; height:130px; padding-bottom:2px; border-bottom:1px solid rgba(255,255,255,.12); }
+.graphe .b{ flex:1; display:flex; flex-direction:column-reverse; gap:2px; min-width:0; }
+.graphe .b i{ height:10px; }
+.n1{ background:linear-gradient(#A8F2D6 0 3px, #3ECFA0 3px 7px, #1D5C49 7px); }
+.n2{ background:linear-gradient(#FFE08A 0 3px, #E8A020 3px 7px, #84612F 7px); }
+.n3{ background:linear-gradient(#FFC08A 0 3px, #E8742A 3px 7px, #7A3D16 7px); }
+.n4{ background:linear-gradient(#FFB0A6 0 3px, #E05A4A 3px 7px, #7B3129 7px); }
+.graphe .b.zero{ justify-content:flex-start; }
+.graphe .b.zero i{ height:3px; background:#3ECFA0; opacity:.6; }
+.axe{ display:flex; justify-content:space-between; margin-top:8px; font-size:11px; font-weight:800; color:var(--t3); }
+.verdict{ margin-top:14px; padding-top:12px; border-top:1px solid var(--filet); display:flex; justify-content:space-between; gap:12px; align-items:baseline; }
+.verdict .jeu{ font-size:14px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+.verdict span:last-child{ font-size:13px; font-weight:800; color:var(--t2); text-align:right; }
+
+/* Séance exemple */
+.seance{ margin-top:18px; padding:18px 16px 8px; }
+.seance .entete{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+.seance .titre{ font-size:22px; font-weight:800; font-style:italic; letter-spacing:-.9px; }
+.seance .duree{ font-size:13px; font-weight:800; color:var(--t2); white-space:nowrap; }
+.exos{ list-style:none; margin-top:12px; counter-reset:e; }
+.exos li{ display:grid; grid-template-columns:28px 1fr; gap:2px 10px; padding:12px 0; border-top:1px solid var(--filet); counter-increment:e; }
+.exos li::before{ content:counter(e); grid-row:span 2; font-family:'Pixelify Sans', monospace; font-weight:600; font-size:16px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+.exos .quoi{ font-size:15px; font-weight:800; letter-spacing:-.2px; line-height:1.3; }
+.exos .dos{ font-size:13px; font-weight:500; color:var(--t3); line-height:1.45; }
+.exos .dos b{ color:#FFE08A; font-weight:800; }
+
+/* Étapes du club */
+.trois{ list-style:none; margin-top:16px; }
+.trois li{ display:grid; grid-template-columns:40px 1fr; gap:3px 10px; padding:13px 0; border-top:1px solid var(--filet); }
+.trois .n{ grid-row:span 2; font-size:20px; color:#A8F2D6; text-shadow:0 2px 0 #1D5C49; }
+.trois .quoi{ font-size:15px; font-weight:800; }
+.trois .det{ font-size:13px; font-weight:500; line-height:1.45; color:var(--t3); }
+
+/* Appel final */
+.final{ margin-top:64px; padding:24px 18px 18px; text-align:center; }
+.final .eyebrow{ font-size:15px; color:#FFE08A; text-shadow:0 2px 0 #3A2A14; }
+.final h2{ margin-top:10px; font-size:clamp(28px,7.6vw,38px); }
+.final p.corps{ text-align:center; }
+.prix{ margin-top:18px; font-size:48px; font-weight:800; font-style:italic; letter-spacing:-1.6px; line-height:1; }
+.prix small{ display:block; margin-top:6px; font-size:13px; font-style:normal; font-weight:800; letter-spacing:0; color:var(--t2); }
+.prix small b{ color:#FFE08A; }
+.os-bouton{ display:flex; align-items:center; justify-content:center; width:100%; height:54px; margin-top:18px; padding:0 20px; border-radius:27px; text-decoration:none; background:var(--vert); color:var(--fond); font-weight:800; font-size:16px; transition:transform .16s var(--courbe); }
+.os-bouton:active{ transform:scale(.96); }
+.os-bouton:focus-visible{ outline:2px solid var(--vert); outline-offset:3px; }
+.note{ margin-top:10px; font-size:12px; font-weight:500; line-height:1.45; color:var(--t3); }
+.signature{ margin-top:40px; font-size:15px; font-weight:500; line-height:1.55; color:var(--doux); }
+footer{ margin-top:48px; padding-top:16px; border-top:1px solid var(--filet); display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; font-size:12px; font-weight:500; color:var(--t4); }
+footer a{ text-decoration:none; }
+
+@media (min-width:720px){ .col{ padding-top:16px; } section{ margin-top:80px; } }
+@media (prefers-reduced-motion:no-preference){
+  .monte{ opacity:0; transform:translateY(14px); transition:opacity .6s var(--courbe), transform .6s var(--courbe); }
+  .monte.vu{ opacity:1; transform:none; }
+  .graphe .b{ transform-origin:bottom; transform:scaleY(.001); transition:transform .5s cubic-bezier(.3,1.5,.5,1); }
+  .douleur.vu .graphe .b{ transform:none; }
+}
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="halo" aria-hidden="true"><i class="v"></i><i class="o"></i></div>
+  <a class="tete" href="/"><img src="assets/brand/logo-otb.png" width="28" height="28" alt="" />Mobility Club</a>
+
+  <!-- ── Héros ── -->
+  <header class="verre heros">
+    <p class="sous-titre">Le plan de Jonathan, pompier</p>
+    <h1>30 jours pour débloquer son squat.</h1>
+    <p class="chapeau">Avant, il squattait en <b>chaussures d'haltéro</b>, toujours à la limite. Un mois plus tard, <b>sans chaussures compensées</b>, et plus bas. Voici le plan exact que l'app a construit pour lui.</p>
+    <figure class="photo"><img src="mail/john-avant-apres-v3.jpg" width="928" height="1040" alt="Le squat de Jonathan : avant, et un mois après, hanches nettement plus basses" /></figure>
+    <div class="chiffres">
+      <div><b>26</b><span>séances</span></div>
+      <div><b>30 j</b><span>d'entraînement</span></div>
+      <div><b>1</b><span>zone prioritaire</span></div>
+    </div>
+  </header>
+
+  <!-- ── Le blocage ── -->
+  <section class="monte">
+    <p class="num jeu">Le blocage</p>
+    <h2>Le tibia n'avançait pas.</h2>
+    <p class="corps">Pour descendre en squat, le genou doit passer devant le pied. Chez Jonathan, <b>les chevilles et les hanches</b> bloquaient ce passage. Résultat : buste qui plonge, squat à la limite, et des chaussures d'haltéro pour compenser à chaque séance.</p>
+    <p class="corps">En plus, une <b>douleur à la cheville gauche</b> qu'il traînait déjà avant d'arriver.</p>
+  </section>
+
+  <!-- ── Étape 1 : le bilan ── -->
+  <section class="monte">
+    <p class="num jeu">Étape 1 · Le bilan</p>
+    <h2>D'abord, trouver le maillon faible.</h2>
+    <p class="corps">Avant le moindre exercice, Jonathan passe le diagnostic de l'app : des tests articulation par articulation. Verdict net : <b>les chevilles</b> sont loin derrière le reste.</p>
+    <div class="verre bilan" role="img" aria-label="Scores du bilan : chevilles 32 sur 100, hanches 75, chaîne postérieure 85, colonne 89">
+      <div class="zone prio"><span class="nom">Chevilles</span><span class="barre" data-score="32" data-c="r"></span><span class="val">32</span></div>
+      <div class="zone"><span class="nom">Hanches</span><span class="barre" data-score="75" data-c="v"></span><span class="val">75</span></div>
+      <div class="zone"><span class="nom">Arrière des jambes</span><span class="barre" data-score="85" data-c="v"></span><span class="val">85</span></div>
+      <div class="zone"><span class="nom">Colonne</span><span class="barre" data-score="89" data-c="v"></span><span class="val">89</span></div>
+      <p class="legende">Scores sur 100. Les hanches sont correctes au repos, mais il leur manque de la force en bout d'amplitude (17 points d'écart entre passif et actif). C'est pour ça qu'on les a travaillées aussi.</p>
+    </div>
+    <p class="corps">L'app fixe alors <b>la cheville en priorité</b>, avec la hanche en soutien. Pas un programme «&nbsp;squat&nbsp;» générique : un programme construit sur <b>ses</b> chiffres.</p>
+  </section>
+
+  <!-- ── Étape 2 : emploi du temps & sport ── -->
+  <section class="monte">
+    <p class="num jeu">Étape 2 · Sa vie réelle</p>
+    <h2>Un plan qui rentre dans des gardes de pompier.</h2>
+    <p class="corps">Jonathan est pompier : des horaires qui bougent, un métier physique, et à côté du streetlifting, de la course et de la natation. Impossible de lui demander 1 h 30 par jour.</p>
+    <p class="corps">Donc l'app part de son temps réel. Le format du club : <b>15 à 20 minutes</b>, calées quand on peut. Jonathan les faisait souvent juste <b>avant son entraînement</b>.</p>
+    <div class="verre semaine" id="semaine" role="img" aria-label="Sa semaine 4 réelle, du vendredi au jeudi : 5 séances, 2 jours sans séance"></div>
+    <div class="cles" aria-hidden="true">
+      <span><i class="c-cheville"></i>Cheville</span>
+      <span><i class="c-hanche"></i>Hanche</span>
+      <span><i class="c-epaule"></i>Épaule</span>
+      <span><i class="c-autre"></i>Autre</span>
+    </div>
+    <p class="legende">Sa vraie semaine 4 (20 au 26/11), relevée dans l'app. Un carré = un bloc d'exercices. Deux jours sans séance, et ce n'est pas grave : le plan repart le lendemain.</p>
+  </section>
+
+  <!-- ── Étape 3 : le choix des exercices ── -->
+  <section class="monte">
+    <p class="num jeu">Étape 3 · Les exercices</p>
+    <h2>La même séance. Une dose qui monte.</h2>
+    <p class="corps">La mobilité, c'est un mélange de force, de contrôle et de souplesse. C'est une qualité musculaire, mais elle dépend <b>avant tout du système nerveux</b>. Et le système nerveux apprend par la fréquence : <b>le même signal, le plus souvent possible</b>.</p>
+    <p class="corps">C'est pour ça que, dans le club, les séances restent les mêmes : par exemple deux séances qui alternent, faites 2 à 3 fois chacune par semaine. Jonathan a refait les mêmes exercices cheville et hanche pendant tout le mois. Ce qui change chaque semaine, c'est la dose : on pousse l'articulation un peu plus loin, un peu plus fort, jusqu'au niveau voulu.</p>
+    <ul class="dose">
+      <li><span class="s jeu">S1</span><span class="quoi">Apprendre la position</span><span class="det">Tenir <b>60 s</b> en bout d'amplitude, à <b>30 %</b> de son effort. Amplitude niveau 1.</span></li>
+      <li><span class="s jeu">S2</span><span class="quoi">Aller plus loin</span><span class="det"><b>50 s</b> à <b>45 %</b>. On descend d'un cran : amplitude niveau 2.</span></li>
+      <li><span class="s jeu">S3</span><span class="quoi">Encore un cran</span><span class="det">Même dose, amplitude niveau <b>3</b>. Les cercles articulaires passent à 60 %.</span></li>
+      <li><span class="s jeu">S4-5</span><span class="quoi">Rendre la position forte</span><span class="det">Plus court, beaucoup plus fort : <b>3 × 20 s à 80 %</b> dans la nouvelle amplitude.</span></li>
+    </ul>
+    <p class="corps">Le bas du squat n'est pas qu'une question de souplesse : il faut aussi être <b>fort dans cette position</b>. Les semaines 1 à 3 la gagnent, les semaines 4 et 5 la rendent solide.</p>
+  </section>
+
+  <!-- ── Douleur ── -->
+  <section class="monte">
+    <p class="num jeu or">Le fil rouge</p>
+    <h2>Sa douleur, séance après séance.</h2>
+    <p class="corps">Après chaque séance, Jonathan note sa douleur de 0 à 10. L'app s'en sert pour régler la suite : <b>l'intensité ne monte que quand la douleur redescend</b>.</p>
+    <div class="verre douleur" id="douleur" role="img" aria-label="Douleur notée après chaque séance, du 2 au 28 novembre : avec des pics à 5 et 6 sur 10 jusqu'au 16 novembre, puis entre 0 et 2 sur 10 depuis le 19 novembre">
+      <div class="graphe" id="graphe"></div>
+      <div class="axe"><span>2 nov.</span><span>28 nov.</span></div>
+      <p class="legende">Une colonne = une séance. Des pics à 5 et 6 sur 10 jusqu'au 16/11, puis 0 à 2 sur 10 depuis le 19/11.</p>
+      <div class="verdict"><span class="jeu">Cheville calmée</span><span>5-6/10 → 0-2/10</span></div>
+    </div>
+  </section>
+
+  <!-- ── Séance exemple ── -->
+  <section class="monte">
+    <p class="num jeu">Exemple</p>
+    <h2>Une de ses séances, semaine 4.</h2>
+    <p class="corps">Pour que ce soit concret, voici à quoi ressemble une séance de Jonathan au moment où la dose est la plus forte.</p>
+    <div class="verre seance">
+      <div class="entete"><span class="titre">Hanche + cheville</span><span class="duree">semaine 4</span></div>
+      <ol class="exos">
+        <li><span class="quoi">Hanche : rotation vers l'intérieur, tenue en bout d'amplitude</span><span class="dos"><b>3 × 20 s</b> à 80 % de l'effort</span></li>
+        <li><span class="quoi">Hanche : grands cercles contrôlés, avec une charge</span><span class="dos"><b>2 séries</b>, 2 tours dans chaque sens, à 70 %</span></li>
+        <li><span class="quoi">Cheville : bascule du pied vers l'intérieur, tenue</span><span class="dos"><b>3 × 20 s</b> à 80 %</span></li>
+        <li><span class="quoi">Cheville : contracter, relâcher, gagner du terrain</span><span class="dos"><b>2 séries</b> à 40 %</span></li>
+        <li><span class="quoi">Cheville : grands cercles contrôlés</span><span class="dos"><b>2 séries</b>, 2 tours dans chaque sens, à 70 %</span></li>
+      </ol>
+    </div>
+    <p class="legende">Les exercices exacts et leurs réglages dépendent du bilan de chacun. Copier cette séance telle quelle ne donnera pas le même résultat à quelqu'un dont le blocage est ailleurs.</p>
+  </section>
+
+  <!-- ── Résultat ── -->
+  <section class="monte">
+    <p class="num jeu or">Un mois après</p>
+    <h2>« T'as changé mon squat. »</h2>
+    <p class="citation">Juste une bonne dorsiflexion et une meilleure utilisation de ma mobilité de hanche.<small>Jonathan, 27/11</small></p>
+    <p class="citation">Je prends un kiff à faire du squat, j'ai l'impression de passer le blocage.<small>Jonathan</small></p>
+    <p class="corps">Pas des heures d'étirements. Les séances que l'app lui donnait, souvent au début de ses entraînements.</p>
+  </section>
+
+  <!-- ── Ce que fait le club ── -->
+  <section class="monte">
+    <p class="num jeu">Pour toi</p>
+    <h2>Le même chemin, avec ton blocage à toi.</h2>
+    <ol class="trois">
+      <li><span class="n jeu">1</span><span class="quoi">Le bilan</span><span class="det">Tu passes les tests. L'app trouve ton maillon faible, pas celui de Jonathan.</span></li>
+      <li><span class="n jeu">2</span><span class="quoi">Ta semaine, ton sport</span><span class="det">15 à 20 minutes, calées sur tes jours, tes horaires et ton sport.</span></li>
+      <li><span class="n jeu">3</span><span class="quoi">Tes exercices, ta dose</span><span class="det">Les mêmes séances répétées, une dose qui monte, réglée sur tes retours.</span></li>
+    </ol>
+  </section>
+
+  <!-- ── Appel ── -->
+  <div class="verre final monte" id="final">
+    <p class="eyebrow jeu">Édition 1 · Black Friday</p>
+    <h2>12 semaines pour débloquer ton mouvement.</h2>
+    <p class="corps" id="final-texte">La saison commence le 4 janvier. Cadeau Black Friday : <b>1 mois offert</b>, ton accès s'ouvre dès le paiement et tu t'entraînes tout décembre, sans attendre.</p>
+    <p class="prix" id="final-prix">119&nbsp;€<small>ou <b>4&nbsp;×&nbsp;29,75&nbsp;€</b> avec PayPal</small><small>jusqu'au <b>lundi 30/11, 23&nbsp;h&nbsp;59</b>. Ensuite, 149&nbsp;€ en&nbsp;mars.</small></p>
+    <a class="os-bouton" href="/edition-1" id="final-cta">Je prends ma place</a>
+    <p class="note">Réalise 80 % de ton plan et tu récupères 50 % de ce que tu as payé.</p>
+  </div>
+
+  <p class="signature">Dans un mois, c'est toi qui m'envoies ta photo.<br />Damien</p>
+
+  <footer>
+    <span>© 2026 Mobility Club</span>
+    <span><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* Jauges du bilan : 20 cases */
+  document.querySelectorAll('.barre').forEach(function(b){
+    var n = Math.round(Number(b.dataset.score) / 5), c = b.dataset.c, h = '';
+    for (var i = 0; i < 20; i++) h += i < n ? '<i class="' + c + '"></i>' : '<i></i>';
+    b.innerHTML = h;
+  });
+
+  /* Semaine 4 réelle (prod, 20 → 26/11) : zones travaillées par séance et durée.
+ */
+  var semaine = [
+    { j:'Ven', z:['epaule','epaule','epaule','cheville','cheville','autre'] },
+    { j:'Sam', z:['hanche','hanche','cheville','cheville','autre','epaule'] },
+    { j:'Dim', z:['cheville','cheville','hanche'] },
+    { j:'Lun', z:[], off:true },
+    { j:'Mar', z:[], off:true },
+    { j:'Mer', z:['hanche','hanche','cheville'] },
+    { j:'Jeu', z:['cheville','cheville','cheville','hanche','cheville','autre'] }
+  ];
+  document.getElementById('semaine').innerHTML = semaine.map(function(d){
+    return '<div class="jour' + (d.off ? ' off' : '') + '"><span class="j">' + d.j + '</span><span class="pile">' +
+      d.z.map(function(z){ return '<i class="c-' + z + '"></i>'; }).join('') +
+      '</span><span class="min">' + (d.off ? 'repos' : '✓') + '</span></div>';
+  }).join('');
+
+  /* Douleur notée après chaque séance (prod, 02 → 28/11). */
+  var douleur = [2,3,5,3,4,2,3,5,1,1,4,2,1,1,6,1,0,2,0,1,0,1,1];
+  var niveau = function(v){ return v >= 5 ? 'n4' : v >= 4 ? 'n3' : v >= 2 ? 'n2' : 'n1'; }; /* couleur de chaque case selon sa hauteur */
+  document.getElementById('graphe').innerHTML = douleur.map(function(v, k){
+    if (!v) return '<span class="b zero" style="transition-delay:' + (k * 30) + 'ms"><i></i></span>';
+    var h = '';
+    for (var i = 1; i <= v; i++) h += '<i class="' + niveau(i) + '"></i>';
+    return '<span class="b" style="transition-delay:' + (k * 30) + 'ms">' + h + '</span>';
+  }).join('');
+
+  /* Après le 30/11 23 h 59 (Paris) : plus de prix ni de date, renvoi vers /edition-1 qui affiche l'état réel. */
+  if (Date.now() > Date.parse('2026-11-30T22:59:59Z')) {
+    document.getElementById('final-prix').hidden = true;
+    document.getElementById('final-texte').textContent = "Les portes de l'Édition 1 sont fermées. Regarde quand la prochaine saison ouvre.";
+    document.getElementById('final-cta').textContent = 'Voir la prochaine saison';
+    document.querySelector('#final .eyebrow').textContent = 'Mobility Club';
+  }
+
+  /* Apparition au défilement */
+  var cibles = document.querySelectorAll('.monte, .douleur');
+  if (!('IntersectionObserver' in window)) { cibles.forEach(function(e){ e.classList.add('vu'); }); return; }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('vu'); io.unobserve(e.target); } });
+  }, { threshold:.15 });
+  cibles.forEach(function(e){ io.observe(e); });
+})();
+</script>
+</body>
+</html>
