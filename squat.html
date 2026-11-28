@@ -145,7 +145,7 @@ p.corps b{ color:var(--t1); font-weight:800; }
 .final h2{ margin-top:10px; font-size:clamp(28px,7.6vw,38px); }
 .final p.corps{ text-align:center; }
 .prix{ margin-top:18px; font-size:48px; font-weight:800; font-style:italic; letter-spacing:-1.6px; line-height:1; }
-.prix small{ display:block; margin-top:8px; font-size:13px; font-style:normal; font-weight:800; letter-spacing:0; color:var(--t2); }
+.prix small{ display:block; margin-top:6px; font-size:13px; font-style:normal; font-weight:800; letter-spacing:0; color:var(--t2); }
 .prix small b{ color:#FFE08A; }
 .os-bouton{ display:flex; align-items:center; justify-content:center; width:100%; height:54px; margin-top:18px; padding:0 20px; border-radius:27px; text-decoration:none; background:var(--vert); color:var(--fond); font-weight:800; font-size:16px; transition:transform .16s var(--courbe); }
 .os-bouton:active{ transform:scale(.96); }
@@ -178,7 +178,7 @@ footer a{ text-decoration:none; }
     <div class="chiffres">
       <div><b>26</b><span>séances</span></div>
       <div><b>30 j</b><span>d'entraînement</span></div>
-      <div><b>~30 min</b><span>par séance</span></div>
+      <div><b>1</b><span>zone prioritaire</span></div>
     </div>
   </header>
 
@@ -210,8 +210,8 @@ footer a{ text-decoration:none; }
     <p class="num jeu">Étape 2 · Sa vie réelle</p>
     <h2>Un plan qui rentre dans des gardes de pompier.</h2>
     <p class="corps">Jonathan est pompier : des horaires qui bougent, un métier physique, et à côté du streetlifting, de la course et de la natation. Impossible de lui demander 1 h 30 par jour.</p>
-    <p class="corps">Donc l'app part de son temps réel : <b>25 à 45 minutes</b>, quand il peut, souvent juste <b>avant son entraînement</b>.</p>
-    <div class="verre semaine" id="semaine" role="img" aria-label="Sa semaine 4 réelle, du vendredi au jeudi : 5 séances de 0 à 39 minutes, 2 jours sans séance"></div>
+    <p class="corps">Donc l'app part de son temps réel. Le format du club : <b>15 à 20 minutes</b>, calées quand on peut. Jonathan les faisait souvent juste <b>avant son entraînement</b>.</p>
+    <div class="verre semaine" id="semaine" role="img" aria-label="Sa semaine 4 réelle, du vendredi au jeudi : 5 séances, 2 jours sans séance"></div>
     <div class="cles" aria-hidden="true">
       <span><i class="c-cheville"></i>Cheville</span>
       <span><i class="c-hanche"></i>Hanche</span>
@@ -255,7 +255,7 @@ footer a{ text-decoration:none; }
     <h2>Une de ses séances, semaine 4.</h2>
     <p class="corps">Pour que ce soit concret, voici à quoi ressemble une séance de Jonathan au moment où la dose est la plus forte.</p>
     <div class="verre seance">
-      <div class="entete"><span class="titre">Hanche + cheville</span><span class="duree">≈ 35 min</span></div>
+      <div class="entete"><span class="titre">Hanche + cheville</span><span class="duree">semaine 4</span></div>
       <ol class="exos">
         <li><span class="quoi">Hanche : rotation vers l'intérieur, tenue en bout d'amplitude</span><span class="dos"><b>3 × 20 s</b> à 80 % de l'effort</span></li>
         <li><span class="quoi">Hanche : grands cercles contrôlés, avec une charge</span><span class="dos"><b>2 séries</b>, 2 tours dans chaque sens, à 70 %</span></li>
@@ -282,7 +282,7 @@ footer a{ text-decoration:none; }
     <h2>Le même chemin, avec ton blocage à toi.</h2>
     <ol class="trois">
       <li><span class="n jeu">1</span><span class="quoi">Le bilan</span><span class="det">Tu passes les tests. L'app trouve ton maillon faible, pas celui de Jonathan.</span></li>
-      <li><span class="n jeu">2</span><span class="quoi">Ta semaine, ton sport</span><span class="det">Tes jours, tes horaires, ton sport : le plan se cale dessus.</span></li>
+      <li><span class="n jeu">2</span><span class="quoi">Ta semaine, ton sport</span><span class="det">15 à 20 minutes, calées sur tes jours, tes horaires et ton sport.</span></li>
       <li><span class="n jeu">3</span><span class="quoi">Tes exercices, ta dose</span><span class="det">Les mêmes séances répétées, une dose qui monte, réglée sur tes retours.</span></li>
     </ol>
   </section>
@@ -291,8 +291,8 @@ footer a{ text-decoration:none; }
   <div class="verre final monte" id="final">
     <p class="eyebrow jeu">Édition 1 · Black Friday</p>
     <h2>12 semaines pour débloquer ton mouvement.</h2>
-    <p class="corps" id="final-texte">La saison commence le 4 janvier. Tu entres dès aujourd'hui, et décembre est offert.</p>
-    <p class="prix" id="final-prix">119&nbsp;€<small>jusqu'au <b>lundi 30/11, 23&nbsp;h&nbsp;59</b>. Ensuite, 149&nbsp;€ en mars.</small></p>
+    <p class="corps" id="final-texte">La saison commence le 4 janvier. Cadeau Black Friday : <b>1 mois offert</b>, ton accès s'ouvre dès le paiement et tu t'entraînes tout décembre, sans attendre.</p>
+    <p class="prix" id="final-prix">119&nbsp;€<small>ou <b>4&nbsp;×&nbsp;29,75&nbsp;€</b> avec PayPal</small><small>jusqu'au <b>lundi 30/11, 23&nbsp;h&nbsp;59</b>. Ensuite, 149&nbsp;€ en&nbsp;mars.</small></p>
     <a class="os-bouton" href="/edition-1" id="final-cta">Je prends ma place</a>
     <p class="note">Réalise 80 % de ton plan et tu récupères 50 % de ce que tu as payé.</p>
   </div>
@@ -315,20 +315,20 @@ footer a{ text-decoration:none; }
   });
 
   /* Semaine 4 réelle (prod, 20 → 26/11) : zones travaillées par séance et durée.
-     Les 20/11 et 22/11 n'ont pas de durée enregistrée (séance validée sans le minuteur). */
+ */
   var semaine = [
-    { j:'Ven', min:'—',  z:['epaule','epaule','epaule','cheville','cheville','autre'] },
-    { j:'Sam', min:'39', z:['hanche','hanche','cheville','cheville','autre','epaule'] },
-    { j:'Dim', min:'—',  z:['cheville','cheville','hanche'] },
-    { j:'Lun', min:'0',  z:[], off:true },
-    { j:'Mar', min:'0',  z:[], off:true },
-    { j:'Mer', min:'33', z:['hanche','hanche','cheville'] },
-    { j:'Jeu', min:'33', z:['cheville','cheville','cheville','hanche','cheville','autre'] }
+    { j:'Ven', z:['epaule','epaule','epaule','cheville','cheville','autre'] },
+    { j:'Sam', z:['hanche','hanche','cheville','cheville','autre','epaule'] },
+    { j:'Dim', z:['cheville','cheville','hanche'] },
+    { j:'Lun', z:[], off:true },
+    { j:'Mar', z:[], off:true },
+    { j:'Mer', z:['hanche','hanche','cheville'] },
+    { j:'Jeu', z:['cheville','cheville','cheville','hanche','cheville','autre'] }
   ];
   document.getElementById('semaine').innerHTML = semaine.map(function(d){
     return '<div class="jour' + (d.off ? ' off' : '') + '"><span class="j">' + d.j + '</span><span class="pile">' +
       d.z.map(function(z){ return '<i class="c-' + z + '"></i>'; }).join('') +
-      '</span><span class="min">' + (d.off ? 'repos' : (d.min === '—' ? 'fait' : d.min + ' min')) + '</span></div>';
+      '</span><span class="min">' + (d.off ? 'repos' : '✓') + '</span></div>';
   }).join('');
 
   /* Douleur notée après chaque séance (prod, 02 → 28/11). */
